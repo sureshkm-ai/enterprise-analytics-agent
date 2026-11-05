@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      POETRY_VIRTUALENVS_IN_PROJECT: "true"
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+
+      - name: Install pinned Poetry in a separate environment
+        run: |
+          python -m venv "$RUNNER_TEMP/poetry"
+          "$RUNNER_TEMP/poetry/bin/pip" install "poetry==2.3.1"
+          echo "$RUNNER_TEMP/poetry/bin" >> "$GITHUB_PATH"
+
+      - name: Check committed lockfile
+        run: poetry check --lock
+
+      - name: Install locked dependencies
+        run: poetry sync --with dev --no-interaction
+
+      - name: Run tests
+        run: poetry run pytest
+
+      - name: Run Ruff
+        run: poetry run ruff check .
+
+      - name: Check formatting
+        run: poetry run ruff format --check .
+
+      - name: Check types
+        run: poetry run mypy src tests

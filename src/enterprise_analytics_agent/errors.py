@@ -19,3 +19,11 @@ class AuthorizationError(SemanticError):
 
 class DataValidationError(SemanticError):
     """A local snapshot is missing, malformed, or contains conflicting records."""
+
+
+class MissingMetricDataError(DataValidationError):
+    """A metric requires an optional source that the loaded snapshot does not contain."""
+
+
+class UnsupportedMetricVersionError(SemanticError):
+    """The metric requires a newer semantic contract version."""

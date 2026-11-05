@@ -1,6 +1,6 @@
 """Governed, backend-independent metric definitions, rather than user formulas."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Literal
 
 from enterprise_analytics_agent.contracts import (
@@ -9,7 +9,16 @@ from enterprise_analytics_agent.contracts import (
     MetricFilter,
     TimeSemantics,
 )
-from enterprise_analytics_agent.errors import UnknownMetricError
+from enterprise_analytics_agent.contracts_v2 import (
+    DimensionDefinitionV2,
+    MetricDefinitionV2,
+    MetricFilterV2,
+    MetricGrain,
+    MetricPrecision,
+    MetricUnit,
+    TimeSemanticsV2,
+)
+from enterprise_analytics_agent.errors import UnknownMetricError, UnsupportedMetricVersionError
 
 
 @dataclass(frozen=True)
@@ -21,6 +30,9 @@ class CatalogDimension:
 
     def public_description(self) -> DimensionDefinition:
         return DimensionDefinition(dimension_id=self.dimension_id, description=self.description)
+
+    def public_description_v2(self) -> DimensionDefinitionV2:
+        return DimensionDefinitionV2(dimension_id=self.dimension_id, description=self.description)
 
 
 @dataclass(frozen=True)
@@ -64,18 +76,26 @@ class MetricSpecification:
     relationships: tuple[CatalogRelationship, ...]
     filters: tuple[CatalogFilter, ...]
     time_semantics: CatalogTimeSemantics
-    grain_name: Literal["order_item"] = "order_item"
-    unit: Literal["currency"] = "currency"
-    currency: Literal["USD"] = "USD"
+    grain_name: MetricGrain = "order_item"
+    unit: MetricUnit = "currency"
+    currency: Literal["USD"] | None = "USD"
+    decimal_places: MetricPrecision = 2
+    rounding: Literal["ROUND_HALF_UP"] = "ROUND_HALF_UP"
+    nullable: bool = False
+    required_sources: tuple[str, ...] = ("orders", "order_items", "refunds")
 
     def public_description(self) -> MetricDefinition:
+        if self.metric_id != "net_revenue":
+            raise UnsupportedMetricVersionError(
+                f"Metric '{self.metric_id}' requires api_version 'v2'"
+            )
         return MetricDefinition(
             metric_id=self.metric_id,
             display_name=self.display_name,
             description=self.description,
             definition_version=self.definition_version,
             calculation=self.calculation_description,
-            base_grain=self.grain_name,
+            base_grain="order_item",
             dimensions=tuple(dimension.public_description() for dimension in self.dimensions),
             relationships=tuple(relationship.description for relationship in self.relationships),
             filters=tuple(
@@ -87,8 +107,30 @@ class MetricSpecification:
                 interval=self.time_semantics.interval,
                 refund_attribution=self.time_semantics.refund_attribution,
             ),
+            unit="currency",
+            currency="USD",
+        )
+
+    def public_description_v2(self) -> MetricDefinitionV2:
+        return MetricDefinitionV2(
+            metric_id=self.metric_id,
+            display_name=self.display_name,
+            description=self.description,
+            definition_version=self.definition_version,
+            calculation=self.calculation_description,
+            base_grain=self.grain_name,
+            dimensions=tuple(dimension.public_description_v2() for dimension in self.dimensions),
+            relationships=tuple(relationship.description for relationship in self.relationships),
+            filters=tuple(
+                MetricFilterV2(attribute=rule.attribute, values=rule.values)
+                for rule in self.filters
+            ),
+            time_semantics=TimeSemanticsV2(time_dimension=self.time_semantics.time_dimension),
             unit=self.unit,
             currency=self.currency,
+            decimal_places=self.decimal_places,
+            rounding=self.rounding,
+            nullable=self.nullable,
         )
 
 
@@ -171,7 +213,93 @@ NET_REVENUE = MetricSpecification(
 )
 
 
-def get_metric(metric_id: str) -> MetricSpecification:
-    if metric_id != NET_REVENUE.metric_id:
-        raise UnknownMetricError(f"Unknown metric: {metric_id}")
-    return NET_REVENUE
+ORDER_FILTERS = tuple(rule for rule in NET_REVENUE.filters if rule.entity == "orders")
+ORDER_RELATIONSHIPS = tuple(
+    rule for rule in NET_REVENUE.relationships if rule.from_entity in ("orders", "order_items")
+)
+
+GROSS_SALES = replace(
+    NET_REVENUE,
+    metric_id="gross_sales",
+    display_name="Gross sales",
+    description="Eligible merchandise sales before discounts/refunds; tax and shipping excluded.",
+    calculation="sum(quantity * unit_price_cents)",
+    calculation_description="Sum item quantities times unit prices before discounts and refunds.",
+    filters=ORDER_FILTERS,
+    relationships=ORDER_RELATIONSHIPS,
+    required_sources=("orders", "order_items"),
+)
+
+ORDER_COUNT = replace(
+    NET_REVENUE,
+    metric_id="order_count",
+    display_name="Order count",
+    description="Distinct eligible orders having at least one valid order item.",
+    calculation="count_distinct_eligible_orders",
+    calculation_description="Count eligible orders with at least one valid item once each.",
+    base_grain=("tenant_id", "order_id"),
+    grain_name="order",
+    filters=ORDER_FILTERS,
+    relationships=ORDER_RELATIONSHIPS,
+    unit="count",
+    currency=None,
+    decimal_places=0,
+    required_sources=("orders", "order_items"),
+)
+
+AVERAGE_ORDER_VALUE = replace(
+    NET_REVENUE,
+    metric_id="average_order_value",
+    display_name="Average order value",
+    description="Aggregate net revenue per eligible order; null when no orders qualify.",
+    calculation="aggregate_net_revenue / aggregate_order_count",
+    calculation_description="Divide aggregate net revenue by aggregate eligible order count.",
+    base_grain=("tenant_id", "order_id"),
+    grain_name="order",
+    nullable=True,
+)
+
+RETURN_RATE = replace(
+    ORDER_COUNT,
+    metric_id="return_rate",
+    display_name="Return rate",
+    description="Fraction of eligible orders with received physical returns; null without orders.",
+    calculation="returned_order_count / aggregate_order_count",
+    calculation_description="Divide orders with received physical returns by all eligible orders.",
+    unit="ratio",
+    decimal_places=6,
+    nullable=True,
+    required_sources=("orders", "order_items", "returns"),
+    filters=(
+        *ORDER_FILTERS,
+        CatalogFilter(
+            attribute="return_status", entity="returns", field="status", values=("received",)
+        ),
+    ),
+    relationships=(
+        *ORDER_RELATIONSHIPS,
+        CatalogRelationship(
+            from_entity="returns",
+            to_entity="order_items",
+            keys=("tenant_id", "order_item_id"),
+            description="Each physical return references one order item; orders count once.",
+        ),
+    ),
+)
+
+METRICS = (GROSS_SALES, NET_REVENUE, ORDER_COUNT, AVERAGE_ORDER_VALUE, RETURN_RATE)
+
+
+def get_metrics(api_version: Literal["v1", "v2"] = "v1") -> tuple[MetricSpecification, ...]:
+    return (NET_REVENUE,) if api_version == "v1" else METRICS
+
+
+def get_metric(metric_id: str, *, api_version: Literal["v1", "v2"] = "v1") -> MetricSpecification:
+    for metric in METRICS:
+        if metric.metric_id == metric_id:
+            if api_version == "v1" and metric_id != NET_REVENUE.metric_id:
+                raise UnsupportedMetricVersionError(
+                    f"Metric '{metric_id}' requires api_version 'v2'"
+                )
+            return metric
+    raise UnknownMetricError(f"Unknown metric: {metric_id}")

@@ -32,6 +32,7 @@ def test_generator_is_reproducible_and_seed_is_effective(tmp_path: Path) -> None
         "order_items",
         "payments",
         "refunds",
+        "returns",
     }
     for table in TABLE_SCHEMAS:
         rows = read_sorted_rows(first, table)

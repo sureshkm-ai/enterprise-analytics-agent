@@ -1,0 +1,41 @@
+[project]
+name = "enterprise-analytics-agent"
+version = "0.1.0"
+description = "Governed, backend-independent analytics with a local DuckDB adapter"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "duckdb>=1.4,<2",
+    "pydantic>=2.12,<3",
+]
+
+[project.scripts]
+analytics-demo = "enterprise_analytics_agent.cli:main"
+
+[tool.poetry]
+packages = [{ include = "enterprise_analytics_agent", from = "src" }]
+
+[tool.poetry.group.dev.dependencies]
+pytest = ">=8,<10"
+ruff = ">=0.14,<1"
+mypy = ">=1.18,<2"
+
+[build-system]
+requires = ["poetry-core>=2,<3"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+plugins = ["pydantic.mypy"]

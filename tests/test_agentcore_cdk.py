@@ -265,7 +265,7 @@ def test_creation_dependency_matches_recorded_denial_without_changing_existing_g
     assert matches[0] == {
         "Sid": "CreateTaggedDefaultEndpointDuringRuntimeCreation",
         "Effect": "Allow",
-        "Action": ["bedrock-agentcore:CreateAgentRuntimeEndpoint"],
+        "Action": ["bedrock-agentcore:CreateAgentRuntimeEndpoint", "bedrock-agentcore:TagResource"],
         "Resource": resource,
         "Condition": {
             "StringEquals": {
@@ -280,6 +280,38 @@ def test_creation_dependency_matches_recorded_denial_without_changing_existing_g
     # Frozen canonical policy at c29e8cb / administrator-confirmed active V1.
     assert hashlib.sha256(canonical).hexdigest() == (
         "026a4cf0ecf5716d6ff72f16b3dd7dda9c3bdb0343f48605ffaed25bec8d5e17"
+    )
+
+
+def test_creation_tagging_matches_new_denial_and_preserves_active_version2() -> None:
+    policy = json.loads(
+        (ROOT / "infrastructure/cdk/agentcore-deployment-policy.development.json").read_text()
+    )
+    # Recovery CloudTrail request 4074f7e9-3e5d-4278-a0d7-d48fe5f1a8b6
+    # explicitly denies tagging this creation-time resource, despite V2.
+    resource = "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/*"
+    matches = [
+        statement
+        for statement in policy["Statement"]
+        if "bedrock-agentcore:TagResource" in _actions(statement)
+        and any(
+            fnmatchcase(resource, pattern)
+            for pattern in (
+                [statement["Resource"]]
+                if isinstance(statement["Resource"], str)
+                else statement["Resource"]
+            )
+        )
+    ]
+    assert len(matches) == 1, "The recorded creation-time tagging resource must be covered"
+    assert matches[0]["Sid"] == "CreateTaggedDefaultEndpointDuringRuntimeCreation"
+    original = deepcopy(policy)
+    statement = next(item for item in original["Statement"] if item["Sid"] == matches[0]["Sid"])
+    statement["Action"].remove("bedrock-agentcore:TagResource")
+    canonical = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+    # Administrator-supplied active V2: every existing grant/condition stays intact.
+    assert hashlib.sha256(canonical).hexdigest() == (
+        "48939891d9f2183a398aa2918a8dcc374e33c6b3a1fbb821c135e31fc03dbac9"
     )
 
 

@@ -4,11 +4,43 @@ Updated: 2026-11-06 (America/Chicago).
 
 ## Current milestone and repository state
 
-**Milestone 4 — implemented and verified offline; deployment and live-agent acceptance pending approval.** Work is on `feat/milestone-4-bedrock-agentcore`, created from clean `main` at `6bf1220` (PR #3 status-document merge). Existing work was preserved. This checkpoint records local readiness; Git history identifies its local commit; no milestone 4 push, hosted CI, deployment, IAM mutation, code upload, or billable model/runtime call has occurred. Milestone 4 is **not complete** and production readiness is not claimed.
+**Milestone 4 — implemented and verified offline; deployment and live-agent acceptance pending approval.** Work is on `feat/milestone-4-bedrock-agentcore`, created from clean `main` at `6bf1220` (PR #3 status-document merge). Existing work was preserved. The user pushed readiness commit `5e72b51` and confirmed successful [hosted CI run 42279109681](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42279109681) for that commit. The follow-up question-scope fix below is a separate local checkpoint; that hosted result does not validate its new changes. No milestone 4 deployment, IAM mutation, code upload or billable model/runtime call has occurred. Milestone 4 is **not complete** and production readiness is not claimed.
 
 **Milestone 3 is complete: implemented, deployed, live-validated, merged, and hosted-CI verified.** The user confirmed [PR #2](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/2), merge [`ae378e4c289144164a8a7a6a85fa8c71ae5bcacc`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/ae378e4c289144164a8a7a6a85fa8c71ae5bcacc), and successful [CI run 42166641840](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42166641840). Local starting main `6bf1220` contains that merge and its documentation update. Historical AWS/live results below retain their user-executed attribution; that parity suite was not rerun during milestone 4 preparation.
 
 **Milestone 2 remains implemented, merged into `main`, and verified by hosted CI.** [PR #1](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/1) merged implementation commit `e13b1ea` at merge commit `9dc5989353459e2651ba5cced882534d8d573783`. [GitHub Actions run 42113416826](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42113416826) passed for that merge commit, as confirmed by the user.
+
+## Milestone 4 question-scope follow-up — local fix
+
+Started on clean `feat/milestone-4-bedrock-agentcore` at `5e72b51668c0ae5e7717db4f621aa06073340126`; the local remote-tracking branch also pointed there. No branch switch, fetch, AWS operation or billable evaluation was performed. Read AGENTS, plan, progress and the AgentCore deployment plan; verified the existing Conda Python 3.12.16 / Poetry 2.3.1 environment. The pushed commit and hosted CI above are user-confirmed historical evidence, separate from the new local results.
+
+Fixed partial scope recognition: unknown clauses can no longer disappear merely because a known metric/month was found. The guard validates all coordinated grouping members, clarifies OR across dimensions rather than converting it to AND, and checks remaining words against the conservative question vocabulary after accounting for recognized semantic phrases. Unknown measures, unsupported dimensions, temporal refinements and other unrepresented clauses clarify. A clarified `QuestionScope` also rejects query validation directly. Existing metric definitions, calculations and v1/v2 schemas are unchanged.
+
+Authored parser and model/agent regressions cover all four supplied reproductions, reversed/coordinated variants, ambiguous Boolean mixtures, and supported neighbors (same-dimension alternatives, cross-dimension conjunctions, region/channel grouping, explicit exclusive intervals, relative periods and metric/period comparisons). Each behavioral reproduction queues the formerly accepted contract-valid incorrect model request; the fixed agent clarifies before consuming it or executing a semantic query.
+
+All checks used the existing `enterprise-analytics` environment. No application dependencies, lockfile, public schemas, metric definitions or IAM source policies changed.
+
+| Command | Actual follow-up result |
+| --- | --- |
+| `poetry run pytest tests/test_question_scope.py tests/test_agent.py -k 'scope_requires_the_complete_request or incomplete_question_never_accepts' -q` | Before the fix: **8 failed, 86 deselected in 0.39s**. All four partial model requests produced an incorrect `answer`. These tests pass in the final focused/full runs below. |
+| `poetry run pytest tests/test_agent.py tests/test_agent_limits.py -q` | Before the fix: **91 existing tests passed, 4 new regressions failed in 3.77s**. |
+| `poetry run pytest tests/test_question_scope.py tests/test_agent.py tests/test_agent_limits.py -q` | After fix and supported-grammar review: **132 passed in 4.15s**. |
+| `poetry check --lock` | Passed: All set. |
+| `poetry run pytest` | **658 passed, 84 skipped in 55.37s**. Only the explicitly gated 66 AWS parity and 18 live-agent tests skipped; no live acceptance claimed. |
+| `poetry run ruff check .` / `poetry run ruff format --check .` | Passed; **76 files** formatted. Initial test line-length failure was fixed. |
+| `poetry run mypy src tests` | Passed: **57 source files**, after fixing the new test helper's typed keyword call. |
+| `poetry run mypy src tests infrastructure/cdk infrastructure/agentcore` | Passed: **67 source files**. |
+| `poetry run python -m infrastructure.agentcore.package --config infrastructure/agentcore/runtime.development.json --output artifacts/agentcore/agent.zip --offline` | Passed: **39,117,152 compressed / 85,644,266 unpacked bytes**; 13 unchanged locked dependency wheels. SHA-256 **`51eaeac6b9eb107f4634aea9e3180fa1db7dce1380fbe166415fbfed8185ded1`**. |
+| Same packaging command with `--output artifacts/agentcore/agent.repeat.zip --project-wheel artifacts/agentcore/project-dist/enterprise_analytics_agent-0.1.0-py3-none-any.whl --offline` | Passed: identical archive bytes/checksum; packaged question-scope source matches the working source and native libraries are AArch64 ELF. |
+| Repository-local `cdk synth --app 'poetry run python -m infrastructure.cdk.agentcore_app --config infrastructure/cdk/agentcore.config.development.json --phase all' --profile analytics-dev --region us-west-2 --no-lookups --no-telemetry --no-notices --output artifacts/cdk.agentcore.reviewed.out --quiet` | Passed offline: **4 foundation + 3 runtime resources**. Current template hashes are recorded in the deployment plan. Nonblocking CDK deprecation/feature-flag advisories remain. |
+| Repository-local `cdk synth --app 'poetry run python -m infrastructure.cdk.app --config infrastructure/cdk/config.development.json' --profile analytics-dev --region us-west-2 --no-lookups --no-telemetry --no-notices --output artifacts/cdk.m4-data-trust.cli.out --quiet` | Passed offline: **41 resources**, template hash unchanged from readiness (`716f5905…02c2bd4`). |
+| Repository-local `cdk synth --app 'poetry run python -m infrastructure.cdk.agentcore_app --config artifacts/agentcore/deploy.<version>.json --phase runtime' --profile analytics-dev --region us-west-2 --no-lookups --no-telemetry --no-notices --output artifacts/cdk.agentcore.<version>.out --quiet` | Passed once each for `parity-legacy-v1` and `parity-no-returns-v1`; three runtime resources each, refreshed checksum key, unchanged dataset overrides and required S3 VersionId parameter. |
+| Artifact/source/config checksum assertions and deployment-plan shell syntax validation | Passed; all current checksum references match, eight shell blocks pass `zsh -n` without executing deployment commands. |
+| `git diff --check` / staged diff check | Passed for the final seven-file fix before its local commit. |
+
+Independent read-only review identified and helped preserve supported `Which` discovery, coordinated `each` grouping, repeated grouping prefixes, grouped-by wording, and parenthesized same-dimension alternatives. Final review found no remaining blocker within the four reported reproduction families.
+
+The ARM64 package, pinned development checksum, base/variant synthesized templates and deployment plan are refreshed for this fix. No upload or deployment occurred. Initial development vocabulary remains intentionally conservative; unrecognized phrasing may clarify. New changes require their own hosted CI/review; milestone 4 remains open pending approval, administrator prerequisites, deployment and live acceptance.
 
 ## Milestone 4 readiness work and decisions
 
@@ -26,9 +58,9 @@ The user explicitly selected `analytics-dev` and renewed SSO after expiration. S
 
 Selected configurable profile `us.amazon.nova-lite-v1:0` is ACTIVE; Nova Lite model availability reports AVAILABLE/AUTHORIZED. Official Converse/tool-use support was checked. US inference may route to us-west-2/us-east-1/us-east-2; model access is not yet proved by invocation. `iam:GetRole` remains denied to the operator, so an administrator must verify existing attachments/trust and attach the proposed narrow M4 CloudFormation execution policy. Read-only Access Analyzer found two invalid S3 action names initially; corrections were verified against official S3 permissions and revalidation returned **zero findings**. No permissions were changed.
 
-## Milestone 4 local verification
+## Historical milestone 4 readiness verification — commit `5e72b51`
 
-All Python/Poetry commands below use `/opt/homebrew/anaconda3/envs/enterprise-analytics/bin/python`. Current final results are recorded after the full check run; live AWS/agent suites are intentionally excluded pending approval.
+All Python/Poetry commands below use `/opt/homebrew/anaconda3/envs/enterprise-analytics/bin/python`. These results cover the original readiness commit, before the follow-up scope fix recorded above. Live AWS/agent suites were intentionally excluded pending approval.
 
 | Command | Actual result |
 | --- | --- |
@@ -50,7 +82,7 @@ All Python/Poetry commands below use `/opt/homebrew/anaconda3/envs/enterprise-an
 | `aws accessanalyzer validate-policy --profile analytics-dev --region us-west-2 --policy-type IDENTITY_POLICY --policy-document file://infrastructure/cdk/agentcore-deployment-policy.development.json --output json --no-cli-pager` | Read-only verification passed: **zero findings**, after fixing the initial invalid S3 actions. |
 | `git diff --check` / `git diff --cached --check` | Both passed; the 44-file implementation/test/documentation diff was reviewed before the local readiness commit. Eight deployment-plan shell blocks passed `zsh -n` syntax validation without execution. |
 
-Packaging evidence is in ignored `artifacts/agentcore/agent.manifest.json`; deployment configuration pins the reviewed archive SHA-256. Native wheel ABI/platform checks passed. Foundation/runtime and existing-data trust synthesis use no account lookups. Offline readiness is not hosted CI or deployed-agent acceptance.
+The historical hashes/sizes above describe readiness commit `5e72b51`; current ignored `artifacts/agentcore/agent.manifest.json` and synthesized paths now hold the refreshed follow-up build, whose hash is recorded above. Deployment configuration pins that current archive SHA-256. Native wheel ABI/platform checks passed. Foundation/runtime and existing-data trust synthesis use no account lookups. Offline readiness is not hosted CI or deployed-agent acceptance.
 
 ## Historical milestone 3 merge-status documentation update verification
 
@@ -215,6 +247,6 @@ Milestone 2 introduced no AWS credentials, calls, deployment, Athena adapter, or
 
 ## Exact next task
 
-**Milestone 4 remains open.** Review the completed [AgentCore deployment and live-test plan](agentcore-deployment-plan.md) and request approval for its exact development resources, IAM/trust changes, immutable code upload and at most 40 billable Runtime invocations. An explicitly selected administrator must verify/attach the scoped CloudFormation execution policy first; the current operator lacks IAM inspection privileges. Do not repeat bootstrap or publish datasets.
+**Milestone 4 remains open.** Review the local question-scope fix and obtain a fresh hosted CI result for it when the user chooses to push; CI run `42279109681` covers only `5e72b51`. Then review the refreshed [AgentCore deployment and live-test plan](agentcore-deployment-plan.md) and request approval for its exact development resources, IAM/trust changes, immutable code upload and at most 40 billable Runtime invocations. An explicitly selected administrator must verify/attach the scoped CloudFormation execution policy first; the current operator lacks IAM inspection privileges. Do not repeat bootstrap or publish datasets.
 
-After approval, deploy foundation, apply the reviewed trust-only existing-stack update, upload the checksum-pinned archive and record its S3 VersionId, deploy the Runtime, run the three authored parity-snapshot agent suites, set log retention and restore `parity-v1`. Record actual results and leave the milestone open if any gate fails. Keep the readiness commit local; no push is authorized. Do not begin Cube, a UI, or other AgentCore services.
+After approval, deploy foundation, apply the reviewed trust-only existing-stack update, upload the checksum-pinned archive and record its S3 VersionId, deploy the Runtime, run the three authored parity-snapshot agent suites, set log retention and restore `parity-v1`. Record actual results and leave the milestone open if any gate fails. The original readiness commit was pushed by the user and passed hosted CI; keep this follow-up fix commit local. A fresh hosted run for the fix remains pending; no agent push is authorized. Do not begin Cube, a UI, or other AgentCore services.

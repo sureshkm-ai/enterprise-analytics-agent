@@ -16,7 +16,7 @@
   ],
   "query_role_arn": "arn:aws:iam::453711491609:role/enterprise-analytics-dev-query-executor",
   "artifact_path": "artifacts/agentcore/agent.zip",
-  "artifact_sha256": "843bf34fdde1d471bcf7b4741536e04c3fa08cdc5651f677f9804146ecaa55b6",
+  "artifact_sha256": "51eaeac6b9eb107f4634aea9e3180fa1db7dce1380fbe166415fbfed8185ded1",
   "runtime_config_path": "infrastructure/agentcore/runtime.development.json",
   "idle_session_timeout_seconds": 300,
   "max_lifetime_seconds": 900,

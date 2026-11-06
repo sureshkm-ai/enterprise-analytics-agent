@@ -1,6 +1,6 @@
 # Milestone 4 AgentCore deployment and live-test plan
 
-Prepared 2026-11-06. **Local readiness only; deployment, IAM changes, uploads, and billable invocations await approval. Milestone 4 remains open.** This plan reuses the deployed milestone 3 data layer. It does not repeat bootstrap, dataset publication, or the earlier Athena parity run.
+Prepared 2026-11-06; archive and synthesized templates refreshed for the question-scope follow-up. **Local readiness only; deployment, IAM changes, uploads, and billable invocations await approval. Milestone 4 remains open.** This plan reuses the deployed milestone 3 data layer. It does not repeat bootstrap, dataset publication, or the earlier Athena parity run.
 
 ## Target and read-only evidence
 
@@ -25,6 +25,8 @@ Bedrock `GetInferenceProfile` reports ACTIVE and `GetFoundationModelAvailability
 `iam:GetRole` is denied to the selected PowerUser SSO caller. An administrator must verify existing bootstrap role attachments and query-role trust, and perform the scoped deployment-policy attachment below. Read-only Access Analyzer validation of the proposed policy returned `findings: []` after correcting two invalid S3 action names. This validates policy syntax/rules, not effective deployment privileges or service success.
 
 ## Exact resources and IAM changes proposed
+
+The follow-up scope guard clarifies cross-dimension alternatives, unsupported coordinated groupings, unresolved date refinements, and unknown measures before accepting a partial tool plan. It preserves supported same-dimension alternatives, explicit conjunctions, governed metric comparisons and exclusive intervals. Metric definitions and IAM/resource scope are unchanged.
 
 The reviewed source is [AgentCore configuration](../infrastructure/cdk/agentcore.config.development.json), [stacks](../infrastructure/cdk/agentcore_stack.py), [runtime configuration](../infrastructure/agentcore/runtime.development.json), and [CloudFormation execution policy](../infrastructure/cdk/agentcore-deployment-policy.development.json).
 
@@ -56,11 +58,11 @@ No AgentCore SDK or framework is required: a standard HTTP server implements `/p
 | Artifact | Reviewed value |
 | --- | --- |
 | Archive | `artifacts/agentcore/agent.zip` |
-| SHA-256 | `843bf34fdde1d471bcf7b4741536e04c3fa08cdc5651f677f9804146ecaa55b6` |
-| Compressed / unpacked bytes | `39,115,757 / 85,640,244` |
+| SHA-256 | `51eaeac6b9eb107f4634aea9e3180fa1db7dce1380fbe166415fbfed8185ded1` |
+| Compressed / unpacked bytes | `39,117,152 / 85,644,266` |
 | Inventory | `artifacts/agentcore/agent.manifest.json` |
-| Foundation template SHA-256 | `6d2ad990653fa277002aba36cb6bab977c37835c83305e7dcfe99565f535caef` |
-| Runtime template SHA-256 | `d2ddcfe52f12e8cf603f6c5a3a89db1ad859386e476068ae987046142d3099da` |
+| Foundation template SHA-256 | `5f78288b02017a101e529e02ace36d3b0eba051c25f8b78fae18ad207e7f6fd9` |
+| Runtime template SHA-256 | `a287c414f51bec59051bec51c44c006fcc0118326195b63a377e2718dbe07799` |
 | Data-stack trust-update template SHA-256 | `716f59055d9cc4520c0e86bf087a77430d5e69fb525f9c0574cdaf25d02c2bd4` |
 | Object key | `releases/<reviewed SHA-256>/agent.zip` |
 

@@ -8,6 +8,7 @@ from typing import Any, cast
 import pytest
 from aws_fixture_data import write_parity_snapshot
 from pydantic import ValidationError
+from test_question_scope import REPRODUCTIONS
 
 from enterprise_analytics_agent.adapters.bedrock_agent import (
     BedrockAgentConfig,
@@ -221,6 +222,19 @@ def test_tool_arguments_cannot_override_question_or_contract(
     assert response.status == "error" and response.error_code == "invalid_tool_arguments"
     assert not response.results
     assert response.diagnostics.tool_calls[0].status == "error"
+
+
+@pytest.mark.parametrize(("question", "partial"), REPRODUCTIONS)
+def test_incomplete_question_never_accepts_the_prepared_incorrect_model_request(
+    source: Path, context: AuthorizationContext, question: str, partial: dict[str, object]
+) -> None:
+    # Each queued tool request is contract-valid, and previously produced an answer
+    # by turning OR into AND or dropping a grouping, date restriction, or metric.
+    client = Model(turn(tool(arguments={**query(), **partial})), turn())
+    response = execute(source, context, client, question)
+    assert response.status == "clarification"
+    assert not response.results and not response.diagnostics.tool_calls
+    assert not client.calls and len(client.responses) == 2
 
 
 def test_bad_tool_can_be_repaired_using_a_new_id(

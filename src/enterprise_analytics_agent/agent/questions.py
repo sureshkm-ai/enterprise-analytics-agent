@@ -16,6 +16,69 @@ _ALIASES = {
 }
 _REGIONS = ("North", "South", "East", "West")
 _CHANNELS = ("online", "store")
+_QUESTION_WORDS = frozenset(
+    "show please me the what which is are was were how much many did make made get give tell find "
+    "can could would you i want need like total totals for in from to by per across each every "
+    "both all of and or with versus vs compare compares compared comparing comparison period "
+    "periods month months region regions channel channels inclusive start exclusive end date "
+    "range between list available supported discover metric metrics describe define definition "
+    "calculated dimensions values".split()
+)
+
+
+def _has_unrepresented_words(text: str) -> bool:
+    """Account for the whole question, rather than only extracting known fragments.
+
+    Remove supported semantic phrases, then allow only ordinary question scaffolding.
+    An unknown measure, dimension, date refinement or other clause must clarify;
+    keeping a recognized metric/month is insufficient evidence for a complete plan.
+    """
+    phrases = [alias for aliases in _ALIASES.values() for alias in aliases]
+    phrases.extend((*_REGIONS, *_CHANNELS, "last month", "yesterday"))
+    remaining = re.sub(
+        r"\b(?:" + "|".join(re.escape(value.casefold()) for value in phrases) + r")\b",
+        " ",
+        text,
+    )
+    remaining = re.sub(r"\b\d{4}-\d{2}-\d{2}\b", " ", remaining)
+    months = {name.casefold() for name in (*calendar.month_name, *calendar.month_abbr) if name}
+    remaining = re.sub(r"\b(?:" + "|".join(months) + r")\s+\d{4}\b", " ", remaining)
+    remaining = re.sub(r"\b(?:grouped|grouping|broken\s+down)\s+(?=by\b)", " ", remaining)
+    return any(word not in _QUESTION_WORDS for word in re.findall(r"\w+", remaining))
+
+
+def _has_cross_dimension_or(text: str) -> bool:
+    # Explicit same-dimension alternatives can be conjoined with another filter.
+    # Unparenthesized mixed AND/OR is ambiguous and must not become an implicit AND.
+    for dimension, values in (("region", _REGIONS), ("channel", _CHANNELS)):
+        value = (
+            rf"(?:{dimension}\s*(?:=|:|is)?\s*)?"
+            rf"(?:{'|'.join(item.casefold() for item in values)})\b"
+        )
+        text = re.sub(rf"\(\s*{value}(?:\s+or\s+{value})+\s*\)", " ", text)
+    return bool(re.search(r"\bor\b", text))
+
+
+def _grouping_clauses(text: str) -> tuple[list[str], bool]:
+    """Validate every member of a coordinated grouping, including repeated prefixes."""
+    prefix = r"(?:by|per|across|each(?=\s+(?:regions?|channels?)\b))"
+    member = rf"(?:{prefix}\s+)?[a-z_]+"
+    separator = r"(?:\s*,\s*(?:(?:and|or)\s+)?|\s+(?:and|or)\s+)"
+    groups: set[str] = set()
+    unsupported = False
+    for match in re.finditer(rf"\b{prefix}\s+({member}(?:{separator}{member})*)", text):
+        words = re.findall(r"[a-z_]+", match[1])
+        if "or" in words:
+            unsupported = True
+        for word in words:
+            if word in {"and", "or", "by", "per", "across", "each"}:
+                continue
+            dimension = word.removesuffix("s")
+            if dimension not in {"region", "channel"}:
+                unsupported = True
+            else:
+                groups.add(dimension)
+    return [dimension for dimension in ("region", "channel") if dimension in groups], unsupported
 
 
 @dataclass(frozen=True)
@@ -28,6 +91,8 @@ class QuestionScope:
     clarification: str | None = None
 
     def validate_query(self, request: QueryMetricRequestV2) -> None:
+        if self.clarification:
+            raise ValueError("An unresolved question cannot authorize a partial semantic plan")
         if self.metadata:
             raise ValueError("A metadata question does not authorize a metric query")
         if request.metric_id not in self.metric_ids or request.time_range not in self.periods:
@@ -96,14 +161,10 @@ def question_scope(question: str, reference_date: date) -> QuestionScope:
         filters["region"] = regions
     if channels:
         filters["channel"] = channels
-    groups = []
+    groups, unsupported = _grouping_clauses(text)
     comparison = bool(re.search(r"\b(compar(?:e|es|ed|ing|ison)|versus|vs)\b", text))
     unsupported_metric = bool(
         re.search(r"\b(profit|margin|conversion_rate|customer_count|tax_total)\b", text)
-    )
-    unsupported = any(
-        match.rstrip("s") not in ("region", "channel")
-        for match in re.findall(r"\b(?:by|per|across)\s+([a-z]+)\b", text)
     )
     unsupported = unsupported or bool(
         re.search(r"\b(daily|weekly|hourly|yearly|quarterly)\b", text)
@@ -128,13 +189,6 @@ def question_scope(question: str, reference_date: date) -> QuestionScope:
             *metrics,
         }:
             unsupported = True
-    for dimension in ("region", "channel"):
-        if re.search(rf"\b(by|per|each|across)\s+{dimension}s?\b", text):
-            groups.append(dimension)
-    if groups and re.search(
-        r"\bregions?\s*(?:and|,)\s*channels?\b|\bchannels?\s*(?:and|,)\s*regions?\b", text
-    ):
-        groups = ["region", "channel"]
     if comparison and len(regions) > 1 and "region" not in groups:
         groups.append("region")
     if comparison and len(channels) > 1 and "channel" not in groups:
@@ -166,6 +220,11 @@ def question_scope(question: str, reference_date: date) -> QuestionScope:
         clarification = (
             "Please specify a month and year, yesterday, last month, or an explicit "
             "inclusive-start/exclusive-end date range such as [YYYY-MM-DD, YYYY-MM-DD)."
+        )
+    elif regions and channels and _has_cross_dimension_or(text):
+        clarification = (
+            "Please clarify the filter alternatives. The semantic contract supports OR within "
+            "one dimension and AND across dimensions; it cannot combine region OR channel."
         )
     elif not metadata and unsupported:
         clarification = (
@@ -202,4 +261,10 @@ def question_scope(question: str, reference_date: date) -> QuestionScope:
         )
     elif comparison and len(periods) < 2 and not groups and len(metrics) < 2:
         clarification = "Please specify the periods, metrics, or dimension groups to compare."
+    elif _has_unrepresented_words(text):
+        clarification = (
+            "Please clarify the complete request. A metric, grouping, filter or date clause "
+            "is unsupported and cannot be dropped. Use governed metric names, region/channel "
+            "dimensions and a named month or explicit [YYYY-MM-DD, YYYY-MM-DD) period."
+        )
     return QuestionScope(metrics, tuple(periods), tuple(groups), filters, metadata, clarification)

@@ -5,7 +5,7 @@
 ```mermaid
 flowchart LR
     App[Trusted application context] --> Tools[Semantic tools and v1/v2 contracts]
-    Agent[Future Bedrock agent on AgentCore] --> Tools
+    Agent[Bedrock Converse agent - AgentCore deployment pending] --> Tools
     Tools --> Interface[SemanticAdapter]
     Interface --> Local[Local DuckDB adapter]
     Interface --> Athena[Athena adapter - development validated]
@@ -14,7 +14,7 @@ flowchart LR
     Local --> Data[Local Parquet retail tables]
 ```
 
-The agent consumes backend-independent semantic contracts. AWS-specific and Cube-specific logic belongs in adapters. `contracts.py`, `contracts_v2.py`, and `adapter.py` must not import provider clients, DuckDB types, or SQL. Milestones 1–2 implemented the local path; milestone 3 adds the development AWS data layer and Athena adapter. The user reports successful development deployment and live parity, recorded below and in [progress](progress.md). No agent loop or hosted agent service is implemented.
+The agent consumes backend-independent semantic contracts. AWS-specific and Cube-specific logic belongs in adapters. `contracts.py`, `contracts_v2.py`, and `adapter.py` must not import provider clients, DuckDB types, or SQL. Milestones 1–3 provide the verified DuckDB/Athena semantics. Milestone 4 implements the Converse agent and prepares AgentCore hosting; its deployment and model calls await approval. The milestone remains open until deployed-agent acceptance passes.
 
 The four semantic tools are `discover_metrics`, `describe_metric`, `query_metric`, and `discover_dimensions`. Metric definitions own calculations, allowed dimensions, relationships, filters, units, and time semantics. The catalog is the source of governed configuration; an adapter translates the supported calculation into backend execution rather than accepting a user expression.
 
@@ -50,7 +50,7 @@ Push/PR CI uses read-only repository permissions, Python 3.12, immutable action 
 
 ## Future integrations
 
-Milestone 4 adds Bedrock and AgentCore. Cube is a later separate adapter. Neither is part of milestone 3. External SDK usage must be checked against current official documentation, with references recorded. Provider-specific identity propagation, query lifecycle, credentials, and errors remain in adapters or trusted hosting code.
+Milestone 4 adds Bedrock and AgentCore Runtime, without Gateway, Memory, Browser, Code Interpreter, or managed Evaluations. Cube and a UI remain later separate work. External SDK usage must be checked against current official documentation, with references recorded. Provider-specific identity propagation, query lifecycle, credentials, and errors remain in adapters or trusted hosting code.
 
 For local implementation, official references checked on 2026-11-05 include [DuckDB's Python API](https://duckdb.org/docs/stable/clients/python/overview), [Pydantic configuration](https://docs.pydantic.dev/latest/api/config/), and [Poetry project configuration](https://python-poetry.org/docs/pyproject/).
 
@@ -74,4 +74,20 @@ The selected development target is `analytics-dev`, account `453711491609`, regi
 
 Offline tests use injected clients and local SQL-subset execution, not AWS credentials. CDK assertions and synthesis run without account lookups. Explicit live tests require both `--run-aws` and reviewed configuration and compare Athena and DuckDB with independent fixture answers; missing configuration fails rather than reporting skipped acceptance. The user-reported run establishes development live parity for the tested cases. Cancellation fault handling has local regression coverage; the reported live run does not establish live cancellation fault injection or synthetic `retail-v1` publication.
 
-Milestone 3 development implementation, deployment, and live validation have passed. Confirmation of hosted CI for the current revision and PR review/merge remain pending; see [progress](progress.md) for the full evidence and next task. Production readiness and milestone 4 require separate work and authorization.
+Milestone 3 merged in PR #2 at `ae378e4` with successful hosted CI; its merge-status documentation followed in PR #3 at `6bf1220`. The current feature branch starts from that main checkpoint. Read-only milestone 4 checks reverified the existing stack and all four ready manifests, Glue schemas, and source-object checksums, including `retail-v1`; no deployment or parity run was repeated. Historical user-executed and hosted evidence remains in [progress](progress.md).
+
+## Bounded agent and answer grounding
+
+`agent` contains provider-independent application contracts, semantic dispatch, and a conservative development question-scope guard. `adapters/bedrock_agent.py` implements the Converse protocol. Its only tools are the existing four semantic operations, using the unchanged v2 request models and separately supplied trusted context. V1 remains available to existing callers.
+
+Each run owns its messages, seen tool-use IDs, tool evidence, token counters, and deadline. The loop matches every tool result to its request ID, validates the complete request, handles multiple calls, and bounds model iterations, tool calls, output/cumulative tokens, and elapsed scheduling time. Finite SDK timeouts bound in-flight operations; synchronous calls can outlast the scheduling deadline. Only validated query results can supply final numeric text. The response includes structured results, dataset/metric versions, and operational evidence. A final model message cannot replace exact decimals, nulls, units, grouping, or date boundaries.
+
+The initial guard supports governed metric names/IDs, calendar month/year, explicit inclusive-start/exclusive-end dates, last month/yesterday relative to a configurable reference date, and supported retail region/channel grouping/filters. It requests clarification for ambiguity and unsupported derived/exclusion calculations. It independently checks model query arguments against the interpreted question; it is intentionally narrower than unrestricted natural-language analysis.
+
+## AgentCore development trust and packaging
+
+The inbound payload is `AgentRequest(question=...)`, with extra fields rejected. It cannot carry tenant, principal, region scope, history, runtime configuration, or credentials. AgentCore IAM authentication and resource policies restrict approved caller ARNs. Every approved caller of this initial development runtime receives the same server-configured `t1` North/South scope. Session IDs and headers never change that authorization, and the runtime constructs fresh request state even within one AgentCore session. This does not provide production per-user policy enforcement.
+
+Python 3.12 Linux ARM64 direct-code deployment uses a deterministic ZIP of the project wheel and checksum-locked main dependency wheels from Poetry. A standard HTTP server implements `/ping` and `/invocations` on port 8080; no extra agent framework is required. The workload SDK provider supplies runtime credentials. A separate query-role client refreshes its 15-minute STS assumption before expiry; no local profile/SSO configuration is packaged or selected by deployed code.
+
+Two new infrastructure phases prepare a private retained code bucket/execution role and then the Runtime plus inbound policies. A source-controlled, optional extra query-role principal adds only the runtime role while preserving developer trust in the deployed data stack. An offline template comparison shows only that trust policy changes in the data layer. The [AgentCore plan](agentcore-deployment-plan.md) records exact resources, IAM/deployment prerequisites, source regions/model routing, artifact/version binding, commands, costs, acceptance, and cleanup. None of the new resources, IAM changes, or billable calls has been executed.

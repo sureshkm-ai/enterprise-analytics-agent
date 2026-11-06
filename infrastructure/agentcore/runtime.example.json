@@ -1,0 +1,15 @@
+{
+  "account": "111122223333",
+  "region": "us-west-2",
+  "model_id": "us.amazon.nova-lite-v1:0",
+  "query_role_arn": "arn:aws:iam::111122223333:role/analytics-dev-query-executor",
+  "database": "analytics_dev",
+  "workgroup": "analytics-dev",
+  "source_bucket": "analytics-dev-111122223333-us-west-2-data",
+  "results_bucket": "analytics-dev-111122223333-us-west-2-results",
+  "dataset_version": "parity-v1",
+  "reference_date": "2025-02-01",
+  "principal_id": "analytics-development-runtime",
+  "tenant_id": "t1",
+  "allowed_regions": ["North", "South"]
+}

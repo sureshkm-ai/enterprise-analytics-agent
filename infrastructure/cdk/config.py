@@ -35,6 +35,7 @@ class DeploymentConfig(BaseModel):
     workgroup_name: Annotated[str, Field(pattern=r"^[a-zA-Z0-9._-]{1,128}$")]
     trusted_loader_principal_arn: str
     trusted_query_principal_arn: str
+    trusted_query_principal_arns: tuple[str, ...] = ()
     snapshots: Annotated[tuple[SnapshotDefinition, ...], Field(min_length=1)]
     data_bucket_name: str | None = None
     results_bucket_name: str | None = None
@@ -55,6 +56,15 @@ class DeploymentConfig(BaseModel):
             raise ValueError("trust must name one stable IAM role or user ARN")
         return value
 
+    @field_validator("trusted_query_principal_arns")
+    @classmethod
+    def require_specific_additional_principals(cls, values: tuple[str, ...]) -> tuple[str, ...]:
+        for value in values:
+            cls.require_specific_iam_principal(value)
+        if len(set(values)) != len(values):
+            raise ValueError("additional query principals must be unique")
+        return values
+
     @field_validator("data_bucket_name", "results_bucket_name")
     @classmethod
     def require_dns_bucket_name(cls, value: str | None) -> str | None:
@@ -66,6 +76,8 @@ class DeploymentConfig(BaseModel):
 
     @model_validator(mode="after")
     def validate_snapshot_and_storage_scope(self) -> Self:
+        if self.trusted_query_principal_arn in self.trusted_query_principal_arns:
+            raise ValueError("additional query principals must not repeat the developer principal")
         versions = [snapshot.dataset_version for snapshot in self.snapshots]
         if len(set(versions)) != len(versions):
             raise ValueError("snapshot versions must be unique")

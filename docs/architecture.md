@@ -8,13 +8,13 @@ flowchart LR
     Agent[Future Bedrock agent on AgentCore] --> Tools
     Tools --> Interface[SemanticAdapter]
     Interface --> Local[Local DuckDB adapter]
-    Interface --> Athena[Athena adapter - deployment approval pending]
+    Interface --> Athena[Athena adapter - development validated]
     Athena --> Warehouse[Versioned S3 snapshots / explicit Glue tables]
     Interface -. future .-> Cube[Cube adapter]
     Local --> Data[Local Parquet retail tables]
 ```
 
-The agent consumes backend-independent semantic contracts. AWS-specific and Cube-specific logic belongs in adapters. `contracts.py`, `contracts_v2.py`, and `adapter.py` must not import provider clients, DuckDB types, or SQL. Milestones 1–2 implemented the local path; milestone 3 adds the Athena implementation and deployment preparation. No agent loop or deployed service is implemented, and live Athena acceptance remains pending.
+The agent consumes backend-independent semantic contracts. AWS-specific and Cube-specific logic belongs in adapters. `contracts.py`, `contracts_v2.py`, and `adapter.py` must not import provider clients, DuckDB types, or SQL. Milestones 1–2 implemented the local path; milestone 3 adds the development AWS data layer and Athena adapter. The user reports successful development deployment and live parity, recorded below and in [progress](progress.md). No agent loop or hosted agent service is implemented.
 
 The four semantic tools are `discover_metrics`, `describe_metric`, `query_metric`, and `discover_dimensions`. Metric definitions own calculations, allowed dimensions, relationships, filters, units, and time semantics. The catalog is the source of governed configuration; an adapter translates the supported calculation into backend execution rather than accepting a user expression.
 
@@ -64,12 +64,14 @@ Each configured version has separate S3 table locations and deterministic Glue n
 
 The Athena SQL compiler translates the catalog's five expressions and governed identifiers, encodes validated strings/dates as Athena execution-parameter literals, and keeps placeholders in WHERE clauses. It casts monetary integer arithmetic to DECIMAL(38,0), preaggregates refunds, deduplicates return orders, and uses the same aggregate-ratio/final-rounding rules as DuckDB. Athena's 38-digit aggregate bound is explicit; values are never converted through float.
 
-The executor bounds polling and transient retries, retains submission tokens across uncertain API retries, resubmits only explicitly retryable terminal failures, and cancels on timeout. Finite SDK socket timeouts bound in-flight calls. It validates first-page headers, all pages/types/nulls, and pagination tokens. Private diagnostic records contain query IDs, bytes and timings, dataset version, metric version, operation, and status; public v1/v2 schemas are unchanged.
+The executor bounds polling and transient retries, retains submission tokens across uncertain API retries, and resubmits only explicitly retryable terminal failures. Abnormal exits after receiving a query ID request best-effort cancellation while the query may still be running; known terminal executions are never stopped. Cleanup uses a separate bounded scheduling budget and preserves the original exception. Finite SDK socket timeouts bound in-flight calls, which can outlast that scheduling budget. Cancellation request acceptance does not establish confirmed CANCELLED status. It validates first-page headers, all pages/types/nulls, and pagination tokens. Private diagnostic records contain query IDs, bytes and timings, dataset/metric versions, operation/status, and cancellation attempts/outcomes; public v1/v2 schemas are unchanged.
 
 Application authorization always intersects the trusted tenant/region context with model-supplied dimension filters. It does not enforce database-level row security: the development query role can query every row in its approved source snapshots and read result objects. IAM-compatible Glue defaults apply only to this new database; existing account-level Lake Formation settings are not changed, and no Lake Formation row-level-security claim is made.
 
-## Deployment and acceptance gates
+## Development deployment and validation
 
-Read-only AWS checks verified `analytics-dev`, account `453711491609`, region `us-west-2`; CDKToolkit is absent and IAM role inspection was denied. The [deployment plan](aws-deployment-plan.md) records exact resources, scoped deployment policy, IAM prerequisites, retention/cost controls, prepared commands, cleanup, and current official AWS/CDK/Boto3 references.
+The selected development target is `analytics-dev`, account `453711491609`, region `us-west-2`. The user reports `CDKToolkit` and `enterprise-analytics-dev-data-layer` in `CREATE_COMPLETE`, followed by a user-executed live parity run with **66 passed, 458 deselected in 111.94s**. These results were not rerun during this documentation update. The [deployment plan](aws-deployment-plan.md) records the reviewed resources, scoped deployment policy, retention/cost controls, commands, cleanup, and official AWS/CDK/Boto3 references; this update does not independently verify the deployed IAM configuration.
 
-Offline tests use injected clients and local SQL-subset execution, not AWS credentials. CDK assertions and synthesis run without account lookups. Explicit live tests require both `--run-aws` and reviewed configuration and compare Athena and DuckDB with independent fixture answers; missing configuration fails rather than reporting skipped acceptance. Resource creation, bootstrap, publication, and live queries await user approval. Milestone 3 cannot be marked complete until live parity passes.
+Offline tests use injected clients and local SQL-subset execution, not AWS credentials. CDK assertions and synthesis run without account lookups. Explicit live tests require both `--run-aws` and reviewed configuration and compare Athena and DuckDB with independent fixture answers; missing configuration fails rather than reporting skipped acceptance. The user-reported run establishes development live parity for the tested cases. Cancellation fault handling has local regression coverage; the reported live run does not establish live cancellation fault injection or synthetic `retail-v1` publication.
+
+Milestone 3 development implementation, deployment, and live validation have passed. Confirmation of hosted CI for the current revision and PR review/merge remain pending; see [progress](progress.md) for the full evidence and next task. Production readiness and milestone 4 require separate work and authorization.

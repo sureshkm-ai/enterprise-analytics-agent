@@ -1,8 +1,16 @@
-# Milestone 3 development deployment plan — approval pending
+# Milestone 3 development deployment plan and validation record
 
-Implementation and offline verification do **not** establish AWS deployment or live parity. No bootstrap, policy creation, stack deployment, source upload, or Athena query has been performed. Approval must cover the steps below before any of those actions.
+The user reports successful development deployment and live validation:
 
-## Verified target and prerequisites
+| User-executed operation | Reported result |
+| --- | --- |
+| `CDKToolkit` bootstrap | `CREATE_COMPLETE` |
+| `enterprise-analytics-dev-data-layer` deployment | `CREATE_COMPLETE` |
+| Live parity command recorded below | **66 passed, 458 deselected in 111.94 seconds** |
+
+These results were supplied by the user and were **not rerun or independently audited against AWS during this documentation update**. The reviewed plan below is retained as configuration and operator reference, not a checklist to repeat against existing resources. Current hosted-CI confirmation, final PR review, and merge remain separate handoff work; this is development validation, not production readiness. No AWS changes are authorized by this documentation task.
+
+## Configured target and historical prerequisites
 
 | Setting | Value |
 | --- | --- |
@@ -14,15 +22,15 @@ Implementation and offline verification do **not** establish AWS deployment or l
 | Results bucket | `enterprise-analytics-dev-453711491609-us-west-2-results` |
 | Configuration | `infrastructure/cdk/config.development.json`; sanitized example alongside it |
 
-Read-only checks found `CDKToolkit` absent and only Athena's `primary` workgroup. `iam:GetRole` was denied for the selected SSO identity. Therefore bootstrap/IAM deployment permission is **not established**. An administrator must grant the required privileges to this explicit profile or provide another explicitly approved named profile in the same account. Do not silently switch profiles or attempt deployment until that is resolved.
+Before deployment, read-only checks found `CDKToolkit` absent and only Athena's `primary` workgroup; `iam:GetRole` was denied for the selected SSO identity. Those were historical preparation findings. The user's later `CREATE_COMPLETE` reports supersede the missing-stack blocker. Exact administrator actions, deployed IAM policy attachments, and resource outputs were not supplied or reverified here; do not infer them from the stack statuses or silently switch profiles.
 
-The two data roles trust the stable IAM role ARN derived from the verified STS role name and locally configured Identity Center region:
+The reviewed configuration specifies this stable IAM role ARN for the two data-role trusts, derived from the verified STS role name and locally configured Identity Center region:
 
 `arn:aws:iam::453711491609:role/aws-reserved/sso.amazonaws.com/us-west-2/AWSReservedSSO_PowerUserAccess_95483085e85e3a9b`
 
-An administrator must confirm this ARN before creation because `GetRole` was denied. AWS documents this [Identity Center role path](https://docs.aws.amazon.com/singlesignon/latest/userguide/referencingpermissionsets.html). Trust is restricted to that role, not the whole account. If its Identity Center assignment is deleted/recreated, its suffix can change and a reviewed trust update is necessary.
+The initial plan required administrator confirmation before creation because `GetRole` was denied; deployed trust was not independently rechecked in this update. AWS documents this [Identity Center role path](https://docs.aws.amazon.com/singlesignon/latest/userguide/referencingpermissionsets.html). The configured trust is restricted to that role, not the whole account. If its Identity Center assignment is deleted/recreated, its suffix can change and a reviewed trust update is necessary.
 
-## Resources and IAM changes
+## Reviewed resources and IAM configuration
 
 The synthesized application template contains 41 resources:
 
@@ -39,15 +47,15 @@ The application enforces tenant/region predicates from trusted context. Anyone w
 
 ## Bootstrap scope
 
-Bootstrapping is deployment and requires approval too. The standard `CDKToolkit` introduces an asset bucket, ECR repository, SSM version parameter, and five roles (deployment, CloudFormation execution, file/image publication, lookup). It may create their supporting policies. These are additional to the 41 application resources.
+The user reports the bootstrap completed. The original approval scope included the standard `CDKToolkit` asset bucket, ECR repository, SSM version parameter, and five roles (deployment, CloudFormation execution, file/image publication, lookup), plus supporting policies. These are additional to the 41 synthesized application resources. Future bootstrap changes require their own authorization.
 
-The proposed bootstrap uses the reviewed [deployment-policy.development.json](../infrastructure/cdk/deployment-policy.development.json), **not the default AdministratorAccess execution policy**. An administrator first creates `enterprise-analytics-dev-cdk-execution`; its permissions are constrained to the two development buckets, new Glue database/table namespace, named workgroup, two data roles, stack-generated policies (including attachment inspection), and development alarms. It also grants read-only `ssm:GetParameters` on the exact `/cdk-bootstrap/hnb659fds/version` parameter referenced by the synthesized assembly. Read-only IAM Access Analyzer validation returned no findings; that does not prove deployment privileges or live compatibility. Bootstrap itself still needs IAM/control-plane privileges; the policy is for subsequent CloudFormation execution. Managing role policies is privileged, so this is for reviewed development code, not a security boundary against arbitrary CDK applications. Do not broaden it automatically if deployment encounters a permission error.
+The reviewed bootstrap plan specifies [deployment-policy.development.json](../infrastructure/cdk/deployment-policy.development.json) instead of default AdministratorAccess, with an administrator-created `enterprise-analytics-dev-cdk-execution` policy. Its permissions are constrained to the two development buckets, new Glue database/table namespace, named workgroup, two data roles, stack-generated policies (including attachment inspection), and development alarms. It also grants read-only `ssm:GetParameters` on the exact `/cdk-bootstrap/hnb659fds/version` parameter referenced by the synthesized assembly. Earlier read-only IAM Access Analyzer validation returned no findings. The user-reported stack success does not independently confirm which execution policy was attached; that attachment was not rechecked here. Bootstrap requires IAM/control-plane privileges; this policy is for subsequent CloudFormation execution. Managing role policies is privileged, so this is for reviewed development code, not a security boundary against arbitrary CDK applications. Do not broaden permissions automatically if a future deployment encounters an error.
 
-## Prepared commands
+## Operator reference commands — not rerun in this update
 
 Run from the repository root in `enterprise-analytics`. The repository pins a compatible CDK CLI in `infrastructure/cdk/tooling`; the pre-existing global CLI 2.1138.0 cannot read CDK library 2.275.0's assembly schema and is left unchanged.
 
-Offline commands (safe before approval):
+Offline preparation commands:
 
 ```sh
 poetry install --with dev
@@ -63,7 +71,7 @@ JSII_RUNTIME_PACKAGE_CACHE_ROOT=/private/tmp/enterprise-analytics-jsii-cache \
 poetry run python tests/aws_fixture_data.py --output-dir artifacts/aws-datasets
 ```
 
-The following are **not run** and require approval plus the verified IAM prerequisites. All commands explicitly select the development profile/region. If an administrator uses a different profile, name and approve it before running these commands.
+The following block retains the initial reviewed deployment/publication sequence and the user-executed live-test command. The individual IAM/publication commands and exact deployment invocations were not reported, so they are not asserted as executed. Do not repeat resource creation or overwrite immutable snapshots as part of this documentation update. Future AWS mutations need explicit authorization and the correct privileges; all AWS CLI commands below explicitly select the development profile/region.
 
 ```sh
 aws iam create-policy --profile analytics-dev --region us-west-2 \
@@ -90,15 +98,16 @@ poetry run analytics-publish --config infrastructure/cdk/config.development.json
 poetry run analytics-publish --config infrastructure/cdk/config.development.json \
   --source-dir artifacts/aws-datasets/parity-no-returns-v1 --dataset-version parity-no-returns-v1
 
-poetry run pytest --run-aws --aws-config infrastructure/cdk/config.development.json \
-  -m aws_integration -q
+poetry run pytest tests --run-aws --aws-config=infrastructure/cdk/config.development.json -m aws_integration -q
 ```
 
 The publisher verifies the selected account, assumes only the loader role, checks schemas/checksums, and makes the ready manifest visible last. Existing/partial versions are rejected rather than overwritten; a partial failure requires an explicitly reviewed cleanup or a new configured version. Live tests assume the query role and independently compare both adapters with literal fixture answers. Internal query IDs, bytes, timings, dataset/metric versions are written to ignored `artifacts/aws-parity-diagnostics.jsonl`. Missing configuration errors instead of skipping a requested AWS run. Default tests and ordinary CI create no AWS sessions/queries.
 
+The user's live result was **66 passed, 458 deselected in 111.94 seconds**. It covers the three parity snapshot variants; it does not by itself establish publication of synthetic `retail-v1`, which is not queried by this suite. Exact publication inventory, deployed outputs/IAM details, and measured costs were not independently verified here. The cancellation fix and offline regressions are present at `ae68d2c`, covered by the recorded current-code offline checks. See [progress](progress.md) for verification provenance and remaining review/merge work.
+
 ## Cost assumptions and controls
 
-The fixture set is small and uses serverless Athena SQL, S3, Glue metadata, and one CloudWatch alarm; no EC2, NAT gateway, Spark, or capacity reservation is created. As an **illustrative estimate**, 100 queries at a 10 MB billable minimum and $5/TB are about $0.005 of Athena scan charges before retries. This is an assumption, not a quote or hard budget: verify current `us-west-2` rates before deployment. S3 requests/storage/transfer, Glue metadata, CloudWatch alarm/metric usage, and retained bootstrap artifacts are additional; reserve a few dollars for development rather than assuming zero. Source object versions persist until explicitly removed.
+The fixture set is small and uses serverless Athena SQL, S3, Glue metadata, and one CloudWatch alarm; the reviewed template has no EC2, NAT gateway, Spark, or capacity reservation. The original **illustrative estimate** was 100 queries at a 10 MB billable minimum and $5/TB, about $0.005 of Athena scan charges before retries. This remains a planning assumption, not a measured bill, current quote, or hard budget; rates and actual spend were not rechecked in this update. S3 requests/storage/transfer, Glue metadata, CloudWatch alarm/metric usage, and retained bootstrap artifacts are additional. Source object versions persist until explicitly removed.
 
 The per-query cutoff is not an aggregate cost cap, can overshoot at cancellation boundaries, and does not eliminate charges for canceled queries. Up to three explicitly retryable executions can consume scan charges. Repeated test runs and leaving monitoring/storage enabled continue to incur costs. Current references: [Athena pricing](https://aws.amazon.com/athena/pricing/), [CloudWatch pricing](https://aws.amazon.com/cloudwatch/pricing/), and [Athena query limits](https://docs.aws.amazon.com/athena/latest/ug/workgroups-setting-control-limits-cloudwatch.html).
 

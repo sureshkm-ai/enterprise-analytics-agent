@@ -1,14 +1,18 @@
 # Progress
 
-Updated: 2026-11-05 (America/Chicago).
+Updated: 2026-11-06 (America/Chicago).
 
 ## Current milestone and repository state
 
-**Milestone 3 — development implementation, AWS deployment, and live validation passed.** AWS stack statuses and live results below are user-executed/user-reported, not rerun by the agent. The implementation and cancellation fix are committed through `ae68d2c`; this local documentation checkpoint records the reviewed handoff. Confirmation of hosted CI for the current revision, final PR review, and merge remain outstanding. This is not production readiness or milestone 4 completion. The user has authorized the local documentation commit; AWS operations, infrastructure changes, and pushes remain outside this task.
+**Milestone 3 — complete: implemented, deployed, live-validated, merged into `main`, and verified by successful hosted CI.** The user confirmed [PR #2](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/2) merged at [`ae378e4c289144164a8a7a6a85fa8c71ae5bcacc`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/ae378e4c289144164a8a7a6a85fa8c71ae5bcacc), and [GitHub Actions run 42166641840](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42166641840) passed for that merge commit. AWS deployment/live results below retain their user-executed attribution; none were rerun during this update. Development milestone completion does not establish production readiness. Milestone 4 is the next planned milestone and has not started.
 
-At the start of this update, `feat/milestone-3-athena` and its local remote-tracking ref both pointed to `ae68d2c357b020a45419c050e4f6612b3af9de33` (`fix timeout errors`); the working tree was clean. Local `main` and `origin/main` remain at milestone 2 merge `9dc5989`; no remote refresh, final PR review, or merge verification was performed. Readiness commit [`7edd01079fb7ee606305cebd62f5123d1fbc14cf`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/7edd01079fb7ee606305cebd62f5123d1fbc14cf) and its confirmed hosted CI remain historical evidence below.
+Local checkout verified before editing: the checked-out branch is `main`; HEAD, local `main`, and the local `origin/main` tracking ref all equal the confirmed merge commit above. The working tree was clean. No branch switch, fetch, or remote refresh was performed; this verifies the local checkout contains the supplied merge, without claiming a separate live remote inspection. The merged history includes readiness commit `7edd010`, cancellation fix `ae68d2c`, and documentation checkpoint `3424d07`.
 
 **Milestone 2 remains implemented, merged into `main`, and verified by hosted CI.** [PR #1](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/1) merged implementation commit `e13b1ea` at merge commit `9dc5989353459e2651ba5cced882534d8d573783`. [GitHub Actions run 42113416826](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42113416826) passed for that merge commit, as confirmed by the user.
+
+## Merge-status documentation update verification
+
+Read AGENTS, this progress log, and the implementation plan. Inspected `git status --short`, `git log -5 --oneline`, the current branch and tracking refs, and `git rev-parse HEAD main origin/main` before describing the checkout. GitHub merge/CI details are the user's confirmed evidence. `git diff --check -- docs/progress.md` passed and the document diff was reviewed. Only `docs/progress.md` changed. Historical local checks and user-reported live results were preserved; no application tests, lint/type checks, hosted workflows, or AWS operations were rerun. No other files, branch switches, commits, or pushes are part of this update.
 
 ## User-executed AWS deployment and live validation
 
@@ -26,13 +30,13 @@ poetry run pytest tests --run-aws --aws-config=infrastructure/cdk/config.develop
 
 The suite compares both Athena and DuckDB independently with authored literal expectations across all five metrics and the three parity snapshot variants. This reported run satisfies the development live-parity gate. It does not independently establish synthetic `retail-v1` publication, exact deployed IAM attachments/resource outputs, measured costs, or live cancellation fault injection; those were not reported or audited here. The [deployment record](aws-deployment-plan.md) retains the reviewed configuration and cleanup behavior. No AWS operations were repeated for this update.
 
-## Current documentation update and offline-check coverage
+## Historical deployment documentation checkpoint and offline-check coverage
 
-The user requested a local commit after the documentation review found no actionable issues. Only the six reviewed Markdown files are included, with commit-status wording reconciled before committing. `git diff --check` and `git diff --cached --check` passed. No application checks or AWS operations were rerun; existing results below cover unchanged code. This checkpoint remains local; the user will decide when to push it.
+The user requested a local commit after the documentation review found no actionable issues. The six reviewed Markdown files were committed in `3424d07`, with commit-status wording reconciled beforehand. `git diff --check` and `git diff --cached --check` passed. No application checks or AWS operations were rerun then; existing results below covered unchanged code. That checkpoint was subsequently pushed and merged through PR #2.
 
 Read AGENTS and all project documentation; inspected Git status/log, the `ae68d2c` commit, executor cleanup logic, and its regression tests. The committed executor blob `1c8f729d9e29dea65155689d6f8be6d8e70f0021` and lifecycle-test blob `a040fd1241f7abe84028bc9536c598acc0167de1` match the versions covered by the recorded checks below. All other code/tests, infrastructure, dependencies/lockfile, and CI configuration are unchanged from readiness commit `7edd010`.
 
-Current offline evidence is available: **458 passed, 66 skipped**, 61 lifecycle tests passed, lockfile validation passed, Ruff lint/format passed, and mypy passed. Therefore these checks were **not rerun** during the documentation update or commit preparation. Milestone 3 hosted CI is confirmed only for the recorded `7edd010` run; newer hosted results were not checked or inferred from local/live results. Only README and project documentation changed; no source, tests, infrastructure, dependencies, or AWS operations changed. The preceding documentation-only update made no commits or pushes; the subsequent user request authorizes this local commit, with no push.
+Offline evidence available at that checkpoint was **458 passed, 66 skipped**, 61 lifecycle tests passed, lockfile validation passed, Ruff lint/format passed, and mypy passed. These checks were **not rerun** during that documentation update or commit preparation. At that stage, milestone 3 hosted CI had been confirmed for `7edd010`; newer hosted results had not been checked or inferred from local/live results. Only README and project documentation changed then; no source, tests, infrastructure, dependencies, or AWS operations changed. The preceding documentation-only update made no commits or pushes; the later user request authorized local commit `3424d07`, with no agent push. The completed merge and merge-commit CI are recorded in the current status above.
 
 ## Historical cancellation fix verification — now committed in `ae68d2c`
 
@@ -155,9 +159,9 @@ Focused verification was run while implementing; initial formatting/lint issues 
 
 Read AGENTS, this progress log, and the implementation plan. Inspected `git status --short`, `git log -5 --oneline`, the current branch, HEAD, and local `main` before describing the repository state. `git diff --check` passed and the document diff was reviewed. Only `docs/progress.md` changed; local application tests, linting, and type checks were not rerun. No application changes, AWS operations, commits, or pushes were made during this update.
 
-## Remaining handoff work and limitations
+## Completion status and known limitations
 
-No implementation/deployment/live-test failure is reported after the successful user-executed run. The documentation checkpoint remains local; user-controlled push, hosted-CI confirmation for the current revision, final PR review, and merge remain outstanding. No newer CI or PR/merge status was independently checked here. The only confirmed milestone 3 hosted run in this log is for `7edd010`; cancellation code/tests are committed at `ae68d2c`. These statuses must not be conflated with the successful AWS run.
+The milestone 3 checkpoint has been pushed and merged through PR #2, and hosted CI passed for merge commit `ae378e4c289144164a8a7a6a85fa8c71ae5bcacc`, as confirmed by the user. The prior push/merge/CI-confirmation handoff is complete. Local `main` contains the confirmed merge. The successful hosted CI, historical offline results, and user-executed AWS live run remain separate evidence; none was rerun for this documentation update.
 
 The provided live result establishes functional parity for the tested fixtures, not production readiness, a full deployed-IAM audit, proof that synthetic `retail-v1` was published, or measured deployment costs. Cancellation remains best effort; stop acceptance does not confirm termination and an in-flight SDK request can outlast its scheduling deadline. Bedrock, AgentCore, and Cube are unimplemented and outside this task.
 
@@ -169,6 +173,6 @@ Milestone 2 introduced no AWS credentials, calls, deployment, Athena adapter, or
 
 ## Exact next task
 
-**The user can push this local documentation checkpoint when ready, confirm hosted checks for that revision, and finish PR review/merge.** The documentation review found no actionable issues. Inspect the actual branch/CI/PR state rather than assuming those steps are complete; the agent must not push without an explicit request.
+**Next planned milestone: Milestone 4 — Bedrock and AgentCore integration.** Await an explicit implementation request before starting it. This documentation-only update does not authorize milestone 4 implementation or deployment. When authorized, reread AGENTS/plan/progress, inspect Git and the environment, and verify current official SDK documentation before adding the Bedrock/AgentCore hosting and semantic-tool bindings with trusted authorization context.
 
-Do not repeat bootstrap/deployment/publication/live testing as part of this documentation task. If a later change requires live revalidation, obtain authorization first and use the explicit command recorded above. Retain stored data by default; cleanup requires a separate decision. Do not start milestone 4 or Cube without a new request.
+Do not repeat bootstrap/deployment/publication/live testing as part of this documentation task. Retain stored data by default; cleanup requires a separate decision. Do not switch branches, commit, or push this progress update. Cube remains outside the planned milestone 4 scope unless separately requested.

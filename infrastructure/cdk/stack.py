@@ -202,7 +202,14 @@ class AnalyticsDataStack(Stack):
             self,
             "SemanticQueryExecutor",
             role_name=f"{config.resource_prefix}-query-executor",
-            assumed_by=iam.ArnPrincipal(config.trusted_query_principal_arn),
+            assumed_by=(
+                iam.CompositePrincipal(
+                    iam.ArnPrincipal(config.trusted_query_principal_arn),
+                    *(iam.ArnPrincipal(arn) for arn in config.trusted_query_principal_arns),
+                )
+                if config.trusted_query_principal_arns
+                else iam.ArnPrincipal(config.trusted_query_principal_arn)
+            ),
             description="Query configured snapshots through the dedicated Athena workgroup",
         )
         source_objects = [self.data_bucket.arn_for_objects(key) for key in source_object_keys]

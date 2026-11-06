@@ -4,11 +4,15 @@
 
 - Keep milestones 1 and 2 local: no AWS calls, credentials, or external services.
 - Milestone 3 permits implementation, offline synthesis/tests, and read-only verification using an explicitly selected AWS profile. Finish the concrete deployment plan before asking for approval; bootstrap, resource creation, source publication, and live parity require that approval. Do not mark it complete until live parity passes.
+- Milestone 4 permits local implementation/verification, read-only AWS configuration checks, and local commits. Finish `docs/agentcore-deployment-plan.md` and reviewed packaging/infrastructure before requesting approval for resources, IAM changes, or billable model/runtime evaluations. Keep milestone 4 open until deployed-agent acceptance passes. Keep commits local.
 - The agent consumes backend-independent, versioned semantic contracts.
 - AWS-specific and Cube-specific logic belongs only in adapters. Do not expose SQL or provider SDK types in the semantic interface.
 - The semantic tools are `discover_metrics`, `describe_metric`, `query_metric`, and `discover_dimensions`.
 - Metric definitions own calculations, allowed dimensions, relationships, filters, units, and time semantics. Update `docs/metric-definitions.md` before changing a calculation.
 - Authorization comes from trusted application context passed separately to adapters, never from model-supplied identity arguments. Deny access outside that context.
+- Agent requests contain only the question. The development AgentCore runtime uses IAM-authenticated approved callers and a fixed server-configured tenant/region scope. Payloads, headers, sessions, history, and model text cannot define authorization. Deployed code uses workload credentials, never a local profile or SSO credentials.
+- Bedrock uses a bounded Converse loop exposing only the four semantic operations through validated v2 requests. Render numeric answers from validated semantic results, preserving exact values and versions; never substitute model-generated calculations. Clarify ambiguous or unsupported intent rather than silently guessing.
+- Keep default tests and ordinary CI free of AWS calls. Billable deployed-agent tests require explicit `--run-agent-live --agent-config=...` and prior approval; missing configuration must fail instead of silently skipping acceptance. AgentCore Gateway, Memory, Browser, Code Interpreter, Evaluations service, Cube, and UI work remain outside milestone 4.
 - Validate SDK usage against current official documentation when implementing external integrations. Do not add speculative Bedrock, AgentCore, Athena, or Cube integrations.
 
 ## Development

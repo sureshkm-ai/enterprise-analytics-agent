@@ -1,8 +1,8 @@
 # Enterprise structured-data analytics agent
 
-The repository provides five governed metrics, unchanged v1/v2 contracts, deterministic retail data, and automated verification. Milestone 3 adds an Athena adapter, versioned snapshot publication, and Python CDK data infrastructure. **The user reports successful development deployment and live validation: 66 passed, 458 deselected in 111.94s.** Current hosted-CI confirmation, PR review, and merge remain separate handoff work; this is not a production-readiness claim. The default CLI/tests remain local and require no AWS credentials.
+The repository provides five governed metrics, unchanged v1/v2 contracts, deterministic retail data, DuckDB/Athena adapters, and automated verification. Milestone 3 is merged and its hosted CI passed; the user's AWS parity result was **66 passed, 458 deselected in 111.94s**. Milestone 4 adds a bounded Bedrock Converse agent and prepared AgentCore Runtime hosting. **Milestone 4 deployment and billable live evaluations await approval; it remains open.** The default CLI/tests remain local and require no AWS credentials.
 
-Milestone 2 was merged in PR #1 at `9dc5989` and its hosted CI passed. Bedrock/AgentCore remain milestone 4; Cube is a later separate extension. Neither is implemented here.
+Milestone 3 merged in [PR #2](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/2) at `ae378e4`, with [successful hosted CI](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42166641840); the merge-status documentation followed in PR #3 at `6bf1220`. This feature branch starts from that main checkout. Cube, a UI, and additional AgentCore services remain outside milestone 4.
 
 ## Run locally
 
@@ -60,13 +60,41 @@ Refunds and physical returns are independent. Only approved refunds reduce net r
 
 ## Continuous integration
 
-`.github/workflows/ci.yml` runs on pushes and pull requests with Python 3.12, SHA-pinned checkout/setup-python actions, pinned Poetry 2.3.1, and `poetry sync --with dev --no-interaction` from the committed lockfile. It runs the same five checks listed above and needs no AWS credentials. GitHub execution begins when the branch is pushed; local verification does not imply a hosted run has occurred.
+`.github/workflows/ci.yml` runs on pushes and pull requests with Python 3.12, SHA-pinned checkout/setup-python actions, pinned Poetry 2.3.1, and `poetry sync --with dev --no-interaction` from the committed lockfile. It runs the five checks above and offline data-layer/AgentCore foundation synthesis without AWS credentials. The user confirmed successful [hosted CI run 42279109681](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42279109681) for pushed readiness commit `5e72b51`. Subsequent question-scope fixes require their own hosted verification; local checks do not establish that result.
 
 The workflow follows current official [checkout releases](https://github.com/actions/checkout/releases/tag/v7.0.1), [setup-python documentation](https://github.com/actions/setup-python/blob/6d4fd22b20465ccc0f7354476588e8df7c9ca0e0/README.md), and [Poetry CI guidance](https://python-poetry.org/docs/#ci-recommendations).
 
+## Bedrock agent and AgentCore preparation
+
+`BedrockAnalyticsAgent` uses an injected Converse client and exposes exactly the four semantic operations through existing v2 Pydantic contracts. It handles matching tool-result IDs, multiple tools, invalid arguments, model/tool failures, and iteration/time/token limits. Every request starts fresh. Final numeric answers are rendered from validated tool results, preserving decimal strings, units, nulls, groups, `[start,end)` boundaries, metric definition versions, and dataset version. Generated model numbers are discarded.
+
+The development question vocabulary is deliberately conservative: governed metric IDs/names; a named month and year, an explicit `[YYYY-MM-DD, YYYY-MM-DD)` period, last month, or yesterday; and supported region/channel grouping and filters. Ambiguous metrics, periods, comparisons, and unsupported calculation requests ask for clarification. Every clause must fit this development vocabulary: unknown measures/dimensions and unresolved date refinements require clarification. Filters support alternatives within one dimension and conjunction across dimensions; region OR channel cannot be substituted with AND. Relative periods use a server-configured reference date, currently `2025-02-01` for fixed acceptance data.
+
+The prepared runtime is a Python 3.12 Linux ARM64 ZIP, built from Poetry's locked main dependencies and verified wheel hashes. A standard HTTP entry point serves `/ping` and `/invocations`; no additional agent framework or packaging lockfile replaces Poetry. Invocation payloads contain only `{"question": "..."}`. AgentCore SigV4/resource policies restrict approved callers, and all callers of this development endpoint share server-owned tenant `t1`, regions North/South. This is a fixed development scope, not per-user production authorization. The runtime uses workload credentials and a refreshed assumption of the existing Athena query role; no local profile or SSO credentials are packaged.
+
+Read the [AgentCore deployment and live-test plan](docs/agentcore-deployment-plan.md) before any AWS mutation or model call. It records the selected Nova Lite profile and its three US routing regions, scoped IAM/trust changes, code packaging, two deployment phases, evaluation commands, costs, and cleanup. Initial acceptance uses published parity snapshots. Read-only checks also verified `retail-v1` readiness, schemas, and object checksums before any future retail demonstrations.
+
+Offline verification/build commands:
+
+```sh
+poetry run pytest tests/test_agent.py tests/test_agent_limits.py tests/test_runtime_hosting.py tests/test_agentcore_packaging.py tests/test_agentcore_cdk.py tests/test_agent_evaluation.py
+poetry run python -m infrastructure.agentcore.package --config infrastructure/agentcore/runtime.development.json
+JSII_RUNTIME_PACKAGE_CACHE_ROOT=/private/tmp/enterprise-analytics-jsii-cache \
+  poetry run python -m infrastructure.cdk.agentcore_app \
+  --config infrastructure/cdk/agentcore.config.development.json --outdir artifacts/cdk.agentcore.out
+```
+
+The build downloads only checksum-locked Linux ARM64 wheels from the package index and writes local ignored artifacts; `--offline` reuses them. Runtime synthesis requires the actual archive SHA recorded in the deployment configuration. Explicit deployed-agent evaluations require both flags below, a real reviewed runtime ARN, and approval; default tests skip them without creating AWS clients:
+
+```sh
+poetry run pytest tests --run-agent-live --agent-config=artifacts/agentcore/live.parity-v1.json -m agent_live -q
+```
+
+Evaluation judges inspect selected tools, validated arguments, dates/filters, exact values, versions, errors, and request/session isolation rather than exact prose. Evidence includes model configuration, token usage, latency, semantic calls, and Athena execution diagnostics. Skips and fake-client tests do not establish deployed acceptance.
+
 ## Athena development deployment and validation
 
-The user reports `CDKToolkit` and `enterprise-analytics-dev-data-layer` both reached `CREATE_COMPLETE`. The [deployment record](docs/aws-deployment-plan.md) retains the reviewed configuration and commands, IAM scope, cost assumptions, retention, and cleanup. The configured target is profile `analytics-dev`, account `453711491609`, region `us-west-2`, with no implicit default profile. These AWS results were executed by the user and were not rerun during this documentation update. Further AWS changes require explicit authorization.
+The user reports `CDKToolkit` and `enterprise-analytics-dev-data-layer` both reached `CREATE_COMPLETE`. The [deployment record](docs/aws-deployment-plan.md) retains the reviewed configuration and commands, IAM scope, cost assumptions, retention, and cleanup. The configured target is profile `analytics-dev`, account `453711491609`, region `us-west-2`, with no implicit default profile. Milestone 4 preparation did not repeat its deployment or live parity; read-only checks reverified the stack outputs and all four ready snapshots. Further AWS changes require explicit authorization.
 
 The CDK app under `infrastructure/cdk` uses explicit configuration and makes no account lookups during synthesis. Install the repository-local CLI when needed; the existing global CLI is too old for the locked library's assembly schema:
 

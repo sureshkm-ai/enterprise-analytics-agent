@@ -1,0 +1,22 @@
+{
+  "account": "111122223333",
+  "profile": "explicit-development",
+  "region": "us-west-2",
+  "resource_prefix": "analytics-dev",
+  "runtime_name": "analytics_dev_agent",
+  "approved_caller_arns": ["arn:aws:iam::111122223333:role/ApprovedDeveloper"],
+  "model_id": "us.amazon.nova-lite-v1:0",
+  "model_resource_arns": [
+    "arn:aws:bedrock:us-west-2:111122223333:inference-profile/us.amazon.nova-lite-v1:0",
+    "arn:aws:bedrock:us-east-1::foundation-model/amazon.nova-lite-v1:0",
+    "arn:aws:bedrock:us-east-2::foundation-model/amazon.nova-lite-v1:0",
+    "arn:aws:bedrock:us-west-2::foundation-model/amazon.nova-lite-v1:0"
+  ],
+  "query_role_arn": "arn:aws:iam::111122223333:role/analytics-dev-query-executor",
+  "artifact_path": "artifacts/agentcore/agent.zip",
+  "artifact_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "runtime_config_path": "infrastructure/agentcore/runtime.example.json",
+  "idle_session_timeout_seconds": 300,
+  "max_lifetime_seconds": 900,
+  "log_retention_days": 7
+}

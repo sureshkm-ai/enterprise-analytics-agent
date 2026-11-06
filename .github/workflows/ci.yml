@@ -54,3 +54,9 @@ jobs:
           poetry run python -m infrastructure.cdk.app
           --config infrastructure/cdk/config.example.json
           --outdir artifacts/cdk.out
+
+      - name: Synthesize AgentCore foundation without AWS credentials
+        run: >-
+          poetry run python -m infrastructure.cdk.agentcore_app
+          --config infrastructure/cdk/agentcore.config.example.json
+          --phase foundation --outdir artifacts/cdk.agentcore-foundation.out

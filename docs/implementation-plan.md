@@ -25,7 +25,7 @@ Acceptance: all five metrics and required edge cases pass; v1 net revenue and or
 
 ## Milestone 3: AWS data layer and Athena adapter with parity tests — development implementation, deployment, and live validation passed
 
-The user reports `CDKToolkit` and `enterprise-analytics-dev-data-layer` at `CREATE_COMPLETE`, and **66 passed, 458 deselected in 111.94s** from the live command below. These are user-executed results, not operations rerun for this documentation update. The implementation and cancellation fix are committed through `ae68d2c`; this documentation checkpoint records the deployment/validation handoff. Hosted CI is recorded for readiness commit `7edd010`; confirmation for the current feature revision, final PR review, and merge remain outstanding. Development acceptance does not establish production readiness or authorize milestone 4.
+The user reports `CDKToolkit` and `enterprise-analytics-dev-data-layer` at `CREATE_COMPLETE`, and **66 passed, 458 deselected in 111.94s** from the live command below. Milestone 3 merged through PR #2 at `ae378e4` with successful hosted CI run `42166641840`; PR #3 at `6bf1220` merged its status documentation. Those historical results retain their original attribution. Milestone 4 starts from that main checkout without repeating the data-layer deployment or live parity.
 
 The implementation sequence and approval gates were:
 
@@ -46,10 +46,20 @@ User-executed live validation command, from the repository root:
 poetry run pytest tests --run-aws --aws-config=infrastructure/cdk/config.development.json -m aws_integration -q
 ```
 
-The documentation diff was reviewed with no actionable findings. Next: the user can push the local documentation checkpoint when ready, confirm hosted CI for that revision, and finish PR review/merge. Do not restart deployment or begin Bedrock, AgentCore, or Cube work under this request.
+The milestone 3 merge/CI handoff is complete. The milestone 4 request below separately authorizes implementation and read-only verification; it does not authorize AWS mutations or billable inference before approval.
 
-## Milestone 4: Bedrock and AgentCore integration — not authorized
+## Milestone 4: Bedrock and AgentCore Runtime — implementation authorized, live acceptance pending
 
-Add the Bedrock agent and AgentCore hosting, binding the four semantic tools to authenticated trusted context and the governed adapters. Verify current official SDK documentation first. No implementation or deployment in milestone 2.
+1. Inspect the merged main checkout and preserve local work; branch `feat/milestone-4-bedrock-agentcore`, existing Conda Python 3.12/Poetry, required baseline checks. Reconcile milestone 3 status without redeploying it.
+2. Verify current official Converse/tool-use and AgentCore requirements. Use an explicit configurable model/profile; verify regional availability and account prerequisites with read-only calls. The selected development profile is `us.amazon.nova-lite-v1:0`, sourced in `us-west-2` and routed to the three verified US regions.
+3. Implement a bounded injected-client Converse loop with exactly four v2 semantic tools, matching IDs/multiple calls, validation/error recovery, and iteration/time/token limits. Preserve published v1/v2 schemas and calculations.
+4. Render exact numeric answers only from validated semantic results. Include structured results and dataset/metric versions, ask for clarification on ambiguous intent, and anchor relative periods to explicit server configuration.
+5. Implement stateless IAM-authenticated development hosting with fixed server-owned tenant/region scope. Reject identity/config/history payload fields. Use workload credentials and refreshable assumption of the existing narrow Athena query role, preserving developer trust.
+6. Build a reproducible Poetry-locked Python 3.12 Linux ARM64 ZIP and synthesize separate AgentCore foundation/runtime infrastructure without lookups. Prepare an exact trust-only update for the existing data stack, scoped runtime/model/logging/caller permissions, immutable versioned code upload, and cleanup.
+7. Add deterministic offline tests and default-CI infrastructure checks. Prepare explicitly enabled live evaluations using independent authored values across all five metrics, metadata, clarification, boundaries, missing/empty sources, authorization, and sessions; grade tool plans/results rather than prose.
+8. Complete code, offline checks, packaging, documentation, and synthesis. Present `docs/agentcore-deployment-plan.md` for approval of exact resource/IAM changes and billable calls. Make a local readiness commit, with no push.
+9. **After approval only:** deploy the agreed phases/trust update, upload the approved archive, invoke/evaluate the deployed runtime within the approved usage scope, and record actual evidence. Keep milestone 4 open until all agreed deployed evaluations pass, then update progress and make the completion commit. Do not begin Cube, a UI, or additional AgentCore services.
+
+Current acceptance boundary: administrator-applied M4 policy V2 and corrected endpoint-ARN recovery were approved; the empty failed stack was removed and the corrected assembly retried using the retained code version. Runtime creation failed on `bedrock-agentcore:TagResource` against the account/region runtime/* creation resource; 0/40 Runtime invocations used and no live acceptance ran. A single-action tagging addition is prepared locally, preserving V2 conditions/grants and M3 permissions. Administrator application and authorization to resume recovery are pending; the corrected templates and ZIP are unchanged and already approved. Milestone 4 remains open; see progress and deployment plan for exact retained state.
 
 Cube remains a later adapter extension; it is outside milestones 2–4 unless separately requested.

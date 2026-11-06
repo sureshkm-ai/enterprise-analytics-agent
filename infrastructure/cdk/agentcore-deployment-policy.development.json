@@ -1,0 +1,188 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ReadBootstrapVersion",
+      "Effect": "Allow",
+      "Action": [
+        "ssm:GetParameters"
+      ],
+      "Resource": "arn:aws:ssm:us-west-2:453711491609:parameter/cdk-bootstrap/hnb659fds/version"
+    },
+    {
+      "Sid": "RuntimeCodeBucketLifecycle",
+      "Effect": "Allow",
+      "Action": [
+        "s3:CreateBucket",
+        "s3:DeleteBucket",
+        "s3:DeleteBucketPolicy",
+        "s3:GetAccelerateConfiguration",
+        "s3:GetAnalyticsConfiguration",
+        "s3:GetBucketAbac",
+        "s3:GetBucketAcl",
+        "s3:GetBucketCORS",
+        "s3:GetBucketLocation",
+        "s3:GetBucketLogging",
+        "s3:GetBucketMetadataTableConfiguration",
+        "s3:GetBucketNotification",
+        "s3:GetBucketObjectLockConfiguration",
+        "s3:GetBucketOwnershipControls",
+        "s3:GetBucketPolicy",
+        "s3:GetBucketPublicAccessBlock",
+        "s3:GetBucketTagging",
+        "s3:GetBucketVersioning",
+        "s3:GetBucketWebsite",
+        "s3:GetEncryptionConfiguration",
+        "s3:GetIntelligentTieringConfiguration",
+        "s3:GetInventoryConfiguration",
+        "s3:GetLifecycleConfiguration",
+        "s3:GetMetricsConfiguration",
+        "s3:GetReplicationConfiguration",
+        "s3:ListBucket",
+        "s3:ListTagsForResource",
+        "s3:PutBucketOwnershipControls",
+        "s3:PutBucketPolicy",
+        "s3:PutBucketPublicAccessBlock",
+        "s3:PutBucketTagging",
+        "s3:PutBucketVersioning",
+        "s3:PutEncryptionConfiguration",
+        "s3:PutLifecycleConfiguration",
+        "s3:TagResource",
+        "s3:UntagResource"
+      ],
+      "Resource": "arn:aws:s3:::enterprise-analytics-dev-453711491609-us-west-2-agent-code"
+    },
+    {
+      "Sid": "ReadReviewedRuntimeCode",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion"
+      ],
+      "Resource": "arn:aws:s3:::enterprise-analytics-dev-453711491609-us-west-2-agent-code/releases/*/agent.zip"
+    },
+    {
+      "Sid": "RuntimeExecutionRoleLifecycle",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateRole",
+        "iam:DeleteRole",
+        "iam:GetRole",
+        "iam:TagRole",
+        "iam:UntagRole",
+        "iam:UpdateAssumeRolePolicy",
+        "iam:PutRolePolicy",
+        "iam:GetRolePolicy",
+        "iam:DeleteRolePolicy",
+        "iam:ListRolePolicies",
+        "iam:ListAttachedRolePolicies"
+      ],
+      "Resource": "arn:aws:iam::453711491609:role/enterprise-analytics-dev-agent-runtime"
+    },
+    {
+      "Sid": "PassOnlyRuntimeExecutionRole",
+      "Effect": "Allow",
+      "Action": [
+        "iam:PassRole"
+      ],
+      "Resource": "arn:aws:iam::453711491609:role/enterprise-analytics-dev-agent-runtime",
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": "bedrock-agentcore.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "CreateTaggedDevelopmentRuntime",
+      "Effect": "Allow",
+      "Action": [
+        "bedrock-agentcore:CreateAgentRuntime"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2",
+          "aws:PrincipalAccount": "453711491609",
+          "aws:RequestTag/Project": "enterprise-analytics-dev"
+        }
+      }
+    },
+    {
+      "Sid": "NamedDevelopmentRuntimeLifecycle",
+      "Effect": "Allow",
+      "Action": [
+        "bedrock-agentcore:GetAgentRuntime",
+        "bedrock-agentcore:UpdateAgentRuntime",
+        "bedrock-agentcore:DeleteAgentRuntime",
+        "bedrock-agentcore:CreateAgentRuntimeEndpoint",
+        "bedrock-agentcore:GetAgentRuntimeEndpoint",
+        "bedrock-agentcore:UpdateAgentRuntimeEndpoint",
+        "bedrock-agentcore:DeleteAgentRuntimeEndpoint",
+        "bedrock-agentcore:TagResource",
+        "bedrock-agentcore:UntagResource",
+        "bedrock-agentcore:ListTagsForResource",
+        "bedrock-agentcore:PutResourcePolicy",
+        "bedrock-agentcore:GetResourcePolicy",
+        "bedrock-agentcore:DeleteResourcePolicy"
+      ],
+      "Resource": [
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_dev_agent-*"
+      ]
+    },
+    {
+      "Sid": "AutomaticRuntimeWorkloadIdentity",
+      "Effect": "Allow",
+      "Action": [
+        "bedrock-agentcore:CreateWorkloadIdentity",
+        "bedrock-agentcore:GetWorkloadIdentity",
+        "bedrock-agentcore:DeleteWorkloadIdentity"
+      ],
+      "Resource": [
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:workload-identity-directory/default",
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:workload-identity-directory/default/workload-identity/enterprise_analytics_dev_agent-*"
+      ]
+    },
+    {
+      "Sid": "CreateAgentCoreRuntimeIdentityServiceLinkedRole",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateServiceLinkedRole"
+      ],
+      "Resource": "arn:aws:iam::453711491609:role/aws-service-role/runtime-identity.bedrock-agentcore.amazonaws.com/AWSServiceRoleForBedrockAgentCoreRuntimeIdentity",
+      "Condition": {
+        "StringEquals": {
+          "iam:AWSServiceName": "runtime-identity.bedrock-agentcore.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "CreateAgentCoreNetworkServiceLinkedRole",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateServiceLinkedRole"
+      ],
+      "Resource": "arn:aws:iam::453711491609:role/aws-service-role/network.bedrock-agentcore.amazonaws.com/AWSServiceRoleForBedrockAgentCoreNetwork",
+      "Condition": {
+        "StringEquals": {
+          "iam:AWSServiceName": "network.bedrock-agentcore.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "CreateTaggedDefaultEndpointDuringRuntimeCreation",
+      "Effect": "Allow",
+      "Action": [
+        "bedrock-agentcore:CreateAgentRuntimeEndpoint",
+        "bedrock-agentcore:TagResource"
+      ],
+      "Resource": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2",
+          "aws:PrincipalAccount": "453711491609",
+          "aws:RequestTag/Project": "enterprise-analytics-dev"
+        }
+      }
+    }
+  ]
+}

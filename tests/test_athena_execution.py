@@ -93,7 +93,7 @@ class FakeTime:
         self.now += seconds
 
 
-def executor(client: FakeClient, *, timeout: float = 2.0) -> AthenaExecutor:
+def executor(client: FakeClient, *, timeout: float = 2.0, max_attempts: int = 3) -> AthenaExecutor:
     timer = FakeTime()
     return AthenaExecutor(
         client,
@@ -103,7 +103,7 @@ def executor(client: FakeClient, *, timeout: float = 2.0) -> AthenaExecutor:
         expected_bucket_owner="123456789012",
         timeout_seconds=timeout,
         poll_seconds=0.25,
-        max_attempts=3,
+        max_attempts=max_attempts,
         clock=timer.clock,
         sleep=timer.sleep,
     )
@@ -219,6 +219,8 @@ def test_terminal_execution_failures_are_not_retried(state: str) -> None:
         run(engine)
     assert [name for name, _ in client.calls] == ["start", "poll"]
     assert engine.diagnostics[0].state == state
+    assert engine.diagnostics[0].cancellation_attempts == 0
+    assert engine.diagnostics[0].cancellation_outcome is None
 
 
 def test_nontransient_and_exhausted_transient_errors_fail() -> None:
@@ -233,6 +235,197 @@ def test_nontransient_and_exhausted_transient_errors_fail() -> None:
         assert engine.diagnostics[0].state == "SUBMISSION_FAILED"
 
 
+@pytest.mark.parametrize(
+    "poll_error",
+    [
+        error("InternalServerException"),
+        EndpointConnectionError(endpoint_url="https://offline.invalid"),
+    ],
+    ids=["service", "connection"],
+)
+def test_exhausted_poll_retries_cancel_running_query(poll_error: Exception) -> None:
+    client = FakeClient()
+    client.executions = [
+        {"QueryExecution": {"Status": {"State": "RUNNING"}}},
+        poll_error,
+    ]
+    engine = executor(client)
+    with pytest.raises(
+        AthenaExecutionError, match="transient API retries were exhausted"
+    ) as raised:
+        run(engine)
+    assert raised.value.__cause__ is poll_error
+    assert [arguments for name, arguments in client.calls if name == "cancel"] == [
+        {"QueryExecutionId": "q1"}
+    ]
+    assert sum(name == "start" for name, _ in client.calls) == 1
+    assert sum(name == "poll" for name, _ in client.calls) == 4
+    assert engine.diagnostics[0].cancellation_outcome == "REQUEST_ACCEPTED"
+    assert engine.diagnostics[0].cancellation_attempts == 1
+
+
+def test_nontransient_first_poll_failure_cancels_without_resubmitting() -> None:
+    client = FakeClient()
+    poll_error = error("AccessDeniedException")
+    client.executions = [poll_error]
+    engine = executor(client)
+    with pytest.raises(AthenaExecutionError, match="API request failed") as raised:
+        run(engine)
+    assert raised.value.__cause__ is poll_error
+    assert [name for name, _ in client.calls] == ["start", "poll", "cancel"]
+    assert engine.diagnostics[0].state == "POLLING_FAILED"
+
+
+@pytest.mark.parametrize(
+    ("response", "message"),
+    [
+        ({}, "query execution"),
+        ({"QueryExecution": None}, "query execution"),
+        ({"QueryExecution": {}}, "query status"),
+        ({"QueryExecution": {"Status": None, "Statistics": None}}, "query status"),
+        (
+            {"QueryExecution": {"Status": {"State": "mystery"}, "Statistics": []}},
+            "unknown query status",
+        ),
+    ],
+)
+def test_malformed_poll_response_cancels_without_masking_validation_error(
+    response: dict[str, object], message: str
+) -> None:
+    client = FakeClient()
+    client.executions = [
+        {"QueryExecution": {"Status": {"State": "RUNNING"}}},
+        response,
+    ]
+    engine = executor(client)
+    with pytest.raises(DataValidationError, match=message):
+        run(engine)
+    assert [name for name, _ in client.calls] == ["start", "poll", "poll", "cancel"]
+    diagnostic = engine.diagnostics[0]
+    assert diagnostic.state == "POLLING_FAILED"
+    assert diagnostic.cancellation_outcome == "REQUEST_ACCEPTED"
+    assert diagnostic.cancellation_attempts == 1
+    assert diagnostic.scanned_bytes is None
+
+
+@pytest.mark.parametrize(
+    ("cleanup_error", "attempts"),
+    [
+        (error("AccessDeniedException"), 1),
+        (error("InternalServerException"), 3),
+        (EndpointConnectionError(endpoint_url="https://offline.invalid"), 3),
+        (RuntimeError("unexpected cleanup failure"), 1),
+    ],
+    ids=["permanent", "service-retries", "connection-retries", "unexpected"],
+)
+def test_cleanup_failure_preserves_original_exception(
+    cleanup_error: Exception, attempts: int
+) -> None:
+    client = FakeClient()
+    original = AthenaExecutionError("original polling failure")
+    client.executions = [original]
+    client.cancellations = [cleanup_error]
+    engine = executor(client)
+    with pytest.raises(AthenaExecutionError) as raised:
+        run(engine)
+    assert raised.value is original
+    assert raised.value.__cause__ is None
+    assert sum(name == "cancel" for name, _ in client.calls) == attempts
+    assert sum(name == "start" for name, _ in client.calls) == 1
+    diagnostic = engine.diagnostics[0]
+    assert diagnostic.cancellation_attempts == attempts
+    assert diagnostic.cancellation_outcome == "REQUEST_FAILED"
+
+
+@pytest.mark.parametrize(
+    ("timeout", "max_attempts", "expected_attempts", "expected_elapsed"),
+    [(0.5, 3, 2, 0.5), (120.0, 10, 5, 5.0)],
+)
+def test_cleanup_backoff_is_bounded_by_its_own_deadline(
+    timeout: float, max_attempts: int, expected_attempts: int, expected_elapsed: float
+) -> None:
+    client = FakeClient()
+    original = AthenaExecutionError("original polling failure")
+    client.executions = [original]
+    client.cancellations = [error("InternalServerException")]
+    engine = executor(client, timeout=timeout, max_attempts=max_attempts)
+    with pytest.raises(AthenaExecutionError) as raised:
+        run(engine)
+    assert raised.value is original
+    assert engine.clock() == expected_elapsed
+    assert sum(name == "cancel" for name, _ in client.calls) == expected_attempts
+    diagnostic = engine.diagnostics[0]
+    assert diagnostic.cancellation_attempts == expected_attempts
+    assert diagnostic.cancellation_outcome == "DEADLINE_EXCEEDED"
+
+
+def test_cleanup_does_not_retry_after_an_inflight_call_uses_its_budget() -> None:
+    class SlowClient(FakeClient):
+        def stop_query_execution(self, **kwargs: object) -> dict[str, object]:
+            engine.sleep(0.5)
+            return super().stop_query_execution(**kwargs)
+
+    client = SlowClient()
+    original = AthenaExecutionError("original polling failure")
+    client.executions = [original]
+    client.cancellations = [error("InternalServerException")]
+    engine = executor(client, timeout=0.5)
+    with pytest.raises(AthenaExecutionError) as raised:
+        run(engine)
+    assert raised.value is original
+    assert [name for name, _ in client.calls] == ["start", "poll", "cancel"]
+    assert engine.diagnostics[0].cancellation_outcome == "DEADLINE_EXCEEDED"
+    assert engine.diagnostics[0].cancellation_attempts == 1
+
+
+@pytest.mark.parametrize("failure_stage", ["submission", "polling"])
+def test_cleanup_only_targets_the_current_execution_attempt(failure_stage: str) -> None:
+    client = FakeClient()
+    original = AthenaExecutionError("second execution attempt failure")
+    client.submissions = [
+        {"QueryExecutionId": "q1"},
+        original if failure_stage == "submission" else {"QueryExecutionId": "q2"},
+    ]
+    client.executions = [
+        {"QueryExecution": {"Status": {"State": "FAILED", "AthenaError": {"Retryable": True}}}},
+        {"QueryExecution": {"Status": {"State": "RUNNING"}}},
+        original,
+    ]
+    engine = executor(client)
+    with pytest.raises(AthenaExecutionError) as raised:
+        run(engine)
+    assert raised.value is original
+    assert sum(name == "start" for name, _ in client.calls) == 2
+    expected_stops = [] if failure_stage == "submission" else [{"QueryExecutionId": "q2"}]
+    assert [arguments for name, arguments in client.calls if name == "cancel"] == expected_stops
+    assert engine.diagnostics[0].query_id == "q1"
+    assert engine.diagnostics[0].state == "FAILED"
+    assert engine.diagnostics[0].cancellation_outcome is None
+    assert engine.diagnostics[1].query_id == (None if failure_stage == "submission" else "q2")
+
+
+def test_failed_query_with_invalid_error_details_is_not_cancelled() -> None:
+    client = FakeClient()
+    client.executions = [{"QueryExecution": {"Status": {"State": "FAILED", "AthenaError": None}}}]
+    engine = executor(client)
+    with pytest.raises(DataValidationError, match="query error"):
+        run(engine)
+    assert [name for name, _ in client.calls] == ["start", "poll"]
+    assert engine.diagnostics[0].cancellation_outcome is None
+
+
+def test_timeout_during_retry_backoff_does_not_cancel_a_failed_query() -> None:
+    client = FakeClient()
+    client.executions = [
+        {"QueryExecution": {"Status": {"State": "FAILED", "AthenaError": {"Retryable": True}}}}
+    ]
+    engine = executor(client, timeout=0.25)
+    with pytest.raises(AthenaTimeoutError):
+        run(engine)
+    assert [name for name, _ in client.calls] == ["start", "poll"]
+    assert engine.diagnostics[0].cancellation_outcome is None
+
+
 def test_timeout_cancels_running_query_with_no_result_fetch() -> None:
     client = FakeClient()
     client.executions = [{"QueryExecution": {"Status": {"State": "RUNNING"}}}]
@@ -241,6 +434,22 @@ def test_timeout_cancels_running_query_with_no_result_fetch() -> None:
         run(engine)
     assert [name for name, _ in client.calls] == ["start", "poll", "poll", "cancel"]
     assert engine.diagnostics[0].state == "TIMED_OUT"
+    assert engine.diagnostics[0].cancellation_attempts == 1
+    assert engine.diagnostics[0].cancellation_outcome == "REQUEST_ACCEPTED"
+
+
+def test_timeout_cleanup_can_retry_after_the_main_deadline_expires() -> None:
+    client = FakeClient()
+    client.executions = [{"QueryExecution": {"Status": {"State": "RUNNING"}}}]
+    client.cancellations = [error("InternalServerException"), {}]
+    engine = executor(client, timeout=0.5)
+    with pytest.raises(AthenaTimeoutError):
+        run(engine)
+    assert engine.clock() == 0.75  # Main deadline was 0.5; cleanup has a fresh budget.
+    assert [name for name, _ in client.calls] == ["start", "poll", "poll", "cancel", "cancel"]
+    assert engine.diagnostics[0].state == "TIMED_OUT"
+    assert engine.diagnostics[0].cancellation_attempts == 2
+    assert engine.diagnostics[0].cancellation_outcome == "REQUEST_ACCEPTED"
 
 
 def test_cancellation_failure_is_preserved_in_diagnostics() -> None:
@@ -251,6 +460,7 @@ def test_cancellation_failure_is_preserved_in_diagnostics() -> None:
     with pytest.raises(AthenaTimeoutError):
         run(engine)
     assert engine.diagnostics[0].state == "TIMED_OUT_CANCELLATION_FAILED"
+    assert engine.diagnostics[0].cancellation_outcome == "REQUEST_FAILED"
 
 
 def test_running_to_queued_transition_is_polled() -> None:
@@ -297,6 +507,19 @@ def test_inexact_or_malformed_result_types_fail(kind: str, value: str) -> None:
     with pytest.raises(DataValidationError):
         run(engine)
     assert engine.diagnostics[0].state == "RESULTS_FAILED"
+    assert not any(name == "cancel" for name, _ in client.calls)
+
+
+@pytest.mark.parametrize("code", ["AccessDeniedException", "InternalServerException"])
+def test_result_api_failure_does_not_cancel_a_succeeded_query(code: str) -> None:
+    client = FakeClient()
+    client.pages = [error(code)]
+    engine = executor(client)
+    with pytest.raises(AthenaExecutionError):
+        run(engine)
+    assert not any(name == "cancel" for name, _ in client.calls)
+    assert engine.diagnostics[0].state == "RESULTS_FAILED"
+    assert engine.diagnostics[0].cancellation_outcome is None
 
 
 @pytest.mark.parametrize("change", ["header", "width", "metadata", "token", "no_header"])
@@ -325,13 +548,14 @@ def test_unrecognized_status_and_missing_query_id_fail_closed() -> None:
     client.submissions = [{}]
     with pytest.raises(DataValidationError):
         run(executor(client))
+    assert [name for name, _ in client.calls] == ["start"]
     client = FakeClient()
     client.executions = [{"QueryExecution": {"Status": {"State": "mystery"}}}]
     with pytest.raises(DataValidationError):
         run(executor(client))
 
 
-def test_total_deadline_also_bounds_result_pagination() -> None:
+def test_result_pagination_timeout_does_not_cancel_a_succeeded_query() -> None:
     class SlowClient(FakeClient):
         def get_query_results(self, **kwargs: object) -> dict[str, object]:
             engine.sleep(0.5)
@@ -342,4 +566,7 @@ def test_total_deadline_also_bounds_result_pagination() -> None:
     client.pages = [page((("x", "bigint"),), [("7",)], token="next")]
     with pytest.raises(AthenaTimeoutError):
         run(engine)
-    assert client.calls[-1][0] == "cancel"
+    assert [name for name, _ in client.calls] == ["start", "poll", "results"]
+    assert engine.diagnostics[0].state == "TIMED_OUT"
+    assert engine.diagnostics[0].cancellation_attempts == 0
+    assert engine.diagnostics[0].cancellation_outcome is None

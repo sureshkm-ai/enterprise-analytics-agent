@@ -6,7 +6,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import date
 from decimal import Decimal, InvalidOperation
-from typing import Protocol, cast
+from typing import Literal, Protocol, cast
 from uuid import uuid4
 
 from botocore.exceptions import (
@@ -37,7 +37,10 @@ class AthenaExecutionError(SemanticError):
 
 
 class AthenaTimeoutError(AthenaExecutionError):
-    """The total deadline expired; an accepted running query was cancelled."""
+    """The total deadline expired; best-effort cleanup is recorded separately."""
+
+
+type CancellationOutcome = Literal["REQUEST_ACCEPTED", "REQUEST_FAILED", "DEADLINE_EXCEEDED"]
 
 
 @dataclass(frozen=True)
@@ -52,6 +55,8 @@ class AthenaDiagnostic:
     engine_time_ms: int | None = None
     queue_time_ms: int | None = None
     total_time_ms: int | None = None
+    cancellation_attempts: int = 0
+    cancellation_outcome: CancellationOutcome | None = None
 
 
 _TRANSIENT_CODES = frozenset(
@@ -200,8 +205,14 @@ class AthenaExecutor:
         dataset_version: str,
         state: str,
         execution: dict[str, object],
+        *,
+        cancellation_attempts: int = 0,
+        cancellation_outcome: CancellationOutcome | None = None,
     ) -> None:
-        statistics = _object(execution.get("Statistics", {}), "query statistics")
+        # Diagnostics must not replace the original failure on a malformed poll response.
+        statistics = execution.get("Statistics", {})
+        if not isinstance(statistics, dict):
+            statistics = {}
         self.diagnostics.append(
             AthenaDiagnostic(
                 query_id=query_id,
@@ -214,8 +225,39 @@ class AthenaExecutor:
                 engine_time_ms=_optional_integer(statistics.get("EngineExecutionTimeInMillis")),
                 queue_time_ms=_optional_integer(statistics.get("QueryQueueTimeInMillis")),
                 total_time_ms=_optional_integer(statistics.get("TotalExecutionTimeInMillis")),
+                cancellation_attempts=cancellation_attempts,
+                cancellation_outcome=cancellation_outcome,
             )
         )
+
+    def _cancel(self, query_id: str) -> tuple[int, CancellationOutcome]:
+        """Request a stop without replacing the failure that triggered cleanup.
+
+        The separate deadline permits cleanup after the main deadline. `_call`
+        bounds retries/backoff; factories bound in-flight SDK socket timeouts and
+        disable SDK retries. One in-flight request can outlast this scheduling
+        budget. An accepted request does not confirm a terminal query state.
+        """
+        attempts = 0
+
+        def stop(**kwargs: object) -> dict[str, object]:
+            nonlocal attempts
+            attempts += 1
+            return self.client.stop_query_execution(**kwargs)
+
+        try:
+            response = self._call(
+                stop,
+                self.clock() + min(self.timeout_seconds, 5.0),
+                QueryExecutionId=query_id,
+            )
+            _object(response, "stop response")
+        except AthenaTimeoutError:
+            return attempts, "DEADLINE_EXCEEDED"
+        except BaseException:
+            # Even an unexpected cleanup error must preserve the original exception.
+            return attempts, "REQUEST_FAILED"
+        return attempts, "REQUEST_ACCEPTED"
 
     def execute(
         self,
@@ -233,6 +275,9 @@ class AthenaExecutor:
             query_id: str | None = None
             execution: dict[str, object] = {}
             state = "SUBMISSION_FAILED"
+            terminal_state: str | None = None
+            cancellation_attempts = 0
+            cancellation_outcome: CancellationOutcome | None = None
             try:
                 # Stable within API retries; a new token only for an explicitly retryable
                 # terminal execution, never after an uncertain submission response.
@@ -255,6 +300,7 @@ class AthenaExecutor:
                 if not isinstance(value, str) or not value:
                     raise DataValidationError("Athena did not return a query execution identifier")
                 query_id = value
+                state = "SUBMITTED"
                 while True:
                     result = self._call(
                         self.client.get_query_execution, deadline, QueryExecutionId=query_id
@@ -272,6 +318,7 @@ class AthenaExecutor:
                         raise DataValidationError("Athena returned an unknown query status")
                     state = str(status_state)
                     if state in ("SUCCEEDED", "FAILED", "CANCELLED"):
+                        terminal_state = state
                         break
                     self._pause(self.poll_seconds, deadline)
                 if state == "FAILED":
@@ -286,18 +333,14 @@ class AthenaExecutor:
                 rows = self._results(query_id, deadline)
                 state = "SUCCEEDED"
                 return rows
-            except AthenaTimeoutError:
-                state = "TIMED_OUT"
-                if query_id is not None:
-                    # A separate bounded cancellation attempt is necessary after the
-                    # execution deadline expires. Socket timeouts are set by the factory.
-                    try:
-                        self._call(
-                            self.client.stop_query_execution,
-                            self.clock() + min(self.timeout_seconds, 5.0),
-                            QueryExecutionId=query_id,
-                        )
-                    except (AthenaExecutionError, DataValidationError):
+            except BaseException as exc:
+                if isinstance(exc, AthenaTimeoutError):
+                    state = "TIMED_OUT"
+                if query_id is not None and terminal_state is None:
+                    if not isinstance(exc, AthenaTimeoutError):
+                        state = "POLLING_FAILED"
+                    cancellation_attempts, cancellation_outcome = self._cancel(query_id)
+                    if cancellation_outcome != "REQUEST_ACCEPTED" and state == "TIMED_OUT":
                         state = "TIMED_OUT_CANCELLATION_FAILED"
                 raise
             finally:
@@ -309,6 +352,8 @@ class AthenaExecutor:
                     dataset_version,
                     state,
                     execution,
+                    cancellation_attempts=cancellation_attempts,
+                    cancellation_outcome=cancellation_outcome,
                 )
         raise AthenaExecutionError("Athena execution retries were exhausted")
 

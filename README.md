@@ -1,8 +1,8 @@
 # Enterprise structured-data analytics agent
 
-Milestone 2 provides five governed local metrics backed by DuckDB and Parquet, versioned semantic contracts, deterministic retail data, and automated verification. No AWS calls or model calls are made.
+The repository provides five governed metrics, unchanged v1/v2 contracts, deterministic retail data, and automated verification. Milestone 3 adds an Athena adapter, versioned snapshot publication, and Python CDK data infrastructure. **The user reports successful development deployment and live validation: 66 passed, 458 deselected in 111.94s.** Current hosted-CI confirmation, PR review, and merge remain separate handoff work; this is not a production-readiness claim. The default CLI/tests remain local and require no AWS credentials.
 
-The production roadmap is an AWS data layer/Athena adapter with parity tests in milestone 3, then Bedrock and AgentCore in milestone 4. A later Cube adapter will implement the same semantic interface. These integrations are outside the current milestone.
+Milestone 2 was merged in PR #1 at `9dc5989` and its hosted CI passed. Bedrock/AgentCore remain milestone 4; Cube is a later separate extension. Neither is implemented here.
 
 ## Run locally
 
@@ -63,6 +63,32 @@ Refunds and physical returns are independent. Only approved refunds reduce net r
 `.github/workflows/ci.yml` runs on pushes and pull requests with Python 3.12, SHA-pinned checkout/setup-python actions, pinned Poetry 2.3.1, and `poetry sync --with dev --no-interaction` from the committed lockfile. It runs the same five checks listed above and needs no AWS credentials. GitHub execution begins when the branch is pushed; local verification does not imply a hosted run has occurred.
 
 The workflow follows current official [checkout releases](https://github.com/actions/checkout/releases/tag/v7.0.1), [setup-python documentation](https://github.com/actions/setup-python/blob/6d4fd22b20465ccc0f7354476588e8df7c9ca0e0/README.md), and [Poetry CI guidance](https://python-poetry.org/docs/#ci-recommendations).
+
+## Athena development deployment and validation
+
+The user reports `CDKToolkit` and `enterprise-analytics-dev-data-layer` both reached `CREATE_COMPLETE`. The [deployment record](docs/aws-deployment-plan.md) retains the reviewed configuration and commands, IAM scope, cost assumptions, retention, and cleanup. The configured target is profile `analytics-dev`, account `453711491609`, region `us-west-2`, with no implicit default profile. These AWS results were executed by the user and were not rerun during this documentation update. Further AWS changes require explicit authorization.
+
+The CDK app under `infrastructure/cdk` uses explicit configuration and makes no account lookups during synthesis. Install the repository-local CLI when needed; the existing global CLI is too old for the locked library's assembly schema:
+
+```sh
+npm ci --prefix infrastructure/cdk/tooling --ignore-scripts
+JSII_RUNTIME_PACKAGE_CACHE_ROOT=/private/tmp/enterprise-analytics-jsii-cache \
+  poetry run python -m infrastructure.cdk.app \
+  --config infrastructure/cdk/config.development.json --outdir artifacts/cdk.development.out
+poetry run python tests/aws_fixture_data.py --output-dir artifacts/aws-datasets
+```
+
+These commands prepare local artifacts only. Source snapshots use separate `snapshots/<version>/<table>/` locations. Manifests contain version, seed, inventory, checksums, sizes, schemas, and canonical row counts; identical replays collapse and contradictory records fail validation. An absent returns source remains absent, while an empty typed source remains present. A ready manifest is published only after every file and deployed schema verifies. Athena outputs go to a separate bucket.
+
+`AthenaSemanticAdapter` implements the same four operations as DuckDB and returns only the existing semantic contracts. AWS-specific configuration, encoded execution parameters, query lifecycle, exact numeric conversion, and diagnostics remain internal. Dataset loaders/query executors are separate narrow roles. Tenant/region filtering is application enforcement: direct access to those development roles/storage is **not** Lake Formation row-level security.
+
+Default `poetry run pytest` skips explicitly marked live tests without creating SDK sessions. An intentionally requested live run fails if its configuration is missing. The user executed this live command from the repository root:
+
+```sh
+poetry run pytest tests --run-aws --aws-config=infrastructure/cdk/config.development.json -m aws_integration -q
+```
+
+The user-reported result was **66 passed, 458 deselected in 111.94 seconds**. The live gate compares **each** adapter with independent literal expectations, including missing/empty returns, original-period adjustments, boundaries, authorization, grouped/ungrouped results, and zero denominators. Query IDs, scanned bytes, timings, dataset/metric versions are written to ignored `artifacts/aws-parity-diagnostics.jsonl`. The cancellation fix and its offline regressions are present in `ae68d2c`; recorded offline checks cover the current code and were not rerun for this documentation update. See [progress](docs/progress.md) for evidence and remaining handoff work.
 
 - [Architecture](docs/architecture.md)
 - [Metric definitions and worked example](docs/metric-definitions.md)

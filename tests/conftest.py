@@ -10,6 +10,41 @@ from enterprise_analytics_agent.contracts import AuthorizationContext
 from enterprise_analytics_agent.data import TABLE_SCHEMAS, DataRow
 
 
+def pytest_addoption(parser: pytest.Parser) -> None:
+    parser.addoption(
+        "--run-aws", action="store_true", help="Explicitly enable live AWS parity tests"
+    )
+    parser.addoption("--aws-config", help="Reviewed development deployment JSON for live AWS tests")
+
+
+def pytest_configure(config: pytest.Config) -> None:
+    if config.getoption("run_aws"):
+        from enterprise_analytics_agent.adapters.aws_runtime import load_runtime_config
+
+        path = config.getoption("aws_config")
+        if not path:
+            raise pytest.UsageError("--run-aws requires --aws-config; no live acceptance was run")
+        try:
+            load_runtime_config(Path(path))
+        except Exception as exc:
+            raise pytest.UsageError(f"Live AWS configuration is missing or invalid: {exc}") from exc
+
+
+@pytest.hookimpl(trylast=True)
+def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:
+    live_items = [item for item in items if item.get_closest_marker("aws_integration")]
+    if config.getoption("run_aws"):
+        if not live_items:
+            raise pytest.UsageError(
+                "--run-aws selected no live parity tests; acceptance was not run"
+            )
+        return
+    for item in live_items:
+        item.add_marker(
+            pytest.mark.skip(reason="Live AWS tests require explicit --run-aws/--aws-config")
+        )
+
+
 @pytest.fixture
 def context() -> AuthorizationContext:
     return AuthorizationContext(

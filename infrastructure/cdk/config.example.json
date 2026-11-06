@@ -1,0 +1,20 @@
+{
+  "account": "111122223333",
+  "profile": "analytics-dev",
+  "region": "us-west-2",
+  "resource_prefix": "enterprise-analytics-dev",
+  "database_name": "enterprise_analytics_dev",
+  "workgroup_name": "enterprise-analytics-dev",
+  "trusted_loader_principal_arn": "arn:aws:iam::111122223333:role/EnterpriseAnalyticsDeveloper",
+  "trusted_query_principal_arn": "arn:aws:iam::111122223333:role/EnterpriseAnalyticsDeveloper",
+  "bytes_scanned_cutoff_per_query": 10485760,
+  "results_retention_days": 7,
+  "incomplete_upload_cleanup_days": 1,
+  "scan_alarm_threshold_bytes": 104857600,
+  "snapshots": [
+    {"dataset_version": "retail-v1", "include_returns": true},
+    {"dataset_version": "parity-v1", "include_returns": true},
+    {"dataset_version": "parity-legacy-v1", "include_returns": false},
+    {"dataset_version": "parity-no-returns-v1", "include_returns": true}
+  ]
+}

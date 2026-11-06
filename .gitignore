@@ -41,3 +41,6 @@ artifacts/
 .idea/
 .vscode/
 poetry.toml
+cdk.out/
+cdk.context.json
+node_modules/

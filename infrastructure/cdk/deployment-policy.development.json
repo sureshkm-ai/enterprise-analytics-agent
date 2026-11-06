@@ -1,0 +1,114 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ReadBootstrapVersion",
+      "Effect": "Allow",
+      "Action": "ssm:GetParameters",
+      "Resource": "arn:aws:ssm:us-west-2:453711491609:parameter/cdk-bootstrap/hnb659fds/version"
+    },
+    {
+      "Sid": "DevelopmentStorage",
+      "Effect": "Allow",
+      "Action": [
+        "s3:*"
+      ],
+      "Resource": [
+        "arn:aws:s3:::enterprise-analytics-dev-453711491609-us-west-2-data",
+        "arn:aws:s3:::enterprise-analytics-dev-453711491609-us-west-2-data/*",
+        "arn:aws:s3:::enterprise-analytics-dev-453711491609-us-west-2-results",
+        "arn:aws:s3:::enterprise-analytics-dev-453711491609-us-west-2-results/*"
+      ]
+    },
+    {
+      "Sid": "DevelopmentCatalog",
+      "Effect": "Allow",
+      "Action": [
+        "glue:CreateDatabase",
+        "glue:GetDatabase",
+        "glue:UpdateDatabase",
+        "glue:DeleteDatabase",
+        "glue:CreateTable",
+        "glue:GetTable",
+        "glue:GetTables",
+        "glue:UpdateTable",
+        "glue:DeleteTable",
+        "glue:GetTags",
+        "glue:TagResource",
+        "glue:UntagResource"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-west-2:453711491609:catalog",
+        "arn:aws:glue:us-west-2:453711491609:database/enterprise_analytics_dev",
+        "arn:aws:glue:us-west-2:453711491609:table/enterprise_analytics_dev/ea_*"
+      ]
+    },
+    {
+      "Sid": "DevelopmentWorkgroup",
+      "Effect": "Allow",
+      "Action": [
+        "athena:CreateWorkGroup",
+        "athena:GetWorkGroup",
+        "athena:UpdateWorkGroup",
+        "athena:DeleteWorkGroup",
+        "athena:TagResource",
+        "athena:UntagResource",
+        "athena:ListTagsForResource"
+      ],
+      "Resource": "arn:aws:athena:us-west-2:453711491609:workgroup/enterprise-analytics-dev"
+    },
+    {
+      "Sid": "DevelopmentRoles",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateRole",
+        "iam:DeleteRole",
+        "iam:GetRole",
+        "iam:TagRole",
+        "iam:UntagRole",
+        "iam:UpdateAssumeRolePolicy",
+        "iam:PutRolePolicy",
+        "iam:GetRolePolicy",
+        "iam:DeleteRolePolicy",
+        "iam:ListRolePolicies",
+        "iam:ListAttachedRolePolicies",
+        "iam:AttachRolePolicy",
+        "iam:DetachRolePolicy"
+      ],
+      "Resource": [
+        "arn:aws:iam::453711491609:role/enterprise-analytics-dev-dataset-loader",
+        "arn:aws:iam::453711491609:role/enterprise-analytics-dev-query-executor"
+      ]
+    },
+    {
+      "Sid": "StackGeneratedPolicies",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreatePolicy",
+        "iam:DeletePolicy",
+        "iam:GetPolicy",
+        "iam:GetPolicyVersion",
+        "iam:ListEntitiesForPolicy",
+        "iam:CreatePolicyVersion",
+        "iam:DeletePolicyVersion",
+        "iam:ListPolicyVersions",
+        "iam:TagPolicy",
+        "iam:UntagPolicy"
+      ],
+      "Resource": "arn:aws:iam::453711491609:policy/enterprise-analytics-dev-data-layer-*"
+    },
+    {
+      "Sid": "DevelopmentMonitoring",
+      "Effect": "Allow",
+      "Action": [
+        "cloudwatch:PutMetricAlarm",
+        "cloudwatch:DescribeAlarms",
+        "cloudwatch:DeleteAlarms",
+        "cloudwatch:TagResource",
+        "cloudwatch:UntagResource",
+        "cloudwatch:ListTagsForResource"
+      ],
+      "Resource": "arn:aws:cloudwatch:us-west-2:453711491609:alarm:enterprise-analytics-dev-*"
+    }
+  ]
+}

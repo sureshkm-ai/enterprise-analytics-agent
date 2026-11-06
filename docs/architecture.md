@@ -8,12 +8,13 @@ flowchart LR
     Agent[Future Bedrock agent on AgentCore] --> Tools
     Tools --> Interface[SemanticAdapter]
     Interface --> Local[Local DuckDB adapter]
-    Interface -. future .-> Athena[AWS governed metrics / Athena adapter]
+    Interface --> Athena[Athena adapter - deployment approval pending]
+    Athena --> Warehouse[Versioned S3 snapshots / explicit Glue tables]
     Interface -. future .-> Cube[Cube adapter]
     Local --> Data[Local Parquet retail tables]
 ```
 
-The agent consumes backend-independent semantic contracts. AWS-specific and Cube-specific logic belongs in adapters. `contracts.py`, `contracts_v2.py`, and `adapter.py` must not import provider clients, DuckDB types, or SQL. Milestones 1–2 implement the local execution path; there is no agent loop or deployed service yet.
+The agent consumes backend-independent semantic contracts. AWS-specific and Cube-specific logic belongs in adapters. `contracts.py`, `contracts_v2.py`, and `adapter.py` must not import provider clients, DuckDB types, or SQL. Milestones 1–2 implemented the local path; milestone 3 adds the Athena implementation and deployment preparation. No agent loop or deployed service is implemented, and live Athena acceptance remains pending.
 
 The four semantic tools are `discover_metrics`, `describe_metric`, `query_metric`, and `discover_dimensions`. Metric definitions own calculations, allowed dimensions, relationships, filters, units, and time semantics. The catalog is the source of governed configuration; an adapter translates the supported calculation into backend execution rather than accepting a user expression.
 
@@ -49,8 +50,26 @@ Push/PR CI uses read-only repository permissions, Python 3.12, immutable action 
 
 ## Future integrations
 
-Milestone 3 is the AWS data layer and Athena adapter with parity tests. Milestone 4 adds Bedrock and AgentCore. Cube is a later separate adapter. Before any external integration, validate SDK usage against current official documentation and record it. Provider-specific identity propagation, query lifecycle, credentials, and errors remain in adapters or trusted hosting code. Do not make AWS calls during milestone 2.
+Milestone 4 adds Bedrock and AgentCore. Cube is a later separate adapter. Neither is part of milestone 3. External SDK usage must be checked against current official documentation, with references recorded. Provider-specific identity propagation, query lifecycle, credentials, and errors remain in adapters or trusted hosting code.
 
 For local implementation, official references checked on 2026-11-05 include [DuckDB's Python API](https://duckdb.org/docs/stable/clients/python/overview), [Pydantic configuration](https://docs.pydantic.dev/latest/api/config/), and [Poetry project configuration](https://python-poetry.org/docs/pyproject/).
 
 CI references checked on 2026-11-05: [checkout v7.0.1](https://github.com/actions/checkout/releases/tag/v7.0.1), [setup-python v7.1.0](https://github.com/actions/setup-python/releases/tag/v7.1.0), [Poetry installation/CI guidance](https://python-poetry.org/docs/#ci-recommendations), and [Poetry CLI](https://python-poetry.org/docs/cli/). Action release refs were resolved to full commit SHAs in the official repositories. Local `poetry sync --help` confirmed the pinned Poetry version supports the workflow flags.
+
+## AWS data and Athena execution boundary
+
+`snapshots.py` prepares storage-independent canonical Parquet and manifest metadata using the existing validation boundary. AWS naming, SDK configuration, conditional S3 publication, and schema verification are under `adapters`; CDK resources are under `infrastructure/cdk`. Source files are frozen before validation/publication to prevent mutation of the original directory from changing uploaded bytes.
+
+Each configured version has separate S3 table locations and deterministic Glue names derived from its version hash. Six legacy tables are required; returns is optional in inventory. A missing required source fails before query submission. Tables are declared explicitly by CDK, not inferred by a crawler or mutated by the data loader. Source permissions allow only canonical file/manifest keys, with conditional writes; results are in a different bucket. A failed upload leaves an unpublished prefix and never silently marks it ready.
+
+The Athena SQL compiler translates the catalog's five expressions and governed identifiers, encodes validated strings/dates as Athena execution-parameter literals, and keeps placeholders in WHERE clauses. It casts monetary integer arithmetic to DECIMAL(38,0), preaggregates refunds, deduplicates return orders, and uses the same aggregate-ratio/final-rounding rules as DuckDB. Athena's 38-digit aggregate bound is explicit; values are never converted through float.
+
+The executor bounds polling and transient retries, retains submission tokens across uncertain API retries, resubmits only explicitly retryable terminal failures, and cancels on timeout. Finite SDK socket timeouts bound in-flight calls. It validates first-page headers, all pages/types/nulls, and pagination tokens. Private diagnostic records contain query IDs, bytes and timings, dataset version, metric version, operation, and status; public v1/v2 schemas are unchanged.
+
+Application authorization always intersects the trusted tenant/region context with model-supplied dimension filters. It does not enforce database-level row security: the development query role can query every row in its approved source snapshots and read result objects. IAM-compatible Glue defaults apply only to this new database; existing account-level Lake Formation settings are not changed, and no Lake Formation row-level-security claim is made.
+
+## Deployment and acceptance gates
+
+Read-only AWS checks verified `analytics-dev`, account `453711491609`, region `us-west-2`; CDKToolkit is absent and IAM role inspection was denied. The [deployment plan](aws-deployment-plan.md) records exact resources, scoped deployment policy, IAM prerequisites, retention/cost controls, prepared commands, cleanup, and current official AWS/CDK/Boto3 references.
+
+Offline tests use injected clients and local SQL-subset execution, not AWS credentials. CDK assertions and synthesis run without account lookups. Explicit live tests require both `--run-aws` and reviewed configuration and compare Athena and DuckDB with independent fixture answers; missing configuration fails rather than reporting skipped acceptance. Resource creation, bootstrap, publication, and live queries await user approval. Milestone 3 cannot be marked complete until live parity passes.

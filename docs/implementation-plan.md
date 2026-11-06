@@ -10,7 +10,7 @@
 6. Add a CLI demonstrating net revenue by region.
 7. Verify independently calculated scenarios for partial refunds, canceled orders, multiple items, duplicate events, empty results, exclusive end boundaries, and authorization. Run pytest, Ruff, mypy, and the CLI; resolve failures and update progress.
 
-## Milestone 2: complete local semantics and CI — acceptance passed, local checkpoint
+## Milestone 2: complete local semantics and CI — merged and hosted CI verified
 
 1. Reconcile documentation with Git and the active `enterprise-analytics` environment; run the unchanged baseline checks and create a feature branch.
 2. Document gross sales, unchanged net revenue, distinct order count, aggregate average order value, and physical-return order rate before implementation.
@@ -23,9 +23,18 @@
 
 Acceptance: all five metrics and required edge cases pass; v1 net revenue and original generated sales/refunds retain their behavior; missing return data errors clearly; CI runs `poetry check --lock`, pytest, Ruff lint/format, and mypy; all local checks and CLI demonstrations succeed.
 
-## Milestone 3: AWS data layer and Athena adapter with parity tests — not authorized
+## Milestone 3: AWS data layer and Athena adapter with parity tests — implementation authorized
 
-Prepare the governed AWS data layer and implement Athena behind the semantic interface, with parity tests against local metric fixtures. Verify current official SDK documentation before implementation; address warehouse authorization, credentials, query lifecycle, limits, and observability. No implementation or deployment in milestone 2.
+1. Preserve local work, reconcile milestone 2 merge/CI evidence, reuse `feat/milestone-3-athena`, verify the existing Conda/Poetry environment, and run baseline checks.
+2. Select an explicit development profile; verify account/region using read-only AWS calls. Never fall back silently to the default profile.
+3. Define Python CDK v2 infrastructure with private encrypted retained source storage, separate expiring result storage, explicit version-scoped Glue schemas, enforced Athena workgroup settings/scan limit/monitoring, and separate loader/query roles. Synthesis must not need AWS lookups.
+4. Prepare validated canonical snapshots and manifests, preserving absent versus empty returns and legacy six-table support. Publish source files and checksums before making a ready manifest visible.
+5. Implement all semantic operations through Athena without changing public v1/v2 contracts or metric definitions. Use governed identifiers, encoded execution parameters, exact numeric translation, bounded/retried query lifecycle, cancellation, pagination, and internal diagnostics.
+6. Add offline unit/CDK tests and explicitly enabled live parity tests against DuckDB and independently calculated fixture expectations. Missing live configuration must fail, not silently skip.
+7. Finish offline code, documentation, checks, and synthesis. Present account/profile/region, resources, IAM, costs, commands, and cleanup for approval; bootstrap is part of deployment.
+8. **Only after deployment approval:** bootstrap/deploy the agreed development resources, publish snapshots, and run live parity. Keep the milestone incomplete until these tests pass. Record readiness separately from deployment/live evidence; make local commits without pushing.
+
+Development profile selected by the user: `analytics-dev`; read-only STS verified account `453711491609`, region `us-west-2`. Resource creation and AWS data publication are not yet approved. Bedrock, AgentCore, and Cube remain outside this milestone.
 
 ## Milestone 4: Bedrock and AgentCore integration — not authorized
 

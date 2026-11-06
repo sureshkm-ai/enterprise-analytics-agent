@@ -3,6 +3,7 @@
 ## Scope and architecture
 
 - Keep milestones 1 and 2 local: no AWS calls, credentials, or external services.
+- Milestone 3 permits implementation, offline synthesis/tests, and read-only verification using an explicitly selected AWS profile. Finish the concrete deployment plan before asking for approval; bootstrap, resource creation, source publication, and live parity require that approval. Do not mark it complete until live parity passes.
 - The agent consumes backend-independent, versioned semantic contracts.
 - AWS-specific and Cube-specific logic belongs only in adapters. Do not expose SQL or provider SDK types in the semantic interface.
 - The semantic tools are `discover_metrics`, `describe_metric`, `query_metric`, and `discover_dimensions`.

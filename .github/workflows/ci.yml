@@ -48,3 +48,9 @@ jobs:
 
       - name: Check types
         run: poetry run mypy src tests
+
+      - name: Synthesize CDK without AWS lookups or credentials
+        run: >-
+          poetry run python -m infrastructure.cdk.app
+          --config infrastructure/cdk/config.example.json
+          --outdir artifacts/cdk.out

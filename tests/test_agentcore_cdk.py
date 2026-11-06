@@ -2,14 +2,17 @@
 
 import hashlib
 import json
+import re
 import zipfile
 from copy import deepcopy
+from fnmatch import fnmatchcase
 from pathlib import Path
 from typing import Any
 
 import pytest
 from aws_cdk import App, Environment
 from aws_cdk.assertions import Template
+from botocore.session import Session
 from pydantic import ValidationError
 
 from infrastructure.cdk.agentcore_config import AgentCoreDeploymentConfig
@@ -238,6 +241,48 @@ def test_proposed_cfn_execution_policy_covers_native_resource_policy_and_identit
         assert slr["Resource"].endswith(f"/AWSServiceRoleForBedrockAgentCore{suffix}")
 
 
+def test_creation_dependency_matches_recorded_denial_without_changing_existing_grants() -> None:
+    policy = json.loads(
+        (ROOT / "infrastructure/cdk/agentcore-deployment-policy.development.json").read_text()
+    )
+    # CloudTrail responseElements.message names this creation-time wildcard,
+    # rather than a runtime ID under the existing name-specific grant.
+    resource = "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/*"
+    matches = [
+        statement
+        for statement in policy["Statement"]
+        if "bedrock-agentcore:CreateAgentRuntimeEndpoint" in _actions(statement)
+        and any(
+            fnmatchcase(resource, pattern)
+            for pattern in (
+                [statement["Resource"]]
+                if isinstance(statement["Resource"], str)
+                else statement["Resource"]
+            )
+        )
+    ]
+    assert len(matches) == 1, "The actual creation-time resource needs an explicit narrow grant"
+    assert matches[0] == {
+        "Sid": "CreateTaggedDefaultEndpointDuringRuntimeCreation",
+        "Effect": "Allow",
+        "Action": ["bedrock-agentcore:CreateAgentRuntimeEndpoint"],
+        "Resource": resource,
+        "Condition": {
+            "StringEquals": {
+                "aws:RequestedRegion": "us-west-2",
+                "aws:PrincipalAccount": "453711491609",
+                "aws:RequestTag/Project": "enterprise-analytics-dev",
+            }
+        },
+    }
+    original = {**policy, "Statement": [item for item in policy["Statement"] if item != matches[0]]}
+    canonical = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+    # Frozen canonical policy at c29e8cb / administrator-confirmed active V1.
+    assert hashlib.sha256(canonical).hexdigest() == (
+        "026a4cf0ecf5716d6ff72f16b3dd7dda9c3bdb0343f48605ffaed25bec8d5e17"
+    )
+
+
 def test_resource_policies_restrict_both_runtime_and_default_endpoint(
     agentcore_templates: tuple[Template, Template, dict[str, Any]],
     agentcore_config: AgentCoreDeploymentConfig,
@@ -246,7 +291,7 @@ def test_resource_policies_restrict_both_runtime_and_default_endpoint(
     policies = template.find_resources("AWS::BedrockAgentCore::ResourcePolicy")
     assert len(policies) == 2
     encoded = json.dumps(policies)
-    assert "/endpoint/DEFAULT" in encoded
+    assert "/runtime-endpoint/DEFAULT" in encoded
     assert "DenyOtherPrincipals" in encoded
     assert "ArnNotEquals" in encoded
     assert "DenyDelegationAndInteractiveProtocols" in encoded
@@ -262,6 +307,27 @@ def test_resource_policies_restrict_both_runtime_and_default_endpoint(
     )
     assert "bedrock-agentcore:InvokeAgentRuntimeForUser" in statements[2]["Action"]
     assert all(statement["Resource"] != "*" for statement in statements)
+
+
+def test_default_endpoint_policy_and_output_match_official_sdk_arn_pattern(
+    agentcore_templates: tuple[Template, Template, dict[str, Any]],
+) -> None:
+    template = agentcore_templates[1].to_json()
+    endpoint = template["Resources"]["DefaultEndpointInboundPolicy"]["Properties"]["ResourceArn"]
+    separator, parts = endpoint["Fn::Join"]
+    assert separator == "" and parts[0] == {"Fn::GetAtt": ["AnalyticsRuntime", "AgentRuntimeArn"]}
+    concrete = "arn:aws:bedrock-agentcore:us-west-2:111122223333:runtime/analytics_agent-0123456789"
+    concrete += "".join(parts[1:])
+    output = (
+        Session()
+        .get_service_model("bedrock-agentcore-control")
+        .operation_model("GetAgentRuntimeEndpoint")
+        .output_shape
+    )
+    assert output is not None
+    pattern = output.members["agentRuntimeEndpointArn"].metadata["pattern"]
+    assert re.fullmatch(pattern, concrete), "Endpoint policy must target a real AgentCore ARN"
+    assert template["Outputs"]["DefaultEndpointArn"]["Value"] == endpoint
 
 
 def test_log_output_refers_to_agentcore_managed_stdout_group(

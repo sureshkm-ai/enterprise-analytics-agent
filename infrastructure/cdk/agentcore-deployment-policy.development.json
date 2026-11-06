@@ -167,6 +167,21 @@
           "iam:AWSServiceName": "network.bedrock-agentcore.amazonaws.com"
         }
       }
+    },
+    {
+      "Sid": "CreateTaggedDefaultEndpointDuringRuntimeCreation",
+      "Effect": "Allow",
+      "Action": [
+        "bedrock-agentcore:CreateAgentRuntimeEndpoint"
+      ],
+      "Resource": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2",
+          "aws:PrincipalAccount": "453711491609",
+          "aws:RequestTag/Project": "enterprise-analytics-dev"
+        }
+      }
     }
   ]
 }

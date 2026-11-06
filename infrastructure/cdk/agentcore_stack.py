@@ -183,7 +183,7 @@ class AnalyticsAgentRuntimeStack(Stack):
             # No custom/JWT authorizer: AWS defaults inbound authorization to SigV4.
         )
         runtime_arn = self.runtime.attr_agent_runtime_arn
-        endpoint_arn = f"{runtime_arn}/endpoint/DEFAULT"
+        endpoint_arn = f"{runtime_arn}/runtime-endpoint/DEFAULT"
         self.resource_policies: list[agentcore.CfnResourcePolicy] = []
         for resource_id, resource_arn in (
             ("RuntimeInboundPolicy", runtime_arn),

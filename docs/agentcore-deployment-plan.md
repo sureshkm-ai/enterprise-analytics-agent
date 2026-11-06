@@ -1,6 +1,68 @@
 # Milestone 4 AgentCore deployment and live-test plan
 
-Prepared 2026-11-06; archive and synthesized templates refreshed for the question-scope follow-up. **Local readiness only; deployment, IAM changes, uploads, and billable invocations await approval. Milestone 4 remains open.** This plan reuses the deployed milestone 3 data layer. It does not repeat bootstrap, dataset publication, or the earlier Athena parity run.
+Execution checkpoint 2026-11-06. The user approved the plan at `c29e8cb`; foundation deployment, query-role trust addition and checksum-verified upload succeeded. **Runtime creation failed with AccessDenied; deployed acceptance has not run. Milestone 4 remains open.** AWS mutations are stopped. The local endpoint-ARN correction below is a new, unapplied proposal requiring approval before retry. Existing milestone 3 infrastructure/datasets are retained; bootstrap and dataset publication were not repeated.
+
+## Execution result and revised recovery proposal
+
+Actual stack states: foundation `CREATE_COMPLETE`, data layer `UPDATE_COMPLETE`, runtime stack `ROLLBACK_COMPLETE`. No matching Runtime was returned by the service. The uploaded approved archive has S3 VersionId **`HSRXiFjg0w2W77InULH4.fn32Y.JH8b9`**; its SHA-256 remains `51eaeac6b9eb107f4634aea9e3180fa1db7dce1380fbe166415fbfed8185ded1`. No warm-up, retention update, dataset variant update, or live evaluation ran: **0/40 Runtime invocations**. There was no Runtime to restore; `parity-v1` remains the intended initial server configuration, not a verified running state.
+
+CloudTrail records the failed `CreateAgentRuntime` at `2026-11-06T20:27:49Z`, request ID `8dcb800c-7f91-4598-8d0d-b9dc5d74c61e`. The detailed denial is in **`responseElements.message`**, not `errorMessage`:
+
+| Authorization fact | Verified value |
+| --- | --- |
+| CloudFormation stack `RoleARN` | `arn:aws:iam::453711491609:role/cdk-hnb659fds-cfn-exec-role-453711491609-us-west-2` |
+| Denied session principal | `arn:aws:sts::453711491609:assumed-role/cdk-hnb659fds-cfn-exec-role-453711491609-us-west-2/AWSCloudFormation` |
+| Denied dependent action | `bedrock-agentcore:CreateAgentRuntimeEndpoint` |
+| Denied resource | `arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/*` |
+| Reported reason | No identity-based policy allows that action on that resource. |
+
+The user retrieved active default policy **Version 1** from the administrator console. It matches the committed policy at `c29e8cb`, independently corroborated by its successful CloudTrail `CreatePolicy` record at `20:07:58Z`. Global IAM audit events were read in `us-east-1`; deployment stayed in `us-west-2`. The execution role is confirmed both by CloudFormation and the CloudTrail session issuer. Reattaching the same policy will not change this denial.
+
+The top-level `CreateAgentRuntime` statement allows `Resource: "*"` with exact region/account/Project request-tag conditions, which match the recorded request. The separate `NamedDevelopmentRuntimeLifecycle` statement allows endpoint creation only on `runtime/enterprise_analytics_dev_agent-*`; it does **not** match the `runtime/*` creation-time resource in the denial. There is no evidence for changing PassRole, runtime/query-role access, or optional feature permissions.
+
+**Unapplied IAM correction:** the local M4 deployment-policy JSON adds one statement, `CreateTaggedDefaultEndpointDuringRuntimeCreation`, allowing only `bedrock-agentcore:CreateAgentRuntimeEndpoint` on `arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/*`, with the same exact `aws:RequestedRegion`, `aws:PrincipalAccount` and `aws:RequestTag/Project` values. All original Version 1 statements are unchanged, protected by a frozen canonical-policy regression. The milestone 3 policy and its attachment are unchanged.
+
+This widens only this action from a runtime-name prefix to the required account/region namespace. The supplied Project tag is a scope condition, not an ownership boundary. The [official authorization reference](https://docs.aws.amazon.com/service-authorization/latest/reference/list_bedrock-agentcore.html) supports the request-tag condition; the parent request has the expected tag. Propagation to automatic endpoint authorization still requires approved live validation. Keep the condition fail-closed; do not weaken it speculatively. Read-only Access Analyzer validation returned **zero findings**, which does not prove effective live authorization.
+
+An administrator must review and apply a new default version of the **existing M4 managed policy**, preserving Version 1 for rollback; `analytics-dev` lacks the required IAM access. The prepared source is `infrastructure/cdk/agentcore-deployment-policy.development.json`, file SHA-256 `5687259426158d8e761554a0308718a0fdf7c42b266f46be7cc933930daac5c6`. Do not reattach policies or edit the existing M3 permissions. After approval, an explicitly selected administrator can use:
+
+```sh
+: "${ADMIN_PROFILE:?Set an explicitly approved administrator profile}"
+test "$(aws sts get-caller-identity --profile "$ADMIN_PROFILE" --region us-west-2 --query Account --output text)" = 453711491609
+aws iam create-policy-version \
+  --policy-arn arn:aws:iam::453711491609:policy/enterprise-analytics-dev-agentcore-cdk-execution \
+  --policy-document file://infrastructure/cdk/agentcore-deployment-policy.development.json \
+  --set-as-default --profile "$ADMIN_PROFILE" --region us-west-2
+```
+
+The original maximum of 40 Runtime invocations remains unchanged, with zero used. The revision requires approval for the resource-scope exception and corrected template/recovery; it does not request extra model/runtime calls. No IAM update or retry has been executed. The complete sanitized denial and read-only audit evidence are retained under ignored `artifacts/agentcore/`.
+
+A separate defect was found in the approved runtime template: DEFAULT endpoint ARNs use **`/runtime-endpoint/DEFAULT`**, according to the [official resource ARN reference](https://docs.aws.amazon.com/service-authorization/latest/reference/list_bedrock-agentcore.html), but the template used `/endpoint/DEFAULT`. The local correction and SDK-pattern regression are prepared; they do not establish the cause of the earlier creation denial. The existing IAM runtime-name wildcard already covers the correct descendant, so this correction does not widen IAM permissions.
+
+| Runtime proposal | SHA-256 / location |
+| --- | --- |
+| Originally approved and attempted at `c29e8cb` | `a287c414f51bec59051bec51c44c006fcc0118326195b63a377e2718dbe07799`; `artifacts/cdk.agentcore.reviewed.out` remains frozen |
+| Corrected, **not approved or deployed** | `dd217890a37cc42e54499c3cc8cba91886ed5ca3dee5de9a5bb11a5e153c64bb`; `artifacts/cdk.agentcore.endpoint-fix.out` |
+
+Only three paths differ: the DEFAULT endpoint policy's `ResourceArn`, its JSON policy's endpoint resources, and `DefaultEndpointArn` output. Foundation bytes, Runtime ZIP, code key/version, model, trusted tenant/regions, caller principals and resource count are unchanged. Corrected legacy/empty-return proposals are synthesized under `artifacts/cdk.agentcore.endpoint-fix.<dataset-version>.out`. The original assemblies are preserved for audit.
+
+Next, obtain approval for the additive IAM correction and endpoint-ARN template/recovery. Have an administrator apply the new M4 managed-policy default version while preserving all existing permissions. After that correction and the revised recovery are approved, verify the failed stack has no live resources, remove only its failed stack record, and retry using the existing uploaded version:
+
+```sh
+# PROPOSED RECOVERY ONLY: do not run until the revised template/recovery is approved.
+aws cloudformation describe-stack-resources --stack-name enterprise-analytics-dev-agent-runtime \
+  --profile analytics-dev --region us-west-2
+aws cloudformation delete-stack --stack-name enterprise-analytics-dev-agent-runtime \
+  --profile analytics-dev --region us-west-2
+aws cloudformation wait stack-delete-complete --stack-name enterprise-analytics-dev-agent-runtime \
+  --profile analytics-dev --region us-west-2
+infrastructure/cdk/tooling/node_modules/.bin/cdk deploy \
+  --app artifacts/cdk.agentcore.endpoint-fix.out enterprise-analytics-dev-agent-runtime \
+  --parameters ArtifactVersionId=HSRXiFjg0w2W77InULH4.fn32Y.JH8b9 \
+  --profile analytics-dev --region us-west-2 --require-approval never --no-telemetry --no-notices
+```
+
+Do not redeploy foundation, repeat the trust change, upload another archive, bootstrap, or publish datasets for this recovery. Once READY, resume the counted warm-up and authored suites using the existing operator ledger, then restore the **corrected** base assembly. Never restore the original assembly containing the wrong endpoint ARN. The original procedure below is retained for audit; substitute the approved corrected base/variant assemblies on recovery and do not replay completed steps. Detailed actual results and verification are in [progress](progress.md).
 
 ## Target and read-only evidence
 
@@ -22,7 +84,7 @@ After the user renewed SSO, read-only STS verified the explicit profile/account/
 
 Bedrock `GetInferenceProfile` reports ACTIVE and `GetFoundationModelAvailability` reports agreement/entitlement/region AVAILABLE and authorization AUTHORIZED for Nova Lite. Official documentation supports Converse client-side tools. **Inference access and tool behavior have not been proved by a model call.** The US inference profile can route from Oregon to **us-west-2, us-east-1, or us-east-2**; approval covers that US routing. SCPs and model quotas in those destinations can still prevent inference. No implicit default profile is allowed.
 
-`iam:GetRole` is denied to the selected PowerUser SSO caller. An administrator must verify existing bootstrap role attachments and query-role trust, and perform the scoped deployment-policy attachment below. Read-only Access Analyzer validation of the proposed policy returned `findings: []` after correcting two invalid S3 action names. This validates policy syntax/rules, not effective deployment privileges or service success.
+The user confirmed both scoped execution policies are attached and developer query-role trust was preserved. `iam:GetRole`/`iam:GetPolicy` inspection remains denied to the selected PowerUser SSO caller; the user has supplied the active Version 1 JSON, and the full denial identifies the endpoint-creation resource mismatch. An administrator must apply the proposed additive correction after approval. Do not repeat the completed attachment step below. Read-only Access Analyzer validation of the proposed policy returned `findings: []` after correcting two invalid S3 action names. This validates policy syntax/rules, not effective deployment privileges or service success.
 
 ## Exact resources and IAM changes proposed
 
@@ -34,7 +96,7 @@ The reviewed source is [AgentCore configuration](../infrastructure/cdk/agentcore
 2. **Existing data stack: one additive trust change.** Add the exact new runtime role to the existing query role's assume-role policy while retaining the original developer SSO principal. No data bucket, Glue table, workgroup, loader permission, or query permission changes. Comparison against the read-only deployed template found only `/Resources/SemanticQueryExecutorFBB71F8B/Properties/AssumeRolePolicyDocument/Statement` changed; evidence is `artifacts/m4-data-trust-diff.json`.
 3. **Runtime stack: three CloudFormation resources.** One `AWS::BedrockAgentCore::Runtime` and two resource policies for its exact ARN and DEFAULT endpoint ARN. Python 3.12 ZIP code is pinned to a SHA-named S3 key **and the returned S3 VersionId**. PUBLIC network mode provides outbound service access; inbound requests still require SigV4. No OAuth authorizer, VPC, NAT, container build, ECR repository, additional endpoint, or other AgentCore service is created.
 4. **Service-managed side effects.** Runtime creates its DEFAULT endpoint, workload identity, and stdout/stderr log group `/aws/bedrock-agentcore/runtimes/{agentRuntimeId}-DEFAULT`. Set retention to seven days with the explicit command below. If absent, AWS may create `AWSServiceRoleForBedrockAgentCoreRuntimeIdentity` and `AWSServiceRoleForBedrockAgentCoreNetwork`; the proposed deployment policy allows only those two service-linked-role creations with their matching service-name conditions. This automatic workload identity is platform support, not a separate AgentCore Identity integration.
-5. **Administrator policy attachment.** Create managed policy `enterprise-analytics-dev-agentcore-cdk-execution` from the reviewed JSON and attach it to the existing `cdk-hnb659fds-cfn-exec-role-453711491609-us-west-2`. Retain its existing milestone 3 policy. **Do not bootstrap again or attach AdministratorAccess.** The new policy manages only the named code bucket/runtime role and named runtime namespace, reads reviewed code, passes only the runtime role to AgentCore, and handles the automatic identities above. `CreateAgentRuntime` requires `Resource: "*"`; account, requested region, and project request-tag conditions narrow that statement. `logs:DescribeLogGroups` in the runtime role also requires `Resource: "*"`, restricted to Oregon. Policy management is privileged and assumes reviewed CDK input.
+5. **Administrator policy attachment (user-confirmed complete).** The reviewed preparation step was to create managed policy `enterprise-analytics-dev-agentcore-cdk-execution` from the reviewed JSON and attach it to the existing `cdk-hnb659fds-cfn-exec-role-453711491609-us-west-2`; this attachment was confirmed by the user and is not repeated here. Retain its existing milestone 3 policy. **Do not bootstrap again or attach AdministratorAccess.** The new policy manages only the named code bucket/runtime role and named runtime namespace, reads reviewed code, passes only the runtime role to AgentCore, and handles the automatic identities above. `CreateAgentRuntime` requires `Resource: "*"`; account, requested region, and project request-tag conditions narrow that statement. `logs:DescribeLogGroups` in the runtime role also requires `Resource: "*"`, restricted to Oregon. Policy management is privileged and assumes reviewed CDK input.
 
 The runtime execution role trusts only `bedrock-agentcore.amazonaws.com` with source-account and runtime-name ARN conditions. It permits `bedrock:InvokeModel` on exactly:
 
@@ -89,7 +151,7 @@ infrastructure/cdk/tooling/node_modules/.bin/cdk synth \
 
 A fresh machine first runs the packaging command without `--offline` to download only the locked Linux ARM64 wheels; no AWS credentials are involved. The reviewed ZIP can be rebuilt offline from the prepared wheel cache. Full required checks and current synthesis results are recorded in [progress](progress.md). Ordinary CI runs only offline tests and synthesis; no live acceptance is inferred.
 
-## Deployment commands — execute only after approval
+## Original deployment commands — historical procedure; recovery gate above applies
 
 These commands are a proposed procedure, **not operations already performed**. Before execution, verify STS still matches the account, inspect the reviewed assemblies/checksums and any fresh CloudFormation changeset, and stop if it includes changes outside this inventory. Existing bootstrap deployment privileges are a prerequisite. IAM-denied operations must be performed by an explicitly selected administrator; do not silently substitute profiles or broaden grants.
 
@@ -126,7 +188,7 @@ infrastructure/cdk/tooling/node_modules/.bin/cdk deploy \
   --profile analytics-dev --region us-west-2 --require-approval never --no-telemetry --no-notices
 ```
 
-Upload only the checksum-verified archive, with a conditional write, then capture its immutable VersionId. The explicitly approved operator needs `s3:PutObject` on this one new code key; the existing PowerUser profile normally supplies it, but effective access is not yet verified. The CloudFormation execution policy deliberately has no code-upload permission.
+Upload only the checksum-verified archive, with a conditional write, then capture its immutable VersionId. The approved operator upload proved `s3:PutObject` on the reviewed key; its exact retained version is recorded above, so do not repeat this completed upload. The CloudFormation execution policy deliberately has no code-upload permission.
 
 ```sh
 poetry run python - <<'PY'
@@ -276,7 +338,7 @@ infrastructure/cdk/tooling/node_modules/.bin/cdk deploy \
 
 After restoring the base, run `verify_runtime_ready` and `test "$VARIANT_STATUS" -eq 0` and retain the original failure output; a failed restore also fails this procedure. Require successful deployment/READY between variants; a deployment failure stops the loop before invoking tests. The shell loop above is a procedure for supervised execution, not an unattended recovery script. Legacy return rate must produce the specific missing-source error while net revenue still works; empty returns must yield zero, not missing-source failure. Default pytest and ordinary CI never invoke these tests. Requested live execution with missing/invalid configuration fails clearly rather than skipping.
 
-**Proposed allowance:** three live suite runs (18 + 3 + 3 tests, 27 invocation requests because each session test sends two), plus one manual invocation and limited failed-case reruns, **at most 40 total Runtime invocations** for this acceptance attempt. Record the count; stop and obtain approval before exceeding it or changing resources/IAM/model/scope. No production load, retail demo invocation, concurrency benchmark, or additional AgentCore service is included. The runtime does not implement an account-wide invocation counter; this total is an operator-enforced acceptance allowance.
+**Original approved allowance, unchanged (0 used):** three live suite runs (18 + 3 + 3 tests, 27 invocation requests because each session test sends two), plus one manual invocation and limited failed-case reruns, **at most 40 total Runtime invocations** for this acceptance attempt. Record the count; stop and obtain approval before exceeding it or changing resources/IAM/model/scope. No production load, retail demo invocation, concurrency benchmark, or additional AgentCore service is included. The runtime does not implement an account-wide invocation counter; this total is an operator-enforced acceptance allowance.
 
 Collect ignored `artifacts/agent-live-evaluations.jsonl`, actual runtime/endpoint versions, archive/S3 VersionId, test output, and CloudWatch logs. Diagnostics contain model configuration, reported input/output tokens, latency, matching tool calls, and Athena query IDs/scans/timings/versions. Redact before sharing outside the approved development context. Do not mark the milestone complete unless every agreed case passes on the deployed runtime, the base configuration is restored, and actual evidence is recorded. Record failures honestly and keep it open.
 

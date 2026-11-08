@@ -280,7 +280,12 @@ def test_creation_dependency_matches_recorded_denial_without_changing_existing_g
         "Statement": [
             item
             for item in policy["Statement"]
-            if item != matches[0] and item["Sid"] != "TagAutomaticRuntimeWorkloadIdentity"
+            if item != matches[0]
+            and item["Sid"]
+            not in {
+                "TagAutomaticRuntimeWorkloadIdentity",
+                "TagAutomaticRuntimeWorkloadIdentityDirectory",
+            }
         ],
     }
     canonical = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
@@ -316,7 +321,11 @@ def test_creation_tagging_matches_new_denial_and_preserves_active_version2() -> 
     original["Statement"] = [
         item
         for item in original["Statement"]
-        if item["Sid"] != "TagAutomaticRuntimeWorkloadIdentity"
+        if item["Sid"]
+        not in {
+            "TagAutomaticRuntimeWorkloadIdentity",
+            "TagAutomaticRuntimeWorkloadIdentityDirectory",
+        }
     ]
     statement = next(item for item in original["Statement"] if item["Sid"] == matches[0]["Sid"])
     statement["Action"].remove("bedrock-agentcore:TagResource")
@@ -368,11 +377,65 @@ def test_workload_identity_tagging_matches_denial_and_preserves_active_version3(
         resource.replace("us-west-2", "us-east-1"),
     ):
         assert not fnmatchcase(excluded, grant["Resource"])
-    original = {**policy, "Statement": [item for item in policy["Statement"] if item != grant]}
+    original = {
+        **policy,
+        "Statement": [
+            item
+            for item in policy["Statement"]
+            if item != grant and item["Sid"] != "TagAutomaticRuntimeWorkloadIdentityDirectory"
+        ],
+    }
     canonical = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
     # Entire administrator-supplied V3, including the existing M3-supporting grants.
     assert hashlib.sha256(canonical).hexdigest() == (
         "ece7e0db64342e9dce9994c0d8c832cdfcad38de3416fe357f53f6320f7f209f"
+    )
+
+
+def test_directory_tagging_matches_denial_and_preserves_active_version4() -> None:
+    policy = json.loads(
+        (ROOT / "infrastructure/cdk/agentcore-deployment-policy.development.json").read_text()
+    )
+    # Nested CreateWorkloadIdentity request 79af8502-c9ee-4003-8315-bd0bb29a0f61
+    # supplies the Project tag but also requires tagging on the exact directory ARN.
+    resource = (
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:workload-identity-directory/default"
+    )
+    matches = []
+    for statement in policy["Statement"]:
+        if "bedrock-agentcore:TagResource" not in _actions(statement):
+            continue
+        resources = statement["Resource"]
+        patterns = [resources] if isinstance(resources, str) else resources
+        if any(fnmatchcase(resource, pattern) for pattern in patterns):
+            matches.append(statement)
+    assert len(matches) == 1, "The recorded directory tagging resource must be covered"
+    grant = matches[0]
+    assert grant == {
+        "Sid": "TagAutomaticRuntimeWorkloadIdentityDirectory",
+        "Effect": "Allow",
+        "Action": ["bedrock-agentcore:TagResource"],
+        "Resource": resource,
+        "Condition": {
+            "StringEquals": {
+                "aws:RequestedRegion": "us-west-2",
+                "aws:PrincipalAccount": "453711491609",
+                "aws:RequestTag/Project": "enterprise-analytics-dev",
+            }
+        },
+    }
+    for excluded in (
+        resource.replace("/default", "/other"),
+        resource + "/workload-identity/unrelated-agent-123",
+        resource.replace("453711491609", "111122223333"),
+        resource.replace("us-west-2", "us-east-1"),
+    ):
+        assert not fnmatchcase(excluded, grant["Resource"])
+    original = {**policy, "Statement": [item for item in policy["Statement"] if item != grant]}
+    canonical = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+    # Frozen complete administrator-supplied active V4 at a5b690c.
+    assert hashlib.sha256(canonical).hexdigest() == (
+        "7160dae5f016fa634e29fdf9c88a8278914efd270f53a7b0d849636413a14143"
     )
 
 

@@ -198,6 +198,21 @@
           "aws:RequestTag/Project": "enterprise-analytics-dev"
         }
       }
+    },
+    {
+      "Sid": "TagAutomaticRuntimeWorkloadIdentityDirectory",
+      "Effect": "Allow",
+      "Action": [
+        "bedrock-agentcore:TagResource"
+      ],
+      "Resource": "arn:aws:bedrock-agentcore:us-west-2:453711491609:workload-identity-directory/default",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2",
+          "aws:PrincipalAccount": "453711491609",
+          "aws:RequestTag/Project": "enterprise-analytics-dev"
+        }
+      }
     }
   ]
 }

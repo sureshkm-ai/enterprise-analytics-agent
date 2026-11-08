@@ -8,7 +8,7 @@ The user reports successful development deployment and live validation:
 | `enterprise-analytics-dev-data-layer` deployment | `CREATE_COMPLETE` |
 | Live parity command recorded below | **66 passed, 458 deselected in 111.94 seconds** |
 
-These results were supplied by the user and were **not rerun or independently audited against AWS during this documentation update**. The reviewed plan below is retained as configuration and operator reference, not a checklist to repeat against existing resources. Current hosted-CI confirmation, final PR review, and merge remain separate handoff work; this is development validation, not production readiness. No AWS changes are authorized by this documentation task.
+These results were supplied by the user; the data-layer deployment and live parity have not been repeated. Milestone 3 merged through PR #2 at `ae378e4` with successful hosted CI, and its documentation followed in PR #3 at `6bf1220`. Read-only milestone 4 checks reverified the stack outputs and four ready snapshots. The reviewed plan below remains an operator reference, not a checklist to repeat. New AgentCore resources and the proposed data-query-role trust extension are covered separately in [the milestone 4 approval plan](agentcore-deployment-plan.md), not authorized by this record.
 
 ## Configured target and historical prerequisites
 
@@ -103,7 +103,7 @@ poetry run pytest tests --run-aws --aws-config=infrastructure/cdk/config.develop
 
 The publisher verifies the selected account, assumes only the loader role, checks schemas/checksums, and makes the ready manifest visible last. Existing/partial versions are rejected rather than overwritten; a partial failure requires an explicitly reviewed cleanup or a new configured version. Live tests assume the query role and independently compare both adapters with literal fixture answers. Internal query IDs, bytes, timings, dataset/metric versions are written to ignored `artifacts/aws-parity-diagnostics.jsonl`. Missing configuration errors instead of skipping a requested AWS run. Default tests and ordinary CI create no AWS sessions/queries.
 
-The user's live result was **66 passed, 458 deselected in 111.94 seconds**. It covers the three parity snapshot variants; it does not by itself establish publication of synthetic `retail-v1`, which is not queried by this suite. Exact publication inventory, deployed outputs/IAM details, and measured costs were not independently verified here. The cancellation fix and offline regressions are present at `ae68d2c`, covered by the recorded current-code offline checks. See [progress](progress.md) for verification provenance and remaining review/merge work.
+The user's live result was **66 passed, 458 deselected in 111.94 seconds**. It covers the three parity snapshot variants. Later read-only milestone 4 checks verified all four ready manifests, explicit Glue schemas, and object lengths/SHA-256 checksums, including synthetic `retail-v1`; this did not run Athena queries or model inference. Deployed role inspection remains denied and measured costs were not audited. The cancellation fix and regressions are present at `ae68d2c`. See [progress](progress.md) for provenance and the current milestone 4 approval gate.
 
 ## Cost assumptions and controls
 

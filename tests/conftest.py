@@ -15,9 +15,31 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         "--run-aws", action="store_true", help="Explicitly enable live AWS parity tests"
     )
     parser.addoption("--aws-config", help="Reviewed development deployment JSON for live AWS tests")
+    parser.addoption(
+        "--run-agent-live",
+        action="store_true",
+        help="Explicitly enable approved billable AgentCore/Bedrock evaluations",
+    )
+    parser.addoption(
+        "--agent-config", help="Reviewed operator configuration for deployed-agent evaluations"
+    )
 
 
 def pytest_configure(config: pytest.Config) -> None:
+    if config.getoption("run_agent_live"):
+        from enterprise_analytics_agent.agent.evaluation import LiveAgentConfig
+
+        path = config.getoption("agent_config")
+        if not path:
+            raise pytest.UsageError(
+                "--run-agent-live requires --agent-config; no live agent acceptance was run"
+            )
+        try:
+            LiveAgentConfig.model_validate_json(Path(path).read_text())
+        except (OSError, ValueError) as exc:
+            raise pytest.UsageError(
+                f"Live agent configuration is missing or invalid: {exc}"
+            ) from exc
     if config.getoption("run_aws"):
         from enterprise_analytics_agent.adapters.aws_runtime import load_runtime_config
 
@@ -32,6 +54,22 @@ def pytest_configure(config: pytest.Config) -> None:
 
 @pytest.hookimpl(trylast=True)
 def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:
+    agent_items = [item for item in items if item.get_closest_marker("agent_live")]
+    if config.getoption("run_agent_live"):
+        if not agent_items:
+            raise pytest.UsageError(
+                "--run-agent-live selected no agent evaluations; acceptance was not run"
+            )
+    else:
+        for item in agent_items:
+            item.add_marker(
+                pytest.mark.skip(
+                    reason=(
+                        "Billable agent evaluations require explicit "
+                        "--run-agent-live/--agent-config and deployment approval"
+                    )
+                )
+            )
     live_items = [item for item in items if item.get_closest_marker("aws_integration")]
     if config.getoption("run_aws"):
         if not live_items:

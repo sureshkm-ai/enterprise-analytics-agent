@@ -275,7 +275,14 @@ def test_creation_dependency_matches_recorded_denial_without_changing_existing_g
             }
         },
     }
-    original = {**policy, "Statement": [item for item in policy["Statement"] if item != matches[0]]}
+    original = {
+        **policy,
+        "Statement": [
+            item
+            for item in policy["Statement"]
+            if item != matches[0] and item["Sid"] != "TagAutomaticRuntimeWorkloadIdentity"
+        ],
+    }
     canonical = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
     # Frozen canonical policy at c29e8cb / administrator-confirmed active V1.
     assert hashlib.sha256(canonical).hexdigest() == (
@@ -306,12 +313,66 @@ def test_creation_tagging_matches_new_denial_and_preserves_active_version2() -> 
     assert len(matches) == 1, "The recorded creation-time tagging resource must be covered"
     assert matches[0]["Sid"] == "CreateTaggedDefaultEndpointDuringRuntimeCreation"
     original = deepcopy(policy)
+    original["Statement"] = [
+        item
+        for item in original["Statement"]
+        if item["Sid"] != "TagAutomaticRuntimeWorkloadIdentity"
+    ]
     statement = next(item for item in original["Statement"] if item["Sid"] == matches[0]["Sid"])
     statement["Action"].remove("bedrock-agentcore:TagResource")
     canonical = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
     # Administrator-supplied active V2: every existing grant/condition stays intact.
     assert hashlib.sha256(canonical).hexdigest() == (
         "48939891d9f2183a398aa2918a8dcc374e33c6b3a1fbb821c135e31fc03dbac9"
+    )
+
+
+def test_workload_identity_tagging_matches_denial_and_preserves_active_version3() -> None:
+    policy = json.loads(
+        (ROOT / "infrastructure/cdk/agentcore-deployment-policy.development.json").read_text()
+    )
+    # Nested CreateWorkloadIdentity request 4d57cf38-f993-4a41-9b63-36630bf41275
+    # carries Project=enterprise-analytics-dev and denies TagResource on this ARN.
+    prefix = "arn:aws:bedrock-agentcore:us-west-2:453711491609:"
+    directory = prefix + "workload-identity-directory/default"
+    resource = directory + "/workload-identity/enterprise_analytics_dev_agent-PUtFzA3UY3"
+    matches = []
+    for statement in policy["Statement"]:
+        if "bedrock-agentcore:TagResource" not in _actions(statement):
+            continue
+        resources = statement["Resource"]
+        patterns = [resources] if isinstance(resources, str) else resources
+        if any(fnmatchcase(resource, pattern) for pattern in patterns):
+            matches.append(statement)
+    assert len(matches) == 1, "The recorded workload-identity tagging resource must be covered"
+    grant = matches[0]
+    assert grant == {
+        "Sid": "TagAutomaticRuntimeWorkloadIdentity",
+        "Effect": "Allow",
+        "Action": ["bedrock-agentcore:TagResource"],
+        "Resource": directory + "/workload-identity/enterprise_analytics_dev_agent-*",
+        "Condition": {
+            "StringEquals": {
+                "aws:RequestedRegion": "us-west-2",
+                "aws:PrincipalAccount": "453711491609",
+                "aws:RequestTag/Project": "enterprise-analytics-dev",
+            }
+        },
+    }
+    # Grant only named identities, not the directory, other runtimes, accounts or regions.
+    for excluded in (
+        directory,
+        directory + "/workload-identity/unrelated-agent-123",
+        prefix + "runtime/enterprise_analytics_dev_agent-PUtFzA3UY3",
+        resource.replace("453711491609", "111122223333"),
+        resource.replace("us-west-2", "us-east-1"),
+    ):
+        assert not fnmatchcase(excluded, grant["Resource"])
+    original = {**policy, "Statement": [item for item in policy["Statement"] if item != grant]}
+    canonical = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+    # Entire administrator-supplied V3, including the existing M3-supporting grants.
+    assert hashlib.sha256(canonical).hexdigest() == (
+        "ece7e0db64342e9dce9994c0d8c832cdfcad38de3416fe357f53f6320f7f209f"
     )
 
 

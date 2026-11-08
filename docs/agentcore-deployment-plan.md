@@ -1,30 +1,55 @@
 # Milestone 4 AgentCore deployment and live-test plan
 
-Recovery checkpoint 2026-11-06. The administrator-reported active M4 policy **Version 2** matches commit `7360cc4`; the user approved its corrected endpoint-ARN assembly and scoped recovery. The empty failed stack was preserved/deleted and the corrected Runtime deployment retried with the existing uploaded version. **Creation failed on a further, precisely identified tagging permission. Milestone 4 remains open; 0/40 Runtime invocations used.** No warm-up, retention update, live suite or variant restoration ran. The one-action IAM addition below is local and unapplied. The already-approved corrected templates and ZIP are unchanged.
+Recovery checkpoint **2026-11-08**. The administrator-reported active M4 policy **Version 3** exactly matches commit `4727b1c`. The approved corrected assembly was retried once after preserving/deleting the empty failed stack. **Creation failed during automatic workload-identity tagging. Milestone 4 remains open; 0/40 Runtime invocations used.** A separate, narrow IAM statement is prepared locally and unapplied. No warm-up, log-retention update, live suite or variant restoration ran. The approved corrected templates, ZIP and uploaded VersionId remain unchanged.
 
 ## Current recovery result and minimum additional IAM correction
 
-The user confirmed `7360cc4` was pushed and hosted CI runs [42292758353](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42292758353) and [42292764712](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42292764712) passed. This hosted offline evidence is separate from unrun live acceptance and the new local tagging proposal. All recovery AWS calls used only `analytics-dev`, account `453711491609`, region `us-west-2`.
+The user confirmed `4727b1c` was pushed and hosted CI runs [42297147399](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42297147399) and [42297155475](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42297155475) passed. These hosted offline results cover that commit, separately from the new local proposal and unrun live acceptance. All current AWS calls used only `analytics-dev`, account `453711491609`, region `us-west-2`, after renewed SSO and explicit STS identity verification. Active V3 JSON equality is based on administrator-supplied evidence; direct IAM reads remain unavailable.
 
-The old runtime stack had no surviving resources or matching Runtime. Its evidence was preserved before approved deletion; deletion completed. The corrected base assembly `artifacts/cdk.agentcore.endpoint-fix.out`, SHA `dd217890a37cc42e54499c3cc8cba91886ed5ca3dee5de9a5bb11a5e153c64bb`, was then deployed with existing S3 VersionId `HSRXiFjg0w2W77InULH4.fn32Y.JH8b9`. Runtime creation failed; the new stack is **ROLLBACK_COMPLETE**, suffix `0357ee30-da27-11f1-be37-0a8587e72127`. Full Runtime-list pagination found no matching live Runtime. Foundation, query-role trust, code object, M3 permissions and datasets were preserved; completed steps were not repeated.
+The previous runtime stack had no surviving resources or matching Runtime; its evidence was preserved before approved deletion, which completed. The corrected base assembly `artifacts/cdk.agentcore.endpoint-fix.out`, SHA `dd217890a37cc42e54499c3cc8cba91886ed5ca3dee5de9a5bb11a5e153c64bb`, was deployed with existing S3 VersionId `HSRXiFjg0w2W77InULH4.fn32Y.JH8b9`. Creation failed; current stack is **ROLLBACK_COMPLETE**, suffix `8b484200-db93-11f1-afab-0279724cff07`. Final full Runtime-list pagination found no matching Runtime; `GetWorkloadIdentity` returned ResourceNotFoundException for the denied identity. Foundation remains CREATE_COMPLETE and data layer UPDATE_COMPLETE. Query-role trust, code object/version, M3 permissions and datasets were preserved; completed steps were not repeated.
 
-The full CloudTrail **`responseElements.message`** reports:
+The complete parent and nested CloudTrail records are preserved in ignored `artifacts/agentcore/v3.create-denials.json` and `v3.identity-denials.json`. The nested event's full **`responseElements.message`** is:
 
-| Fact | Recovery evidence |
+> User: arn:aws:sts::453711491609:assumed-role/cdk-hnb659fds-cfn-exec-role-453711491609-us-west-2/AWSCloudFormation is not authorized to perform: bedrock-agentcore:TagResource on resource: arn:aws:bedrock-agentcore:us-west-2:453711491609:workload-identity-directory/default/workload-identity/enterprise_analytics_dev_agent-PUtFzA3UY3 because no identity-based policy allows the bedrock-agentcore:TagResource action
+
+| Fact | Current evidence |
 | --- | --- |
-| Time / request ID | `2026-11-06T21:14:23Z` (15:14:23 America/Chicago); `4074f7e9-3e5d-4278-a0d7-d48fe5f1a8b6` |
-| Principal | `arn:aws:sts::453711491609:assumed-role/cdk-hnb659fds-cfn-exec-role-453711491609-us-west-2/AWSCloudFormation` |
-| Denied action | **`bedrock-agentcore:TagResource`** |
-| Denied resource | **`arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/*`** |
-| Reason | No identity-based policy allows the tagging action on that creation-time resource. |
+| Time | `2026-11-08T16:43:46Z` (10:43:46 America/Chicago) |
+| Parent CreateAgentRuntime request | `84fd1184-9e49-4321-92df-c4eb5b58dc79` |
+| Nested CreateWorkloadIdentity request | `4d57cf38-f993-4a41-9b63-36630bf41275` |
+| CloudFormation execution role | `arn:aws:iam::453711491609:role/cdk-hnb659fds-cfn-exec-role-453711491609-us-west-2`, confirmed by both stack RoleARN and session issuer |
+| Nested submitted tags | `Project=enterprise-analytics-dev`, `Milestone=4`, and CloudFormation tags |
+| Reason | V3's runtime namespace tagging grants do not match a workload-identity ARN; existing Create/Get/Delete identity grants do not authorize TagResource. |
 
-The recorded Project/account/region, code key and VersionId are correct. Active V2 has tagging permission only on `runtime/enterprise_analytics_dev_agent-*`, which does not match the creation-time wildcard. The [official authorization reference](https://docs.aws.amazon.com/service-authorization/latest/reference/list_bedrock-agentcore.html) identifies tagging as a runtime-creation dependency and supports request-tag conditions for runtime resources. No evidence calls for changes to PassRole, query/runtime execution grants or optional features.
+**Prepared proposal:** add the separate statement `TagAutomaticRuntimeWorkloadIdentity` to `infrastructure/cdk/agentcore-deployment-policy.development.json`:
 
-**Prepared proposal:** add only `bedrock-agentcore:TagResource` to the Action list of `CreateTaggedDefaultEndpointDuringRuntimeCreation`. Keep its exact resource and region/account/Project conditions. Removing that one action reproduces the entire supplied V2 JSON (canonical SHA `48939891d9f2183a398aa2918a8dcc374e33c6b3a1fbb821c135e31fc03dbac9`). The full proposed file `infrastructure/cdk/agentcore-deployment-policy.development.json` has SHA **`bf418e5de83729ecb5916b76d14ae7fd760187628fa77f9a5427c4cf42ddc35b`**. All other V2 grants/conditions and M3 permissions remain unchanged. Read-only Access Analyzer returned zero findings; this is not live authorization proof.
+```json
+{
+  "Sid": "TagAutomaticRuntimeWorkloadIdentity",
+  "Effect": "Allow",
+  "Action": ["bedrock-agentcore:TagResource"],
+  "Resource": "arn:aws:bedrock-agentcore:us-west-2:453711491609:workload-identity-directory/default/workload-identity/enterprise_analytics_dev_agent-*",
+  "Condition": {
+    "StringEquals": {
+      "aws:RequestedRegion": "us-west-2",
+      "aws:PrincipalAccount": "453711491609",
+      "aws:RequestTag/Project": "enterprise-analytics-dev"
+    }
+  }
+}
+```
 
-An administrator must review/apply this additional permission as a new default version of the existing M4 managed policy, preserving V2 for rollback. The agent has not applied it or made another deployment retry. Region/account/Project conditions remain fail-closed; submitted Project tags are a scope condition, not proof of existing-resource ownership. Live validation is still required. The corrected templates/code need no changes or renewed template approval; continuation awaits the additional IAM permission and authorization to resume recovery.
+The generated suffix changes per creation, so the resource preserves the already-approved runtime name prefix. It grants only tagging on those identities, not directory tagging or unrelated identities. Keep the Project condition: the actual nested request supplies it, the [official authorization reference](https://docs.aws.amazon.com/service-authorization/latest/reference/list_bedrock-agentcore.html) supports request tags for workload-identity TagResource, and [CreateWorkloadIdentity](https://docs.aws.amazon.com/bedrock-agentcore-control/latest/APIReference/API_CreateWorkloadIdentity.html) accepts tags. Submitted tags constrain requests; they do not establish existing-resource ownership. Removing only this statement reproduces the entire supplied V3 (canonical SHA `ece7e0db64342e9dce9994c0d8c832cdfcad38de3416fe357f53f6320f7f209f`). Full proposed file SHA **`edda39f7f695cc44b763eea12598c7ce5b501048a0ab445c0204889a7cb94fb9`**. All V3 grants/conditions and M3 permissions remain unchanged. Offline assertions and read-only Access Analyzer validation pass; neither proves live authorization.
 
-After that update is approved/applied, reuse the existing scoped failed-stack recovery commands below with the **corrected** base assembly and the same uploaded VersionId. Recheck/preserve the latest failed stack before removing only its empty stack record. Do not repeat foundation, trust, code upload, bootstrap or dataset publication. Verify Runtime/DEFAULT READY before the ledger-counted warm-up, seven-day log retention and three authored suites. Restore only the corrected parity-v1 base. The existing ledger is at **0/40**; the maximum remains 40 total calls, including failures and retries. Capture any later denial's complete `responseElements.message` before proposing another permission.
+An administrator must review/apply this new permission as a new default version of the **existing** M4 managed policy, retaining V3 for rollback. The agent has not applied it or made another deployment retry after this denial. The corrected templates/code need no changes or renewed template approval. Continuation awaits approval/application of this additional IAM statement and authorization to resume recovery.
+
+Then reuse the scoped recovery commands below, rechecking/preserving the latest failed stack before deleting only its empty stack record. Use the same corrected base assembly and uploaded VersionId. Do not repeat foundation, trust, upload, bootstrap or publication. Verify Runtime/DEFAULT READY before the ledger-counted warm-up, seven-day retention and three authored suites. Restore only the **corrected** parity-v1 base. The ledger remains **0/40**, including failures/retries in the original 40-call maximum. Capture any later denial's complete `responseElements.message` before proposing further permissions.
+
+## Historical Version 2 tagging recovery (`7360cc4` → `4727b1c`)
+
+The user confirmed `7360cc4` was pushed and hosted CI runs [42292758353](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42292758353) and [42292764712](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42292764712) passed. V2 exactly matched that commit. Its approved recovery failed at `2026-11-06T21:14:23Z`, parent request `4074f7e9-3e5d-4278-a0d7-d48fe5f1a8b6`, on `bedrock-agentcore:TagResource` against `arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/*`, under the same CloudFormation execution role. That failed stack ended ROLLBACK_COMPLETE with suffix `0357ee30-da27-11f1-be37-0a8587e72127`; it was preserved/deleted during the V3 recovery above.
+
+Commit `4727b1c` added only TagResource to `CreateTaggedDefaultEndpointDuringRuntimeCreation`, preserving its runtime resource and region/account/Project conditions. Removing that action reproduces supplied V2 (canonical SHA `48939891d9f2183a398aa2918a8dcc374e33c6b3a1fbb821c135e31fc03dbac9`). The administrator subsequently applied this correction as V3, source file SHA `bf418e5de83729ecb5916b76d14ae7fd760187628fa77f9a5427c4cf42ddc35b`, and the user authorized continuation. It is historical applied evidence, not the current pending proposal. No Runtime was created and no invocation allowance was consumed in that attempt.
 
 ## Historical first failure and endpoint-creation correction (`c29e8cb` → `7360cc4`)
 
@@ -50,7 +75,7 @@ The top-level `CreateAgentRuntime` statement allows `Resource: "*"` with exact r
 
 This widens only this action from a runtime-name prefix to the required account/region namespace. The supplied Project tag is a scope condition, not an ownership boundary. The [official authorization reference](https://docs.aws.amazon.com/service-authorization/latest/reference/list_bedrock-agentcore.html) supports the request-tag condition; the parent request has the expected tag. Propagation to automatic endpoint authorization still requires approved live validation. Keep the condition fail-closed; do not weaken it speculatively. Read-only Access Analyzer validation returned **zero findings**, which does not prove effective live authorization.
 
-The administrator subsequently applied that endpoint-creation correction as default V2 of the **existing M4 managed policy**, with V1 retained for rollback; `analytics-dev` lacks the required IAM access. The V2 source at `7360cc4` had file SHA-256 `5687259426158d8e761554a0308718a0fdf7c42b266f46be7cc933930daac5c6`; the working source now includes the separate unapplied tagging addition described above. Do not reattach policies or edit the existing M3 permissions. After approval, an explicitly selected administrator can use:
+The administrator subsequently applied that endpoint-creation correction as default V2 of the **existing M4 managed policy**, with V1 retained for rollback; `analytics-dev` lacks the required IAM access. The V2 source at `7360cc4` had file SHA-256 `5687259426158d8e761554a0308718a0fdf7c42b266f46be7cc933930daac5c6`; a separate runtime-tagging correction at `4727b1c` was subsequently applied as V3. The working source now additionally proposes the separate workload-identity tagging statement described above. Do not reattach policies or edit the existing M3 permissions. After approval, an explicitly selected administrator can use:
 
 ```sh
 : "${ADMIN_PROFILE:?Set an explicitly approved administrator profile}"
@@ -72,10 +97,10 @@ A separate defect was found in the approved runtime template: DEFAULT endpoint A
 
 Only three paths differ: the DEFAULT endpoint policy's `ResourceArn`, its JSON policy's endpoint resources, and `DefaultEndpointArn` output. Foundation bytes, Runtime ZIP, code key/version, model, trusted tenant/regions, caller principals and resource count are unchanged. Corrected legacy/empty-return proposals are synthesized under `artifacts/cdk.agentcore.endpoint-fix.<dataset-version>.out`. The original assemblies are preserved for audit.
 
-Next, obtain approval for the additive IAM correction and endpoint-ARN template/recovery. Have an administrator apply the new M4 managed-policy default version while preserving all existing permissions. After that correction and the revised recovery are approved, verify the failed stack has no live resources, remove only its failed stack record, and retry using the existing uploaded version:
+The endpoint-ARN template/recovery is already approved. Further continuation now requires approval and administrator application of the separate workload-identity tagging addition above, preserving active V3 and M3 permissions. Then reverify the latest failed stack has no live resources, preserve its evidence, remove only that failed stack record, and retry using the unchanged corrected assembly and uploaded version:
 
 ```sh
-# PROPOSED RECOVERY ONLY: do not run until the revised template/recovery is approved.
+# PROPOSED CONTINUATION: wait for the additional IAM statement to be approved/applied.
 aws cloudformation describe-stack-resources --stack-name enterprise-analytics-dev-agent-runtime \
   --profile analytics-dev --region us-west-2
 aws cloudformation delete-stack --stack-name enterprise-analytics-dev-agent-runtime \
@@ -106,11 +131,11 @@ Do not redeploy foundation, repeat the trust change, upload another archive, boo
 | New runtime role | `arn:aws:iam::453711491609:role/enterprise-analytics-dev-agent-runtime` |
 | New code bucket | `enterprise-analytics-dev-453711491609-us-west-2-agent-code` |
 
-After the user renewed SSO, read-only STS verified the explicit profile/account/region. CloudFormation reports the existing data-layer stack `CREATE_COMPLETE`. Ready manifests, all 27 Glue table schemas, and object SHA-256/length metadata were verified for all four snapshots, including published `retail-v1`. Evidence is under ignored `artifacts/m4-snapshot-verification.json`. This verifies publication metadata, not a fresh Athena execution or a retail agent demonstration. Initial acceptance uses authored parity fixtures, not generated retail values.
+After the user renewed SSO, read-only STS verified the explicit profile/account/region. CloudFormation initially reported the data-layer stack CREATE_COMPLETE; it is now UPDATE_COMPLETE after the approved trust addition. Ready manifests, all 27 Glue table schemas, and object SHA-256/length metadata were verified for all four snapshots, including published `retail-v1`. Evidence is under ignored `artifacts/m4-snapshot-verification.json`. This verifies publication metadata, not a fresh Athena execution or a retail agent demonstration. Initial acceptance uses authored parity fixtures, not generated retail values.
 
 Bedrock `GetInferenceProfile` reports ACTIVE and `GetFoundationModelAvailability` reports agreement/entitlement/region AVAILABLE and authorization AUTHORIZED for Nova Lite. Official documentation supports Converse client-side tools. **Inference access and tool behavior have not been proved by a model call.** The US inference profile can route from Oregon to **us-west-2, us-east-1, or us-east-2**; approval covers that US routing. SCPs and model quotas in those destinations can still prevent inference. No implicit default profile is allowed.
 
-The user confirmed both scoped execution policies are attached and developer query-role trust was preserved. `iam:GetRole`/`iam:GetPolicy` inspection remains denied to the selected PowerUser SSO caller; the user has since supplied active Version 2 JSON matching `7360cc4`. The corrected recovery now identifies the tagging resource mismatch; only the further tagging proposal remains pending administrator review/application. Do not repeat the completed attachment step below. Read-only Access Analyzer validation of the proposed policy returned `findings: []` after correcting two invalid S3 action names. This validates policy syntax/rules, not effective deployment privileges or service success.
+The user confirmed both scoped execution policies are attached and developer query-role trust was preserved. `iam:GetRole`/`iam:GetPolicy` inspection remains denied to the selected PowerUser SSO caller; the user has since supplied active Version 3 JSON matching `4727b1c`. The latest recovery identifies a separate workload-identity tagging denial; only that additional proposal awaits administrator review/application. Do not repeat the completed attachment step below. Read-only Access Analyzer validation of the proposed policy returned `findings: []` after correcting two invalid S3 action names. This validates policy syntax/rules, not effective deployment privileges or service success.
 
 ## Exact resources and IAM changes proposed
 

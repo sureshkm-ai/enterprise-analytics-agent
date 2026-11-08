@@ -4,13 +4,75 @@ Updated: 2026-11-08 (America/Chicago).
 
 ## Current milestone and repository state
 
-**Milestone 4 — Version 4 recovery failed on default-directory tagging; live acceptance remains pending.** Started from clean `feat/milestone-4-bedrock-agentcore` at `a5b690cd86825e3eeb608cebc26a6a1c8ef883af`. The user confirmed it was pushed and hosted CI runs [42502992593](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42502992593) and [42502997060](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42502997060) passed. Those hosted offline results cover `a5b690c`, separately from the new local proposal and unrun live acceptance. Administrator-reported active **Version 4** exactly matches that commit. After identity/artifact/state verification and approved failed-stack deletion, the corrected runtime deployment was retried once. Full parent/nested CloudTrail events identify `TagResource` on the exact default workload-identity directory. A separate, narrow directory-tagging statement is prepared locally and **unapplied**; further deployment is stopped. Foundation, trust, code version, datasets and M3 permissions remain intact. **0/40 Runtime invocations used; Milestone 4 remains open.**
+**Milestone 4 — development implementation, deployment and live acceptance complete; corrected parity-v1 restored.** Started from clean `feat/milestone-4-bedrock-agentcore` at `68dc38dab36976f43f05cc9daf332215067d6930`. Administrator-generated active report confirms default policy **v5**, matching reviewed SHA `ac2942537a6d917b899d3a156efd328953d6176f152b9db925b5e5a13c104419`, expected execution role and every required report gate. Using only `analytics-dev` / account `453711491609` / `us-west-2`, recovered the empty failed stack and deployed the reviewed corrected assembly with the retained S3 version. Runtime `enterprise_analytics_dev_agent-HlWywlG60h` and DEFAULT are **READY on version 4**, restored to `parity-v1`; stack UPDATE_COMPLETE. Warm-up and all **24 live tests (18 + 3 + 3)** passed. Both policies, seven-day retention, pinned artifact/version and retained foundation/data/trust verify. **28/40 invocations used**, no SDK failures. Local completion documentation/checks are separate from earlier hosted CI and pending push/review/merge; no production-readiness claim.
 
 **Milestone 3 is complete: implemented, deployed, live-validated, merged, and hosted-CI verified.** The user confirmed [PR #2](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/2), merge [`ae378e4c289144164a8a7a6a85fa8c71ae5bcacc`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/ae378e4c289144164a8a7a6a85fa8c71ae5bcacc), and successful [CI run 42166641840](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42166641840). Local starting main `6bf1220` contains that merge and its documentation update. Historical AWS/live results below retain their user-executed attribution; that parity suite was not rerun during milestone 4 preparation.
 
 **Milestone 2 remains implemented, merged into `main`, and verified by hosted CI.** [PR #1](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/1) merged implementation commit `e13b1ea` at merge commit `9dc5989353459e2651ba5cced882534d8d573783`. [GitHub Actions run 42113416826](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42113416826) passed for that merge commit, as confirmed by the user.
 
-## Version 4 recovery — 2026-11-08 session
+## Active-report recovery and completed acceptance — 2026-11-08
+
+Read AGENTS, progress, implementation/deployment plans and both reports; optional `docs/agentcore-recovery.md` is absent. Verified clean branch/history and existing Conda Python 3.12.16 / Poetry 2.3.1 interpreter. Before any AWS mutation, required active-report checks passed: mode `cloudshell-active`, top-level passed true, `aws.active_policy_matches` true, empty AWS/offline failures/reference gaps, exact CloudFormation execution role and policy checksum. Reported default v5 matches the committed reviewed policy; proposal v4 mismatch is historical, not acceptance. Active report SHA `90740251407ada706100c8bcbb35fb6da4d2a581d7169db2f4c22f7618da0458`; proposal SHA `a0db6f4f67dd6f2b6bb6d1c65e36e0a37d5544d0779e99862e5a7190e5c2b2e5`. These are administrator-generated IAM inspection/simulation evidence, separate from fresh `analytics-dev` STS and actual service execution. No new profile or IAM change was made.
+
+Fresh read-only checks verified all retained hashes, exact S3 VersionId/checksum/length/encryption, unchanged foundation/data/trust templates, old runtime ROLLBACK_COMPLETE with no live resources or matching Runtime, and failed identity not found. Preserved full stack/events/resources in `artifacts/agentcore/v5.before-delete.json`; original reports, historical CloudTrail, ZIP/assemblies and ledger remain intact. Deleted only that empty failed stack record and waited successfully. No artifact rebuild/upload, bootstrap, dataset publication, foundation/trust deployment or IAM mutation was repeated. CDK published its reviewed deployment templates as part of deployment; the retained code ZIP was never rebuilt or uploaded.
+
+### Actual deployment and live results
+
+All four deployments used repository-local `infrastructure/cdk/tooling/node_modules/.bin/cdk deploy`, stack `enterprise-analytics-dev-agent-runtime`, `--parameters ArtifactVersionId=HSRXiFjg0w2W77InULH4.fn32Y.JH8b9 --profile analytics-dev --region us-west-2 --require-approval never --no-telemetry --no-notices --outputs-file artifacts/agentcore/recovery.runtime.outputs.json`.
+
+| Step / command or reviewed assembly | Actual result |
+| --- | --- |
+| `aws cloudformation delete-stack --stack-name enterprise-analytics-dev-agent-runtime --profile analytics-dev --region us-west-2 --no-cli-pager`, then `aws cloudformation wait stack-delete-complete ...` | Previous empty failed stack deleted; evidence retained. |
+| `--app artifacts/cdk.agentcore.endpoint-fix.out` initial deployment | Exit 0; CREATE_COMPLETE; deployment 27.70s, total 36.39s. Runtime/DEFAULT READY version **1**, effective dataset `parity-v1`. |
+| `poetry run python artifacts/agentcore/recovery_operator.py warmup` | Independent North net revenue **28.50** / South **13.00** USD passed; 1 invocation; 3 model calls, 4,599 input / 344 output tokens, 4,899 ms server latency. |
+| `poetry run python artifacts/agentcore/recovery_operator.py retention` | Set seven-day retention on only this Runtime's log group; verified again after restoration. |
+| Counted `parity-v1` live suite | **18 passed, 729 deselected in 116.64s**; 19 suite invocations; cumulative **20/40** including warm-up. |
+| `--app artifacts/cdk.agentcore.endpoint-fix.parity-legacy-v1.out` | Exit 0; UPDATE_COMPLETE; deployment 22.87s, total 33.84s; Runtime/DEFAULT READY version **2**. |
+| Counted `parity-legacy-v1` live suite | **3 passed, 729 deselected in 27.60s**; 4 invocations; cumulative **24/40**. Missing returns produces the expected MissingMetricDataError while net revenue/session isolation pass. |
+| `--app artifacts/cdk.agentcore.endpoint-fix.parity-no-returns-v1.out` | Exit 0; UPDATE_COMPLETE; deployment 22.67s, total 33.62s; Runtime/DEFAULT READY version **3**. |
+| Counted `parity-no-returns-v1` live suite | **3 passed, 729 deselected in 30.08s**; 4 invocations; cumulative **28/40**. Empty returns yields zero return rate, with successful net revenue/session isolation. |
+| `--app artifacts/cdk.agentcore.endpoint-fix.out` restoration | Exit 0; UPDATE_COMPLETE; deployment 22.73s, total 32.33s; Runtime/DEFAULT READY version **4**. Dataset override removed; packaged default `parity-v1` verified. No extra invocation needed. |
+| `poetry run python artifacts/agentcore/recovery_operator.py ready <dataset>` after each deployment, then `python artifacts/agentcore/v5_final_verify.py` | Pinned version, code/runtime/model/trusted scope, final READY versions, both policies, exact corrected base template, retained foundation/data/trust and seven-day log retention verified read-only. |
+
+Each live suite actually ran `ANALYTICS_ACCEPTANCE_LABEL=<dataset> poetry run python artifacts/agentcore/run_live.py tests --run-agent-live --agent-config=artifacts/agentcore/live.<dataset>.json -m agent_live -q -s -x` (output retained with pipefail/tee in `artifacts/agentcore/v5.<dataset>.log`). The existing wrapper reserved/fsynced each attempt before dispatch, disabled SDK retries, and preserved the original ledger. No failed-case rerun or extra evaluation was needed.
+
+The initial ignored readiness reader assumed endpoint `targetVersion` was always present; actual READY responses omit it. Corrected only that local helper to require READY and `liveVersion == latest Runtime version`, plus matching targetVersion when supplied. Both policy reads were semantically identical to reviewed JSON after normalizing only scalar/singleton Principal.AWS and aws:PrincipalArn forms. Raw responses/comparisons are preserved; these local-reader corrections did not change Runtime source, approved artifacts, AWS settings or acceptance criteria. Official GetAgentRuntimeEndpoint/GetResourcePolicy documentation was consulted. No new AWS denial occurred in this recovery.
+
+### Completion checkpoint and diagnostics
+
+| Output | Verified value |
+| --- | --- |
+| Runtime stack | `arn:aws:cloudformation:us-west-2:453711491609:stack/enterprise-analytics-dev-agent-runtime/1324c990-dba9-11f1-b2cf-0ae4036e3efb`, UPDATE_COMPLETE |
+| Runtime ARN | `arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_dev_agent-HlWywlG60h` |
+| DEFAULT endpoint | Runtime ARN + `/runtime-endpoint/DEFAULT`; READY, live/latest version **4** |
+| Source artifact | SHA `51eaeac6b9eb107f4634aea9e3180fa1db7dce1380fbe166415fbfed8185ded1`; 39,117,152 bytes; VersionId `HSRXiFjg0w2W77InULH4.fn32Y.JH8b9`, unchanged |
+| Corrected base / legacy / empty template SHA | `dd217890a37cc42e54499c3cc8cba91886ed5ca3dee5de9a5bb11a5e153c64bb` / `bbfe710402345ae04c7b1c73ec6187b7cde602d8344e1233b8e721848efe0ffc` / `ed4f4d446f2307959f87b19d3023412f976bebe8cf2ed7a6b0b9c5c021e82c96` |
+| Configuration | `us.amazon.nova-lite-v1:0`, `parity-v1`, reference date `2025-02-01`, trusted tenant `t1`, regions North/South; workload credentials and existing query role |
+| Retained infrastructure | Foundation CREATE_COMPLETE; data layer UPDATE_COMPLETE; exact reviewed templates/query trust unchanged |
+| Ledger | **28/40**, 28 sequential reservations and SDK returns, zero SDK failures; warm-up 1 + base 19 + legacy 4 + empty 4 |
+| Model diagnostics, all 28 responses | **67 calls**, **103,374 input / 7,493 output tokens**; selected model matches throughout |
+| Athena diagnostics | **22 unique queries, all SUCCEEDED**, **44,597 scanned bytes**; no cancellation attempts |
+
+Independent offline revalidation of the 27 suite JSONL responses plus warm-up passed the authored literal metric/tool/filter/date/version/error expectations. Same-session North→South isolation passed for all three snapshots; tenant override clarification and unauthorized region isolation passed. Response statuses were 23 answers, four clarifications and one expected missing-source error. Reported server latency sums to 100,999 ms (not wall time or AWS billing); Athena reports 18,804 ms engine / 1,919 ms queue / 22,648 ms total across distinct queries. No measured-dollar cost is claimed.
+
+Ignored evidence includes original reports/ledger, `v5.before-delete.json`, `recovery.runtime.outputs.json`, `ready.<dataset>.<version>.json`, `recovery.warmup.response.json`, `v5.runtime-policy-verification.json`, `v5.policy-checks.json`, three `v5.<dataset>.log` files, `artifacts/agent-live-evaluations.jsonl`, and **`v5.final-verification.json`** / **`v5.completion.json`**. Historical CloudTrail/failure records remain intact.
+
+### Local checks and handoff
+
+Required checks ran in the existing environment before deployment and cover the unchanged application/infrastructure code; this completion changes documentation only. No package rebuild/upload or template resynthesis was performed. Reviewed deployment bytes remain frozen; future builds require their own checksum review.
+
+| Command | Actual result |
+| --- | --- |
+| `poetry check --lock` | Passed: All set. |
+| `poetry run pytest` | **663 passed, 84 skipped in 38.10s**. Offline skips are separate from the explicitly executed live suites above. |
+| `poetry run ruff check .` / `poetry run ruff format --check .` | Passed; **76 files** formatted. |
+| `poetry run mypy src tests` / extended infrastructure mypy | Passed: **57 / 67 files**. |
+| Strict report gates / local artifact hashes / fresh final AWS verification | Passed; no source, IAM policy, data or artifact changes. |
+| `git diff --check` / independent completion review | Passed; five documentation files reviewed against final AWS/ledger/live evidence, no blocking finding. |
+
+Milestone 4's agreed development acceptance gates are complete. This completion checkpoint remains local until the user pushes; hosted CI/review/merge for this new commit are pending, separately from previously recorded successful hosted runs. No additional Runtime calls or AWS work are needed for this acceptance. Production hardening, a retail demonstration, Cube, UI and extra AgentCore services remain outside this work.
+
+## Historical Version 4 recovery — 2026-11-08
 
 Read AGENTS, progress, implementation plan and the current deployment plan; inspected the clean starting branch/status/history and existing Conda Python 3.12.16 / Poetry 2.3.1 interpreter. The supplied active V4 JSON matches `a5b690c` and the starting source exactly (file SHA `edda39f7f695cc44b763eea12598c7ce5b501048a0ab445c0204889a7cb94fb9`). Application/default-version evidence is administrator-reported, not an IAM write or fresh direct IAM read by the agent. Explicit STS verified only `analytics-dev`, account `453711491609`, developer `AWSReservedSSO_PowerUserAccess_95483085e85e3a9b/suresh`, region `us-west-2`.
 
@@ -41,9 +103,9 @@ Prepared only the separate **`TagAutomaticRuntimeWorkloadIdentityDirectory`** st
 
 The [official authorization reference](https://docs.aws.amazon.com/service-authorization/latest/reference/list_bedrock-agentcore.html) lists identity and directory resources for CreateWorkloadIdentity and supports request-tag conditions for directory TagResource. Combined with the nested Project tag, this supports keeping the existing conditions. The default directory is shared in this account/region: its ARN cannot restrict this new grant by runtime name. The submitted Project tag constrains the request, not directory ownership. This is an explicit narrow shared-directory exception requiring administrator review; it is not claimed to be runtime-name isolation or production readiness.
 
-The proposal is **local and unapplied**. After approval an administrator must create/set a new default version of the existing M4 managed policy, preserving V4 for rollback. No further deployment retry or IAM mutation followed the denial. Corrected assemblies, ZIP and uploaded VersionId remain unchanged and already approved. Keep Milestone 4 open until all deployed gates pass and corrected parity-v1 is READY.
+At the V4 checkpoint the proposal was local and unapplied; the agent made no IAM mutation or additional retry then. The later administrator-generated active report verifies the reviewed full policy as default v5. Authorized recovery, all deployed acceptance gates and corrected-base restoration subsequently passed as recorded above. Earlier failure evidence is historical; it is not the current deployment state.
 
-### Current verification
+### Historical Version 4 verification
 
 Baseline required checks passed before recovery: **662 passed, 84 skipped in 37.23s**, lock validation, Ruff/formatting and mypy (57/67 files). These checks are separate from both hosted CI runs and unrun live acceptance. Final results cover the new local policy/test change:
 
@@ -435,9 +497,9 @@ Read AGENTS, this progress log, and the implementation plan. Inspected `git stat
 
 ## Completion status and known limitations
 
-Milestones 1–3 are complete; their historical implementation, user-run AWS parity, merge and hosted CI evidence remain separate. Milestone 4 retains its foundation, trust addition and verified uploaded archive. Active V4 matches the supplied policy, but its approved recovery failed on the exact default-directory tagging permission. A separate conditional directory-only TagResource grant is prepared locally and unapplied. It requires administrator review/application and approval to continue; the directory is shared, so this grant cannot be runtime-name scoped. Hosted CI passed twice for pushed `a5b690c`; it does not cover the new proposal. Live acceptance and review/merge remain pending. The conservative question vocabulary and deterministic numeric rendering are unchanged; session history is not retained.
+Milestones **1–4 are complete for the agreed development scope**. M4's recovered Runtime/DEFAULT are READY on restored `parity-v1` version 4, both resource policies and seven-day retention verify, and all 24 deployed tests plus warm-up passed within **28/40** calls. Source/package/template bytes and retained foundation/data/query trust remain unchanged. Historical M3 user-run parity and prior hosted CI retain their attribution. The new completion checkpoint still needs the user's push, hosted CI, review and merge; those are separate from successful live acceptance. Production authentication/policy services, broader question vocabulary, retail demonstrations, long-duration credential refresh/cancellation fault injection and measured-cost validation were not part of this live gate.
 
-Runtime packaging targets Linux ARM64, not the local macOS native libraries. API/CloudFormation/model compatibility is checked offline and against official documentation but requires approved live acceptance. Scheduling deadlines and Athena cancellation remain best effort; an in-flight SDK call can outlast them. The operator's denied IAM inspection is an administrator prerequisite, not a reason to broaden permissions automatically. Initial acceptance uses parity snapshots even though retail publication metadata is now verified. No production isolation/policy service or measured-cost claim is made.
+Runtime packaging targets Linux ARM64, not the local macOS native libraries. API/CloudFormation/model compatibility passed the agreed development live acceptance; broader production behavior remains unverified. Scheduling deadlines and Athena cancellation remain best effort; an in-flight SDK call can outlast them. The operator's denied IAM inspection is an administrator prerequisite, not a reason to broaden permissions automatically. Initial acceptance uses parity snapshots even though retail publication metadata is now verified. No production isolation/policy service or measured-cost claim is made.
 
 Source versions are immutable through the approved loader protocol; partial publication is deliberately not resumed automatically. New dataset versions require reviewed infrastructure inventory changes. Athena aggregates have a 38-digit bound. Application authorization is not a database security boundary, and 10 MiB per-query limits do not cap aggregate spend. Stored data is retained by default; no explicit cleanup was reported or performed in this update.
 
@@ -447,8 +509,6 @@ Milestone 2 introduced no AWS credentials, calls, deployment, Athena adapter, or
 
 ## Exact next task
 
-**Milestone 4 remains open.** Review and approve the separate `TagAutomaticRuntimeWorkloadIdentityDirectory` statement, acknowledging its exact shared default-directory scope and region/account/Project conditions. An administrator must apply it as a new default version of the existing M4 managed policy, preserving active V4 for rollback and every V4/M3 permission. Corrected templates and uploaded ZIP/version remain unchanged and approved.
+Review this local Milestone 4 completion checkpoint, then the user can push the branch and confirm hosted CI/review/merge. Record that evidence separately from the **24 live tests + warm-up** and restored READY base already verified. No further AWS deployment or Runtime invocation is needed for this acceptance. Preserve the existing ledger at **28/40** and all ignored deployment/diagnostic records; do not reset the budget or replay completed deployment/publication steps.
 
-After administrator application and authorization to resume, inspect/preserve the latest empty ROLLBACK_COMPLETE runtime stack (`d2c0dc90-db99-11f1-81e0-02cde3d69019`), delete only that failed stack record, and retry `artifacts/cdk.agentcore.endpoint-fix.out` with S3 VersionId `HSRXiFjg0w2W77InULH4.fn32Y.JH8b9`. Verify Runtime/DEFAULT READY before counted warm-up, seven-day retention and the three authored suites. After any variant attempt, restore only the corrected parity-v1 base and verify READY. Preserve the original ledger and **40 total** invocation maximum; **0 used**. Capture full parent and nested CloudTrail denial messages before proposing any further grant.
-
-Do not repeat foundation, trust, upload, bootstrap or dataset publication. Keep this checkpoint local; the user will push. CI runs 42502992593/42502997060 cover pushed `a5b690c`, separately from these new local checks and unrun live acceptance. PR #4 remains separate. Do not mark M4 complete until all deployed acceptance gates pass and corrected parity-v1 is restored/READY. No Cube, UI or other AgentCore services.
+Keep commits local; no push was performed here. No next milestone, Cube, UI, retail demonstration or additional AgentCore service is started. Any subsequent operational change or new evaluation should have a reviewed scope; current development tenant/region authorization is not production row-level security.

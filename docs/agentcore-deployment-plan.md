@@ -1,8 +1,34 @@
 # Milestone 4 AgentCore deployment and live-test plan
 
+## Completed development deployment — 2026-11-08
+
+**Milestone 4 passed its agreed deployed acceptance gates.** Strict validation of the downloaded `cloudshell-active` report passed before mutation: overall passed, matching active default **v5**, empty AWS/offline failures/reference gaps, expected CloudFormation execution role and policy SHA `ac2942537a6d917b899d3a156efd328953d6176f152b9db925b5e5a13c104419`. This administrator IAM evidence is separate from fresh local `analytics-dev` STS and actual successful service execution.
+
+Used only `analytics-dev`, account `453711491609`, region `us-west-2`. Preserved the old failure events, verified no surviving Runtime/failed identity/resources, deleted only the empty failed stack, and deployed the reviewed corrected base using the retained uploaded VersionId. No new IAM changes, artifact rebuild/upload, bootstrap, publication, foundation or query-trust deployment was performed. Both variant deployments and the corrected-base restore succeeded.
+
+| Verified output | Actual result |
+| --- | --- |
+| Runtime stack | `enterprise-analytics-dev-agent-runtime`, UPDATE_COMPLETE; stack suffix `1324c990-dba9-11f1-b2cf-0ae4036e3efb` |
+| Runtime | `arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_dev_agent-HlWywlG60h` |
+| DEFAULT | Runtime ARN + `/runtime-endpoint/DEFAULT`; Runtime/endpoint **READY version 4**, restored `parity-v1`, no dataset override |
+| Code | SHA `51eaeac6b9eb107f4634aea9e3180fa1db7dce1380fbe166415fbfed8185ded1`; S3 VersionId `HSRXiFjg0w2W77InULH4.fn32Y.JH8b9`, unchanged |
+| Versions exercised | Base 1 → legacy 2 → empty returns 3 → corrected base 4 |
+| Live acceptance | Warm-up passed; **18 base + 3 legacy + 3 empty-return tests passed** against authored expected values |
+| Invocation allowance | **28/40 used**, original ledger preserved, no SDK failures or evaluation reruns |
+| Policies / retention | Both resource policies match reviewed statements; seven-day log retention verified |
+| Retained infrastructure | Foundation CREATE_COMPLETE; data layer UPDATE_COMPLETE; reviewed templates/query trust and source datasets unchanged |
+
+Each suite ran through `artifacts/agentcore/run_live.py` with explicit `tests --run-agent-live --agent-config=artifacts/agentcore/live.<dataset>.json -m agent_live -q -s -x` and pre-dispatch counting. Only corrected `artifacts/cdk.agentcore.endpoint-fix*.out` assemblies were used, always with the pinned VersionId. Base, legacy and empty suites passed in 116.64s, 27.60s and 30.08s respectively. Final read-only verification confirms exact corrected base template/configuration, endpoint/live version, policies, retention, pinned object and retained foundation/data state. Evidence is in `artifacts/agentcore/v5.final-verification.json`, original reports/ledger, three `v5.<dataset>.log` files and `artifacts/agent-live-evaluations.jsonl`; full commands/results are in [progress](progress.md).
+
+Local observer assumptions were corrected without changing deployed code: READY responses can omit optional targetVersion, and AWS returns scalar singleton forms for IAM principal/condition values. Both reviewed policies were compared after only that representation normalization. [Official endpoint response fields](https://docs.aws.amazon.com/bedrock-agentcore-control/latest/APIReference/API_GetAgentRuntimeEndpoint.html) and [policy retrieval](https://docs.aws.amazon.com/boto3/latest/reference/services/bedrock-agentcore-control/client/get_resource_policy.html) were checked. No AWS denial occurred in this successful recovery.
+
+The completion commit stays local; push, hosted CI, review and merge remain separate handoff work. This is development validation with a fixed trusted tenant/region scope, not production readiness. No retail demo, extra evaluation, Cube, UI or additional service was run. The reviewed ZIP/templates remain frozen; documentation updates do not rebuild the deployed package. No further permission, deployment or invocation is required by this acceptance. The following approval gates and commands retain historical deployment/cleanup context; **do not replay completed steps or reset the ledger**.
+
+## Historical Version 4 failure and directory-tagging correction
+
 Recovery checkpoint **2026-11-08 — Version 4 attempt**. The administrator-reported active M4 policy V4 exactly matches pushed `a5b690c`. The approved corrected assembly was retried once after preserving/deleting the empty failed stack. **Creation failed on default workload-identity directory tagging. Milestone 4 remains open; 0/40 Runtime invocations used.** The directory-only permission below is prepared locally and unapplied. No warm-up, retention update, live suite or variant restoration ran. The corrected templates, ZIP and uploaded VersionId remain unchanged and already approved.
 
-## Current recovery result and minimum additional IAM correction
+### Historical denial and minimum additional IAM correction
 
 The user confirmed `a5b690c` was pushed and hosted CI runs [42502992593](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42502992593) and [42502997060](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42502997060) passed. Those hosted offline results cover that commit, separately from the new local proposal and unrun live acceptance. All current AWS calls used only `analytics-dev`, account `453711491609`, region `us-west-2`, after explicit STS identity verification. V4 application/default-version evidence is administrator-reported; the supplied JSON exactly matches the committed file (SHA `edda39f7f695cc44b763eea12598c7ce5b501048a0ab445c0204889a7cb94fb9`). No IAM write was performed by the agent.
 
@@ -44,7 +70,7 @@ All V4 statements and M3 permissions remain intact. Removing only this addition 
 
 The [official authorization reference](https://docs.aws.amazon.com/service-authorization/latest/reference/list_bedrock-agentcore.html) lists both identity and directory resources for CreateWorkloadIdentity, and request-tag conditions for directory TagResource. Keep the Project condition: the nested request supplies it. The default directory is a **shared account/region resource**; its exact ARN cannot limit this new tagging grant by runtime name. Submitted Project tags constrain requests, not directory ownership. This is an explicit shared-directory exception, with no directory wildcard or unrelated actions. Reattaching unchanged V4 cannot resolve the missing grant.
 
-An administrator must review/approve this additional permission and apply it as a new default version of the existing M4 policy, retaining V4 for rollback. The proposal is **local and unapplied**; no further retry followed this failure. The already-approved corrected templates/code need no changes or renewed template approval. Recovery continuation awaits that IAM approval/application and authorization to resume.
+At that V4 checkpoint the proposal was local/unapplied and further recovery was stopped. The administrator subsequently applied the reviewed policy as v5, verified by the supplied active report. The newly authorized recovery and deployed acceptance succeeded as recorded above. The historical correction does not require another policy update or template/package approval.
 
 Then use the scoped failed-stack recovery commands below after rechecking/preserving the latest empty stack. Reuse the corrected base assembly and retained VersionId. Do not repeat foundation, trust, upload, bootstrap or publication. Require Runtime/DEFAULT READY before ledger-counted warm-up, seven-day log retention and the three authored suites (18 + 3 + 3 tests). After any variant attempt restore only the **corrected** parity-v1 base and verify READY, even if a suite fails. Original ledger remains **0/40**, with failed calls and retries included in the unchanged 40-call maximum. Successful planned execution uses 28 invocations. Capture complete parent/nested denial messages before proposing further grants. No current live result is claimed.
 
@@ -106,10 +132,10 @@ A separate defect was found in the approved runtime template: DEFAULT endpoint A
 
 Only three paths differ: the DEFAULT endpoint policy's `ResourceArn`, its JSON policy's endpoint resources, and `DefaultEndpointArn` output. Foundation bytes, Runtime ZIP, code key/version, model, trusted tenant/regions, caller principals and resource count are unchanged. Corrected legacy/empty-return proposals are synthesized under `artifacts/cdk.agentcore.endpoint-fix.<dataset-version>.out`. The original assemblies are preserved for audit.
 
-The endpoint-ARN template/recovery is already approved. Further continuation now requires approval and administrator application of the separate exact-directory tagging addition above, preserving active V4 and M3 permissions. Then reverify the latest failed stack has no live resources, preserve its evidence, remove only that failed stack record, and retry using the unchanged corrected assembly and uploaded version:
+Historical scoped recovery commands (now completed): after the administrator applied v5 and the user authorized continuation, the empty failed stack was preserved/deleted and the corrected assembly deployed using the unchanged uploaded version. Do not repeat these operations for the completed acceptance:
 
 ```sh
-# PROPOSED CONTINUATION: wait for the additional IAM statement to be approved/applied.
+# HISTORICAL RECOVERY: completed with active-report validation; do not replay.
 aws cloudformation describe-stack-resources --stack-name enterprise-analytics-dev-agent-runtime \
   --profile analytics-dev --region us-west-2
 aws cloudformation delete-stack --stack-name enterprise-analytics-dev-agent-runtime \
@@ -142,9 +168,9 @@ Do not redeploy foundation, repeat the trust change, upload another archive, boo
 
 After the user renewed SSO, read-only STS verified the explicit profile/account/region. CloudFormation initially reported the data-layer stack CREATE_COMPLETE; it is now UPDATE_COMPLETE after the approved trust addition. Ready manifests, all 27 Glue table schemas, and object SHA-256/length metadata were verified for all four snapshots, including published `retail-v1`. Evidence is under ignored `artifacts/m4-snapshot-verification.json`. This verifies publication metadata, not a fresh Athena execution or a retail agent demonstration. Initial acceptance uses authored parity fixtures, not generated retail values.
 
-Bedrock `GetInferenceProfile` reports ACTIVE and `GetFoundationModelAvailability` reports agreement/entitlement/region AVAILABLE and authorization AUTHORIZED for Nova Lite. Official documentation supports Converse client-side tools. **Inference access and tool behavior have not been proved by a model call.** The US inference profile can route from Oregon to **us-west-2, us-east-1, or us-east-2**; approval covers that US routing. SCPs and model quotas in those destinations can still prevent inference. No implicit default profile is allowed.
+Bedrock `GetInferenceProfile` reports ACTIVE and `GetFoundationModelAvailability` reports agreement/entitlement/region AVAILABLE and authorization AUTHORIZED for Nova Lite. Official documentation supports Converse client-side tools. **Subsequent deployed acceptance proved model/tool behavior for the authored cases; actual usage is recorded above.** The US inference profile can route from Oregon to **us-west-2, us-east-1, or us-east-2**; approval covers that US routing. SCPs and model quotas in those destinations can still prevent inference. No implicit default profile is allowed.
 
-The user confirmed both scoped execution policies are attached and developer query-role trust was preserved. `iam:GetRole`/`iam:GetPolicy` inspection remains denied to the selected PowerUser SSO caller; the user has since supplied active Version 4 JSON matching `a5b690c`. The latest recovery identifies a separate exact-directory tagging denial; only that new proposal awaits administrator review/application. Do not repeat the completed attachment step below. Read-only Access Analyzer validation of the proposed policy returned `findings: []` after correcting two invalid S3 action names. This validates policy syntax/rules, not effective deployment privileges or service success.
+The user confirmed both scoped execution policies are attached and developer query-role trust was preserved. `iam:GetRole`/`iam:GetPolicy` inspection remains denied to the selected PowerUser SSO caller; the administrator-generated active report now verifies default v5 against reviewed policy SHA `ac2942537a6d917b899d3a156efd328953d6176f152b9db925b5e5a13c104419`. The later authorized recovery and live acceptance passed; no permission addition is pending for this gate. Do not repeat the completed attachment step below. Read-only Access Analyzer validation of the proposed policy returned `findings: []` after correcting two invalid S3 action names. This validates policy syntax/rules, not effective deployment privileges or service success.
 
 ## Exact resources and IAM changes proposed
 
@@ -398,7 +424,7 @@ infrastructure/cdk/tooling/node_modules/.bin/cdk deploy \
 
 After restoring the base, run `verify_runtime_ready` and `test "$VARIANT_STATUS" -eq 0` and retain the original failure output; a failed restore also fails this procedure. Require successful deployment/READY between variants; a deployment failure stops the loop before invoking tests. The shell loop above is a procedure for supervised execution, not an unattended recovery script. Legacy return rate must produce the specific missing-source error while net revenue still works; empty returns must yield zero, not missing-source failure. Default pytest and ordinary CI never invoke these tests. Requested live execution with missing/invalid configuration fails clearly rather than skipping.
 
-**Original approved allowance, unchanged (0 used):** three live suite runs (18 + 3 + 3 tests, 27 invocation requests because each session test sends two), plus one manual invocation and limited failed-case reruns, **at most 40 total Runtime invocations** for this acceptance attempt. Record the count; stop and obtain approval before exceeding it or changing resources/IAM/model/scope. No production load, retail demo invocation, concurrency benchmark, or additional AgentCore service is included. The runtime does not implement an account-wide invocation counter; this total is an operator-enforced acceptance allowance.
+**Original approved allowance, now 28/40 used:** three live suite runs (18 + 3 + 3 tests, 27 invocation requests because each session test sends two), plus one manual invocation and limited failed-case reruns, **at most 40 total Runtime invocations** for this acceptance attempt. Record the count; stop and obtain approval before exceeding it or changing resources/IAM/model/scope. No production load, retail demo invocation, concurrency benchmark, or additional AgentCore service is included. The runtime does not implement an account-wide invocation counter; this total is an operator-enforced acceptance allowance.
 
 Collect ignored `artifacts/agent-live-evaluations.jsonl`, actual runtime/endpoint versions, archive/S3 VersionId, test output, and CloudWatch logs. Diagnostics contain model configuration, reported input/output tokens, latency, matching tool calls, and Athena query IDs/scans/timings/versions. Redact before sharing outside the approved development context. Do not mark the milestone complete unless every agreed case passes on the deployed runtime, the base configuration is restored, and actual evidence is recorded. Record failures honestly and keep it open.
 

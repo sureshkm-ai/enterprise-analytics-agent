@@ -5,7 +5,7 @@
 ```mermaid
 flowchart LR
     App[Trusted application context] --> Tools[Semantic tools and v1/v2 contracts]
-    Agent[Bedrock Converse agent - AgentCore deployment pending] --> Tools
+    Agent[Bedrock Converse agent - AgentCore development validated] --> Tools
     Tools --> Interface[SemanticAdapter]
     Interface --> Local[Local DuckDB adapter]
     Interface --> Athena[Athena adapter - development validated]
@@ -14,7 +14,7 @@ flowchart LR
     Local --> Data[Local Parquet retail tables]
 ```
 
-The agent consumes backend-independent semantic contracts. AWS-specific and Cube-specific logic belongs in adapters. `contracts.py`, `contracts_v2.py`, and `adapter.py` must not import provider clients, DuckDB types, or SQL. Milestones 1–3 provide the verified DuckDB/Athena semantics. Milestone 4 implements the Converse agent and prepares AgentCore hosting; its deployment and model calls await approval. The milestone remains open until deployed-agent acceptance passes.
+The agent consumes backend-independent semantic contracts. AWS-specific and Cube-specific logic belongs in adapters. `contracts.py`, `contracts_v2.py`, and `adapter.py` must not import provider clients, DuckDB types, or SQL. Milestones 1–3 provide the verified DuckDB/Athena semantics. Milestone 4 implements the Converse agent and AgentCore hosting. Its approved development deployment passed 24 authored live tests plus warm-up; corrected parity-v1 is restored with Runtime/DEFAULT READY on version 4. Completion evidence and pending Git handoff are recorded separately in progress.
 
 The four semantic tools are `discover_metrics`, `describe_metric`, `query_metric`, and `discover_dimensions`. Metric definitions own calculations, allowed dimensions, relationships, filters, units, and time semantics. The catalog is the source of governed configuration; an adapter translates the supported calculation into backend execution rather than accepting a user expression.
 
@@ -90,4 +90,4 @@ The inbound payload is `AgentRequest(question=...)`, with extra fields rejected.
 
 Python 3.12 Linux ARM64 direct-code deployment uses a deterministic ZIP of the project wheel and checksum-locked main dependency wheels from Poetry. A standard HTTP server implements `/ping` and `/invocations` on port 8080; no extra agent framework is required. The workload SDK provider supplies runtime credentials. A separate query-role client refreshes its 15-minute STS assumption before expiry; no local profile/SSO configuration is packaged or selected by deployed code.
 
-Two new infrastructure phases prepare a private retained code bucket/execution role and then the Runtime plus inbound policies. A source-controlled, optional extra query-role principal adds only the runtime role while preserving developer trust in the deployed data stack. An offline template comparison shows only that trust policy changes in the data layer. The [AgentCore plan](agentcore-deployment-plan.md) records exact resources, IAM/deployment prerequisites, source regions/model routing, artifact/version binding, commands, costs, acceptance, and cleanup. None of the new resources, IAM changes, or billable calls has been executed.
+Two new infrastructure phases prepare a private retained code bucket/execution role and then the Runtime plus inbound policies. A source-controlled, optional extra query-role principal adds only the runtime role while preserving developer trust in the deployed data stack. An offline template comparison shows only that trust policy changes in the data layer. The [AgentCore plan](agentcore-deployment-plan.md) records exact resources, IAM/deployment prerequisites, source regions/model routing, artifact/version binding, commands, costs, acceptance, and cleanup. The approved foundation, additive query trust, retained code upload and Runtime deployment are now in place. Following administrator-applied execution-policy corrections and active-report verification, the recovery passed all live gates using 28/40 invocations. Both inbound policies and seven-day log retention verify, and corrected parity-v1 is restored. Production authorization and operational hardening remain outside this development validation.

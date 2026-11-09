@@ -25,13 +25,45 @@ DEFAULT_LEDGER = (
 )
 CODE_SHA256 = "51eaeac6b9eb107f4634aea9e3180fa1db7dce1380fbe166415fbfed8185ded1"
 CODE_VERSION = "HSRXiFjg0w2W77InULH4.fn32Y.JH8b9"
-type Purpose = Literal["warmup", "case", "session", "demo", "retry", "restoration_smoke"]
+type Purpose = Literal["warmup", "probe", "case", "session", "demo", "retry", "restoration_smoke"]
 type Sha256 = Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")]
 _PURPOSES = {"warmup", "case", "session", "demo", "retry", "restoration_smoke"}
+REPAIR_CAMPAIGN_ID = "milestone-5-q18-repair-v1"
+REPAIR_LEDGER = "artifacts/milestone-5/q18-repair-v1/runtime-invocations.jsonl"
 
 
 class CampaignError(RuntimeError):
     """Unsafe, corrupted or exhausted campaign state."""
+
+
+class RepairCampaignBinding(BaseModel):
+    """Reviewed repair identity; an uploaded candidate's version record is mandatory.
+
+    Every event carries this exact binding. Changing review, artifact, template or
+    uploaded version therefore cannot restart a campaign under an existing ledger.
+    The actual source/version verification lives in the operator configuration layer.
+    """
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    campaign_id: Literal["milestone-5-q18-repair-v1"]
+    ledger_path: Literal["artifacts/milestone-5/q18-repair-v1/runtime-invocations.jsonl"]
+    maximum: Literal[40]
+    review_sha256: Sha256
+    candidate_sha256: Sha256
+    candidate_template_sha256: Sha256
+    candidate_version_record_sha256: Sha256
+
+    @model_validator(mode="after")
+    def different_candidate(self) -> Self:
+        if self.candidate_sha256 == CODE_SHA256:
+            raise ValueError("repair candidate must differ from the original restored artifact")
+        return self
+
+    @property
+    def sha256(self) -> str:
+        content = json.dumps(self.model_dump(mode="json"), sort_keys=True, separators=(",", ":"))
+        return hashlib.sha256(content.encode()).hexdigest()
 
 
 class RestorationProof(BaseModel):
@@ -88,14 +120,47 @@ class Reservation:
 class CampaignLedger:
     def __init__(
         self,
-        path: Path = DEFAULT_LEDGER,
+        path: Path | None = None,
         *,
+        binding: RepairCampaignBinding | None = None,
+        repository_root: Path | None = None,
         now: Callable[[], datetime] = lambda: datetime.now(UTC),
     ) -> None:
-        self.path = path.resolve()
+        self.binding = (
+            RepairCampaignBinding.model_validate(binding.model_dump())
+            if binding is not None
+            else None
+        )
+        if self.binding is not None:
+            root = (repository_root or Path(__file__).resolve().parents[3]).resolve()
+            expected = root / self.binding.ledger_path
+            # Refuse both a final symlink and an aliased ancestor directory.
+            if expected.resolve() != expected:
+                raise CampaignError("repair ledger path must not alias another location")
+            selected = path if path is not None else expected
+            if selected.absolute() != expected or selected.resolve() != expected:
+                raise CampaignError("repair campaign cannot reuse or redirect a historical ledger")
+        else:
+            if repository_root is not None:
+                raise CampaignError("repository_root requires an explicit repair campaign binding")
+            selected = path if path is not None else DEFAULT_LEDGER
+        self.path = selected.resolve()
         if self.path.parts[-3:] == ("artifacts", "agentcore", "runtime-invocations.jsonl"):
             raise CampaignError("Milestone 4 ledger is immutable; use the separate M5 ledger")
+        if self.binding is None and self.path.parts[-4:] == tuple(Path(REPAIR_LEDGER).parts):
+            raise CampaignError("repair ledger requires an explicitly pinned campaign binding")
+        self.campaign_id = self.binding.campaign_id if self.binding is not None else CAMPAIGN_ID
+        self.maximum = self.binding.maximum if self.binding is not None else MAX_INVOCATIONS
+        self.purposes = _PURPOSES | {"probe"} if self.binding is not None else _PURPOSES
         self.now = now
+
+    def _identity(self) -> dict[str, object]:
+        if self.binding is None:
+            return {}
+        return {
+            "campaign_binding": self.binding.model_dump(mode="json"),
+            "campaign_binding_sha256": self.binding.sha256,
+        }
 
     @contextmanager
     def _locked(self) -> Iterator[TextIO]:
@@ -114,8 +179,7 @@ class CampaignLedger:
             finally:
                 fcntl.flock(stream, fcntl.LOCK_UN)
 
-    @staticmethod
-    def _read(stream: TextIO) -> list[dict[str, object]]:
+    def _read(self, stream: TextIO) -> list[dict[str, object]]:
         stream.seek(0)
         records: list[dict[str, object]] = []
         reservations: dict[str, int] = {}
@@ -130,15 +194,20 @@ class CampaignLedger:
                 raise CampaignError(
                     "corrupted campaign ledger; preserve it for investigation"
                 ) from exc
-            if not isinstance(record, dict) or record.get("campaign") != CAMPAIGN_ID:
+            if not isinstance(record, dict) or record.get("campaign") != self.campaign_id:
                 raise CampaignError("ledger contains a different campaign or malformed entry")
+            if self.binding is not None:
+                if any(record.get(key) != value for key, value in self._identity().items()):
+                    raise CampaignError("ledger repair binding differs from the pinned campaign")
+            elif "campaign_binding" in record or "campaign_binding_sha256" in record:
+                raise CampaignError("historical campaign cannot contain repair binding records")
             kind = record.get("event")
             reservation_id = record.get("reservation_id")
             if kind == "reserved":
                 number = len(reservations) + 1
                 if (
                     type(record.get("number")) is not int
-                    or number > MAX_INVOCATIONS
+                    or number > self.maximum
                     or record.get("number") != number
                     or not isinstance(reservation_id, str)
                     or reservation_id in reservations
@@ -148,10 +217,10 @@ class CampaignLedger:
                     raise CampaignError("ledger contains retail calls after restoration began")
                 if (
                     not isinstance(record.get("purpose"), str)
-                    or record.get("purpose") not in _PURPOSES
+                    or record.get("purpose") not in self.purposes
                 ):
                     raise CampaignError("ledger contains an invalid invocation purpose")
-                if record.get("purpose") != "restoration_smoke" and number >= MAX_INVOCATIONS:
+                if record.get("purpose") != "restoration_smoke" and number >= self.maximum:
                     raise CampaignError("ledger violated its protected restoration slot")
                 if record.get("purpose") == "restoration_smoke":
                     try:
@@ -211,7 +280,7 @@ class CampaignLedger:
             proof = restoration_proof.model_dump(mode="json")
         elif restoration_proof is not None:
             raise CampaignError("restoration proof cannot authorize a retail invocation")
-        if purpose not in _PURPOSES:
+        if purpose not in self.purposes:
             raise CampaignError("unrecognized invocation purpose")
         with self._locked() as stream:
             records = self._read(stream)
@@ -219,14 +288,15 @@ class CampaignLedger:
             if any(record.get("purpose") == "restoration_smoke" for record in reserved):
                 if purpose != "restoration_smoke":
                     raise CampaignError("retail dispatch closed after restoration smoke began")
-            limit = MAX_INVOCATIONS if purpose == "restoration_smoke" else MAX_INVOCATIONS - 1
+            limit = self.maximum if purpose == "restoration_smoke" else self.maximum - 1
             if len(reserved) >= limit:
                 raise CampaignError("campaign budget exhausted; restoration slot is protected")
             reservation = Reservation(len(reserved) + 1, str(uuid4()), purpose)
             self._append(
                 stream,
                 {
-                    "campaign": CAMPAIGN_ID,
+                    "campaign": self.campaign_id,
+                    **self._identity(),
                     "event": "reserved",
                     "number": reservation.number,
                     "reservation_id": reservation.reservation_id,
@@ -265,7 +335,8 @@ class CampaignLedger:
             self._append(
                 stream,
                 {
-                    "campaign": CAMPAIGN_ID,
+                    "campaign": self.campaign_id,
+                    **self._identity(),
                     "event": "outcome",
                     "reservation_id": reservation.reservation_id,
                     "outcome": outcome,
@@ -298,12 +369,13 @@ class CampaignLedger:
                 errors[code] = errors.get(code, 0) + 1
         restoration = any(record.get("purpose") == "restoration_smoke" for record in reserved)
         return {
-            "campaign": CAMPAIGN_ID,
+            "campaign": self.campaign_id,
+            **self._identity(),
             "used": len(reserved),
-            "maximum": MAX_INVOCATIONS,
+            "maximum": self.maximum,
             "completed": len(outcomes),
             "incomplete_reservations": len(reserved) - len(outcomes),
-            "remaining": MAX_INVOCATIONS - len(reserved),
+            "remaining": self.maximum - len(reserved),
             "failures": sum(record.get("outcome") in {"failed", "error"} for record in outcomes),
             "purposes": purposes,
             "error_codes": errors,

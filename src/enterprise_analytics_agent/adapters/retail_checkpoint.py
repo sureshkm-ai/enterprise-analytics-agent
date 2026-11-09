@@ -4,13 +4,15 @@ No mutation or invocation API is used here. A restoration proof is obtained fres
 not accepted from a caller-supplied JSON file or runtime response.
 """
 
+from __future__ import annotations
+
 import argparse
 import base64
 import json
 from copy import deepcopy
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Literal
+from typing import TYPE_CHECKING, Any, Literal
 
 import boto3
 from botocore.config import Config
@@ -28,7 +30,14 @@ from enterprise_analytics_agent.retail_evaluation.deployment import (
     canonical_hash,
     digest,
     review_assemblies,
+    review_candidate_assemblies,
 )
+
+if TYPE_CHECKING:
+    from enterprise_analytics_agent.retail_evaluation.repair_config import (
+        CandidateVersionBinding,
+        RepairReview,
+    )
 
 ACCOUNT = "453711491609"
 REGION = "us-west-2"
@@ -61,7 +70,12 @@ def _normalize(policy: dict[str, Any]) -> dict[str, Any]:
 
 
 def _verify_runtime(
-    runtime: dict[str, Any], endpoint: dict[str, Any], template: dict[str, Any]
+    runtime: dict[str, Any],
+    endpoint: dict[str, Any],
+    template: dict[str, Any],
+    *,
+    artifact_sha256: str = CODE_SHA256,
+    artifact_version_id: str = CODE_VERSION,
 ) -> dict[str, Any]:
     if runtime["status"] != "READY" or endpoint["status"] != "READY":
         raise ValueError("Runtime and DEFAULT must both be READY")
@@ -104,9 +118,9 @@ def _verify_runtime(
     code = artifact["code"]["s3"]
     if (
         artifact["runtime"] != "PYTHON_3_12"
-        or code["versionId"] != CODE_VERSION
+        or code["versionId"] != artifact_version_id
         or code["bucket"] != f"enterprise-analytics-dev-{ACCOUNT}-{REGION}-agent-code"
-        or code["prefix"] != f"releases/{CODE_SHA256}/agent.zip"
+        or code["prefix"] != f"releases/{artifact_sha256}/agent.zip"
     ):
         raise ValueError("Live Runtime uses a different artifact")
     return dict(code)
@@ -115,18 +129,79 @@ def _verify_runtime(
 def verify_checkpoint(
     *, scope: Literal["parity-v1", "retail-v1"] = "parity-v1", session: Any = None
 ) -> dict[str, Any]:
-    """Fail closed on deployment drift; injected sessions keep all tests offline."""
+    """Verify only the original reviewed artifact, including for restoration."""
+    review = review_assemblies()
+    path = (BASE_ASSEMBLY if scope == "parity-v1" else RETAIL_ASSEMBLY) / TEMPLATE_NAME
+    return _verify_checkpoint(
+        scope=scope,
+        path=path,
+        artifact_path=Path("artifacts/agentcore/agent.zip"),
+        artifact_sha256=CODE_SHA256,
+        artifact_version_id=CODE_VERSION,
+        review=review,
+        session=session,
+    )
+
+
+def verify_candidate_checkpoint(
+    review: RepairReview, version: CandidateVersionBinding, *, session: Any = None
+) -> dict[str, Any]:
+    """Verify a separately reviewed candidate and its actual approved-upload VersionId.
+
+    Candidate configuration never changes the original restoration constants or
+    proof. All local review/version checks precede SDK construction and dispatch.
+    """
+    from enterprise_analytics_agent.retail_evaluation.repair_config import (
+        CandidateVersionBinding,
+        RepairReview,
+    )
+
+    review = RepairReview.model_validate(review.model_dump())
+    version = CandidateVersionBinding.model_validate(version.model_dump())
+    version.require_review(review)
+    inspection = review_candidate_assemblies(review)
+    artifact_path = Path(review.candidate_artifact_path)
+    if artifact_path.stat().st_size != version.size_bytes:
+        raise ValueError("Candidate upload record size differs from the reviewed local ZIP")
+    return _verify_checkpoint(
+        scope="retail-v1",
+        path=Path(review.candidate_assembly_path) / TEMPLATE_NAME,
+        artifact_path=artifact_path,
+        artifact_sha256=review.candidate_sha256,
+        artifact_version_id=version.version_id,
+        expected_size=version.size_bytes,
+        review=inspection,
+        session=session,
+    )
+
+
+def _verify_checkpoint(
+    *,
+    scope: Literal["parity-v1", "retail-v1"],
+    path: Path,
+    artifact_path: Path,
+    artifact_sha256: str,
+    artifact_version_id: str,
+    review: dict[str, object],
+    session: Any = None,
+    expected_size: int | None = None,
+) -> dict[str, Any]:
+    """Shared mechanics; public entry points select separate immutable artifact pins."""
     session = session or boto3.Session(profile_name="analytics-dev", region_name=REGION)
     identity = session.client("sts", config=READ_CONFIG).get_caller_identity()
     if identity.get("Account") != ACCOUNT:
         raise ValueError("analytics-dev account differs from the approved account")
-    review = review_assemblies()
-    path = (BASE_ASSEMBLY if scope == "parity-v1" else RETAIL_ASSEMBLY) / TEMPLATE_NAME
     template = json.loads(path.read_text())
     control = session.client("bedrock-agentcore-control", config=READ_CONFIG)
     runtime = control.get_agent_runtime(agentRuntimeId=RUNTIME_ID)
     endpoint = control.get_agent_runtime_endpoint(agentRuntimeId=RUNTIME_ID, endpointName="DEFAULT")
-    code = _verify_runtime(runtime, endpoint, template)
+    code = _verify_runtime(
+        runtime,
+        endpoint,
+        template,
+        artifact_sha256=artifact_sha256,
+        artifact_version_id=artifact_version_id,
+    )
     policies = {}
     for name, resource in template["Resources"].items():
         if resource["Type"] != "AWS::BedrockAgentCore::ResourcePolicy":
@@ -162,7 +237,7 @@ def verify_checkpoint(
             parameters = {
                 item["ParameterKey"]: item["ParameterValue"] for item in stack["Parameters"]
             }
-            if parameters.get("ArtifactVersionId") != CODE_VERSION:
+            if parameters.get("ArtifactVersionId") != artifact_version_id:
                 raise ValueError("Stack artifact parameter differs")
         stacks[name] = stack["StackStatus"]
     log_name = f"/aws/bedrock-agentcore/runtimes/{RUNTIME_ID}-DEFAULT"
@@ -177,17 +252,18 @@ def verify_checkpoint(
     head = session.client("s3", config=READ_CONFIG).head_object(
         Bucket=code["bucket"],
         Key=code["prefix"],
-        VersionId=CODE_VERSION,
+        VersionId=artifact_version_id,
         ExpectedBucketOwner=ACCOUNT,
         ChecksumMode="ENABLED",
     )
     if (
-        head.get("ChecksumSHA256") != base64.b64encode(bytes.fromhex(CODE_SHA256)).decode()
-        or head.get("VersionId") != CODE_VERSION
+        head.get("ChecksumSHA256") != base64.b64encode(bytes.fromhex(artifact_sha256)).decode()
+        or head.get("VersionId") != artifact_version_id
+        or (expected_size is not None and head.get("ContentLength") != expected_size)
     ):
         raise ValueError("Pinned uploaded artifact checksum/version differs")
-    if digest(Path("artifacts/agentcore/agent.zip")) != CODE_SHA256:
-        raise ValueError("Local frozen ZIP differs; rebuilding is outside this workflow")
+    if digest(artifact_path) != artifact_sha256:
+        raise ValueError("Local reviewed ZIP checksum differs")
     return {
         "observed_at": datetime.now(UTC).isoformat(),
         "scope": scope,
@@ -200,6 +276,8 @@ def verify_checkpoint(
         "template_sha256": digest(path),
         "review": review,
         "retention_days": 7,
+        "artifact_sha256": artifact_sha256,
+        "artifact_version_id": artifact_version_id,
     }
 
 

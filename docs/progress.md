@@ -4,7 +4,7 @@ Updated: 2026-11-09 (America/Chicago).
 
 ## Current milestone and repository state
 
-**Current work: Milestone 5 live checkpoint recorded; incomplete because Q18 failed.** Continued on clean `feat/milestone-5-retail-evaluation`; remote branch independently verified at pushed correction `850bbc8c3a16a4343ece3a4144e3e047eba0917d`. User-confirmed [push CI42660104374](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42660104374) predates this campaign and does not cover the new local checkpoint. The approved retail Runtime update/warm-up/suite and mandatory corrected-base restoration/smoke ran using only analytics-dev/account 453711491609/us-west-2. **35/36 cases passed**; Q18 returned clarification instead of yesterday's net revenue 110.25 USD. Runtime/DEFAULT are now **READY v6**, stack UPDATE_COMPLETE, on the exact corrected parity-v1 scope. M5 used **38/40** with retail dispatch closed; M4's original **28/40** ledger is unchanged. Frozen ZIP/S3 version, goldens, reviewed assemblies, M3 permissions and retained infrastructure are preserved.
+**Current work: the complete Q18 offline repair bundle is prepared; M5 live acceptance remains open.** Continued on `feat/milestone-5-retail-evaluation` at `28ffcf18`, preserving the untracked user-supplied patch. `git apply --check milestone-5-q18-fix.patch` passed and the patch applied without forcing/discarding work. Original Q18 report/hash were inspected locally; no AWS or PR mutation was performed. A reproduced candidate ZIP, reviewed candidate/original restoration pins, explicit new campaign and tested operator workflow are prepared. See [the single deployment proposal](milestone-5-q18-deployment-proposal.md). Candidate upload/VersionId and live approval remain pending; the retained execution-role policy's original-key-only S3 read grant also requires administrator review for the new candidate key. Existing permissions/profile/goldens/artifacts/histories are unchanged. Original M5 remains 35/36 and closed at 38/40; M4 remains 28/40. PR #6 is left unmerged; no M5 completion claim.
 
 **Milestone 4 — implemented, deployed, live-validated, merged into main and verified by hosted CI for the agreed development scope.** [PR #4](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/4) merged on November 8, 2026, at [`47c3afc1dd948fa8ddcb074151b9f22af31dad48`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/47c3afc1dd948fa8ddcb074151b9f22af31dad48), containing completion commit [`51c1d4ccb0581ed35e2cace9bafb758bf1f05dbf`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/51c1d4ccb0581ed35e2cace9bafb758bf1f05dbf). The completion commit passed [push CI 42515746487](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42515746487) and [PR CI 42515722610](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42515722610); the merge passed [main CI 42516820774](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42516820774). GitHub API metadata confirms the PR/commit/run associations. Recorded live evidence remains **18 + 3 + 3 tests plus warm-up**, **28/40 invocations used**, corrected `parity-v1` restored, Runtime `enterprise_analytics_dev_agent-HlWywlG60h` and DEFAULT **READY on version 4**, and runtime stack UPDATE_COMPLETE. The reviewed artifact/S3 VersionId, M3 infrastructure, query trust and permissions remain unchanged. Historical live tests were not rerun; M5 read-only verification below freshly confirms the deployment checkpoint without modifying it. No production-readiness claim.
 
@@ -13,6 +13,80 @@ Milestone 4's documentation handoff is also merged: Git records PR #5 at `d7e0f1
 **Milestone 3 is complete: implemented, deployed, live-validated, merged, and hosted-CI verified.** The user confirmed [PR #2](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/2), merge [`ae378e4c289144164a8a7a6a85fa8c71ae5bcacc`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/ae378e4c289144164a8a7a6a85fa8c71ae5bcacc), and successful [CI run 42166641840](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42166641840). Milestone 4 implementation originally started from main `6bf1220`, containing that merge and its documentation update. Historical AWS/live results below retain their user-executed attribution; that parity suite was not rerun during milestone 4 preparation.
 
 **Milestone 2 remains implemented, merged into `main`, and verified by hosted CI.** [PR #1](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/1) merged implementation commit `e13b1ea` at merge commit `9dc5989353459e2651ba5cced882534d8d573783`. [GitHub Actions run 42113416826](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42113416826) passed for that merge commit, as confirmed by the user.
+
+## Complete Q18 offline preparation — 2026-11-09
+
+Read instructions, implementation/progress and the supplied patch; the repair document was introduced by that patch. Both compatibility checks passed before application. Preserved the original input patch (SHA recorded in the review) unmodified/untracked. Inspected retained `artifacts/milestone-5/operations/20261109T171341Z/retail-evaluation/report.json`, verifying SHA `7ccd5b43ec1ea38dfc0a17c562e1cd51a74f36e0bff247fac5a1759da5855021`, Q18's one model call/no tools/clarification and frozen 110.25 USD expectation. Existing Conda interpreter is Python 3.12.16, Poetry 2.3.1, `/opt/homebrew/anaconda3/envs/enterprise-analytics/bin/python`; no replacement environment or dependency update.
+
+Completed bundle:
+
+- Shared validated executor plus once-only resolved-plan fallback, with trusted context and whole-plan limits preserved. Focused source/limits/question tests **187 passed**. Independent authored no-tool turns through real canonical DuckDB/guard/agent/tool/render matched all 36 frozen cases; this is offline orchestration evidence, not live quality.
+- Candidate Python 3.12 Linux ARM64 ZIP built in `artifacts/milestone-5/q18-repair-v1/candidate/`; two separate Poetry wheel builds and ZIP builds reproduced byte-for-byte. All packaged project source files match the checkout; resolved-plan correction is present, dependencies match the committed lock/cache. Original ZIP untouched. A public Botocore CA certificate initially tripped an overly broad archive assertion; narrowed that check, created the candidate config and reran synthesis successfully. No package contents changed to remove dependency certificates.
+- Candidate assembly permits only the new SHA-addressed code key and the existing three trusted retail settings. Original restoration assembly/config/ZIP/version stay pinned; a bundle copy was compared byte-for-byte. No IAM resources/policies, model, networking, lifecycle, dataset, limits or public contracts changed.
+- Candidate/original verification is explicit. Candidate local ZIP/template and post-upload VersionId/checksum/size/key bind to a canonical review digest. Fresh version-specific HEAD is required before future CloudFormation mutation. Original restoration retains its original constants/proof; it cannot accept the candidate. No real candidate VersionId was invented or recorded.
+- `analytics-repair --campaign q18-repair-v1` provides offline review, gated upload-version binding, run and restoration-only commands. New campaign `milestone-5-q18-repair-v1` fixes its separate ledger path and40-call cap; every event binds review/candidate/template/upload-record hashes. Historical/default campaign behavior remains unchanged. The new real ledger is absent/unused; no histories were reset or redirected.
+- Full operator tests execute a 39-call successful mock path: warm-up 1, separate frozen Q18 probe 1, complete 36-request suite including Q18/S01, original smoke 1. Failed probe stops before the suite; failures/interruption still restore. Coverage includes wrong hashes/versions, old-ledger reuse, binding drift, SDK timestamps/redaction, alternate Runtime targets, SIGTERM/Ctrl-C cleanup and recovery without retail/candidate input access. Review identified and corrected the latter three lifecycle/scope issues before packaging.
+
+| Reviewed artifact | SHA-256 |
+| --- | --- |
+| New candidate ZIP | `398124e89d2be1e9ce00f5b57c263fe2cdde0654527b27f949b9f3abb58029f1` |
+| New project wheel | `4b8f655516c53a33aac3772311024b7301663aeda5c7a6cdf8960ef85c4476cd` |
+| Candidate template | `faca6d23b85038d5c8ad16b1fe73c95b910d9d05c6a4fccf3be8ca82cd9eb368` |
+| Canonical review identity | `14a817f1ba1ad2b2fa5b5b6c1cfb4aa6250513f971153003b9ddc5ca8b193401` |
+| Original restoration ZIP | `51eaeac6b9eb107f4634aea9e3180fa1db7dce1380fbe166415fbfed8185ded1` |
+| Original restoration template | `dd217890a37cc42e54499c3cc8cba91886ed5ca3dee5de9a5bb11a5e153c64bb` |
+
+Candidate sizes 39171778 / 85816131 compressed/unpacked bytes. Original VersionId remains `HSRXiFjg0w2W77InULH4.fn32Y.JH8b9`. Review/build/template manifests are under `evaluations/retail-v1/q18-*.json`; binary/reproduction/source inspection evidence stays ignored under the new candidate directory. Build inputs use SOURCE_DATE_EPOCH=1735689600; original embedded base config is retained, with the reviewed environment selecting retail scope.
+
+### Commands actually run and verification
+
+| Command | Actual result |
+| --- | --- |
+| `git apply --check milestone-5-q18-fix.patch`; `git apply milestone-5-q18-fix.patch` | Passed; no force/reset or conflict discard. |
+| `poetry check --lock` | Passed: All set. |
+| `poetry run pytest` | **960 passed, 85 gated skips in 56.70s**; earlier complete run 960/85 in 56.62s. Skips are explicit live gates, not acceptance. |
+| `poetry run ruff check .`; `poetry run ruff format --check .` | Passed; 112 files already formatted. Intermediate formatting/type issues were fixed before final checks/build. |
+| `poetry run mypy src tests`; extended `poetry run mypy src tests infrastructure/cdk` | Passed: 88/95 source files. |
+| `poetry build -f wheel --output <candidate/reproduction>/project-dist` | Both passed; identical wheel SHA above. |
+| `poetry run python -m infrastructure.agentcore.package --offline --config infrastructure/agentcore/runtime.development.json --output <candidate/reproduction>/agent.zip --wheel-dir artifacts/agentcore/wheels --project-wheel <matching explicit wheel>` | Both passed with cached checksum-locked wheels; identical ZIP SHA above, original output untouched. |
+| Locked CDK `synth --app 'poetry run python -m infrastructure.cdk.agentcore_app --config infrastructure/cdk/agentcore.config.q18-repair.json --phase runtime' --no-lookups --no-telemetry --no-notices --output artifacts/milestone-5/q18-repair-v1/cdk.candidate.out --quiet` | Passed offline; exact scoped diff and original restore hash verified. Existing deprecation/feature-flag advisories only. |
+| `poetry install --only-root --no-interaction`; `poetry run analytics-repair --help`; `poetry run analytics-repair --campaign q18-repair-v1 verify-offline` | Passed; only editable entry point registered in existing environment, no dependency changes or AWS client construction. |
+| `git diff --check`, documentation checks, preservation/source audit | Passed: preservation/source audit and 9 Markdown files / 53 local links / 20 shell blocks (parsed only); final diff reviewed. |
+
+All 72 captured historical/input hashes remain unchanged, including both real ledgers, original ZIP/assemblies, golden files and original report. New candidate-version/ledger files are absent. The supplied patch's separate review-checkout results below retain their original attribution and do not substitute for these actual checks. No AWS API, publication, upload, deployment, invocation, profile/permission mutation or PR merge occurred.
+
+### Proposal and remaining prerequisite
+
+[One concrete proposal](milestone-5-q18-deployment-proposal.md) covers immutable candidate upload, actual returned VersionId binding, fresh original preflight, candidate deployment/READY, counted warm-up/probe/full suite, mandatory original restoration/proof/smoke and recovery. Proposed new maximum 40 = 1 + 1 + 36 + 1 + 1 reserve; normal successful use 39. Existing original M5/M4 quotas are not borrowed. The future run stops after a failed probe and preserves the full-suite denominator.
+
+The retained runtime execution-role policy grants reads only to the old SHA key. Current official Python deployment requirements require package S3 access. No live IAM inspection is authorized here: an administrator must confirm candidate-key access and separately approve an exact additive read grant if missing. The proposal supplies the precise statement; no current permission or foundation stack was changed. Candidate upload and deployment are not claimed ready under unchanged effective IAM. M5 remains open pending separately approved live acceptance and original restoration; the last reported deployed state remains parity-v1 READYv6, not a fresh AWS assertion.
+
+## Supplied patch-author Q18 review — 2026-11-09
+
+The supplied patch records this separate review (not rerun or independently attributed to the current session): reconstructed and Git-blob-verified all 126 files at upstream `28ffcf18` in an isolated local review checkout. The local baseline commit is a source snapshot, not imported upstream history. Inspected instructions, milestone progress/plan, agent/question/tool code, evaluator, deployment and campaign verification. In that patch-author review checkout, original ignored operation reports and frozen artifacts/ledgers were not present; they are present and separately verified in the current preparation above.
+
+Recorded Q18 evidence is one model call/no tools, so a valid numeric request reached the generic empty-end-turn clarification path. The date guard already computes March 31–April 1 correctly. Extracted one shared tool executor and added a bounded, once-only server-plan fallback for fully resolved numeric scopes with no prior metric result/tool error. It preserves the exact trusted context, contracts, response checks, limits and diagnostics, then renders actual adapter results. Server-planned record IDs are distinct; no model messages or numerical answers are fabricated. Unsupported/ambiguous intent and model/tool failures remain fail-closed.
+
+Seven selected regressions failed before the correction (all five metrics, Q18 and tool budget). Focused initial verification passed **183 tests** before additional session, metadata-ID, missing-source and multi-period regressions were added. The new file has 55 cases, including all 36 frozen cases through real agent orchestration. Independent real-adapter Q18 fixture arithmetic produces 110.25 USD; mock golden replay is explicitly not live answer-quality evidence.
+
+Final verification ran in the isolated review checkout using the existing locked Python 3.12.14 environment, with `PYTHONPATH` pointing at this checkout's `src` and SDK metadata access disabled. Poetry 2.3.1 was installed in a separate temporary tooling environment after the prior temporary Poetry path was no longer present; no project dependency or lockfile changed.
+
+| Check actually run | Result |
+| --- | --- |
+| `python -m pytest -q` | **892 passed, 85 gated live skips in 91.59s**. |
+| `poetry check --lock` | Passed: All set. |
+| `python -m ruff check .` | Passed. One test string line-length issue was corrected before the final run. |
+| `python -m ruff format --check .` | Passed: 103 files already formatted. |
+| `python -m mypy src tests` | Passed: 80 source files. |
+| `git diff --check` | Passed. |
+| Markdown links/fences/newlines | Passed: 5 Markdown files and 20 local links. |
+| Upstream Git blob comparison excluding the six intentionally edited existing files | **120 unchanged file hashes**, including all goldens, policies, configs, pinned checks and the first-campaign implementation. |
+
+The full suite includes the corrected serialization regression and all new agent regressions. No live gate was enabled and no upstream CI result is claimed for this local repair.
+
+Preservation: only agent orchestration, its explanatory docstring, a new regression file and repair documentation are changed. No metric calculation, public schema, golden, IAM/profile, original artifact pin, campaign counter or restored baseline is changed. The new preparation document identifies the necessary candidate-versus-restore verifier and separate campaign work before any live approval, so the old closed-ledger/frozen-artifact workflow is not reused accidentally. No AWS calls, source publication, ZIP rebuild/upload, deployment or Runtime invocations occurred.
+
+Exact next task: apply this reviewed patch in the original checkout and prepare the entire candidate artifact, explicit artifact checks, new campaign selection/ledger and restoration bundle offline as described in [the repair plan](milestone-5-q18-repair.md). Review retained evidence there, complete all checks, then request one concrete approval for upload/deployment and a new bounded campaign. Keep the failed first campaign and M4 history intact and M5 open.
 
 ## Milestone 5 approved live campaign — 2026-11-09
 
@@ -643,6 +717,4 @@ Milestone 2 introduced no AWS credentials, calls, deployment, Athena adapter, or
 
 ## Exact next task
 
-Investigate Q18 offline using the saved one-model-call/no-tool response, preserving the frozen numeric expectation and existing runtime artifact. Prepare a reviewed correction; any changed runtime package/deployment or fresh full campaign needs separate approval. The current campaign is retail-closed at 38/40, so its two unused slots cannot cover another 36-request suite; preserve both ledgers and never reset/relabel the failed result.
-
-Review the local live-checkpoint commit and preserved failed report. M5 is incomplete; do not push, broaden scope or begin another milestone. Both hosted results and historical verification retain their original attribution.
+Review the complete offline Q18 bundle and [single deployment/campaign proposal](milestone-5-q18-deployment-proposal.md), including candidate-key permission evidence, actual-upload VersionId gate and proposed separate 40-call allowance. Obtain one explicit scope approval before any upload/deployment/invocation; confirm administrator access prerequisite first. Keep PR #6 unmerged, the local preparation commit unpushed, M5 open and both historical ledgers intact.

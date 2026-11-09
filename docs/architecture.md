@@ -99,3 +99,16 @@ Milestone 5 adds an operator-side question client and a versioned retail suite, 
 The independent oracle decodes verified canonical Parquet into rows and uses its own tenant-scoped dictionaries, integer-cent contribution ledger and final Decimal rounding. It does not import production generators, adapters, catalog calculations or rounding helpers. Frozen goldens bind the ready manifest/object identifiers, schemas, checksums, source inventory, oracle source, questions and contribution worksheet. Hand-authored fixtures and selected worksheet arithmetic provide independent evidence; local adapter agreement is an additional check.
 
 The approved November 9 live campaign performed an environment-only Runtime update from parity-v1/t1/February 1 to retail-v1/retail_demo/April 1, retaining North/South and every other resource/code property. A fail-closed offline template comparison and fresh read-only checkpoint verify the reviewed delta. The M5 campaign uses locked/fsynced reservations before dispatch, no automatic invocation retries and a shared 40-call cap independent of M4. The last slot is reserved for a fresh-verified corrected-base smoke; retail dispatch closes when restoration begins. Per-attempt reports retain structured evidence and failures, exact values, diagnostic missingness, end-to-end/server latency, tokens and unique Athena scans. The campaign passed 35/36 cases; Q18 returned clarification instead of yesterday's required numeric result, leaving M5 open. Corrected parity scope was restored and Runtime/DEFAULT are READY v6, stack UPDATE_COMPLETE; the independent parity smoke passed. M5 used 38/40 with retail dispatch closed; M4 remains 28/40. This validation does not establish production authorization or readiness.
+
+### Resolved numeric plan fallback (Q18 source correction)
+
+A fully validated numeric question can no longer become a clarification solely because
+the model ends without a query. With no prior metric result or tool error, the server
+constructs the exact metric/period/group/filter plan from `QuestionScope`, enforces the
+remaining tool/time limits, and executes it once through the shared validated semantic
+tool boundary. Trusted identity remains a separate adapter argument. Results are rendered
+from adapter evidence; `resolved-plan-` record IDs distinguish server-planned work without
+fabricating model tool-use turns. No additional model call or hidden retry is added.
+Ambiguous/unsupported questions, partial results, metadata selection and error behavior
+retain their existing handling. See [Q18 repair preparation](milestone-5-q18-repair.md);
+this source change requires a new candidate runtime artifact before live verification.

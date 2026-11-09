@@ -14,6 +14,7 @@ dependencies = [
 analytics-demo = "enterprise_analytics_agent.cli:main"
 analytics-ask = "enterprise_analytics_agent.retail_evaluation.agent_cli:main"
 analytics-evaluate = "enterprise_analytics_agent.retail_evaluation.runner:main"
+analytics-repair = "enterprise_analytics_agent.retail_evaluation.repair_cli:main"
 analytics-publish = "enterprise_analytics_agent.adapters.publication_cli:main"
 
 [tool.poetry]

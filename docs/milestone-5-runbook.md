@@ -1,5 +1,12 @@
 # Milestone 5 operator runbook
 
+**Q18 source repair:** the following commands describe the original frozen-artifact campaign.
+Its ledger is closed. Use [the consolidated repair preparation](milestone-5-q18-repair.md)
+and its [single concrete proposal](milestone-5-q18-deployment-proposal.md). The new
+artifact/verifiers/campaign are prepared offline; administrator access evidence and
+separate live approval remain prerequisites. These historical deployment commands
+cannot apply the source correction.
+
 Status: the user authorized this reviewed deployment/evaluation/restoration window on
 November 9, 2026, at pushed correction `850bbc8` (successful CI `42660104374`).
 Execution finished:35/36 suite cases passed; Q18 failed by returning clarification for yesterday.

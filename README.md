@@ -40,6 +40,12 @@ The CLI is a trusted local application and fixes its own demo tenant and authori
 
 ## Retail demonstration and evaluation
 
+The Q18 source correction and a separate candidate/campaign workflow are prepared offline.
+The original 35/36 result and closed 38/40 ledger remain unchanged. Use the
+[repair preparation](docs/milestone-5-q18-repair.md) and its consolidated proposal;
+the original environment-only runbook cannot deploy changed agent code. No new upload,
+deployment or invocation is authorized by offline preparation. PR #6 remains unmerged.
+
 Milestone 5's operator CLI and evaluation tooling are implemented; **live acceptance remains incomplete: 35/36 cases passed**. The user confirms implementation commit `e6f43253a38fceb03508d239b4e8a8842f8bbcfa` was pushed and [push CI 42567676599](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42567676599) passed. The timestamp correction `850bbc8c3a16a4343ece3a4144e3e047eba0917d` was subsequently pushed and passed user-confirmed [push CI 42660104374](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42660104374). These hosted results predate M5 live acceptance; the approved deployment/evaluation/restoration window and actual results are recorded in progress. Published `retail-v1` inputs were downloaded read-only with pinned S3 versions and verified hashes, sizes, schemas and relationships. Independent literal expectations cover 34 questions plus a two-request session sequence. The contribution worksheets and provenance are in [evaluations/retail-v1](evaluations/retail-v1/oracle-notes.md).
 
 ```sh

@@ -1,5 +1,12 @@
 # Milestone 5: repeatable retail demonstration and answer-quality evaluation
 
+**Q18 repair handoff:** this document retains the first campaign's scope/evidence.
+The complete source/candidate/campaign/restoration preparation is now offline-ready;
+use [the consolidated proposal](milestone-5-q18-deployment-proposal.md) for review.
+It requires a new artifact and separate proposed 40-call campaign, not a replay of the
+closed first campaign. Original M5 35/36 and 38/40, M4 28/40 and failed evidence remain intact.
+No new live execution is approved by the offline preparation request.
+
 Status: **live campaign 35/36; corrected base restored; Q18 correctness gate open**. The plan was approved at `ec77533`; the user confirms that commit was pushed and [push CI 42561649592](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42561649592) passed. The user confirms implementation commit `e6f43253a38fceb03508d239b4e8a8842f8bbcfa` was pushed and [push CI 42567676599](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42567676599) passed. Timestamp correction `850bbc8c3a16a4343ece3a4144e3e047eba0917d` was subsequently pushed and passed user-confirmed [push CI 42660104374](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42660104374). These CI results predate live acceptance. The user approved the reviewed environment-only Runtime update, M5 campaign (maximum 40 calls) and mandatory corrected-base restoration/smoke. IAM changes, profiles, package rebuild/upload, dataset publication and ledger resets remain outside scope; actual execution results are separate in [progress](progress.md). The approved separate M5 campaign used 38/40; retail dispatch is closed after successful restoration/smoke on Runtime/DEFAULT READY v6. Q18 alone failed (clarification instead of yesterday's 110.25 USD). Concrete commands and exact template/configuration pins are in the [operator runbook](milestone-5-runbook.md).
 
 ## Baseline and preserved evidence
@@ -193,6 +200,6 @@ Restoring configuration creates a **later Runtime version**, not version 4 again
 2. Completed locally: all 34 questions plus S01A/B, trusted retail configuration, offline retail/restoration synthesis, scoped template comparison and reusable read-only checkpoint/proof verification. Final verification evidence is in progress; SDK references and future execution commands are in the runbook.
 3. Completed approved live window: retail deployment/READY v5 and warm-up passed; suite **35/36**, with all 29 observed queries matching independent plans/results and complete diagnostics/latency/security/session gates. Q18 returned clarification with no tools after one model call; expected net_revenue[2025-03-31,2025-04-01)=110.25 USD.
 4. Mandatory corrected-base restoration and counted independent smoke passed: Runtime/DEFAULT READY v6, stack UPDATE_COMPLETE, exact base scope/configuration/policies/retention/artifact. Persistent M5 counter38/40, retail closed; original M4 ledger28/40 unchanged. No goldens/runtime code/IAM/package/data changes or retries were introduced.
-5. **Exact next task:** Investigate Q18 offline using the saved one-model-call/no-tool response, preserving the frozen numeric expectation and existing runtime artifact. Prepare a reviewed correction; any changed runtime package/deployment or fresh full campaign needs separate approval. The current campaign is retail-closed at 38/40, so its two unused slots cannot cover another 36-request suite; preserve both ledgers and never reset/relabel the failed result.
+5. **Exact next task:** review the prepared [Q18 candidate and separate campaign proposal](milestone-5-q18-deployment-proposal.md), confirm candidate-key access evidence, then obtain explicit upload/deployment/new-budget approval. Do not reset/reopen the first campaign or replace its failed result.
 
 Milestone 5 remains open because the 100% case gate is unmet. The actual retained report, usage, restoration evidence and verification commands are in progress. Keep the local checkpoint commit unpushed; no later milestone or production-readiness claim.

@@ -1,0 +1,19 @@
+{
+  "schema_version": "q18-repair-review-v1",
+  "campaign_id": "milestone-5-q18-repair-v1",
+  "ledger_path": "artifacts/milestone-5/q18-repair-v1/runtime-invocations.jsonl",
+  "maximum": 40,
+  "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_dev_agent-HlWywlG60h",
+  "candidate_artifact_path": "artifacts/milestone-5/q18-repair-v1/candidate/agent.zip",
+  "candidate_assembly_path": "artifacts/milestone-5/q18-repair-v1/cdk.candidate.out",
+  "candidate_sha256": "398124e89d2be1e9ce00f5b57c263fe2cdde0654527b27f949b9f3abb58029f1",
+  "candidate_template_sha256": "faca6d23b85038d5c8ad16b1fe73c95b910d9d05c6a4fccf3be8ca82cd9eb368",
+  "restoration_artifact_path": "artifacts/agentcore/agent.zip",
+  "restoration_assembly_path": "artifacts/milestone-5/cdk.restore.out",
+  "restoration_sha256": "51eaeac6b9eb107f4634aea9e3180fa1db7dce1380fbe166415fbfed8185ded1",
+  "restoration_version_id": "HSRXiFjg0w2W77InULH4.fn32Y.JH8b9",
+  "restoration_template_sha256": "dd217890a37cc42e54499c3cc8cba91886ed5ca3dee5de9a5bb11a5e153c64bb",
+  "questions_sha256": "3a4058aeac49bad8761d7b2cb802a8fd62bba965d88aea823b4715364eb3c060",
+  "expected_results_sha256": "67a680af79e239041305ebc0d9b3a138233e3cf394f97073fa38394a38dcb4c2",
+  "source_patch_sha256": "4247e5e38a8db0cb5dc5973185491df4d84d071e3e07d77bbfb4bcc81752efa2"
+}

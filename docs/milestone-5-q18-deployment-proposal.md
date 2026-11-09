@@ -13,6 +13,12 @@ UPDATE_COMPLETE. Repair usage is **1/40**, solely restoration smoke; retail disp
 closed, 39 calls are unspent and no reserve was used. Actual evidence and verification
 are in [progress](progress.md); do not replay this attempt or reset a ledger.
 
+The new [controller and continuation proposal](milestone-5-q18-continuation-proposal.md)
+is the single current execution proposal. It reuses this candidate/version and reviewed
+assemblies, preserves the closed 1/40 attempt, starts from reviewed v8 and caps a separate
+continuation at 39 calls (aggregate 40). It consumes the previously controlled reserve and
+requires explicit approval; the old commands below remain historical.
+
 ## Reviewed bundle
 
 | Item | Pin |
@@ -46,8 +52,10 @@ Review identity is SHA-256 of the Pydantic review's sorted compact JSON, not of 
 pretty-printed file. [Build manifest](../evaluations/retail-v1/q18-build-manifest.json)
 records the unchanged Poetry lock and verified dependency hashes. Two independent wheel
 builds and ZIP builds matched byte-for-byte with SOURCE_DATE_EPOCH=1735689600.
-All packaged project Python sources match this checkout and include the resolved-plan
-correction. The Botocore public CA bundle is dependency data, not a private credential.
+At the preparation baseline all 47 packaged project Python sources matched the checkout
+and included the resolved-plan correction. The later controller correction intentionally
+changes local operator modules; the 28 runtime-source files and frozen candidate bytes
+remain unchanged. The Botocore public CA bundle is dependency data, not a private credential.
 The original ZIP, assemblies, goldens and both ledgers are preserved byte-for-byte.
 
 ## Permission prerequisite: preserve existing grants

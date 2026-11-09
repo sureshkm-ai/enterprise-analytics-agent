@@ -48,6 +48,12 @@ M5 remains open and PR #6 remains unmerged. The original35/36 result and closed 
 ledger remain unchanged. See [the repair proposal](docs/milestone-5-q18-deployment-proposal.md)
 and [progress](docs/progress.md). Do not replay this campaign or reset a ledger.
 
+The deployment controller correction and separately identified continuation are prepared
+offline. See the [39-call continuation proposal](docs/milestone-5-q18-continuation-proposal.md)
+for exact v8 checkpoint, existing candidate/version, commands and mandatory restoration.
+It consumes the remaining allowance, including the previously controlled reserve, and
+requires approval before execution. No new live call or AWS operation ran in this preparation.
+
 Milestone 5's operator CLI and evaluation tooling are implemented; **live acceptance remains incomplete: 35/36 cases passed**. The user confirms implementation commit `e6f43253a38fceb03508d239b4e8a8842f8bbcfa` was pushed and [push CI 42567676599](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42567676599) passed. The timestamp correction `850bbc8c3a16a4343ece3a4144e3e047eba0917d` was subsequently pushed and passed user-confirmed [push CI 42660104374](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42660104374). These hosted results predate M5 live acceptance; the approved deployment/evaluation/restoration window and actual results are recorded in progress. Published `retail-v1` inputs were downloaded read-only with pinned S3 versions and verified hashes, sizes, schemas and relationships. Independent literal expectations cover 34 questions plus a two-request session sequence. The contribution worksheets and provenance are in [evaluations/retail-v1](evaluations/retail-v1/oracle-notes.md).
 
 ```sh

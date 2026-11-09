@@ -13,7 +13,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
-from typing import Annotated, Literal, Self, TextIO
+from typing import Annotated, Final, Literal, Self, TextIO
 from uuid import uuid4
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
@@ -64,6 +64,54 @@ class RepairCampaignBinding(BaseModel):
     def sha256(self) -> str:
         content = json.dumps(self.model_dump(mode="json"), sort_keys=True, separators=(",", ":"))
         return hashlib.sha256(content.encode()).hexdigest()
+
+
+CONTINUATION_CAMPAIGN_ID: Final = "milestone-5-q18-continuation-v1"
+CONTINUATION_LEDGER: Final = "artifacts/milestone-5/q18-continuation-v1/runtime-invocations.jsonl"
+
+
+class ContinuationCampaignBinding(BaseModel):
+    """A new 39-call campaign consuming the original repair's remaining allowance."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    campaign_id: Literal["milestone-5-q18-continuation-v1"] = CONTINUATION_CAMPAIGN_ID
+    ledger_path: Literal["artifacts/milestone-5/q18-continuation-v1/runtime-invocations.jsonl"] = (
+        CONTINUATION_LEDGER
+    )
+    maximum: Literal[39] = 39
+    aggregate_maximum: Literal[40] = 40
+    prior_used: Literal[1] = 1
+    review_sha256: Sha256
+    candidate_sha256: Sha256
+    candidate_template_sha256: Sha256
+    candidate_version_record_sha256: Sha256
+    parent_ledger_sha256: Sha256
+    parent_binding: RepairCampaignBinding
+    starting_checkpoint_sha256: Sha256
+
+    @model_validator(mode="after")
+    def same_candidate(self) -> Self:
+        parent = self.parent_binding
+        if (
+            self.candidate_sha256,
+            self.candidate_template_sha256,
+            self.candidate_version_record_sha256,
+        ) != (
+            parent.candidate_sha256,
+            parent.candidate_template_sha256,
+            parent.candidate_version_record_sha256,
+        ):
+            raise ValueError("continuation must preserve the parent candidate/version binding")
+        return self
+
+    @property
+    def sha256(self) -> str:
+        content = json.dumps(self.model_dump(mode="json"), sort_keys=True, separators=(",", ":"))
+        return hashlib.sha256(content.encode()).hexdigest()
+
+
+type CampaignBinding = RepairCampaignBinding | ContinuationCampaignBinding
 
 
 class RestorationProof(BaseModel):
@@ -122,15 +170,14 @@ class CampaignLedger:
         self,
         path: Path | None = None,
         *,
-        binding: RepairCampaignBinding | None = None,
+        binding: CampaignBinding | None = None,
         repository_root: Path | None = None,
         now: Callable[[], datetime] = lambda: datetime.now(UTC),
     ) -> None:
         self.binding = (
-            RepairCampaignBinding.model_validate(binding.model_dump())
-            if binding is not None
-            else None
+            type(binding).model_validate(binding.model_dump()) if binding is not None else None
         )
+        self.repository_root = (repository_root or Path(__file__).resolve().parents[3]).resolve()
         if self.binding is not None:
             root = (repository_root or Path(__file__).resolve().parents[3]).resolve()
             expected = root / self.binding.ledger_path
@@ -147,12 +194,147 @@ class CampaignLedger:
         self.path = selected.resolve()
         if self.path.parts[-3:] == ("artifacts", "agentcore", "runtime-invocations.jsonl"):
             raise CampaignError("Milestone 4 ledger is immutable; use the separate M5 ledger")
-        if self.binding is None and self.path.parts[-4:] == tuple(Path(REPAIR_LEDGER).parts):
+        if self.binding is None and any(
+            self.path.parts[-4:] == tuple(Path(value).parts)
+            for value in (REPAIR_LEDGER, CONTINUATION_LEDGER)
+        ):
             raise CampaignError("repair ledger requires an explicitly pinned campaign binding")
         self.campaign_id = self.binding.campaign_id if self.binding is not None else CAMPAIGN_ID
         self.maximum = self.binding.maximum if self.binding is not None else MAX_INVOCATIONS
         self.purposes = _PURPOSES | {"probe"} if self.binding is not None else _PURPOSES
         self.now = now
+
+    def _validate_parent(self) -> None:
+        """Inspect immutable history with a read-only descriptor; never create it."""
+        if not isinstance(self.binding, ContinuationCampaignBinding):
+            return
+        binding = self.binding
+        parent = CampaignLedger(
+            binding=binding.parent_binding, repository_root=self.repository_root, now=self.now
+        )
+        if parent.path.resolve() != self.repository_root / REPAIR_LEDGER:
+            raise CampaignError("continuation parent ledger aliases another location")
+        try:
+            descriptor = os.open(parent.path, os.O_RDONLY | os.O_NOFOLLOW)
+            with os.fdopen(descriptor, "r", encoding="utf-8", newline="") as stream:
+                fcntl.flock(stream, fcntl.LOCK_SH)
+                try:
+                    content = stream.read()
+                    if hashlib.sha256(content.encode()).hexdigest() != binding.parent_ledger_sha256:
+                        raise CampaignError("closed parent ledger hash changed")
+                    stream.seek(0)
+                    records = parent._read(stream)
+                finally:
+                    fcntl.flock(stream, fcntl.LOCK_UN)
+        except OSError as exc:
+            raise CampaignError(
+                "closed parent ledger is unavailable; no continuation allowed"
+            ) from exc
+        reservations = [row for row in records if row["event"] == "reserved"]
+        outcomes = [row for row in records if row["event"] == "outcome"]
+        if (
+            len(reservations) != binding.prior_used
+            or len(outcomes) != binding.prior_used
+            or reservations[0].get("purpose") != "restoration_smoke"
+            or outcomes[0].get("outcome") != "answer"
+        ):
+            raise CampaignError("parent ledger is not the reviewed closed one-call restoration")
+
+    @property
+    def attempt_path(self) -> Path:
+        return self.path.with_name("attempt-claim.json")
+
+    @contextmanager
+    def operator_lock(self) -> Iterator[None]:
+        """Exclude another continuation or recovery operator until this process exits.
+
+        The persistent claim prevents a second candidate attempt after a crash;
+        this kernel lease additionally prevents recovery from replacing a live
+        candidate while the first operator is still evaluating it. Process death
+        releases the lease, without deleting the durable attempt evidence.
+        """
+        if not isinstance(self.binding, ContinuationCampaignBinding):
+            yield
+            return
+        self._validate_parent()
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        if self.path.parent.resolve() != self.path.parent:
+            raise CampaignError("continuation operator directory aliases another location")
+        descriptor = os.open(
+            self.path.with_name("operator.lock"), os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600
+        )
+        try:
+            try:
+                fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except BlockingIOError as exc:
+                raise CampaignError(
+                    "another continuation operator is active; do not overlap recovery"
+                ) from exc
+            try:
+                yield
+            finally:
+                fcntl.flock(descriptor, fcntl.LOCK_UN)
+        finally:
+            os.close(descriptor)
+
+    def claim_attempt(self, context: dict[str, object] | None = None) -> dict[str, object]:
+        """Durably claim one candidate attempt before deployment, even with zero calls.
+
+        O_EXCL prevents two processes or a later invocation from reusing unused
+        quota after an interrupted or failed candidate attempt. Restoration-only
+        recovery does not acquire another candidate claim.
+        """
+        if not isinstance(self.binding, ContinuationCampaignBinding):
+            raise CampaignError("attempt claims require an explicitly reviewed continuation")
+        self._validate_parent()
+        before = self.summary()
+        if before["used"] != 0:
+            raise CampaignError("continuation already used; restore without resetting it")
+        claim: dict[str, object] = {
+            "campaign": self.campaign_id,
+            **self._identity(),
+            "claimed_at": self.now().isoformat(),
+            "context": context or {},
+        }
+        encoded = json.dumps(claim, sort_keys=True, indent=2) + "\n"
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        if self.path.parent.resolve() != self.path.parent:
+            raise CampaignError("continuation claim directory aliases another location")
+        try:
+            descriptor = os.open(
+                self.attempt_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600
+            )
+        except FileExistsError as exc:
+            raise CampaignError(
+                "continuation attempt already claimed; restoration-only recovery"
+            ) from exc
+        with os.fdopen(descriptor, "w", encoding="utf-8") as stream:
+            stream.write(encoded)
+            stream.flush()
+            os.fsync(stream.fileno())
+        directory = os.open(self.path.parent, os.O_RDONLY)
+        try:
+            os.fsync(directory)
+        finally:
+            os.close(directory)
+        return claim
+
+    def require_attempt(self) -> dict[str, object]:
+        """Validate the existing durable claim without rewriting or reopening it."""
+        self._validate_parent()
+        try:
+            if self.attempt_path.resolve() != self.attempt_path:
+                raise CampaignError("continuation attempt claim aliases another location")
+            value = json.loads(self.attempt_path.read_bytes())
+        except (OSError, ValueError) as exc:
+            raise CampaignError("continuation has no valid deployment attempt claim") from exc
+        if (
+            not isinstance(value, dict)
+            or value.get("campaign") != self.campaign_id
+            or any(value.get(key) != data for key, data in self._identity().items())
+        ):
+            raise CampaignError("continuation attempt binding differs from the reviewed campaign")
+        return value
 
     def _identity(self) -> dict[str, object]:
         if self.binding is None:
@@ -267,6 +449,9 @@ class CampaignLedger:
         runtime_arn: str,
         restoration_proof: RestorationProof | None = None,
     ) -> Reservation:
+        self._validate_parent()
+        if isinstance(self.binding, ContinuationCampaignBinding):
+            self.require_attempt()
         proof: dict[str, object] | None = None
         if purpose == "restoration_smoke":
             if restoration_proof is None:
@@ -319,6 +504,7 @@ class CampaignLedger:
         invocation_id: str | None = None,
         error_code: str | None = None,
     ) -> None:
+        self._validate_parent()
         if outcome not in {"answer", "clarification", "error", "failed"} or elapsed_ms < 0:
             raise CampaignError("invalid invocation outcome or elapsed time")
         with self._locked() as stream:
@@ -348,6 +534,7 @@ class CampaignLedger:
             )
 
     def summary(self) -> dict[str, object]:
+        self._validate_parent()
         if not self.path.exists():
             records: list[dict[str, object]] = []
             checksum: str | None = None
@@ -373,6 +560,19 @@ class CampaignLedger:
             **self._identity(),
             "used": len(reserved),
             "maximum": self.maximum,
+            **(
+                {
+                    "prior_used": self.binding.prior_used,
+                    "aggregate_maximum": self.binding.aggregate_maximum,
+                    "aggregate_used": self.binding.prior_used + len(reserved),
+                    "aggregate_remaining": self.binding.aggregate_maximum
+                    - self.binding.prior_used
+                    - len(reserved),
+                    "parent_ledger_sha256": self.binding.parent_ledger_sha256,
+                }
+                if isinstance(self.binding, ContinuationCampaignBinding)
+                else {}
+            ),
             "completed": len(outcomes),
             "incomplete_reservations": len(reserved) - len(outcomes),
             "remaining": self.maximum - len(reserved),

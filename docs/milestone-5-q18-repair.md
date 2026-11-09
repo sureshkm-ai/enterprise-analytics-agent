@@ -4,6 +4,12 @@ Status: The approved repair uploaded the reviewed candidate and verified READY v
 The original live result remains **35/36**, its ledger **38/40 and closed**, and M4 **28/40**.
 The original ZIP, uploaded version, goldens and reviewed assemblies are unchanged.
 
+Offline controller correction and continuation preparation are now implemented. The
+[single continuation proposal](milestone-5-q18-continuation-proposal.md) replaces the
+old v6/full-run recipe with an explicit v8 checkpoint and separate 39-call ledger bound
+to the closed parent. No AWS operation ran during preparation; execution needs approval,
+including use of the previously controlled reserve. M5 remains open.
+
 ## Evidence and correction
 
 The committed campaign evidence records Q18 (`Show net_revenue for yesterday.`) as one

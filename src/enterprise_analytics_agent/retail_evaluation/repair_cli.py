@@ -9,7 +9,13 @@ from contextlib import contextmanager
 from pathlib import Path
 from types import FrameType
 
-from enterprise_analytics_agent.retail_evaluation.repair_config import load_review, select_repair
+from enterprise_analytics_agent.retail_evaluation.campaign import CampaignLedger
+from enterprise_analytics_agent.retail_evaluation.repair_config import (
+    ContinuationReview,
+    load_review,
+    select_continuation,
+    select_repair,
+)
 
 
 @contextmanager
@@ -30,7 +36,8 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--campaign", required=True)
     action = parser.add_subparsers(dest="action", required=True)
-    action.add_parser("verify-offline")
+    verify = action.add_parser("verify-offline")
+    verify.add_argument("--version-record", type=Path)
     bind = action.add_parser("bind-upload")
     bind.add_argument("--verify-upload", action="store_true", required=True)
     bind.add_argument("--upload-response", type=Path, required=True)
@@ -42,7 +49,8 @@ def main(argv: list[str] | None = None) -> int:
         command.add_argument("--report-dir", type=Path, required=True)
     args = parser.parse_args(argv)
     try:
-        if args.campaign != "q18-repair-v1":
+        continuation: ContinuationReview | None = None
+        if args.campaign not in {"q18-repair-v1", "q18-continuation-v1"}:
             raise ValueError("unknown reviewed campaign")
         review = load_review()
         if args.action == "verify-offline":
@@ -50,17 +58,26 @@ def main(argv: list[str] | None = None) -> int:
                 review_candidate_assemblies,
             )
 
-            print(
-                json.dumps(
-                    {
-                        "review_sha256": review.review_sha256,
-                        "artifacts": review_candidate_assemblies(review),
-                    },
-                    indent=2,
+            evidence: dict[str, object] = {
+                "review_sha256": review.review_sha256,
+                "artifacts": review_candidate_assemblies(review),
+            }
+            if args.campaign == "q18-continuation-v1":
+                _, _, binding, continuation = select_continuation(
+                    args.campaign, args.version_record
                 )
-            )
+                evidence.update(
+                    continuation=continuation.model_dump(mode="json"),
+                    continuation_review_sha256=continuation.review_sha256,
+                    campaign=CampaignLedger(binding=binding).summary(),
+                )
+            print(json.dumps(evidence, indent=2))
             return 0
         if args.action == "bind-upload":
+            if args.campaign == "q18-continuation-v1":
+                raise ValueError(
+                    "continuation reuses the existing verified upload; no upload binding"
+                )
             from enterprise_analytics_agent.adapters.repair_operations import (
                 verify_uploaded_version,
                 write_version_record,
@@ -74,22 +91,43 @@ def main(argv: list[str] | None = None) -> int:
             write_version_record(args.output, version)
             print(version.model_dump_json(indent=2))
             return 0
-        review, version, _ = select_repair(args.campaign, args.version_record)
+        if args.campaign == "q18-continuation-v1":
+            review, version, binding, continuation = select_continuation(
+                args.campaign, args.version_record
+            )
+            ledger = CampaignLedger(binding=binding)
+            if args.action == "restore":
+                ledger.require_attempt()
+            elif ledger.attempt_path.exists():
+                raise ValueError("continuation already claimed; use restoration-only recovery")
+        else:
+            review, version, _ = select_repair(args.campaign, args.version_record)
         if args.report_dir.exists():
             raise ValueError("report directory already exists; preserve previous evidence")
         from enterprise_analytics_agent.adapters.repair_operations import operations_for
         from enterprise_analytics_agent.retail_evaluation.repair_workflow import run_repair
 
         with interruption_guard():
-            state = run_repair(
-                review,
-                version,
-                operations_for(
-                    review, version, args.report_dir, restore_only=args.action == "restore"
-                ),
-                args.report_dir,
-                restore_only=args.action == "restore",
+            operations = operations_for(
+                review, version, args.report_dir, restore_only=args.action == "restore"
             )
+            if continuation is not None:
+                state = run_repair(
+                    review,
+                    version,
+                    operations,
+                    args.report_dir,
+                    restore_only=args.action == "restore",
+                    continuation=continuation,
+                )
+            else:
+                state = run_repair(
+                    review,
+                    version,
+                    operations,
+                    args.report_dir,
+                    restore_only=args.action == "restore",
+                )
         print(json.dumps(state, indent=2))
         if args.action == "restore":
             return 0 if state["restored"] and state["smoke_passed"] else 1

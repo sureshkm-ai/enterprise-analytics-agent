@@ -1,6 +1,6 @@
 """Reviewed repair artifacts and upload-version bindings, independent of AWS SDK types."""
 
-from datetime import datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Annotated, Literal, Self
 
@@ -8,7 +8,10 @@ from pydantic import Field, model_validator
 
 from enterprise_analytics_agent.retail_evaluation.campaign import (
     CODE_SHA256,
+    CampaignLedger,
+    ContinuationCampaignBinding,
     RepairCampaignBinding,
+    RestorationProof,
 )
 from enterprise_analytics_agent.retail_evaluation.deployment import (
     canonical_hash,
@@ -133,3 +136,138 @@ def select_repair(
         candidate_version_record_sha256=canonical_hash(version.model_dump(mode="json")),
     )
     return review, version, binding
+
+
+class ReviewedStartingCheckpoint(EvaluationModel):
+    """Reviewed v8 original scope; later fresh observations must match every pin."""
+
+    runtime_arn: str
+    runtime_version: Literal["8"] = "8"
+    endpoint_version: Literal["8"] = "8"
+    dataset_version: Literal["parity-v1"] = "parity-v1"
+    tenant_id: Literal["t1"] = "t1"
+    allowed_regions: tuple[Literal["North"], Literal["South"]] = ("North", "South")
+    reference_date: Literal["2025-02-01"] = "2025-02-01"
+    configuration_sha256: Sha256
+    template_sha256: Sha256
+    code_sha256: Literal["51eaeac6b9eb107f4634aea9e3180fa1db7dce1380fbe166415fbfed8185ded1"] = (
+        "51eaeac6b9eb107f4634aea9e3180fa1db7dce1380fbe166415fbfed8185ded1"
+    )
+    code_version_id: Literal["HSRXiFjg0w2W77InULH4.fn32Y.JH8b9"] = (
+        "HSRXiFjg0w2W77InULH4.fn32Y.JH8b9"
+    )
+    resource_policies_verified: Literal[True] = True
+    retention_days: Literal[7] = 7
+    source_proof_sha256: Sha256
+
+    def require_proof(self, proof: RestorationProof, *, now: datetime | None = None) -> None:
+        proof = RestorationProof.model_validate(proof.model_dump())
+        age = (now or datetime.now(UTC)) - proof.observed_at
+        if not timedelta(0) <= age <= timedelta(minutes=5):
+            raise ValueError("v8 continuation requires a fresh original checkpoint observation")
+        expected = self.model_dump(mode="json", exclude={"source_proof_sha256"})
+        actual = proof.model_dump(mode="json")
+        if (
+            proof.runtime_status != "READY"
+            or proof.endpoint_status != "READY"
+            or any(actual.get(key) != value for key, value in expected.items())
+        ):
+            raise ValueError(
+                "original deployment differs from the reviewed v8 continuation checkpoint"
+            )
+
+
+class ContinuationReview(EvaluationModel):
+    """A proposed continuation of one closed repair, never a reset of its ledger."""
+
+    schema_version: Literal["q18-continuation-review-v1"] = "q18-continuation-review-v1"
+    campaign_id: Literal["milestone-5-q18-continuation-v1"] = "milestone-5-q18-continuation-v1"
+    ledger_path: Literal["artifacts/milestone-5/q18-continuation-v1/runtime-invocations.jsonl"] = (
+        "artifacts/milestone-5/q18-continuation-v1/runtime-invocations.jsonl"
+    )
+    maximum: Literal[39] = 39
+    aggregate_maximum: Literal[40] = 40
+    prior_used: Literal[1] = 1
+    repair_review_sha256: Sha256
+    parent_ledger_sha256: Sha256
+    parent_binding: RepairCampaignBinding
+    candidate_sha256: Sha256
+    candidate_template_sha256: Sha256
+    candidate_version_id: str
+    candidate_version_record_sha256: Sha256
+    starting_checkpoint: ReviewedStartingCheckpoint
+
+    @property
+    def review_sha256(self) -> str:
+        return canonical_hash(self.model_dump(mode="json"))
+
+    def campaign_binding(
+        self, review: RepairReview, version: CandidateVersionBinding
+    ) -> ContinuationCampaignBinding:
+        version.require_review(review)
+        if (
+            review.review_sha256,
+            version.candidate_sha256,
+            version.candidate_template_sha256,
+            version.version_id,
+            canonical_hash(version.model_dump(mode="json")),
+            self.starting_checkpoint.runtime_arn,
+        ) != (
+            self.repair_review_sha256,
+            self.candidate_sha256,
+            self.candidate_template_sha256,
+            self.candidate_version_id,
+            self.candidate_version_record_sha256,
+            review.runtime_arn,
+        ):
+            raise ValueError("continuation differs from the existing reviewed candidate/version")
+        if self.parent_binding.review_sha256 != review.review_sha256:
+            raise ValueError("continuation parent binding differs from the original repair review")
+        return ContinuationCampaignBinding(
+            review_sha256=self.review_sha256,
+            candidate_sha256=self.candidate_sha256,
+            candidate_template_sha256=self.candidate_template_sha256,
+            candidate_version_record_sha256=self.candidate_version_record_sha256,
+            parent_ledger_sha256=self.parent_ledger_sha256,
+            parent_binding=self.parent_binding,
+            starting_checkpoint_sha256=canonical_hash(
+                self.starting_checkpoint.model_dump(mode="json")
+            ),
+        )
+
+    def require_starting_proof(self, proof: RestorationProof) -> None:
+        self.starting_checkpoint.require_proof(proof)
+
+
+def load_continuation(*, repository_root: Path = REPOSITORY_ROOT) -> ContinuationReview:
+    return ContinuationReview.model_validate_json(
+        (repository_root / "evaluations/retail-v1/q18-continuation-review.json").read_bytes()
+    )
+
+
+def select_continuation(
+    name: str, version_path: Path | None, *, repository_root: Path = REPOSITORY_ROOT
+) -> tuple[RepairReview, CandidateVersionBinding, ContinuationCampaignBinding, ContinuationReview]:
+    """Pure local checks precede SDK construction; no counter or attempt file is created."""
+    if name != "q18-continuation-v1":
+        raise ValueError("unknown reviewed continuation selection")
+    review, version, _ = select_repair(
+        "q18-repair-v1", version_path, repository_root=repository_root
+    )
+    continuation = load_continuation(repository_root=repository_root)
+    binding = continuation.campaign_binding(review, version)
+    CampaignLedger(binding=binding, repository_root=repository_root).summary()
+    return review, version, binding, continuation
+
+
+def require_starting_checkpoint(
+    proof: RestorationProof,
+    review: RepairReview,
+    continuation: ContinuationReview | None = None,
+) -> None:
+    """Separate the historical v6 repair review from the explicit v8 continuation."""
+    proof = RestorationProof.model_validate(proof.model_dump())
+    if continuation is not None:
+        continuation.require_starting_proof(proof)
+    elif proof.runtime_version != "6" or proof.runtime_arn != review.runtime_arn:
+        raise ValueError("original deployment version drifted from reviewed v6 checkpoint")

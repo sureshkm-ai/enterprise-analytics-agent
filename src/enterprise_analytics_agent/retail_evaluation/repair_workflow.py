@@ -26,7 +26,9 @@ from enterprise_analytics_agent.retail_evaluation.models import RetailTarget
 from enterprise_analytics_agent.retail_evaluation.repair_config import (
     REPOSITORY_ROOT,
     CandidateVersionBinding,
+    ContinuationReview,
     RepairReview,
+    require_starting_checkpoint,
 )
 from enterprise_analytics_agent.retail_evaluation.reporting import (
     append_attempt,
@@ -84,13 +86,54 @@ def run_repair(
     *,
     repository_root: Path = REPOSITORY_ROOT,
     restore_only: bool = False,
+    continuation: ContinuationReview | None = None,
+) -> dict[str, object]:
+    """Serialize a continuation's entire candidate/evaluation/restoration lifecycle."""
+    if continuation is not None:
+        ledger = CampaignLedger(
+            binding=continuation.campaign_binding(review, version),
+            repository_root=repository_root,
+        )
+        with ledger.operator_lock():
+            return _run_repair(
+                review,
+                version,
+                operations,
+                directory,
+                repository_root=repository_root,
+                restore_only=restore_only,
+                continuation=continuation,
+            )
+    return _run_repair(
+        review,
+        version,
+        operations,
+        directory,
+        repository_root=repository_root,
+        restore_only=restore_only,
+    )
+
+
+def _run_repair(
+    review: RepairReview,
+    version: CandidateVersionBinding,
+    operations: RepairOperations,
+    directory: Path,
+    *,
+    repository_root: Path,
+    restore_only: bool,
+    continuation: ContinuationReview | None = None,
 ) -> dict[str, object]:
     """No automatic invocation retries; failed probe stops the suite and always restores.
 
     Resuming a partly used campaign runs restoration only. Re-running the whole
     campaign cannot silently consume the protected quota or reset its history.
     """
-    binding = campaign_binding(review, version)
+    binding = (
+        continuation.campaign_binding(review, version)
+        if continuation is not None
+        else campaign_binding(review, version)
+    )
     evidence_root = repository_root / "evaluations/retail-v1"
     restored_target = RetailTarget(
         runtime_arn=review.runtime_arn, dataset_version="parity-v1", reference_date="2025-02-01"
@@ -126,6 +169,9 @@ def run_repair(
         {
             "review": review.model_dump(mode="json"),
             "candidate_version": version.model_dump(mode="json"),
+            "continuation": (
+                continuation.model_dump(mode="json") if continuation is not None else None
+            ),
             "frozen": frozen,
             "campaign_before": initial,
         },
@@ -133,9 +179,9 @@ def run_repair(
         mode="live",
     )
     state: dict[str, object] = {
-        "campaign_id": review.campaign_id,
+        "campaign_id": binding.campaign_id,
         "accepted": False,
-        "candidate_attempted": restore_only,
+        "candidate_attempted": restore_only and continuation is None,
         "probe_passed": False,
         "suite_passed": False,
         "restored": False,
@@ -143,17 +189,35 @@ def run_repair(
     }
     interrupted: BaseException | None = None
     try:
+        if continuation is not None:
+            if restore_only:
+                ledger.require_attempt()
+                state["candidate_attempted"] = True
+            else:
+                # Durable and exclusive before any deployment, including zero-call failures.
+                ledger.claim_attempt({"report_directory": str(directory.resolve())})
         if not restore_only:
             assert suite is not None and goldens is not None
             original = operations.verify_original()
-            if original.runtime_version != "6" or original.runtime_arn != review.runtime_arn:
-                raise ValueError("original deployment version drifted from reviewed v6 checkpoint")
+            require_starting_checkpoint(original, review, continuation)
             _write(directory / "original-proof.json", original.model_dump(mode="json"))
             state["candidate_attempted"] = True
             operations.deploy_candidate()
             checkpoint = operations.verify_candidate()
             if checkpoint["runtime"]["agentRuntimeArn"] != target.runtime_arn:
                 raise ValueError("candidate checkpoint differs from invocation target")
+            if continuation is not None:
+                candidate_version = checkpoint["runtime"]["agentRuntimeVersion"]
+                if (
+                    not isinstance(candidate_version, str)
+                    or not candidate_version.isascii()
+                    or not candidate_version.isdecimal()
+                    or int(candidate_version) <= int(original.runtime_version)
+                    or checkpoint["endpoint"]["liveVersion"] != candidate_version
+                ):
+                    raise ValueError(
+                        "candidate checkpoint is stale or has mismatched live versions"
+                    )
             # Reuse the context encoder for nested AWS timestamps and redaction.
             ready = directory / "candidate-ready"
             prepare_run_directory(ready)

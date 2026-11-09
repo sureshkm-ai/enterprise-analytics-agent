@@ -115,3 +115,21 @@ Ambiguous/unsupported questions, partial results, metadata selection and error b
 retain their existing handling. See [Q18 repair preparation](milestone-5-q18-repair.md);
 the separately uploaded candidate contains this change, but live behavioral verification
 remains unrun after the operator completion timeout.
+
+### Operator deployment reconciliation and continuation
+
+The local controller observes exact CloudFormation template/parameters and the complete
+Runtime/DEFAULT checkpoint while supervising an owned CDK process group. A stalled CLI
+can be stopped after independently proven AWS success; the controller reaps it and repeats
+strict verification before proceeding. CLI success or READY alone is insufficient. Failures,
+rollback, stale/unavailable verification and unresolved updates fail closed. A deployment
+lock, durable owned-process journal and bounded cleanup prevent overlapping updates.
+
+The proposed `q18-continuation-v1` starts from a fresh verification of reviewed original
+v8, reuses the unchanged candidate ZIP/version and preserves the closed one-call repair ledger.
+Its separate bound ledger permits 39 calls, aggregate 40 including that parent call, with
+the last reserved for original restoration. A durable attempt claim prevents duplicate
+zero-call attempts; a whole-operator lease excludes concurrent restoration/evaluation.
+This operator-only correction does not change the packaged runtime, metrics or contracts.
+See [the continuation proposal](milestone-5-q18-continuation-proposal.md); execution and
+use of the formerly controlled reserve require approval.

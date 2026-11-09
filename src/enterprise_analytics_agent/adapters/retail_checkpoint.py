@@ -281,8 +281,8 @@ def _verify_checkpoint(
     }
 
 
-def verify_restoration() -> RestorationProof:
-    record = verify_checkpoint(scope="parity-v1")
+def verify_restoration(*, session: Any = None) -> RestorationProof:
+    record = verify_checkpoint(scope="parity-v1", session=session)
     runtime, endpoint = record["runtime"], record["endpoint"]
     settings = json.loads(runtime["environmentVariables"]["ANALYTICS_RUNTIME_CONFIG"])
     configuration_sha = canonical_hash(settings)

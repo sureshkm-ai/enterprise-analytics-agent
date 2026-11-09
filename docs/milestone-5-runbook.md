@@ -8,6 +8,11 @@ before candidate dispatch. Mandatory original restoration/smoke passed on READY 
 stack UPDATE_COMPLETE; repair ledger 1/40 is closed, reserve unused. See progress for
 actual evidence. These historical commands cannot resume the closed repair campaign.
 
+Current handoff: the operator controller and explicit v8 continuation are prepared offline.
+Use the [single continuation proposal](milestone-5-q18-continuation-proposal.md), preserving
+the closed parent 1/40 ledger. The proposed39 new calls consume all remaining allowance,
+including the formerly controlled reserve; they require explicit execution approval.
+
 Historical first-campaign status: the user authorized this reviewed deployment/evaluation/restoration window on
 November 9, 2026, at pushed correction `850bbc8` (successful CI `42660104374`).
 Execution finished:35/36 suite cases passed; Q18 failed by returning clarification for yesterday.

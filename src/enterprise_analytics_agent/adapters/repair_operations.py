@@ -1,7 +1,7 @@
 """Explicitly gated repair operator AWS operations; no client is constructed on import."""
 
 import base64
-import subprocess
+import json
 import time
 from datetime import UTC, datetime
 from pathlib import Path
@@ -11,13 +11,18 @@ import boto3
 from botocore.config import Config
 
 from enterprise_analytics_agent.adapters.agentcore_invocation import create_runtime_invoker
+from enterprise_analytics_agent.adapters.deployment_controller import DeploymentController
 from enterprise_analytics_agent.adapters.retail_checkpoint import (
-    RUNTIME_ID,
     verify_candidate_checkpoint,
+    verify_checkpoint,
     verify_restoration,
 )
 from enterprise_analytics_agent.retail_evaluation.campaign import CODE_VERSION
 from enterprise_analytics_agent.retail_evaluation.deployment import (
+    BASE_ASSEMBLY,
+    TEMPLATE_NAME,
+    candidate_review_templates,
+    digest,
     review_assemblies,
     review_candidate_assemblies,
 )
@@ -27,7 +32,43 @@ from enterprise_analytics_agent.retail_evaluation.repair_config import (
 )
 from enterprise_analytics_agent.retail_evaluation.repair_workflow import RepairOperations
 
-READ_CONFIG = Config(connect_timeout=5, read_timeout=20, retries={"total_max_attempts": 2})
+READ_CONFIG = Config(connect_timeout=3, read_timeout=10, retries={"total_max_attempts": 1})
+
+
+class _BudgetedClient:
+    def __init__(self, client: Any, deadline: float) -> None:
+        self.client = client
+        self.deadline = deadline
+
+    def __getattr__(self, name: str) -> Any:
+        method = getattr(self.client, name)
+
+        def bounded_read(*args: Any, **kwargs: Any) -> Any:
+            if time.monotonic() >= self.deadline:
+                raise TimeoutError("checkpoint read budget exhausted")
+            result = method(*args, **kwargs)
+            if time.monotonic() >= self.deadline:
+                raise TimeoutError("checkpoint read exceeded its budget")
+            return result
+
+        return bounded_read
+
+
+class _BudgetedSession:
+    """Finite SDK timeouts plus a deadline checked before each checkpoint read."""
+
+    def __init__(self, session: Any, deadline: float) -> None:
+        self.session = session
+        self.deadline = deadline
+
+    def client(self, name: str, **kwargs: Any) -> Any:
+        if time.monotonic() >= self.deadline:
+            raise TimeoutError("checkpoint client budget exhausted")
+        kwargs["config"] = READ_CONFIG
+        client = self.session.client(name, **kwargs)
+        if time.monotonic() >= self.deadline:
+            raise TimeoutError("checkpoint client exceeded its budget")
+        return _BudgetedClient(client, self.deadline)
 
 
 def verify_uploaded_version(
@@ -97,84 +138,56 @@ def operations_for(
             version.checksum_sha256,
         ):
             raise ValueError("candidate version record differs from current upload verification")
-    control = session.client("bedrock-agentcore-control", config=READ_CONFIG)
+
+    def validate_baseline(stack: dict[str, Any], actual: dict[str, Any]) -> None:
+        path = BASE_ASSEMBLY / TEMPLATE_NAME
+        if digest(path) != review.restoration_template_sha256:
+            raise ValueError("original baseline template differs from its reviewed pin")
+        original = json.loads(path.read_bytes())
+        parameters = {item["ParameterKey"]: item["ParameterValue"] for item in stack["Parameters"]}
+        if actual == original:
+            if parameters["ArtifactVersionId"] != CODE_VERSION:
+                raise ValueError("original baseline template has an unreviewed artifact version")
+        else:
+            candidate_review_templates(original, actual, candidate_sha256=review.candidate_sha256)
+            if parameters["ArtifactVersionId"] != version.version_id:
+                raise ValueError("candidate baseline template has an unreviewed artifact version")
+
     cloudformation = session.client("cloudformation", config=READ_CONFIG)
+    controller = DeploymentController(
+        directory,
+        cloudformation,
+        lock_path=Path("artifacts/milestone-5/runtime-deployment.lock"),
+        baseline_validator=validate_baseline,
+    )
 
-    def wait_stable() -> None:
-        deadline = time.monotonic() + 900
-        while True:
-            status = cloudformation.describe_stacks(
-                StackName="enterprise-analytics-dev-agent-runtime"
-            )["Stacks"][0]["StackStatus"]
-            if not status.endswith("_IN_PROGRESS"):
-                return
-            if time.monotonic() >= deadline:
-                raise TimeoutError("Runtime stack did not settle for supervised restoration")
-            time.sleep(5)
+    def candidate_checkpoint(deadline: float) -> dict[str, Any]:
+        return verify_candidate_checkpoint(
+            review, version, session=_BudgetedSession(session, deadline)
+        )
 
-    def wait_ready() -> None:
-        deadline = time.monotonic() + 300
-        while True:
-            runtime = control.get_agent_runtime(agentRuntimeId=RUNTIME_ID)
-            endpoint = control.get_agent_runtime_endpoint(
-                agentRuntimeId=RUNTIME_ID, endpointName="DEFAULT"
-            )
-            live = runtime["agentRuntimeVersion"]
-            if (
-                runtime["status"] == endpoint["status"] == "READY"
-                and endpoint["liveVersion"] == endpoint.get("targetVersion", live) == live
-            ):
-                return
-            if time.monotonic() >= deadline:
-                raise TimeoutError("Runtime/DEFAULT did not become READY")
-            time.sleep(3)
-
-    def deploy(assembly: str, artifact_version: str, name: str) -> None:
-        directory.mkdir(parents=True, exist_ok=True)
-        with (
-            (directory / f"{name}.stdout.log").open("x") as out,
-            (directory / f"{name}.stderr.log").open("x") as err,
-        ):
-            result = subprocess.run(
-                [
-                    "infrastructure/cdk/tooling/node_modules/.bin/cdk",
-                    "deploy",
-                    "--app",
-                    assembly,
-                    "enterprise-analytics-dev-agent-runtime",
-                    "--parameters",
-                    "ArtifactVersionId=" + artifact_version,
-                    "--profile",
-                    "analytics-dev",
-                    "--region",
-                    "us-west-2",
-                    "--require-approval",
-                    "never",
-                    "--no-telemetry",
-                    "--no-notices",
-                    "--outputs-file",
-                    str(directory / f"{name}.outputs.json"),
-                ],
-                stdout=out,
-                stderr=err,
-                check=False,
-                timeout=1800,
-            )
-        if result.returncode:
-            raise RuntimeError(f"{name} failed; retain full logs and inspect before retrying")
-        wait_ready()
-
-    def restore() -> None:
-        wait_stable()
-        deploy(review.restoration_assembly_path, CODE_VERSION, "restore")
+    def original_checkpoint(deadline: float) -> dict[str, Any]:
+        return verify_checkpoint(scope="parity-v1", session=_BudgetedSession(session, deadline))
 
     return RepairOperations(
-        verify_original=verify_restoration,
-        deploy_candidate=lambda: deploy(
-            review.candidate_assembly_path, version.version_id, "candidate"
+        verify_original=lambda: verify_restoration(
+            session=_BudgetedSession(session, time.monotonic() + 120)
         ),
-        verify_candidate=lambda: verify_candidate_checkpoint(review, version),
-        restore_original=restore,
+        deploy_candidate=lambda: controller.deploy(
+            review.candidate_assembly_path,
+            version.version_id,
+            "candidate",
+            candidate_checkpoint,
+            template_sha256=review.candidate_template_sha256,
+        ),
+        verify_candidate=lambda: candidate_checkpoint(time.monotonic() + 120),
+        restore_original=lambda: controller.deploy(
+            review.restoration_assembly_path,
+            CODE_VERSION,
+            "restore",
+            original_checkpoint,
+            template_sha256=review.restoration_template_sha256,
+        ),
         invoker=create_runtime_invoker,
     )
 

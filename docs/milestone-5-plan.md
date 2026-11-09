@@ -4,6 +4,12 @@
 Original M5 remains 35/36 and closed 38/40; M4 remains 28/40. The following first-campaign
 scope and failure evidence is historical and is not replaced by the repair attempt.
 
+**Current offline handoff:** the bounded deployment controller and explicit v8 continuation
+are implemented. See the [single continuation proposal](milestone-5-q18-continuation-proposal.md).
+It preserves the closed parent 1/40 ledger and caps a separately identified continuation
+at 39 calls, aggregate 40, with mandatory original restoration. This consumes the previously
+controlled reserve and requires approval before execution. No new live calls ran.
+
 Historical first-campaign status: **35/36; corrected base restored; Q18 correctness gate open**. The plan was approved at `ec77533`; the user confirms that commit was pushed and [push CI 42561649592](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42561649592) passed. The user confirms implementation commit `e6f43253a38fceb03508d239b4e8a8842f8bbcfa` was pushed and [push CI 42567676599](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42567676599) passed. Timestamp correction `850bbc8c3a16a4343ece3a4144e3e047eba0917d` was subsequently pushed and passed user-confirmed [push CI 42660104374](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42660104374). These CI results predate live acceptance. The user approved the reviewed environment-only Runtime update, M5 campaign (maximum 40 calls) and mandatory corrected-base restoration/smoke. IAM changes, profiles, package rebuild/upload, dataset publication and ledger resets remain outside scope; actual execution results are separate in [progress](progress.md). The approved separate M5 campaign used 38/40; retail dispatch is closed after successful restoration/smoke on Runtime/DEFAULT READY v6. Q18 alone failed (clarification instead of yesterday's 110.25 USD). Concrete commands and exact template/configuration pins are in the [operator runbook](milestone-5-runbook.md).
 
 ## Baseline and preserved evidence
@@ -170,7 +176,7 @@ Proposed live gates, after later explicit approval:
 3. All case reports are complete, with valid versions and reported tokens/query diagnostics where work occurred. Proposed latency target: suite client p95 ≤90 seconds, excluding the explicitly labeled warm-up; keep the existing finite 150-second client read timeout. Record cold-start uncertainty and limits honestly. A percentile target is not a billing/hard cancellation deadline; any revised target must be agreed before rerunning, not silently relaxed.
 4. Corrected parity base is restored and READY with matching live/latest versions, original scope/configuration/artifact/policies/retention, and a separate restoration smoke check passes. No Milestone 5 completion claim before restoration and report review.
 
-## Separate proposed invocation budget and restoration
+## Historical first-campaign invocation budget and restoration
 
 **Approved maximum 40 M5 Runtime invocations;38 are now used** (warm-up 1 + suite 36 + restored parity smoke 1). The campaign is retail-closed; its two unused slots cannot fund a full rerun. Do not consume the remaining 12 from Milestone 4 or append to/reset its `artifacts/agentcore/runtime-invocations.jsonl` (28/40). Every M5 call, including the restored parity smoke, must use the new campaign dispatcher/counter; do not invoke the old M4 warm-up/counter helpers, which hardcode the M4 ledger.
 
@@ -198,6 +204,7 @@ Restoring configuration creates a **later Runtime version**, not version 4 again
 3. Completed approved live window: retail deployment/READY v5 and warm-up passed; suite **35/36**, with all 29 observed queries matching independent plans/results and complete diagnostics/latency/security/session gates. Q18 returned clarification with no tools after one model call; expected net_revenue[2025-03-31,2025-04-01)=110.25 USD.
 4. Mandatory corrected-base restoration and counted independent smoke passed: Runtime/DEFAULT READY v6, stack UPDATE_COMPLETE, exact base scope/configuration/policies/retention/artifact. Persistent M5 counter38/40, retail closed; original M4 ledger28/40 unchanged. No goldens/runtime code/IAM/package/data changes or retries were introduced.
 5. Separately approved repair: candidate upload/version and READY v7 passed; local CDK timed out before dispatch. Mandatory original restoration/smoke passed on READY v8. Repair ledger 1/40 is retail-closed with 39 unspent; reserve unused. The unchanged suite/probe have not run against the candidate.
-6. **Exact next task:** diagnose the operator completion wait offline and prepare tested, reviewed continuation from v8 with the actual candidate VersionId and preserved closed ledger. Do not replay/reset either campaign or automatically consume reserve. Keep PR #6 unmerged; leave pushing the new checkpoint to the user.
+6. Prepared offline: bounded exact-state deployment controller, explicit reviewed v8 continuation, preserved parent 1/40 hash, separately bound 39-call counter, duplicate-attempt/overlap controls and complete mocked command/failure/restoration regressions. Current source and frozen candidate are intentionally separate for these operator-only changes.
+7. **Exact next task:** review the [39-call continuation proposal](milestone-5-q18-continuation-proposal.md) and obtain execution approval, including use of the previously controlled reserve. Preserve both historical ledgers and closed parent; no live execution, reset or automatic retry is authorized by preparation. Keep PR #6 unmerged and the new checkpoint local.
 
 Milestone 5 remains open because the 100% case gate is unmet. The actual retained report, usage, restoration evidence and verification commands are in progress. Keep the local checkpoint commit unpushed; no later milestone or production-readiness claim.

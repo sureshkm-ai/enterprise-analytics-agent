@@ -1,0 +1,123 @@
+{
+  "provenance_version": "retail-input-v1",
+  "verified": true,
+  "verified_at": "2026-11-09T04:55:30.655056+00:00",
+  "profile": "analytics-dev",
+  "account": "453711491609",
+  "region": "us-west-2",
+  "caller_arn": "arn:aws:sts::453711491609:assumed-role/AWSReservedSSO_PowerUserAccess_95483085e85e3a9b/suresh",
+  "dataset_version": "retail-v1",
+  "seed": 20260101,
+  "manifest": {
+    "bucket": "enterprise-analytics-dev-453711491609-us-west-2-data",
+    "key": "manifests/retail-v1.json",
+    "version_id": "cvCWKV3bv9Ub4iZOPSh79W4TnizV6FmJ",
+    "etag": "\"4f7d3e3a8a940f281e6c3b031678874a\"",
+    "last_modified": "2026-11-06 04:22:36+00:00",
+    "size_bytes": 3247,
+    "sha256": "99e9115edc990decf5b15e5de1ad693772e3bd03ec6767b880ebbdd4135b8797"
+  },
+  "objects": {
+    "customers": {
+      "bucket": "enterprise-analytics-dev-453711491609-us-west-2-data",
+      "key": "snapshots/retail-v1/customers/part-00000.parquet",
+      "version_id": "eqydW9tPdH17oOw.zclBrHaTXqNOIknF",
+      "etag": "\"6a76773a41e22fe9416b2ae3656da96a\"",
+      "last_modified": "2026-11-06 04:22:35+00:00",
+      "size_bytes": 1055,
+      "sha256": "03576819cbec253be0e787c3f1176f74526a755dba6fc59d4d340a05a8bb0aac"
+    },
+    "order_items": {
+      "bucket": "enterprise-analytics-dev-453711491609-us-west-2-data",
+      "key": "snapshots/retail-v1/order_items/part-00000.parquet",
+      "version_id": "SXPUi6_BpziuxMGT7Ws9L10bkPQarXdd",
+      "etag": "\"e5f65cee3f3604aa23df228b02391424\"",
+      "last_modified": "2026-11-06 04:22:35+00:00",
+      "size_bytes": 3494,
+      "sha256": "268ae3b1983c1fec90a59f135cb75f58b7017387e842784ee41e957712dd50db"
+    },
+    "orders": {
+      "bucket": "enterprise-analytics-dev-453711491609-us-west-2-data",
+      "key": "snapshots/retail-v1/orders/part-00000.parquet",
+      "version_id": "0zD6GxKgopNzjbfOcXshaGIxttDOivxP",
+      "etag": "\"ad3a36d9d6bf723ee5c5551ed3bfa791\"",
+      "last_modified": "2026-11-06 04:22:35+00:00",
+      "size_bytes": 3536,
+      "sha256": "86415b5ae4806d07e76954f82796055ead4b75e047d8e32ec897eee8e74c93c0"
+    },
+    "payments": {
+      "bucket": "enterprise-analytics-dev-453711491609-us-west-2-data",
+      "key": "snapshots/retail-v1/payments/part-00000.parquet",
+      "version_id": "5Ci6XLmd6nkOE7MUQmSSQ3vBYT7HOfgN",
+      "etag": "\"61bad56bcc3fcc21e7a23c4a83a052f2\"",
+      "last_modified": "2026-11-06 04:22:35+00:00",
+      "size_bytes": 2621,
+      "sha256": "35d6cf130efe0b53e399113c89e2cb411cf01c9894a6d00aeca8ad2aaa2a2362"
+    },
+    "products": {
+      "bucket": "enterprise-analytics-dev-453711491609-us-west-2-data",
+      "key": "snapshots/retail-v1/products/part-00000.parquet",
+      "version_id": ".3QiAqfetLuqoLPW16GlUrn8COnRlRFw",
+      "etag": "\"7ffb21cce775dbec73ba8af544c86302\"",
+      "last_modified": "2026-11-06 04:22:36+00:00",
+      "size_bytes": 1192,
+      "sha256": "c354e5d1394c07d2afa4f04319bfc035ca914c1c985de656fef42bc5fa96eaf1"
+    },
+    "refunds": {
+      "bucket": "enterprise-analytics-dev-453711491609-us-west-2-data",
+      "key": "snapshots/retail-v1/refunds/part-00000.parquet",
+      "version_id": "_BgMh6hDVLorWszUb.6W_XlQuCgs7orN",
+      "etag": "\"067dbf4bc64df747dbe96ce10c9d18c1\"",
+      "last_modified": "2026-11-06 04:22:36+00:00",
+      "size_bytes": 2113,
+      "sha256": "2ea061048d2f0d3d5258e650e4a7db2b877f14a9786b940b8513d92c72583082"
+    },
+    "returns": {
+      "bucket": "enterprise-analytics-dev-453711491609-us-west-2-data",
+      "key": "snapshots/retail-v1/returns/part-00000.parquet",
+      "version_id": "_rXIky4.Nzy2xO_U3qIswTl9N7Z6O.f8",
+      "etag": "\"afd91dcd0fe275697dab48b5ad1d5937\"",
+      "last_modified": "2026-11-06 04:22:36+00:00",
+      "size_bytes": 1747,
+      "sha256": "a10d4090783b639358e3bac113bd555a3367b38a05208f204ddb50ba5df16a83"
+    }
+  },
+  "checks": [
+    "version-or-etag-pinned GET",
+    "sha256",
+    "size",
+    "physical schema",
+    "row inventory",
+    "required fields"
+  ],
+  "oracle_version": "retail-oracle-v1",
+  "oracle_source_sha256": "413d9d1d43af25db73c9ee827f554745d880b43628b7b1fd2379a10eeffef34e",
+  "questions_sha256": "3a4058aeac49bad8761d7b2cb802a8fd62bba965d88aea823b4715364eb3c060",
+  "expected_results_sha256": "67a680af79e239041305ebc0d9b3a138233e3cf394f97073fa38394a38dcb4c2",
+  "contributions_sha256": "19cef014af6ae3ec255da91e32c6222cc4414b38aadad45580a812081f17a28c",
+  "canonical_inventory": {
+    "customers": 48,
+    "products": 24,
+    "orders": 240,
+    "order_items": 480,
+    "payments": 240,
+    "refunds": 96,
+    "returns": 40
+  },
+  "independent_checks": [
+    "schema",
+    "required fields",
+    "tenant-scoped relationships",
+    "duplicate/conflict rules",
+    "handwritten fixture arithmetic"
+  ],
+  "worksheet_review": {
+    "reviewer": "independent root agent; no human-review claim",
+    "scope": [
+      "January North and South item operands, net totals, distinct-order counts and combined AOV",
+      "Full-period gross/discount/refund/net operands and aggregate ratio rounding",
+      "Q22 refund-only, Q23 return-only and Q18 multi-item refund/return cohort attribution"
+    ],
+    "result": "Selected independent operand arithmetic and cohort-scope checks passed before live execution"
+  }
+}

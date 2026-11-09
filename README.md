@@ -38,6 +38,23 @@ poetry run mypy src tests
 
 The CLI is a trusted local application and fixes its own demo tenant and authorized regions. Semantic requests cannot supply a principal, tenant, or authorization scope. This is an enforcement boundary demonstration, not a production authentication system.
 
+## Retail demonstration and evaluation
+
+Milestone 5's operator CLI and evaluation tooling are implemented for offline review; **live acceptance is pending separate approval**. Published `retail-v1` inputs were downloaded read-only with pinned S3 versions and verified hashes, sizes, schemas and relationships. Independent literal expectations cover 34 questions plus a two-request session sequence. The contribution worksheets and provenance are in [evaluations/retail-v1](evaluations/retail-v1/oracle-notes.md).
+
+```sh
+poetry install --only-root --no-interaction
+poetry run analytics-ask --help
+poetry run analytics-evaluate --help
+poetry run analytics-ask --response-file path/to/saved-agent-response.json --format json
+poetry run analytics-evaluate --target-config evaluations/retail-v1/target.json \
+  --response-dir path/to/saved-responses --report-dir artifacts/milestone-5/runs/replay-unique
+```
+
+Replay does not construct AWS clients. Question answers display exact values, units, periods, metric/dataset versions and diagnostics; exit codes are 0 for answers, 2 for clarification and 1 for errors. The evaluator grades complete structured plans/results, clarification and isolation, and writes JSON, durable attempt JSONL and Markdown reports. Missing diagnostics remain missing. Replay demonstrates tooling behavior and makes no live-quality claim.
+
+The [operator runbook](docs/milestone-5-runbook.md) pins the environment-only retail proposal and corrected-base restoration. The existing ZIP/version is reused; only dataset `retail-v1`, tenant `retail_demo` and reference date `2025-04-01` change in trusted configuration. Current AWS remains on the verified M4 parity base. The separate M5 40-call campaign is unused; M4 remains 28/40. Live CLI/pytest gates require prior approval, and all calls share the persistent counter with a protected restoration slot. See [the plan](docs/milestone-5-plan.md) for acceptance criteria.
+
 ## Semantic interface
 
 `SemanticAdapter` exposes `discover_metrics`, `describe_metric`, `query_metric`, and `discover_dimensions`; every method receives a separate trusted `AuthorizationContext`. Callers provide a metric identifier, `[start, end)` UTC business dates, governed grouping dimensions, and optional dimension filters. They never provide SQL. Requests reject unknown fields and model-supplied identity.
@@ -60,7 +77,7 @@ Refunds and physical returns are independent. Only approved refunds reduce net r
 
 ## Continuous integration
 
-`.github/workflows/ci.yml` runs on pushes and pull requests with Python 3.12, SHA-pinned checkout/setup-python actions, pinned Poetry 2.3.1, and `poetry sync --with dev --no-interaction` from the committed lockfile. It runs the five checks above and offline data-layer/AgentCore foundation synthesis without AWS credentials. The user confirmed successful [hosted CI run 42279109681](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42279109681) for pushed readiness commit `5e72b51`. Completion commit [`51c1d4ccb0581ed35e2cace9bafb758bf1f05dbf`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/51c1d4ccb0581ed35e2cace9bafb758bf1f05dbf) passed [push CI 42515746487](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42515746487) and [PR CI 42515722610](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42515722610). [PR #4](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/4) merged it into main at [`47c3afc1dd948fa8ddcb074151b9f22af31dad48`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/47c3afc1dd948fa8ddcb074151b9f22af31dad48), which passed [main CI 42516820774](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42516820774). These runs cover those earlier commits; they do not cover this new documentation-only commit. Historical checkpoint evidence remains in [progress](docs/progress.md).
+`.github/workflows/ci.yml` runs on pushes and pull requests with Python 3.12, SHA-pinned checkout/setup-python actions, pinned Poetry 2.3.1, and `poetry sync --with dev --no-interaction` from the committed lockfile. It runs the five checks above and offline data-layer/AgentCore foundation synthesis without AWS credentials. The user confirmed successful [hosted CI run 42279109681](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42279109681) for pushed readiness commit `5e72b51`. Completion commit [`51c1d4ccb0581ed35e2cace9bafb758bf1f05dbf`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/51c1d4ccb0581ed35e2cace9bafb758bf1f05dbf) passed [push CI 42515746487](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42515746487) and [PR CI 42515722610](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42515722610). [PR #4](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/4) merged it into main at [`47c3afc1dd948fa8ddcb074151b9f22af31dad48`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/47c3afc1dd948fa8ddcb074151b9f22af31dad48), which passed [main CI 42516820774](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42516820774). These runs cover those earlier commits; they do not cover this new Milestone 5 implementation commit. Historical checkpoint evidence remains in [progress](docs/progress.md).
 
 The workflow follows current official [checkout releases](https://github.com/actions/checkout/releases/tag/v7.0.1), [setup-python documentation](https://github.com/actions/setup-python/blob/6d4fd22b20465ccc0f7354476588e8df7c9ca0e0/README.md), and [Poetry CI guidance](https://python-poetry.org/docs/#ci-recommendations).
 

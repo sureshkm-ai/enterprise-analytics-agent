@@ -12,6 +12,8 @@ dependencies = [
 
 [project.scripts]
 analytics-demo = "enterprise_analytics_agent.cli:main"
+analytics-ask = "enterprise_analytics_agent.retail_evaluation.agent_cli:main"
+analytics-evaluate = "enterprise_analytics_agent.retail_evaluation.runner:main"
 analytics-publish = "enterprise_analytics_agent.adapters.publication_cli:main"
 
 [tool.poetry]
@@ -35,6 +37,7 @@ testpaths = ["tests"]
 pythonpath = ["."]
 addopts = "-ra"
 markers = [
+    "retail_live: separately approved M5 campaign (--run-retail-live)",
     "aws_integration: explicitly enabled live AWS parity tests (--run-aws)",
     "agent_live: explicitly approved billable deployed-agent evaluations (--run-agent-live)",
 ]

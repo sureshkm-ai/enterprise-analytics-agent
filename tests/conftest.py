@@ -12,6 +12,12 @@ from enterprise_analytics_agent.data import TABLE_SCHEMAS, DataRow
 
 def pytest_addoption(parser: pytest.Parser) -> None:
     parser.addoption(
+        "--run-retail-live",
+        action="store_true",
+        help="Explicitly enable the separately approved M5 retail campaign",
+    )
+    parser.addoption("--retail-config", help="Reviewed M5 retail target JSON")
+    parser.addoption(
         "--run-aws", action="store_true", help="Explicitly enable live AWS parity tests"
     )
     parser.addoption("--aws-config", help="Reviewed development deployment JSON for live AWS tests")
@@ -26,6 +32,22 @@ def pytest_addoption(parser: pytest.Parser) -> None:
 
 
 def pytest_configure(config: pytest.Config) -> None:
+    if config.getoption("run_retail_live"):
+        from enterprise_analytics_agent.retail_evaluation.models import RetailTarget
+
+        path = config.getoption("retail_config")
+        if not path:
+            raise pytest.UsageError(
+                "--run-retail-live requires --retail-config; no retail acceptance was run"
+            )
+        try:
+            target = RetailTarget.model_validate_json(Path(path).read_text())
+            if target.dataset_version != "retail-v1":
+                raise ValueError("retail acceptance requires retail-v1")
+        except (OSError, ValueError) as exc:
+            raise pytest.UsageError(
+                f"Retail target configuration is missing or invalid: {exc}"
+            ) from exc
     if config.getoption("run_agent_live"):
         from enterprise_analytics_agent.agent.evaluation import LiveAgentConfig
 
@@ -54,6 +76,19 @@ def pytest_configure(config: pytest.Config) -> None:
 
 @pytest.hookimpl(trylast=True)
 def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:
+    retail_items = [item for item in items if item.get_closest_marker("retail_live")]
+    if config.getoption("run_retail_live"):
+        if not retail_items:
+            raise pytest.UsageError(
+                "--run-retail-live selected no retail evaluation; acceptance not run"
+            )
+    else:
+        for item in retail_items:
+            item.add_marker(
+                pytest.mark.skip(
+                    reason="Retail campaign requires approval and --run-retail-live/--retail-config"
+                )
+            )
     agent_items = [item for item in items if item.get_closest_marker("agent_live")]
     if config.getoption("run_agent_live"):
         if not agent_items:

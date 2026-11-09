@@ -1,0 +1,893 @@
+{
+  "schema_version": "retail-golden-v1",
+  "dataset_version": "retail-v1",
+  "manifest_sha256": "99e9115edc990decf5b15e5de1ad693772e3bd03ec6767b880ebbdd4135b8797",
+  "cases": [
+    {
+      "case_id": "Q01",
+      "results": [
+        {
+          "api_version": "v2",
+          "metric_id": "gross_sales",
+          "definition_version": "1.0.0",
+          "time_range": {
+            "api_version": "v2",
+            "start": "2025-01-01",
+            "end": "2025-02-01"
+          },
+          "group_by": [
+            "region"
+          ],
+          "unit": "currency",
+          "currency": "USD",
+          "rows": [
+            {
+              "api_version": "v2",
+              "dimensions": {
+                "region": "North"
+              },
+              "value": "195.50"
+            },
+            {
+              "api_version": "v2",
+              "dimensions": {
+                "region": "South"
+              },
+              "value": "359.75"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "Q02",
+      "results": [
+        {
+          "api_version": "v2",
+          "metric_id": "net_revenue",
+          "definition_version": "1.0.0",
+          "time_range": {
+            "api_version": "v2",
+            "start": "2025-01-01",
+            "end": "2025-02-01"
+          },
+          "group_by": [
+            "region"
+          ],
+          "unit": "currency",
+          "currency": "USD",
+          "rows": [
+            {
+              "api_version": "v2",
+              "dimensions": {
+                "region": "North"
+              },
+              "value": "172.17"
+            },
+            {
+              "api_version": "v2",
+              "dimensions": {
+                "region": "South"
+              },
+              "value": "313.44"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "Q03",
+      "results": [
+        {
+          "api_version": "v2",
+          "metric_id": "order_count",
+          "definition_version": "1.0.0",
+          "time_range": {
+            "api_version": "v2",
+            "start": "2025-01-01",
+            "end": "2025-02-01"
+          },
+          "group_by": [
+            "region"
+          ],
+          "unit": "count",
+          "currency": null,
+          "rows": [
+            {
+              "api_version": "v2",
+              "dimensions": {
+                "region": "North"
+              },
+              "value": 5
+            },
+            {
+              "api_version": "v2",
+              "dimensions": {
+                "region": "South"
+              },
+              "value": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "Q04",
+      "results": [
+        {
+          "api_version": "v2",
+          "metric_id": "average_order_value",
+          "definition_version": "1.0.0",
+          "time_range": {
+            "api_version": "v2",
+            "start": "2025-01-01",
+            "end": "2025-02-01"
+          },
+          "group_by": [
+            "region"
+          ],
+          "unit": "currency",
+          "currency": "USD",
+          "rows": [
+            {
+              "api_version": "v2",
+              "dimensions": {
+                "region": "North"
+              },
+              "value": "34.43"
+            },
+            {
+              "api_version": "v2",
+              "dimensions": {
+                "region": "South"
+              },
+              "value": "104.48"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "Q05",
+      "results": [
+        {
+          "api_version": "v2",
+          "metric_id": "return_rate",
+          "definition_version": "1.0.0",
+          "time_range": {
+            "api_version": "v2",
+            "start": "2025-01-01",
+            "end": "2025-02-01"
+          },
+          "group_by": [
+            "region"
+          ],
+          "unit": "ratio",
+          "currency": null,
+          "rows": [
+            {
+              "api_version": "v2",
+              "dimensions": {
+                "region": "North"
+              },
+              "value": "0.200000"
+            },
+            {
+              "api_version": "v2",
+              "dimensions": {
+                "region": "South"
+              },
+              "value": "0.333333"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "Q06",
+      "results": [
+        {
+          "api_version": "v2",
+          "metric_id": "gross_sales",
+          "definition_version": "1.0.0",
+          "time_range": {
+            "api_version": "v2",
+            "start": "2025-01-01",
+            "end": "2025-04-01"
+          },
+          "group_by": [],
+          "unit": "currency",
+          "currency": "USD",
+          "rows": [
+            {
+              "api_version": "v2",
+              "dimensions": {},
+              "value": "1884.00"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "Q07",
+      "results": [
+        {
+          "api_version": "v2",
+          "metric_id": "net_revenue",
+          "definition_version": "1.0.0",
+          "time_range": {
+            "api_version": "v2",
+            "start": "2025-01-01",
+            "end": "2025-04-01"
+          },
+          "group_by": [],
+          "unit": "currency",
+          "currency": "USD",
+          "rows": [
+            {
+              "api_version": "v2",
+              "dimensions": {},
+              "value": "1667.03"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "Q08",
+      "results": [
+        {
+          "api_version": "v2",
+          "metric_id": "order_count",
+          "definition_version": "1.0.0",
+          "time_range": {
+            "api_version": "v2",
+            "start": "2025-01-01",
+            "end": "2025-04-01"
+          },
+          "group_by": [],
+          "unit": "count",
+          "currency": null,
+          "rows": [
+            {
+              "api_version": "v2",
+              "dimensions": {},
+              "value": 27
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "Q09",
+      "results": [
+        {
+          "api_version": "v2",
+          "metric_id": "average_order_value",
+          "definition_version": "1.0.0",
+          "time_range": {
+            "api_version": "v2",
+            "start": "2025-01-01",
+            "end": "2025-04-01"
+          },
+          "group_by": [],
+          "unit": "currency",
+          "currency": "USD",
+          "rows": [
+            {
+              "api_version": "v2",
+              "dimensions": {},
+              "value": "61.74"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "Q10",
+      "results": [
+        {
+          "api_version": "v2",
+          "metric_id": "return_rate",
+          "definition_version": "1.0.0",
+          "time_range": {
+            "api_version": "v2",
+            "start": "2025-01-01",
+            "end": "2025-04-01"
+          },
+          "group_by": [],
+          "unit": "ratio",
+          "currency": null,
+          "rows": [
+            {
+              "api_version": "v2",
+              "dimensions": {},
+              "value": "0.148148"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "Q11",
+      "results": [
+        {
+          "api_version": "v2",
+          "metric_id": "net_revenue",
+          "definition_version": "1.0.0",
+          "time_range": {
+            "api_version": "v2",
+            "start": "2025-03-01",
+            "end": "2025-04-01"
+          },
+          "group_by": [
+            "channel"
+          ],
+          "unit": "currency",
+          "currency": "USD",
+          "rows": [
+            {
+              "api_version": "v2",
+              "dimensions": {
+                "channel": "online"
+              },
+              "value": "254.41"
+            },
+            {
+              "api_version": "v2",
+              "dimensions": {
+                "channel": "store"
+              },
+              "value": "263.08"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "Q12",
+      "results": [
+        {
+          "api_version": "v2",
+          "metric_id": "order_count",
+          "definition_version": "1.0.0",
+          "time_range": {
+            "api_version": "v2",
+            "start": "2025-01-01",
+            "end": "2025-02-01"
+          },
+          "group_by": [
+            "region",
+            "channel"
+          ],
+          "unit": "count",
+          "currency": null,
+          "rows": [
+            {
+              "api_version": "v2",
+              "dimensions": {
+                "region": "North",
+                "channel": "online"
+              },
+              "value": 3
+            },
+            {
+              "api_version": "v2",
+              "dimensions": {
+                "region": "North",
+                "channel": "store"
+              },
+              "value": 2
+            },
+            {
+              "api_version": "v2",
+              "dimensions": {
+                "region": "South",
+                "channel": "online"
+              },
+              "value": 1
+            },
+            {
+              "api_version": "v2",
+              "dimensions": {
+                "region": "South",
+                "channel": "store"
+              },
+              "value": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "Q13",
+      "results": [
+        {
+          "api_version": "v2",
+          "metric_id": "net_revenue",
+          "definition_version": "1.0.0",
+          "time_range": {
+            "api_version": "v2",
+            "start": "2025-02-01",
+            "end": "2025-03-01"
+          },
+          "group_by": [],
+          "unit": "currency",
+          "currency": "USD",
+          "rows": [
+            {
+              "api_version": "v2",
+              "dimensions": {},
+              "value": "272.24"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "Q14",
+      "results": [
+        {
+          "api_version": "v2",
+          "metric_id": "net_revenue",
+          "definition_version": "1.0.0",
+          "time_range": {
+            "api_version": "v2",
+            "start": "2025-01-01",
+            "end": "2025-02-01"
+          },
+          "group_by": [],
+          "unit": "currency",
+          "currency": "USD",
+          "rows": [
+            {
+              "api_version": "v2",
+              "dimensions": {},
+              "value": "485.61"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "Q15",
+      "results": [
+        {
+          "api_version": "v2",
+          "metric_id": "net_revenue",
+          "definition_version": "1.0.0",
+          "time_range": {
+            "api_version": "v2",
+            "start": "2025-01-31",
+            "end": "2025-02-01"
+          },
+          "group_by": [],
+          "unit": "currency",
+          "currency": "USD",
+          "rows": [
+            {
+              "api_version": "v2",
+              "dimensions": {},
+              "value": "0.00"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "Q16",
+      "results": [
+        {
+          "api_version": "v2",
+          "metric_id": "net_revenue",
+          "definition_version": "1.0.0",
+          "time_range": {
+            "api_version": "v2",
+            "start": "2025-02-01",
+            "end": "2025-02-02"
+          },
+          "group_by": [],
+          "unit": "currency",
+          "currency": "USD",
+          "rows": [
+            {
+              "api_version": "v2",
+              "dimensions": {},
+              "value": "0.00"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "Q17",
+      "results": [
+        {
+          "api_version": "v2",
+          "metric_id": "average_order_value",
+          "definition_version": "1.0.0",
+          "time_range": {
+            "api_version": "v2",
+            "start": "2025-03-01",
+            "end": "2025-04-01"
+          },
+          "group_by": [],
+          "unit": "currency",
+          "currency": "USD",
+          "rows": [
+            {
+              "api_version": "v2",
+              "dimensions": {},
+              "value": "51.75"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "Q18",
+      "results": [
+        {
+          "api_version": "v2",
+          "metric_id": "net_revenue",
+          "definition_version": "1.0.0",
+          "time_range": {
+            "api_version": "v2",
+            "start": "2025-03-31",
+            "end": "2025-04-01"
+          },
+          "group_by": [],
+          "unit": "currency",
+          "currency": "USD",
+          "rows": [
+            {
+              "api_version": "v2",
+              "dimensions": {},
+              "value": "110.25"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "Q19",
+      "results": [
+        {
+          "api_version": "v2",
+          "metric_id": "net_revenue",
+          "definition_version": "1.0.0",
+          "time_range": {
+            "api_version": "v2",
+            "start": "2030-01-01",
+            "end": "2030-02-01"
+          },
+          "group_by": [],
+          "unit": "currency",
+          "currency": "USD",
+          "rows": [
+            {
+              "api_version": "v2",
+              "dimensions": {},
+              "value": "0.00"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "Q20",
+      "results": [
+        {
+          "api_version": "v2",
+          "metric_id": "return_rate",
+          "definition_version": "1.0.0",
+          "time_range": {
+            "api_version": "v2",
+            "start": "2030-01-01",
+            "end": "2030-02-01"
+          },
+          "group_by": [],
+          "unit": "ratio",
+          "currency": null,
+          "rows": [
+            {
+              "api_version": "v2",
+              "dimensions": {},
+              "value": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "Q21",
+      "results": [
+        {
+          "api_version": "v2",
+          "metric_id": "order_count",
+          "definition_version": "1.0.0",
+          "time_range": {
+            "api_version": "v2",
+            "start": "2030-01-01",
+            "end": "2030-02-01"
+          },
+          "group_by": [
+            "region"
+          ],
+          "unit": "count",
+          "currency": null,
+          "rows": []
+        }
+      ]
+    },
+    {
+      "case_id": "Q22",
+      "results": [
+        {
+          "api_version": "v2",
+          "metric_id": "net_revenue",
+          "definition_version": "1.0.0",
+          "time_range": {
+            "api_version": "v2",
+            "start": "2025-01-01",
+            "end": "2025-01-02"
+          },
+          "group_by": [],
+          "unit": "currency",
+          "currency": "USD",
+          "rows": [
+            {
+              "api_version": "v2",
+              "dimensions": {},
+              "value": "7.50"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "Q23",
+      "results": [
+        {
+          "api_version": "v2",
+          "metric_id": "return_rate",
+          "definition_version": "1.0.0",
+          "time_range": {
+            "api_version": "v2",
+            "start": "2025-01-10",
+            "end": "2025-01-11"
+          },
+          "group_by": [],
+          "unit": "ratio",
+          "currency": null,
+          "rows": [
+            {
+              "api_version": "v2",
+              "dimensions": {},
+              "value": "1.000000"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "Q24",
+      "results": [
+        {
+          "api_version": "v2",
+          "metric_id": "gross_sales",
+          "definition_version": "1.0.0",
+          "time_range": {
+            "api_version": "v2",
+            "start": "2025-01-01",
+            "end": "2025-02-01"
+          },
+          "group_by": [
+            "region"
+          ],
+          "unit": "currency",
+          "currency": "USD",
+          "rows": [
+            {
+              "api_version": "v2",
+              "dimensions": {
+                "region": "North"
+              },
+              "value": "195.50"
+            },
+            {
+              "api_version": "v2",
+              "dimensions": {
+                "region": "South"
+              },
+              "value": "359.75"
+            }
+          ]
+        },
+        {
+          "api_version": "v2",
+          "metric_id": "net_revenue",
+          "definition_version": "1.0.0",
+          "time_range": {
+            "api_version": "v2",
+            "start": "2025-01-01",
+            "end": "2025-02-01"
+          },
+          "group_by": [
+            "region"
+          ],
+          "unit": "currency",
+          "currency": "USD",
+          "rows": [
+            {
+              "api_version": "v2",
+              "dimensions": {
+                "region": "North"
+              },
+              "value": "172.17"
+            },
+            {
+              "api_version": "v2",
+              "dimensions": {
+                "region": "South"
+              },
+              "value": "313.44"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "Q25",
+      "results": [
+        {
+          "api_version": "v2",
+          "metric_id": "average_order_value",
+          "definition_version": "1.0.0",
+          "time_range": {
+            "api_version": "v2",
+            "start": "2025-01-01",
+            "end": "2025-02-01"
+          },
+          "group_by": [],
+          "unit": "currency",
+          "currency": "USD",
+          "rows": [
+            {
+              "api_version": "v2",
+              "dimensions": {},
+              "value": "60.70"
+            }
+          ]
+        },
+        {
+          "api_version": "v2",
+          "metric_id": "average_order_value",
+          "definition_version": "1.0.0",
+          "time_range": {
+            "api_version": "v2",
+            "start": "2025-03-01",
+            "end": "2025-04-01"
+          },
+          "group_by": [],
+          "unit": "currency",
+          "currency": "USD",
+          "rows": [
+            {
+              "api_version": "v2",
+              "dimensions": {},
+              "value": "51.75"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "Q26",
+      "results": []
+    },
+    {
+      "case_id": "Q27",
+      "results": []
+    },
+    {
+      "case_id": "Q28",
+      "results": []
+    },
+    {
+      "case_id": "Q29",
+      "results": []
+    },
+    {
+      "case_id": "Q30",
+      "results": []
+    },
+    {
+      "case_id": "Q31",
+      "results": [
+        {
+          "api_version": "v2",
+          "metric_id": "net_revenue",
+          "definition_version": "1.0.0",
+          "time_range": {
+            "api_version": "v2",
+            "start": "2025-01-01",
+            "end": "2025-02-01"
+          },
+          "group_by": [],
+          "unit": "currency",
+          "currency": "USD",
+          "rows": [
+            {
+              "api_version": "v2",
+              "dimensions": {},
+              "value": "0.00"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "Q32",
+      "results": []
+    },
+    {
+      "case_id": "Q33",
+      "results": []
+    },
+    {
+      "case_id": "Q34",
+      "results": []
+    },
+    {
+      "case_id": "S01A",
+      "results": [
+        {
+          "api_version": "v2",
+          "metric_id": "net_revenue",
+          "definition_version": "1.0.0",
+          "time_range": {
+            "api_version": "v2",
+            "start": "2025-01-01",
+            "end": "2025-02-01"
+          },
+          "group_by": [],
+          "unit": "currency",
+          "currency": "USD",
+          "rows": [
+            {
+              "api_version": "v2",
+              "dimensions": {},
+              "value": "172.17"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "S01B",
+      "results": [
+        {
+          "api_version": "v2",
+          "metric_id": "net_revenue",
+          "definition_version": "1.0.0",
+          "time_range": {
+            "api_version": "v2",
+            "start": "2025-01-01",
+            "end": "2025-02-01"
+          },
+          "group_by": [],
+          "unit": "currency",
+          "currency": "USD",
+          "rows": [
+            {
+              "api_version": "v2",
+              "dimensions": {},
+              "value": "313.44"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -5,6 +5,7 @@
 - Keep milestones 1 and 2 local: no AWS calls, credentials, or external services.
 - Milestone 3 permits implementation, offline synthesis/tests, and read-only verification using an explicitly selected AWS profile. Finish the concrete deployment plan before asking for approval; bootstrap, resource creation, source publication, and live parity require that approval. Do not mark it complete until live parity passes.
 - Milestone 4 permits local implementation/verification, read-only AWS configuration checks, and local commits. Finish `docs/agentcore-deployment-plan.md` and reviewed packaging/infrastructure before requesting approval for resources, IAM changes, or billable model/runtime evaluations. Keep milestone 4 open until deployed-agent acceptance passes. Keep commits local.
+- Milestone 5 permits operator-side implementation, offline verification, local commits, and explicitly authorized read-only canonical downloads/checkpoint inspection. Deployment, IAM changes, uploads, publication, Athena execution and model/Runtime calls need separate approval. Preserve M4's 28/40 ledger; use the separate persistent M5 counter for every later approved call, including failures and the protected restoration smoke. Freeze retail expectations only from verified canonical publication bytes using the independent oracle. Keep M5 open until live evaluation and corrected-base restoration pass.
 - The agent consumes backend-independent, versioned semantic contracts.
 - AWS-specific and Cube-specific logic belongs only in adapters. Do not expose SQL or provider SDK types in the semantic interface.
 - The semantic tools are `discover_metrics`, `describe_metric`, `query_metric`, and `discover_dimensions`.
@@ -19,6 +20,7 @@
 
 - Use Python 3.12, Poetry and its committed lockfile, Pydantic v2, DuckDB, and Parquet.
 - Keep package code under `src/enterprise_analytics_agent` and tests under `tests`.
+- The retail CLI/evaluator is operator-side; its target metadata never supplies runtime authorization. SDK creation and AWS checkpoint/provenance reads belong in adapters. Default replay/oracle/tests must not create AWS clients. `--run-retail-live --retail-config=...` and CLI `--invoke-live` are explicit execution gates, not substitutes for approval.
 - Preserve existing work; do not overwrite unrelated changes or commit credentials or generated data.
 - Store money as integer cents in data and use `Decimal` in semantic responses. Never use binary floating point for money.
 - Bind SQL values; only interpolate identifiers selected from the governed metric definition.

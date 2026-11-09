@@ -1,6 +1,6 @@
 # Milestone 5: repeatable retail demonstration and answer-quality evaluation
 
-Status: **proposed scope; planning complete, implementation and AWS execution not authorized**. Prepared November 8, 2026, from main `d7e0f19e646f239bcf2f2641cb829cd1090be562` on `feat/milestone-5-retail-evaluation`. This request changes documentation only. Commands, files and budgets described as proposed below do not yet exist or constitute execution approval.
+Status: **operator implementation prepared and canonical expectations frozen; live acceptance pending**. The plan was approved at `ec77533`; the user confirms that commit was pushed and [push CI 42561649592](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42561649592) passed. New implementation checks are recorded separately in [progress](progress.md). Current authorization covers local code/configuration, offline verification, read-only AWS verification/downloads and local commits. It excludes deployments, IAM changes, uploads/publication, Athena execution and model/Runtime invocations. The proposed separate 40-call M5 budget remains unused. Concrete commands and exact template/configuration pins are in the [operator runbook](milestone-5-runbook.md).
 
 ## Baseline and preserved evidence
 
@@ -20,7 +20,7 @@ Preserve the [Milestone 4 deployment record](agentcore-deployment-plan.md): 18 +
 
 No new resources, IAM changes, model selection, metric definitions, semantic tools, v1/v2 schemas, production authorization, UI, Cube or extra AgentCore services are proposed.
 
-## Existing implementation and proposed files
+## Existing implementation and implemented operator files
 
 Inspection found:
 
@@ -30,9 +30,9 @@ Inspection found:
 - [Runtime settings](../src/enterprise_analytics_agent/hosting/config.py) already accept `retail-v1` through server-owned configuration. [CDK configuration](../infrastructure/cdk/agentcore_config.py) reads a separate runtime settings file and supplies `ANALYTICS_RUNTIME_CONFIG`; the entry point can reuse the existing ZIP.
 - The question guard supports named months, exclusive ISO intervals, relative dates and supported region/channel queries. Do not broaden its vocabulary or silently drop unsupported clauses for this demo.
 
-Proposed implementation files, subject to a later implementation request:
+Implemented operator additions, kept separate from the unchanged deployed agent:
 
-| Area | Proposed change |
+| Area | Implementation |
 | --- | --- |
 | Question CLI | Add `agent_cli.py` and an injectable AgentCore invocation client; register `analytics-ask` in Poetry. Reuse existing request/response contracts. |
 | Retail evaluation | Add separate retail case/target/report models, loader, judge and runner, with an `analytics-evaluate` entry point. Do not widen the parity-only case function or replace its expectations. |
@@ -41,11 +41,11 @@ Proposed implementation files, subject to a later implementation request:
 | Operator configuration | Separate `infrastructure/agentcore/runtime.retail-evaluation.json` and `infrastructure/cdk/agentcore.config.retail-evaluation.json`; add nonsecret operator target examples. Preserve base configuration files. |
 | Verification | Add offline CLI/judge/report/ledger tests and separately gated retail live tests. Raw response reports, ledgers, downloaded data and synthesized proposals stay ignored under `artifacts/milestone-5/`. |
 
-Version-control the reusable invocation counter, readiness/policy normalization, report collection and operator workflow; do not depend on the ignored Milestone 4 helper scripts being present. A fresh checkout must use the same locked tooling and approved case/target files. If the frozen ZIP is missing locally, recover only the exact existing S3 VersionId under later approved read-only access and verify its SHA; do not rebuild/upload a substitute. Reconstruct a missing corrected base assembly offline from the unchanged base configuration and compare its recorded template hash before use, stopping on a mismatch. Record all preparation commands in the future implementation runbook.
+Version-control the reusable invocation counter, readiness/policy normalization, report collection and operator workflow; do not depend on the ignored Milestone 4 helper scripts being present. A fresh checkout must use the same locked tooling and approved case/target files. If the frozen ZIP is missing locally, recover only the exact existing S3 VersionId under later approved read-only access and verify its SHA; do not rebuild/upload a substitute. Reconstruct a missing corrected base assembly offline from the unchanged base configuration and compare its recorded template hash before use, stopping on a mismatch. Preparation commands and stop conditions are recorded in the implementation runbook.
 
 ## Question CLI behavior
 
-`analytics-ask` will have an offline response-file mode and an explicitly enabled live mode. No invocation occurs merely by importing the client, requesting help, validating a target or displaying a saved response. Proposed usage shape, not an implemented command:
+`analytics-ask` has an offline response-file mode and an explicitly enabled live mode. No invocation occurs merely by importing the client, requesting help, validating a target or displaying a saved response. Implemented usage:
 
 ```text
 poetry run analytics-ask --response-file <saved-agent-response.json> --format text
@@ -56,7 +56,7 @@ Live payload remains exactly `{"question": "..."}`. Trusted deployment files def
 
 Validate every input with `AgentRequest` and every returned body with `AgentResponse`. Reject malformed responses and unexpected model/dataset/reference-date values. Require complete structured metric results; display exact decimal strings, integers, nulls, units/currency, grouping, `[start,end)` boundaries and metric/dataset versions. Display the validated answer or clarification without recomputing its values or asking another model to rewrite them.
 
-Human output includes a short result table and optional model/tool/query summaries. JSON stdout contains the validated response; client timing/diagnostics go to stderr or a separate report. Never print credentials, signed headers or SQL. Proposed exit statuses: 0 answer, 2 clarification, 1 invocation/configuration/validation error; the evaluator treats an expected clarification as a passing case despite CLI exit 2. Error responses remain errors, with sanitized diagnostic codes.
+Human output includes a short result table and optional model/tool/query summaries. JSON stdout contains the validated response; client timing/diagnostics go to stderr or a separate report. Never print credentials, signed headers or SQL. Exit statuses: 0 answer, 2 clarification, 1 invocation/configuration/validation error; the evaluator treats an expected clarification as a passing case despite CLI exit 2. Error responses remain errors, with sanitized diagnostic codes.
 
 ## Retail data and exact deployment delta
 
@@ -78,13 +78,13 @@ The CDK configuration copy changes only `runtime_config_path` to the separate re
 
 After separate approval, deploy only the existing Runtime stack. No foundation/data-stack deployment, IAM update, bootstrap, dataset regeneration/publication or code upload is expected. The new CLI/evaluator run operator-side; they do not require deploying a new Runtime package. Stop if implementation requires a server-code change or if the proposed changeset exceeds the environment delta; prepare a separately reviewed artifact/deployment scope first.
 
-A future approved read-only preflight must verify identity, actual checkpoint/configuration, frozen ZIP/assembly/S3 version, retail ready manifest, table schemas/checksums and existing query access. Historical publication evidence is not a fresh readiness assertion. No such AWS call was made for this plan.
+The authorized implementation preflight verified explicit identity/account/region, actual checkpoint/configuration, frozen ZIP/assembly/S3 version, retail ready manifest and all seven Glue schemas/source locations. No Athena query or effective live query-access assertion was made. Runtime/DEFAULT remain READY on v4, stack UPDATE_COMPLETE, both policies match and retention is seven days. A later deployment window must repeat the read-only drift check.
 
 ## Independent expected results and provenance
 
-There is an input-provenance gap to resolve before freezing retail goldens. Existing local raw retail Parquet files are **not byte-identical** to the canonical publication inventory. `prepare_snapshot()` deduplicates/sorts and writes temporary compressed files; those publication copies are no longer retained locally. The locally retained prepared manifest has SHA `44f6c07ac1c64c177430855c0f882f68fcc2d8a84917a7d23ca2b6247b423f6e`. Do not relabel raw inputs as that published canonical snapshot or generate expected values from a demo CLI run.
+The input-provenance gap is resolved using exact canonical S3 downloads. Existing local raw retail Parquet files are **not byte-identical** to the canonical publication inventory and were not substituted. The historical prepared-manifest SHA `44f6c07ac1c64c177430855c0f882f68fcc2d8a84917a7d23ca2b6247b423f6e` remains historical evidence. The published ready manifest actually downloaded has SHA `99e9115edc990decf5b15e5de1ad693772e3bd03ec6767b880ebbdd4135b8797`, VersionId `cvCWKV3bv9Ub4iZOPSh79W4TnizV6FmJ`; manifest serialization/state differs from the prior prepared manifest.
 
-Under a later, explicit read-only AWS authorization, obtain the existing ready manifest and exact canonical source objects; verify every byte hash/size/schema and record manifest/object identifiers. Freeze independently calculated literal results before billable model calls. An offline oracle may be implemented/tested on authored fixtures while this input verification is pending; no retail result is claimed in this planning document.
+Under the user's read-only authorization, all seven source objects were retrieved by exact S3 VersionId and verified by byte hash/size/schema/inventory/required fields, followed by independent relationship/duplicate checks. [Provenance](../evaluations/retail-v1/oracle-provenance.json), [hand-auditable worksheets](../evaluations/retail-v1/oracle-notes.md), the 480-item contribution CSV and frozen 36-case expected-results file are committed for review. The independent oracle has handwritten fixture proofs; all 30 complete numeric query requests also matched local DuckDB against these frozen values. No expected value came from an adapter or generator. Selected January/full-period/refund-only/return-only/March 31 calculations were separately reviewed by the root agent; this is not a human review or live result.
 
 Oracle method:
 
@@ -97,9 +97,9 @@ Oracle method:
 
 Local raw records indicate useful audit anchors: Jan 1 North/online `o0000` has an approved refund without a received return; Jan 10 North/online `o0009` has a received return without an approved refund; Mar 31 North/online `o0089` has both. Reconfirm them in verified published data. Probe full supported date/region/channel cohorts, not unsupported order-ID filters; account for every other order in the cohort. These are coverage hints, not numeric goldens.
 
-## Proposed version-controlled question inventory
+## Frozen version-controlled question inventory
 
-Each case records a stable ID, question, tags, expected status/error allowlist, required/allowed structured semantic requests, literal result sets, units/precision, metric versions and input-provenance hash. Proposed inventory is **34 single-request cases plus one two-request session sequence**. Exact wording and expected rows must pass offline guard/oracle review before the suite is frozen; changing inventory or budget afterward requires review.
+Each case records a stable ID, question, tags, expected status/error allowlist, required/allowed structured semantic requests, literal result sets, units/precision, metric versions and input-provenance hash. The frozen inventory is **34 single-request cases plus one two-request session sequence**. Exact wording passed offline guard review and expected rows were independently frozen after canonical input verification; changing inventory or budget requires review.
 
 | IDs / count | Proposed question or family | Required coverage |
 | --- | --- | --- |
@@ -147,7 +147,7 @@ Write a machine-readable JSON report, append-only per-attempt JSONL and a concis
 
 ## Verification and proposed acceptance gates
 
-Future offline implementation checks use the existing Python 3.12 `enterprise-analytics` environment and Poetry lockfile:
+Offline implementation checks use the existing Python 3.12 `enterprise-analytics` environment and Poetry lockfile:
 
 ```sh
 poetry check --lock
@@ -157,7 +157,7 @@ poetry run ruff format --check .
 poetry run mypy src tests
 ```
 
-Use injected clients and saved typed responses for CLI routing/exit codes, invalid input/body/configuration, exact Decimal/null rendering, all case types and multi-result judging. Prove the judge rejects wrong values/precision/units, omitted or broadened filters, changed dates/dataset/model versions, extra requests/results, silent clause dropping and cross-request leakage. Test report totals/query-ID deduplication and missing diagnostics. Test persistent budget caps, the protected restoration slot, reserve-before-send, failure accounting and interrupted-run resume without live calls. Default pytest/CI must remain AWS-free. Give the new retail live tests their own explicit gate/configuration (proposed `retail_live` marker and `--run-retail-live --retail-config=...`) rather than routing retail through the parity-only live config; an explicitly requested live run with missing configuration must fail rather than skip. Synthesize the environment-only proposal and validate the rollback offline; no lookups.
+Use injected clients and saved typed responses for CLI routing/exit codes, invalid input/body/configuration, exact Decimal/null rendering, all case types and multi-result judging. Prove the judge rejects wrong values/precision/units, omitted or broadened filters, changed dates/dataset/model versions, extra requests/results, silent clause dropping and cross-request leakage. Test report totals/query-ID deduplication and missing diagnostics. Test persistent budget caps, the protected restoration slot, reserve-before-send, failure accounting and interrupted-run resume without live calls. Default pytest/CI must remain AWS-free. Give the new retail live tests their own explicit gate/configuration (`retail_live` marker and `--run-retail-live --retail-config=...`) rather than routing retail through the parity-only live config; an explicitly requested live run with missing configuration must fail rather than skip. Synthesize the environment-only proposal and validate the rollback offline; no lookups.
 
 Proposed live gates, after later explicit approval:
 
@@ -168,7 +168,7 @@ Proposed live gates, after later explicit approval:
 
 ## Separate proposed invocation budget and restoration
 
-**Propose at most 40 total Milestone 5 Runtime invocations; none is authorized or used by this planning task.** Do not consume the remaining 12 from Milestone 4 or append to/reset its `artifacts/agentcore/runtime-invocations.jsonl` (28/40). Every M5 call, including the restored parity smoke, must use the new campaign dispatcher/counter; do not invoke the old M4 warm-up/counter helpers, which hardcode the M4 ledger.
+**Propose at most 40 total Milestone 5 Runtime invocations; none is authorized or used by the current implementation task.** Do not consume the remaining 12 from Milestone 4 or append to/reset its `artifacts/agentcore/runtime-invocations.jsonl` (28/40). Every M5 call, including the restored parity smoke, must use the new campaign dispatcher/counter; do not invoke the old M4 warm-up/counter helpers, which hardcode the M4 ledger.
 
 | Milestone 5 purpose | Calls |
 | --- | ---: |
@@ -189,10 +189,9 @@ Restoring configuration creates a **later Runtime version**, not version 4 again
 
 ## Implementation sequence and exact next task
 
-1. Review this plan and authorize a separate offline implementation task. Start with versioned retail case/target/report contracts and the independent oracle's handwritten-fixture proofs; keep runtime code, metrics and M4 tests stable.
-2. Implement the operator CLI, judge/report and persistent budget controls; prepare the 34-case suite and session sequence. Freeze actual retail literals only after separately authorized canonical-input verification. Document and review the contribution worksheets.
-3. Run required offline checks; prepare/hash the environment-only retail assembly and exact restore assembly, with concrete future deployment/evaluation commands. Validate SDK usage against current official documentation when implementing the client.
-4. Present the implementation diff, source/config/artifact pins, verified input provenance, 40-call campaign and restoration/failure commands for explicit AWS/live approval. Planning or offline implementation approval is not deployment/invocation approval.
-5. Only after that approval perform the supervised retail change, counted evaluation, restored-base verification/smoke, report review and local completion commit. Do not push without a user request.
+1. Completed: versioned operator case/target/report models, independent oracle/fixture proofs, reviewed canonical provenance and frozen expectations, question client/CLI, complete-plan judge, durable reports and persistent budget controls. Existing runtime, metrics and M4 tests remain stable.
+2. Completed locally: all 34 questions plus S01A/B, trusted retail configuration, offline retail/restoration synthesis, scoped template comparison and reusable read-only checkpoint/proof verification. Final verification evidence is in progress; SDK references and future execution commands are in the runbook.
+3. **Exact next task:** review the local implementation commit, frozen worksheets/provenance, three-field configuration delta, report/ledger controls and runbook. Obtain separate approval for the environment-only Runtime deployment and the at-most-40-call M5 campaign; current read-only/local authorization does not authorize either.
+4. Only after approval perform the supervised retail change, counted evaluation, mandatory corrected-base restoration/fresh proof/smoke, report review and local completion commit. Keep commits local unless the user asks to push.
 
-Current session ends after the planning documentation commit. No application/configuration files, goldens, dataset, artifacts, IAM policies or AWS resources were changed; no AWS calls or model invocations were made. Milestone 5 remains proposed, not implemented or complete.
+Milestone 5 remains open. Offline readiness is separate from deployed answer-quality acceptance. No AWS resource, IAM, uploaded artifact, dataset or deployed runtime configuration was changed; no Athena execution or model/Runtime call occurred in this implementation task.

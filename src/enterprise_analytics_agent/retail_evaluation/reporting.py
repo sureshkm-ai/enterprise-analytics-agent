@@ -202,7 +202,9 @@ def build_report(
 
 
 def _redact(value: object) -> object:
-    """Never persist executable SQL or credentials from malformed/untrusted responses."""
+    """Redact sensitive evidence and encode timestamps without discarding their timezone."""
+    if isinstance(value, datetime):
+        return value.isoformat()
     if isinstance(value, dict):
         sensitive = {
             "sql",
@@ -254,8 +256,9 @@ def write_run_context(
         "target": target.model_dump(mode="json"),
         "evidence": evidence,
     }
+    serialized = json.dumps(_redact(value), indent=2) + "\n"
     with (directory / "run-context.json").open("x") as stream:
-        stream.write(json.dumps(_redact(value), indent=2) + "\n")
+        stream.write(serialized)
         stream.flush()
         os.fsync(stream.fileno())
 

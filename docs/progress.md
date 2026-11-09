@@ -1,10 +1,10 @@
 # Progress
 
-Updated: 2026-11-08 (America/Chicago).
+Updated: 2026-11-09 (America/Chicago).
 
 ## Current milestone and repository state
 
-**Current work: Milestone 5 operator implementation and offline readiness; live acceptance pending.** On `feat/milestone-5-retail-evaluation`, starting from clean planning commit `ec775331112669cbe15b8d0cc808aa10da59c107`. The user confirms this planning commit was pushed and [push CI 42561649592](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42561649592) passed; that run does not cover this new local implementation. Implemented the CLI/evaluator, independent canonical oracle/goldens, persistent campaign controls, configuration proposal and runbook. Read-only AWS provenance/checkpoint verification succeeded; no deployment, IAM change, upload/publication, Athena execution or model/Runtime invocation occurred. M4 remains complete with its ledger unchanged at **28/40**; the separate proposed M5 40-call campaign remains **0 used**, not approved for execution.
+**Current work: Milestone 5 evaluator timestamp-serialization correction; live acceptance pending.** Continuing on clean `feat/milestone-5-retail-evaluation` at implementation commit `e6f43253a38fceb03508d239b4e8a8842f8bbcfa`. The user confirms it was pushed and [push CI 42567676599](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42567676599) passed; that run predates this correction and covers no new fix. This session performs local implementation, offline tests/documentation and a local commit only. Historical canonical verification, frozen expectations and deployment evidence remain intact. No AWS operations or live invocations occur; M4's ledger remains **28/40**, and M5's real ledger remains absent (**0 used**).
 
 **Milestone 4 — implemented, deployed, live-validated, merged into main and verified by hosted CI for the agreed development scope.** [PR #4](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/4) merged on November 8, 2026, at [`47c3afc1dd948fa8ddcb074151b9f22af31dad48`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/47c3afc1dd948fa8ddcb074151b9f22af31dad48), containing completion commit [`51c1d4ccb0581ed35e2cace9bafb758bf1f05dbf`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/51c1d4ccb0581ed35e2cace9bafb758bf1f05dbf). The completion commit passed [push CI 42515746487](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42515746487) and [PR CI 42515722610](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42515722610); the merge passed [main CI 42516820774](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42516820774). GitHub API metadata confirms the PR/commit/run associations. Recorded live evidence remains **18 + 3 + 3 tests plus warm-up**, **28/40 invocations used**, corrected `parity-v1` restored, Runtime `enterprise_analytics_dev_agent-HlWywlG60h` and DEFAULT **READY on version 4**, and runtime stack UPDATE_COMPLETE. The reviewed artifact/S3 VersionId, M3 infrastructure, query trust and permissions remain unchanged. Historical live tests were not rerun; M5 read-only verification below freshly confirms the deployment checkpoint without modifying it. No production-readiness claim.
 
@@ -14,7 +14,30 @@ Milestone 4's documentation handoff is also merged: Git records PR #5 at `d7e0f1
 
 **Milestone 2 remains implemented, merged into `main`, and verified by hosted CI.** [PR #1](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/1) merged implementation commit `e13b1ea` at merge commit `9dc5989353459e2651ba5cced882534d8d573783`. [GitHub Actions run 42113416826](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42113416826) passed for that merge commit, as confirmed by the user.
 
-## Milestone 5 implementation checkpoint — 2026-11-08 America/Chicago
+## Milestone 5 checkpoint serialization correction — 2026-11-09
+
+Inspected AGENTS, current milestone documents, branch/status/history and the reporting/runner/checkpoint path. Initial working tree was clean at `e6f4325`. Confirmed existing Conda Python 3.12.16 and Poetry use `/opt/homebrew/anaconda3/envs/enterprise-analytics/bin/python`; focused baseline `poetry run pytest tests/test_retail_evaluation.py -q` passed **53 tests in 0.43s**.
+
+The checkpoint contains nested Runtime/endpoint `createdAt`/`lastUpdatedAt` and S3 `LastModified` datetime objects. Plain context JSON serialization raised TypeError after opening the destination, leaving an empty file before dispatch. The correction explicitly normalizes supported datetime values with `isoformat()` (retaining offset and precision), keeps existing redaction, and fully serializes context JSON before creating its exclusive final file. Unsupported objects still fail before any invocation instead of being silently stringified.
+
+Four new regressions failed against the original code (**4 failed in 0.34s**), then passed after the fix. Focused `poetry run pytest tests/test_retail_reporting.py tests/test_retail_evaluation.py -q` passed **57 tests in 0.49s**. The complete command path uses realistic timestamp-bearing checkpoints, mocked AWS/invocation boundaries and a real temporary campaign ledger/client: it verifies context/report JSON, timezone offsets/microseconds/redaction, **36 reservations and 36 matching outcomes**, fresh question sessions plus the shared S01 pair. Unsupported values cause zero dispatch/reservations and leave the final context file absent. These authored mock responses verify the operator path, not live answer quality; neither real ledger is used.
+
+Required checks in the existing environment:
+
+| Command | Actual result |
+| --- | --- |
+| `poetry check --lock` | Passed: All set. |
+| `poetry run pytest` | **837 passed, 85 skipped in 54.04s**; skips are explicitly gated live suites, not acceptance evidence. |
+| `poetry run ruff check .` | Passed. |
+| `poetry run ruff format --check .` | Passed: 101 files already formatted. |
+| `poetry run mypy src tests` | Passed: 79 source files. |
+| `git diff --check` and documentation checks | Passed; 4 Markdown files, 33 local links and 10 shell blocks checked without executing commands. |
+
+Preservation checks passed for all **54 protected file hashes/absence states**, including frozen inputs/goldens, ZIP, corrected assemblies, deployment configuration and both real ledgers. The S3 VersionId, M3 permissions and existing analytics-dev profile are unchanged. No AWS state or live result is refreshed here.
+
+Exact next task: review the local correction, then obtain separate deployment/live approval and follow the existing M5 runbook. M5 remains open until deployed evaluation and corrected-base restoration pass. CI `42567676599` is user-confirmed earlier-commit evidence, not validation of this fix.
+
+## Historical Milestone 5 implementation checkpoint — 2026-11-08 America/Chicago
 
 Read root instructions and current plan/architecture/metric definitions/progress; inspected branch/status/history, implementation and Conda/Poetry interpreter. Python and Poetry use `/opt/homebrew/anaconda3/envs/enterprise-analytics/bin/python`, Python 3.12.16 / Poetry 2.3.1. Existing work was clean at `ec77533`; continued on the same branch without branch switching or resetting. M4 completion/merge and documentation handoff ancestry is intact.
 
@@ -574,7 +597,7 @@ Read AGENTS, this progress log, and the implementation plan. Inspected `git stat
 
 ## Completion status and known limitations
 
-Milestones **1–4 are complete for the agreed development scope**. M4's recovered Runtime/DEFAULT are READY on restored `parity-v1` version 4, both resource policies and seven-day retention verify, and all 24 deployed tests plus warm-up passed within **28/40** calls. Source/package/template bytes and retained foundation/data/query trust remain unchanged. Historical M3 user-run parity and prior hosted CI retain their attribution. Completion commit `51c1d4c` is now merged through PR #4 at `47c3afc`, with its push/PR CI and merge-commit main CI successful. Milestone 4's implementation, deployment, live validation, merge and hosted CI gates are complete for the agreed development scope. The M4 merge-status documentation `39523f4` also merged through PR #5 at `d7e0f19`. M5 planning commit `ec77533` was subsequently pushed and passed user-confirmed CI `42561649592`; the new local M5 implementation checkpoint has no hosted result claimed. Production authentication/policy services, broader question vocabulary, retail demonstrations, long-duration credential refresh/cancellation fault injection and measured-cost validation were not part of this live gate.
+Milestones **1–4 are complete for the agreed development scope**. M4's recovered Runtime/DEFAULT are READY on restored `parity-v1` version 4, both resource policies and seven-day retention verify, and all 24 deployed tests plus warm-up passed within **28/40** calls. Source/package/template bytes and retained foundation/data/query trust remain unchanged. Historical M3 user-run parity and prior hosted CI retain their attribution. Completion commit `51c1d4c` is now merged through PR #4 at `47c3afc`, with its push/PR CI and merge-commit main CI successful. Milestone 4's implementation, deployment, live validation, merge and hosted CI gates are complete for the agreed development scope. The M4 merge-status documentation `39523f4` also merged through PR #5 at `d7e0f19`. M5 planning commit `ec77533` was subsequently pushed and passed user-confirmed CI `42561649592`; implementation `e6f43253a38fceb03508d239b4e8a8842f8bbcfa` was also pushed and passed user-confirmed CI `42567676599`. That CI predates the local serialization correction; M5 live acceptance is still pending. Production authentication/policy services, broader question vocabulary, retail demonstrations, long-duration credential refresh/cancellation fault injection and measured-cost validation were not part of this live gate.
 
 Runtime packaging targets Linux ARM64, not the local macOS native libraries. API/CloudFormation/model compatibility passed the agreed development live acceptance; broader production behavior remains unverified. Scheduling deadlines and Athena cancellation remain best effort; an in-flight SDK call can outlast them. The operator's denied IAM inspection is an administrator prerequisite, not a reason to broaden permissions automatically. Initial acceptance uses parity snapshots even though retail publication metadata is now verified. No production isolation/policy service or measured-cost claim is made.
 
@@ -586,6 +609,6 @@ Milestone 2 introduced no AWS credentials, calls, deployment, Athena adapter, or
 
 ## Exact next task
 
-Review the local Milestone 5 implementation checkpoint, [plan](milestone-5-plan.md), canonical provenance/independent worksheets and [runbook](milestone-5-runbook.md). Obtain separate approval for the three-field trusted Runtime configuration update and at-most-40-call M5 campaign. Then perform fresh preflight, counted retail evaluation and mandatory corrected-base restoration/proof/smoke within that approved window. Live answer quality, latency, token/scan evidence and restoration remain pending; keep M5 open.
+Review the local serialization-fix checkpoint and the pushed Milestone 5 implementation, [plan](milestone-5-plan.md), canonical provenance/independent worksheets and [runbook](milestone-5-runbook.md). Obtain separate approval for the three-field trusted Runtime configuration update and at-most-40-call M5 campaign. Then perform fresh preflight, counted retail evaluation and mandatory corrected-base restoration/proof/smoke within that approved window. Live answer quality, latency, token/scan evidence and restoration remain pending; keep M5 open.
 
-Current local verification passed (833 tests; 85 gated skips, lockfile/Ruff/mypy/offline synthesis/diff/docs checks). No AWS mutation/query/model invocation or push occurred. Preserve M4's **28/40** ledger and new M5 usage at **0**. Keep this implementation commit local; do not start another milestone.
+Current correction verification is recorded in the November 9 entry above, separately from historical implementation/hosted results. No AWS operation, live invocation or push occurred during this correction. Preserve M4's **28/40** ledger and M5 usage at **0**. Keep the correction commit local; do not start another milestone.

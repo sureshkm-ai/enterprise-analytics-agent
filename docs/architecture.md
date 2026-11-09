@@ -125,11 +125,12 @@ strict verification before proceeding. CLI success or READY alone is insufficien
 rollback, stale/unavailable verification and unresolved updates fail closed. A deployment
 lock, durable owned-process journal and bounded cleanup prevent overlapping updates.
 
-The proposed `q18-continuation-v1` starts from a fresh verification of reviewed original
-v8, reuses the unchanged candidate ZIP/version and preserves the closed one-call repair ledger.
-Its separate bound ledger permits 39 calls, aggregate 40 including that parent call, with
-the last reserved for original restoration. A durable attempt claim prevents duplicate
-zero-call attempts; a whole-operator lease excludes concurrent restoration/evaluation.
-This operator-only correction does not change the packaged runtime, metrics or contracts.
-See [the continuation proposal](milestone-5-q18-continuation-proposal.md); execution and
-use of the formerly controlled reserve require approval.
+The approved `q18-continuation-v1` freshly verified original v8, reused the frozen
+candidate/version and preserved its closed parent 1/40. Candidate deployment/reconciliation
+passed on v9, then an additional checkpoint raised ConnectTimeoutError before candidate
+dispatch. Original restoration/smoke passed on READY v10, stack UPDATE_COMPLETE. The
+continuation ledger is 1/39 and closed; aggregate 2/40 leaves38 unspent. A durable claim
+and whole-operator lease prevented duplicate/concurrent work. The exact failed SDK
+operation/endpoint was not recorded; no IAM or model cause is established. The unchanged
+39-call sequence cannot fit the remainder, so live acceptance stays pending and no
+retry/reset/budget expansion follows automatically. See [the execution record](milestone-5-q18-continuation-proposal.md).

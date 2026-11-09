@@ -4,11 +4,10 @@ Status: The approved repair uploaded the reviewed candidate and verified READY v
 The original live result remains **35/36**, its ledger **38/40 and closed**, and M4 **28/40**.
 The original ZIP, uploaded version, goldens and reviewed assemblies are unchanged.
 
-Offline controller correction and continuation preparation are now implemented. The
-[single continuation proposal](milestone-5-q18-continuation-proposal.md) replaces the
-old v6/full-run recipe with an explicit v8 checkpoint and separate 39-call ledger bound
-to the closed parent. No AWS operation ran during preparation; execution needs approval,
-including use of the previously controlled reserve. M5 remains open.
+The approved continuation deployed candidate v9 successfully, but ConnectTimeoutError in the additional checkpoint stopped execution before any candidate call. Mandatory original restoration/smoke passed on Runtime/DEFAULT READY v10, stack UPDATE_COMPLETE. Continuation is 1/39 and closed, aggregate 2/40 with 38 remaining. The required 39-call sequence cannot fit that remainder; M5 remains open and PR #6 unmerged. No automatic retry or budget change is authorized.
+The [continuation execution record](milestone-5-q18-continuation-proposal.md) retains
+its separate reviewed v8 identity, actualv9/v10 results and failure evidence. Do not rewrite
+the review or any closed counter to resume.
 
 ## Evidence and correction
 

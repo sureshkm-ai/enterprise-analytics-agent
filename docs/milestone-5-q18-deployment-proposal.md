@@ -13,11 +13,11 @@ UPDATE_COMPLETE. Repair usage is **1/40**, solely restoration smoke; retail disp
 closed, 39 calls are unspent and no reserve was used. Actual evidence and verification
 are in [progress](progress.md); do not replay this attempt or reset a ledger.
 
-The new [controller and continuation proposal](milestone-5-q18-continuation-proposal.md)
-is the single current execution proposal. It reuses this candidate/version and reviewed
-assemblies, preserves the closed 1/40 attempt, starts from reviewed v8 and caps a separate
-continuation at 39 calls (aggregate 40). It consumes the previously controlled reserve and
-requires explicit approval; the old commands below remain historical.
+The [controller continuation execution record](milestone-5-q18-continuation-proposal.md)
+is now retained separately. It deployed candidate v9, then stopped before candidate calls
+with a connection timeout and restored original v10 successfully. Its ledger is 1/39 closed,
+aggregate 2/40, 38 left. No current execution/replay approval remains for a fresh sequence;
+keep every historical command and ledger intact.
 
 ## Reviewed bundle
 

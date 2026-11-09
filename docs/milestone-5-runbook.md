@@ -8,10 +8,9 @@ before candidate dispatch. Mandatory original restoration/smoke passed on READY 
 stack UPDATE_COMPLETE; repair ledger 1/40 is closed, reserve unused. See progress for
 actual evidence. These historical commands cannot resume the closed repair campaign.
 
-Current handoff: the operator controller and explicit v8 continuation are prepared offline.
-Use the [single continuation proposal](milestone-5-q18-continuation-proposal.md), preserving
-the closed parent 1/40 ledger. The proposed39 new calls consume all remaining allowance,
-including the formerly controlled reserve; they require explicit execution approval.
+Current handoff: The approved continuation deployed candidate v9 successfully, but ConnectTimeoutError in the additional checkpoint stopped execution before any candidate call. Mandatory original restoration/smoke passed on Runtime/DEFAULT READY v10, stack UPDATE_COMPLETE. Continuation is 1/39 and closed, aggregate 2/40 with 38 remaining. The required 39-call sequence cannot fit that remainder; M5 remains open and PR #6 unmerged. No automatic retry or budget change is authorized.
+See the [continuation record](milestone-5-q18-continuation-proposal.md); the commands
+below remain the historical first campaign and cannot resume either closed repair attempt.
 
 Historical first-campaign status: the user authorized this reviewed deployment/evaluation/restoration window on
 November 9, 2026, at pushed correction `850bbc8` (successful CI `42660104374`).

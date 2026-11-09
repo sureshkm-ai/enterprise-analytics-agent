@@ -1,11 +1,15 @@
 # Q18 continuation: controller correction and 39-call proposal
 
-**Offline preparation only. This continuation is not approved for execution.**
-M5 remains open; PR #6 remains unmerged. Pushed checkpoint `e0f028c` passed
-[push CI 42691865683](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42691865683)
-and [PR CI 42691880796](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42691880796).
-Those runs cover that checkpoint, not the controller changes prepared here.
-No AWS API, upload, deployment or invocation ran during this preparation.
+**Approved attempt finished without candidate acceptance; original restoration/smoke passed.**
+M5 remains open and PR #6 remains unmerged. The approved controller commit `e8e4b0f`
+was pushed and passed [push CI 42698850994](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42698850994)
+and [PR CI 42698861471](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42698861471).
+These cover preparation, not the later live checkpoint.
+
+The approved continuation deployed candidate v9 successfully, but ConnectTimeoutError in the additional checkpoint stopped execution before any candidate call. Mandatory original restoration/smoke passed on Runtime/DEFAULT READY v10, stack UPDATE_COMPLETE. Continuation is 1/39 and closed, aggregate 2/40 with 38 remaining. The required 39-call sequence cannot fit that remainder; M5 remains open and PR #6 unmerged. No automatic retry or budget change is authorized.
+The failed SDK operation/endpoint/message was not captured; do not infer the service or
+underlying cause. Actual evidence, hashes, counts and fresh v10 verification are in
+[progress](progress.md). Both command examples below are historical, not a replay recipe.
 
 Charges would use the existing Bedrock/AgentCore/Athena/S3 resources and rates; no new
 infrastructure or measured-dollar claim is proposed. Retain the existing 90s agent
@@ -43,7 +47,7 @@ The existing administrator-supplied candidate-key grant and original grants are 
 | Continuation review | [q18-continuation-review.json](../evaluations/retail-v1/q18-continuation-review.json) |
 | Review identity SHA-256 | `13f9bff2a91cc17fc5177e9e8d7814101231ab0d8fc9d839ec19d47cbaae3354` |
 | Campaign binding SHA-256 | `6988ae16e484bfe9229994eb473c3bb9b8361086a69d7cdd76e7e35b63205333` |
-| Starting checkpoint | Freshly verify the reviewed original parity-v1 READY v8; historical proof alone cannot authorize execution |
+| Reviewed starting checkpoint | Original parity-v1 READY v8 was freshly verified before this attempt; current restored state is v10. Preserve this historical review, do not rewrite it to retry. |
 | Historical v8 proof SHA-256 | `79fd03cd2579af9c9315e5573edc72cd8669c966a8b00363f074dea3d1ebf29a` |
 | Original configuration SHA-256 | `67056f86738cdfec508a9c00cd99c42767a8360b417c31928eb626eca3e530b3` |
 | Candidate ZIP SHA-256 | `398124e89d2be1e9ce00f5b57c263fe2cdde0654527b27f949b9f3abb58029f1` |
@@ -96,8 +100,9 @@ exclusive attempt claim prevents a second candidate attempt even if zero calls w
 
 ## Aggregate allowance and acceptance
 
-**This proposed continuation consumes all 39 remaining calls, including the previously
-controlled reserve. It requires explicit approval before execution.** There is no new
+**The user approved all 39 then-remaining calls, including the controlled reserve. This
+attempt consumed one for restoration; aggregate usage is2/40 with 38 remaining. The
+ledger is closed and another full 39-call sequence exceeds that cap.** There is no new
 40-call allocation, automatic retry, selective rerun, spare demo call or automatic reserve.
 
 | Purpose | Maximum calls |
@@ -137,7 +142,8 @@ poetry run analytics-repair --campaign q18-continuation-v1 verify-offline \
   --version-record artifacts/milestone-5/q18-repair-v1/candidate-version.json
 ```
 
-Only after explicit approval of this revised allowance and controller: perform fresh
+The user approved this revised allowance and controller for the attempt now finished. The
+following command records the executed procedure; do not run it again. The procedure required fresh
 analytics-dev identity, original v8 checkpoint, version-specific candidate HEAD and exact
 artifact/assembly checks through the gated operator. Stop on drift/denial. Use a new
 report directory; the operator claims the attempt before any candidate deployment:
@@ -155,7 +161,10 @@ suite. Exceptions and SIGTERM/Ctrl-C enter mandatory restoration; the controller
 its owned child and waits for stable AWS state before another deployment. If restoration
 cannot be verified, no smoke is dispatched and acceptance stays false.
 
-After host/process loss or an interrupted attempt, preserve logs, process journal, claim,
+The attempt restored successfully and its smoke passed; no recovery call remains pending.
+Do not execute the following restoration-only command for this finished attempt. It records
+the previously reviewed recovery procedure. After host/process loss or an interrupted attempt,
+preserve logs, process journal, claim,
 ledgers and reports. First resolve any active process/update guard using evidence. A
 restoration-only command uses the same continuation binding and remaining protected slot;
 it cannot start another candidate or silently borrow a call after exhaustion:
@@ -173,7 +182,9 @@ For any AWS denial, retain full logs and complete parent/nested CloudTrail messa
 identify principal/action/resource/conditions and stop repeated attempts. No automatic
 permission expansion, resource deletion or additional upload is authorized.
 
-Offline verification results and remaining approval are recorded in [progress](progress.md).
+Offline verification, approval, fresh preflight and actual execution/restoration results
+are recorded in [progress](progress.md). Do not replay this closed attempt. A new reviewed checkpoint/budget decision is required
+before any later execution; no new upload, rebuild or permission is indicated.
 
 Official references consulted for the correction: Boto3
 [DescribeStacks](https://docs.aws.amazon.com/boto3/latest/reference/services/cloudformation/client/describe_stacks.html)

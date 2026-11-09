@@ -3,14 +3,15 @@
 **Q18 source repair:** the following commands describe the original frozen-artifact campaign.
 Its ledger is closed. Use [the consolidated repair preparation](milestone-5-q18-repair.md)
 and its [single concrete proposal](milestone-5-q18-deployment-proposal.md). The new
-artifact/verifiers/campaign are prepared offline; administrator access evidence and
-separate live approval remain prerequisites. These historical deployment commands
-cannot apply the source correction.
+bundle was separately approved; candidate upload/READY v7 passed, but local CDK timed out
+before candidate dispatch. Mandatory original restoration/smoke passed on READY v8,
+stack UPDATE_COMPLETE; repair ledger 1/40 is closed, reserve unused. See progress for
+actual evidence. These historical commands cannot resume the closed repair campaign.
 
-Status: the user authorized this reviewed deployment/evaluation/restoration window on
+Historical first-campaign status: the user authorized this reviewed deployment/evaluation/restoration window on
 November 9, 2026, at pushed correction `850bbc8` (successful CI `42660104374`).
 Execution finished:35/36 suite cases passed; Q18 failed by returning clarification for yesterday.
-Corrected parity-v1 is restored, Runtime/DEFAULT READY v6, stack UPDATE_COMPLETE; the smoke passed.
+At that checkpoint, corrected parity-v1 was restored, Runtime/DEFAULT READY v6, stack UPDATE_COMPLETE; the smoke passed.
 M5 used 38/40 and is retail-closed; M4 remains 28/40. See progress for the retained evidence.
 Commands below are the reviewed executed procedure; do not replay this closed campaign or reset a ledger.
 Use the existing `enterprise-analytics` Conda environment, Poetry and repository root.
@@ -170,12 +171,13 @@ retention and artifact. An update creates a **later version**, not version 4 aga
 
 ## Acceptance and report review
 
-Actual campaign:35/36 cases, all diagnostic/latency/security/session gates passed, and
+Historical first campaign:35/36 cases, all diagnostic/latency/security/session gates passed, and
 restoration/smoke succeeded. Q18 alone missed its numeric answer; M5 is not complete.
 Client p95 10.403s; suite 77 model calls, 114378 input / 9301 output tokens, 33 unique
 Athena queries and 179826 scanned bytes. Root operation evidence is
 `artifacts/milestone-5/operations/20261109T171341Z/`. Keep the failed report unchanged;
-review Q18 offline before proposing any new artifact/deployment/campaign scope.
+the separate repair attempt is recorded above; diagnose its operator timeout offline
+before proposing reviewed continuation. Preserve every closed ledger and actual version.
 
 Require 36/36 cases: exact complete requests and numeric values/units/precision/versions,
 all planned clarifications, no authorization/session leaks, no missing/extra results.

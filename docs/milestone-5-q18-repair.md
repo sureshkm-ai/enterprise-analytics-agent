@@ -1,8 +1,8 @@
 # Milestone 5 Q18 repair and next campaign preparation
 
-Status: the entire offline candidate/verification/campaign/restoration bundle is prepared against `28ffcf18f86a4744064b2efdd3d9fb9d262058fc`. See [the single concrete proposal](milestone-5-q18-deployment-proposal.md) and current-session verification in progress.
+Status: The approved repair uploaded the reviewed candidate and verified READY v7, but local CDK hit its 1800-second bound before any candidate invocation. Mandatory original restoration/smoke passed: Runtime/DEFAULT READY v8, stack UPDATE_COMPLETE, original parity artifact/version/configuration, policies and seven-day retention. Repair usage is 1/40, retail-closed, 39 unspent and no reserve used. M5 remains open; PR #6 remains unmerged. See [progress](progress.md) for actual evidence and the offline next task.
 The original live result remains **35/36**, its ledger **38/40 and closed**, and M4 **28/40**.
-A new candidate was built/reproduced separately; the original ZIP is untouched. No AWS call, upload, deployment or Runtime invocation occurred; the proposed new 40-call campaign is unused.
+The original ZIP, uploaded version, goldens and reviewed assemblies are unchanged.
 
 ## Evidence and correction
 
@@ -17,7 +17,8 @@ The detailed operation files are in the original checkout at
 `artifacts/milestone-5/operations/20261109T171341Z/`, not in GitHub. The supplied source patch used the
 committed summary. This checkout then inspected the retained original report and verified
 its hash/diagnostics, reproducing the recorded response shape with authored Converse turns.
-No raw model transcript or fresh AWS checkpoint is claimed.
+The preparation review claimed no raw model transcript or fresh AWS checkpoint. The
+later approved execution separately retained fresh original/candidate/restored checkpoints.
 The reported suite SHA is `7ccd5b43ec1ea38dfc0a17c562e1cd51a74f36e0bff247fac5a1759da5855021`.
 
 For a fully resolved numeric request, a valid text-only model end-turn now causes the
@@ -56,9 +57,12 @@ The correction changes **deployed agent code**. The original frozen ZIP cannot e
 The old environment-only runbook is therefore not a deployment recipe for this correction.
 Keep the original ZIP, version, assemblies, goldens, operation evidence and ledgers intact.
 
-All seven preparation items below are completed offline in this checkout; the proposal
-records concrete artifact pins, actual checks and the remaining administrator/live approval gates. The existing named profile remains `analytics-dev`, account 453711491609,
-region us-west-2. The Q18 source failure was not an IAM problem and needs no profile change; the new candidate key has a separate administrator access prerequisite documented in the proposal. Existing permissions remain untouched.
+All seven preparation items below were completed before approval. The proposal now
+records actual upload/version, candidate READY and successful restoration, separately
+from unrun candidate acceptance. The administrator supplied the exact candidate-key grant;
+the agent made no IAM change. The profile remains analytics-dev, account 453711491609,
+region us-west-2. Neither Q18's source failure nor the local CDK timeout establishes an
+additional IAM requirement. The following list preserves the preparation checklist.
 
 1. Apply the source patch to the same milestone branch, inspect the retained Q18 report
    and verify its recorded hash/diagnostics. Do not rewrite failed acceptance evidence or
@@ -96,11 +100,12 @@ region us-west-2. The Q18 source failure was not an IAM problem and needs no pro
    full suite or alter its denominator. Stop after a failing probe, preserve its evidence,
    and restore; do not use a selective rerun to relabel the first campaign as passed.
 
-Only after separate approval: upload the verified candidate once, pin the returned version,
+The approved procedure was: upload the verified candidate once, pin the returned version,
 perform fresh preflight, deploy/verify READY, run the counted probe/full campaign, then
 restore the original parity artifact/configuration in `finally` and verify its counted smoke.
 Record actual Runtime versions; restoring a configuration does not restore a historical
 version number. Mark M5 complete only after all 36 cases and all restoration/report gates pass.
 
-This offline correction removes the reproduced failure class. It does not guarantee that
-an unexecuted live model/service campaign will pass, and no live acceptance is claimed.
+The correction removes the reproduced offline failure class. The candidate reached READY
+but was not invoked before the local CDK timeout. No new live answer-quality acceptance
+is claimed; historical first-campaign failure evidence remains intact.

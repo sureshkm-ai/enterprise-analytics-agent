@@ -1,6 +1,6 @@
 # Milestone 4 AgentCore deployment and live-test plan
 
-Operational note (November 9, 2026): the separately approved M5 retail campaign used Runtime v5, then restored this exact corrected parity base on **READY v6** (DEFAULT also READY v6, stack UPDATE_COMPLETE; parity smoke passed). M5 used 38/40 with 35/36 cases passing; its Q18 quality gate remains open. M4's historical version 4 and 28/40 invocation acceptance below is preserved. See [progress](progress.md) for the new checkpoint; do not repeat M4 deployment or consume its ledger.
+Operational note (November 9, 2026): the first M5 campaign used retail v5, restored original parity v6 and remains 35/36, closed 38/40. The separately approved Q18 candidate reached READY v7, but local CDK timed out before candidate calls. Mandatory original restoration/smoke passed on **Runtime/DEFAULT READY v8**, runtime stack UPDATE_COMPLETE, exact original artifact/version/configuration/policies/retention. Repair ledger is **1/40 and closed**, no reserve used; M5 stays open. M4's version 4 acceptance and 28/40 ledger below remain historical and unchanged. See [progress](progress.md); do not repeat M4 deployment or consume its ledger.
 
 ## Completed development deployment — 2026-11-08
 

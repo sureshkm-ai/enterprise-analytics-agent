@@ -1,10 +1,17 @@
 # Q18 candidate upload, evaluation and original restoration proposal
 
-**Offline preparation only; not deployment approval. PR #6 stays unmerged.**
+**Approved attempt ended with a local CDK timeout; original restoration/smoke passed (November 9, 2026). PR #6 stays unmerged; M5 stays open.**
 The original live campaign remains 35/36 and closed at 38/40; M4 remains 28/40.
-No AWS operation, upload, deployment, invocation or permission change ran in this preparation.
-The last reported operational checkpoint is original parity-v1, Runtime/DEFAULT READY v6,
-stack UPDATE_COMPLETE. A later approved window must verify that checkpoint afresh.
+The user approved this exact proposal and supplied matching administrator evidence for
+candidate-key reads. Fresh original parity-v1 READY v6 preflight passed. The reviewed
+candidate was uploaded once and verified by its actual returned VersionId below.
+The candidate update reached UPDATE_COMPLETE and Runtime/DEFAULT were verified READY v7.
+The CDK command hit its 1800-second bound after that successful update, before any
+candidate invocation. Warm-up, Q18 probe and full suite did not run. Mandatory original
+restoration and independent smoke passed on Runtime/DEFAULT **READY v8**, stack
+UPDATE_COMPLETE. Repair usage is **1/40**, solely restoration smoke; retail dispatch is
+closed, 39 calls are unspent and no reserve was used. Actual evidence and verification
+are in [progress](progress.md); do not replay this attempt or reset a ledger.
 
 ## Reviewed bundle
 
@@ -18,7 +25,7 @@ stack UPDATE_COMPLETE. A later approved window must verify that checkpoint afres
 | Candidate size / runtime | 39171778 compressed / 85816131 unpacked bytes; Python 3.12 Linux ARM64 |
 | Candidate key | `releases/398124e89d2be1e9ce00f5b57c263fe2cdde0654527b27f949b9f3abb58029f1/agent.zip` |
 | Code bucket | enterprise-analytics-dev-453711491609-us-west-2-agent-code |
-| Candidate VersionId | **Unknown until approved upload; no version record exists yet.** |
+| Candidate VersionId | `V5Q8e8e6w2tkkVghXn.BrFs1mqQU.Ncu` (returned by the single conditional upload; version-specific verification passed) |
 | Candidate assembly | `artifacts/milestone-5/q18-repair-v1/cdk.candidate.out` |
 | Candidate template SHA | `faca6d23b85038d5c8ad16b1fe73c95b910d9d05c6a4fccf3be8ca82cd9eb368` |
 | Review identity SHA | `14a817f1ba1ad2b2fa5b5b6c1cfb4aa6250513f971153003b9ddc5ca8b193401` |
@@ -31,9 +38,9 @@ The [review model](../evaluations/retail-v1/q18-repair-review.json) and
 [template comparison](../evaluations/retail-v1/q18-deployment-review.json) permit exactly
 the candidate SHA-addressed code key and the three retail settings: dataset retail-v1,
 tenant retail_demo, reference date2025-04-01. North/South, role, model, policies, resources,
-network, lifecycle and limits stay unchanged. The version remains an unresolved
-`ArtifactVersionId` parameter in the reviewed template, supplied from the verified real
-upload record later. Original restoration uses its original key/version and February1 scope.
+network, lifecycle and limits stay unchanged. The reviewed template keeps an
+`ArtifactVersionId` parameter; execution supplied the actual verified upload version
+without editing it. Original restoration uses its original key/version and February1 scope.
 
 Review identity is SHA-256 of the Pydantic review's sorted compact JSON, not of its
 pretty-printed file. [Build manifest](../evaluations/retail-v1/q18-build-manifest.json)
@@ -48,9 +55,11 @@ The original ZIP, assemblies, goldens and both ledgers are preserved byte-for-by
 The retained foundation template's runtime execution-role policy grants code reads only
 to the **original** SHA key (`agentcore_stack.py:80–85`). AWS documents that the execution
 role needs S3 access for its deployment package in the [Python deployment requirements](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-code-deploy-python.html).
-No live IAM inspection is claimed. Before approving/executing upload or deployment, an
-administrator must confirm candidate-key access. If absent, separately approve the
-following additive inline statement on role `enterprise-analytics-dev-agent-runtime`:
+The user supplied administrator evidence confirming policy
+`enterprise-analytics-dev-q18-candidate-code` on role
+`enterprise-analytics-dev-agent-runtime`; its active JSON matches this exact statement.
+This is supplied administrator evidence, not live IAM inspection or a policy change by
+the agent:
 
 ```json
 {
@@ -64,7 +73,7 @@ following additive inline statement on role `enterprise-analytics-dev-agent-runt
 }
 ```
 
-This statement is a proposal only, not implemented IaC or an applied policy. Preserve
+The administrator applied this additive grant outside this execution. Preserve
 the original code grant, Bedrock/logging permissions, developer/query-role trust and all
 M3 permissions. No wildcard, foundation redeployment or profile change is proposed.
 Stop if additional access is required; do not broaden IAM automatically. Administrator
@@ -98,10 +107,11 @@ digests, as done in this preparation; never overwrite the original artifact. Sto
 any mismatch. The original restore assembly was copied into the repair bundle for
 audit and compared byte-for-byte, but restoration uses the original pinned path above.
 
-## Later approved upload and actual version binding
+## Approved upload and actual version binding
 
-**Do not execute the remaining sections until the complete proposal is approved and
-the administrator access prerequisite is satisfied.** Use only analytics-dev and the
+The approval and administrator prerequisite were satisfied for this execution. These
+commands document the reviewed operation; the upload and version binding have already
+succeeded and must not be repeated. Use only analytics-dev and the
 named account/region. First verify STS identity and the fresh original checkpoint;
 stop on unexplained drift. Verify all source manifest/object/schema pins as in the
 original runbook; do not republish or regenerate data.
@@ -132,7 +142,9 @@ no rebuild or template edit is needed. No version record was manufactured offlin
 ## New campaign and mandatory original restoration
 
 New campaign ID: `milestone-5-q18-repair-v1`; ledger
-`artifacts/milestone-5/q18-repair-v1/runtime-invocations.jsonl`, currently absent/unused.
+`artifacts/milestone-5/q18-repair-v1/runtime-invocations.jsonl`; final usage **1/40**,
+solely the successful original restoration smoke. It is retail-closed, with 39 unspent
+and no incomplete reservations/retries. Both historical ledgers are unchanged.
 Explicit CLI selection binds every ledger event to the review/candidate/template/upload
 record hashes. Unknown/unpinned selections and reuse/redirection of either historical
 ledger fail before dispatch. Existing legacy CLI commands keep their original closed
@@ -147,10 +159,17 @@ campaign; use the repair command for this new proposal.
 | Controlled reserve | 1 |
 | Total new allowance | 40 |
 
-Normal successful execution uses 39 calls. All failures and interruptions count; SDK
+The approved normal successful execution would use 39 calls. This attempt did not reach
+candidate dispatch; its mandatory smoke consumed one call. A future complete sequence
+would need 39 more and use the reserved allowance, requiring explicit approval. No
+automatic replay/reserve use is permitted. All failures and interruptions count; SDK
 automatic invocation retries are disabled. The final call is protected for restoration.
 A failed probe stops before the full suite and restores; it never replaces Q18 in the
 suite or changes its denominator. No automatic reserve use or selective rerun is allowed.
+
+The following is the historical command shape, not a resumable recipe: it requires an
+unused ledger and original READY v6. Prepare reviewed continuation handling from v8
+before any future execution; preserve the actual candidate version and closed ledger.
 
 ```sh
 poetry run analytics-repair --campaign q18-repair-v1 run --invoke-live \
@@ -186,4 +205,4 @@ objects, reports and ledgers.
 Require probe pass, all 36 unchanged cases, diagnostics and existing p95 ≤ 90s gate, then
 original restoration/proof/smoke/report review before M5 completion. Reports include
 realized versions, candidate and ledger bindings, exact structured evidence, tokens,
-latency and unique Athena scans. This offline bundle does not establish live acceptance.
+latency and unique Athena scans. Upload and READY status alone do not establish acceptance.

@@ -1,7 +1,11 @@
 # Milestone 5 operator runbook
 
-Status: implementation and offline verification only. The commands below that deploy
-or invoke are prepared for **later explicit approval**; none ran during this task.
+Status: the user authorized this reviewed deployment/evaluation/restoration window on
+November 9, 2026, at pushed correction `850bbc8` (successful CI `42660104374`).
+Execution finished:35/36 suite cases passed; Q18 failed by returning clarification for yesterday.
+Corrected parity-v1 is restored, Runtime/DEFAULT READY v6, stack UPDATE_COMPLETE; the smoke passed.
+M5 used 38/40 and is retail-closed; M4 remains 28/40. See progress for the retained evidence.
+Commands below are the reviewed executed procedure; do not replay this closed campaign or reset a ledger.
 Use the existing `enterprise-analytics` Conda environment, Poetry and repository root.
 Profile `analytics-dev`, account `453711491609`, region `us-west-2`; no alternate profile.
 
@@ -83,11 +87,11 @@ The preflight compares live stack templates, code/version, settings, both resour
 policies and retention. It inspects no administrator IAM API. Review supplied admin
 evidence if access changes; never automatically broaden permissions.
 
-## Later approved deployment and counted campaign
+## Reviewed deployment and counted campaign procedure
 
 **Do not execute this section without deployment and billable-call approval.**
-The separate proposed maximum is 40 M5 calls: warm-up 1 + questions 34 + session 2 +
-restored parity smoke 1 + controlled retry/demo reserve 2. M5 usage is currently zero.
+The approved maximum was 40 M5 calls: warm-up 1 + questions 34 + session 2 +
+restored parity smoke 1 + controlled retry/demo reserve 2. Recorded M5 usage is38/40 (warm-up 1 + suite 36 + restored smoke 1); no retries occurred.
 Every call uses the same persistent `artifacts/milestone-5/runtime-invocations.jsonl`,
 anchored to this repository, across runs/CLI/test processes. Never delete/reset it.
 Reservations are locked/fsynced before dispatch, SDK total attempts = 1, failures and
@@ -159,6 +163,13 @@ retention and artifact. An update creates a **later version**, not version 4 aga
 
 ## Acceptance and report review
 
+Actual campaign:35/36 cases, all diagnostic/latency/security/session gates passed, and
+restoration/smoke succeeded. Q18 alone missed its numeric answer; M5 is not complete.
+Client p95 10.403s; suite 77 model calls, 114378 input / 9301 output tokens, 33 unique
+Athena queries and 179826 scanned bytes. Root operation evidence is
+`artifacts/milestone-5/operations/20261109T171341Z/`. Keep the failed report unchanged;
+review Q18 offline before proposing any new artifact/deployment/campaign scope.
+
 Require 36/36 cases: exact complete requests and numeric values/units/precision/versions,
 all planned clarifications, no authorization/session leaks, no missing/extra results.
 Require complete reported model/token/query diagnostics where work occurred and client
@@ -167,7 +178,7 @@ Reports distinguish missing diagnostics from zero and deduplicate Athena query I
 Inspect unique-run `report.json`, durable `attempts.jsonl`, `summary.md` and campaign ledger;
 include restored checkpoint/smoke evidence in the final reviewed campaign record. A suite
 pass alone cannot complete M5. Record actual versions, usage, failures, recovery and
-restoration in progress before a later completion commit. No production-readiness claim.
+restoration in `docs/progress.md` before a later completion commit. No production-readiness claim.
 
 Official SDK references consulted during implementation: [S3 GetObject](https://docs.aws.amazon.com/boto3/latest/reference/services/s3/client/get_object.html),
 [HeadObject](https://docs.aws.amazon.com/boto3/latest/reference/services/s3/client/head_object.html),

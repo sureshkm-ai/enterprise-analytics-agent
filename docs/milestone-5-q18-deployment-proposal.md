@@ -1,5 +1,17 @@
 # Q18 candidate upload, evaluation and original restoration proposal
 
+**Current status (November 10, 2026): M5 passed the approved recovery and is complete
+for the agreed development scope.** Q18 probe/warm-up and all **36/36** frozen
+requests passed; the original artifact/parity configuration and counted smoke
+passed on **Runtime/DEFAULT READY v12**, runtime stack UPDATE_COMPLETE. Recovery
+is closed **38/38**, aggregate repair **40/40**; historical M5 **38/40**, M4 **28/40**
+and both prior repair histories/claims are unchanged. PR #6 remains unmerged for
+review. No live allowance remains. See [recovery results](milestone-5-q18-recovery-proposal.md)
+and [progress](progress.md). The earlier preparation/failure records below are
+historical; their commands cannot restart a closed campaign.
+
+## Historical preparation and execution records
+
 **Approved attempt ended with a local CDK timeout; original restoration/smoke passed (November 9, 2026). PR #6 stays unmerged; M5 stays open.**
 The original live campaign remains 35/36 and closed at 38/40; M4 remains 28/40.
 The user approved this exact proposal and supplied matching administrator evidence for

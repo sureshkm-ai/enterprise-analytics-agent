@@ -1,5 +1,17 @@
 # Q18 continuation: controller correction and 39-call proposal
 
+**Current status (November 10, 2026): M5 passed the approved recovery and is complete
+for the agreed development scope.** Q18 probe/warm-up and all **36/36** frozen
+requests passed; the original artifact/parity configuration and counted smoke
+passed on **Runtime/DEFAULT READY v12**, runtime stack UPDATE_COMPLETE. Recovery
+is closed **38/38**, aggregate repair **40/40**; historical M5 **38/40**, M4 **28/40**
+and both prior repair histories/claims are unchanged. PR #6 remains unmerged for
+review. No live allowance remains. See [recovery results](milestone-5-q18-recovery-proposal.md)
+and [progress](progress.md). The earlier preparation/failure records below are
+historical; their commands cannot restart a closed campaign.
+
+## Historical preparation and execution records
+
 **Approved attempt finished without candidate acceptance; original restoration/smoke passed.**
 M5 remains open and PR #6 remains unmerged. The approved controller commit `e8e4b0f`
 was pushed and passed [push CI 42698850994](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42698850994)

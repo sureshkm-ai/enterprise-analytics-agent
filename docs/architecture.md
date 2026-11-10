@@ -100,7 +100,7 @@ The independent oracle decodes verified canonical Parquet into rows and uses its
 
 The first approved November 9 live campaign performed an environment-only Runtime update from parity-v1/t1/February 1 to retail-v1/retail_demo/April 1, retaining North/South and every other resource/code property. A fail-closed offline template comparison and fresh read-only checkpoint verify the reviewed delta. The M5 campaign uses locked/fsynced reservations before dispatch, no automatic invocation retries and a shared 40-call cap independent of M4. The last slot is reserved for a fresh-verified corrected-base smoke; retail dispatch closes when restoration begins. Per-attempt reports retain structured evidence and failures, exact values, diagnostic missingness, end-to-end/server latency, tokens and unique Athena scans. The campaign passed 35/36 cases; Q18 returned clarification instead of yesterday's required numeric result, leaving M5 open. At that historical checkpoint, corrected parity scope was restored and Runtime/DEFAULT were READY v6, stack UPDATE_COMPLETE; the independent parity smoke passed. M5 used 38/40 with retail dispatch closed; M4 remains 28/40. This validation does not establish production authorization or readiness.
 
-The approved repair uploaded the reviewed candidate and verified READY v7, but local CDK hit its 1800-second bound before any candidate invocation. Mandatory original restoration/smoke passed: Runtime/DEFAULT READY v8, stack UPDATE_COMPLETE, original parity artifact/version/configuration, policies and seven-day retention. Repair usage is 1/40, retail-closed, 39 unspent and no reserve used. M5 remains open; PR #6 remains unmerged. See [progress](progress.md) for actual evidence and the offline next task.
+The first approved repair uploaded the reviewed candidate and verified READY v7, but local CDK hit its 1800-second bound before any candidate invocation. Mandatory original restoration/smoke passed: Runtime/DEFAULT READY v8, stack UPDATE_COMPLETE, original parity artifact/version/configuration, policies and seven-day retention. Repair usage is 1/40, retail-closed, 39 unspent and no reserve used. M5 remained open at that historical checkpoint; the completed recovery is recorded below. PR #6 remains unmerged. See [progress](progress.md) for actual evidence and the review handoff.
 
 ### Resolved numeric plan fallback (Q18 source correction)
 
@@ -113,8 +113,8 @@ from adapter evidence; `resolved-plan-` record IDs distinguish server-planned wo
 fabricating model tool-use turns. No additional model call or hidden retry is added.
 Ambiguous/unsupported questions, partial results, metadata selection and error behavior
 retain their existing handling. See [Q18 repair preparation](milestone-5-q18-repair.md);
-the separately uploaded candidate contains this change, but live behavioral verification
-remains unrun after the operator completion timeout.
+the separately uploaded candidate contains this change. Its later recovery passed
+Q18 and the full frozen live suite, as recorded below; earlier timeout evidence remains historical.
 
 ### Operator deployment reconciliation and continuation
 
@@ -132,10 +132,11 @@ dispatch. Original restoration/smoke passed on READY v10, stack UPDATE_COMPLETE.
 continuation ledger is 1/39 and closed; aggregate 2/40 leaves38 unspent. A durable claim
 and whole-operator lease prevented duplicate/concurrent work. The exact failed SDK
 operation/endpoint was not recorded; no IAM or model cause is established. The unchanged
-39-call sequence cannot fit the remainder, so live acceptance stays pending and no
-retry/reset/budget expansion follows automatically. See [the execution record](milestone-5-q18-continuation-proposal.md).
+39-call sequence could not fit the remainder at that continuation checkpoint, so
+live acceptance remained pending until the later approved recovery. No automatic
+retry/reset/budget expansion was authorized. See [the execution record](milestone-5-q18-continuation-proposal.md).
 
-### Proposed v10 recovery operator correction
+### Executed v10 recovery operator correction
 
 The operator now consumes the deployment controller's final strict proof directly,
 uses pooled/deadline-bound retries for allowlisted reads (including STS at invocation
@@ -144,9 +145,24 @@ Runtime invocation-client construction is also journaled without retries; late
 setup fails before dispatch and a raw single-attempt client is reused per target.
 Original restoration proof can be reused for 60 seconds within the same operator;
 mutation invalidates it and expiry requires verification. Invocation SDK retries
-remain disabled. A global operator lease spans selectors. The proposed
+remain disabled. A global operator lease spans selectors. The reviewed
 q18-recovery-v1 binds both closed histories and the prior claim, starts at freshly
 verified original v10, and caps new calls at 38 / aggregate 40. Q18 is both probe and
 warm-up; all 36 suite cases and the protected restoration smoke still run. This
-proposal is prepared offline and does not establish deployed acceptance or authorize
-execution. See [scope and commands](milestone-5-q18-recovery-proposal.md).
+proposal was subsequently explicitly approved and executed once; results are below.
+It does not authorize any additional execution. See [scope and commands](milestone-5-q18-recovery-proposal.md).
+
+### Completed retail recovery and operational checkpoint
+
+The approved `q18-recovery-v1` at f223877 now passes the complete deployed acceptance:
+Q18 probe/warm-up, all 36 frozen cases, diagnostics/security/session/latency gates,
+and mandatory original restoration/smoke. The exact candidate ran on READY v11;
+the original parity-v1/t1/North/South/February-1 configuration and artifact are
+restored on Runtime/DEFAULT READY v12, stack UPDATE_COMPLETE. Both policies,
+seven-day retention, exact stack templates/parameters and retained infrastructure
+verify. No architecture, contract, metric or source change was needed in this execution.
+The new campaign is closed 38/38, aggregate repair 40/40. Historical M4/M5/repair
+ledgers, prior claims, goldens and frozen ZIP/S3 versions remain unchanged.
+This completes M5's agreed development validation; production authorization,
+broader language coverage and measured-cost claims remain outside that evidence.
+PR #6 remains unmerged. See [progress](progress.md) for actual reports and CI coverage.

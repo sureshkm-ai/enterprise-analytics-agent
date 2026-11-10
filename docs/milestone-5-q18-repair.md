@@ -1,5 +1,17 @@
 # Milestone 5 Q18 repair and next campaign preparation
 
+**Current status (November 10, 2026): M5 passed the approved recovery and is complete
+for the agreed development scope.** Q18 probe/warm-up and all **36/36** frozen
+requests passed; the original artifact/parity configuration and counted smoke
+passed on **Runtime/DEFAULT READY v12**, runtime stack UPDATE_COMPLETE. Recovery
+is closed **38/38**, aggregate repair **40/40**; historical M5 **38/40**, M4 **28/40**
+and both prior repair histories/claims are unchanged. PR #6 remains unmerged for
+review. No live allowance remains. See [recovery results](milestone-5-q18-recovery-proposal.md)
+and [progress](progress.md). The earlier preparation/failure records below are
+historical; their commands cannot restart a closed campaign.
+
+## Historical preparation and execution records
+
 Status: The approved repair uploaded the reviewed candidate and verified READY v7, but local CDK hit its 1800-second bound before any candidate invocation. Mandatory original restoration/smoke passed: Runtime/DEFAULT READY v8, stack UPDATE_COMPLETE, original parity artifact/version/configuration, policies and seven-day retention. Repair usage is 1/40, retail-closed, 39 unspent and no reserve used. M5 remains open; PR #6 remains unmerged. See [progress](progress.md) for actual evidence and the offline next task.
 The original live result remains **35/36**, its ledger **38/40 and closed**, and M4 **28/40**.
 The original ZIP, uploaded version, goldens and reviewed assemblies are unchanged.

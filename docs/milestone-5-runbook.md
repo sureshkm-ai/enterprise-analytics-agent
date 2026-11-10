@@ -1,5 +1,17 @@
 # Milestone 5 operator runbook
 
+**Current status (November 10, 2026): M5 passed the approved recovery and is complete
+for the agreed development scope.** Q18 probe/warm-up and all **36/36** frozen
+requests passed; the original artifact/parity configuration and counted smoke
+passed on **Runtime/DEFAULT READY v12**, runtime stack UPDATE_COMPLETE. Recovery
+is closed **38/38**, aggregate repair **40/40**; historical M5 **38/40**, M4 **28/40**
+and both prior repair histories/claims are unchanged. PR #6 remains unmerged for
+review. No live allowance remains. See [recovery results](milestone-5-q18-recovery-proposal.md)
+and [progress](progress.md). The earlier preparation/failure records below are
+historical; their commands cannot restart a closed campaign.
+
+## Historical preparation and execution records
+
 **Q18 source repair:** the following commands describe the original frozen-artifact campaign.
 Its ledger is closed. Use [the consolidated repair preparation](milestone-5-q18-repair.md)
 and its [single concrete proposal](milestone-5-q18-deployment-proposal.md). The new
@@ -8,7 +20,7 @@ before candidate dispatch. Mandatory original restoration/smoke passed on READY 
 stack UPDATE_COMPLETE; repair ledger 1/40 is closed, reserve unused. See progress for
 actual evidence. These historical commands cannot resume the closed repair campaign.
 
-Current handoff: The approved continuation deployed candidate v9 successfully, but ConnectTimeoutError in the additional checkpoint stopped execution before any candidate call. Mandatory original restoration/smoke passed on Runtime/DEFAULT READY v10, stack UPDATE_COMPLETE. Continuation is 1/39 and closed, aggregate 2/40 with 38 remaining. The required 39-call sequence cannot fit that remainder; M5 remains open and PR #6 unmerged. No automatic retry or budget change is authorized.
+Historical continuation handoff: The approved continuation deployed candidate v9 successfully, but ConnectTimeoutError in the additional checkpoint stopped execution before any candidate call. Mandatory original restoration/smoke passed on Runtime/DEFAULT READY v10, stack UPDATE_COMPLETE. Continuation is 1/39 and closed, aggregate 2/40 with 38 remaining. The required 39-call sequence cannot fit that remainder; M5 remains open and PR #6 unmerged. No automatic retry or budget change is authorized.
 See the [continuation record](milestone-5-q18-continuation-proposal.md); the commands
 below remain the historical first campaign and cannot resume either closed repair attempt.
 

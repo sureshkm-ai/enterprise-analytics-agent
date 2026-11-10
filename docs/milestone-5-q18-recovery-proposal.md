@@ -1,10 +1,49 @@
-# Q18 recovery from v10 — operator correction and proposed 38-call sequence
+# Q18 recovery from v10 — operator correction and completed 38-call sequence
 
-Status: **verified offline in the original checkout; live execution still requires explicit approval**.
+Status: **approved and executed once at f223877; all live acceptance/restoration gates passed. Campaign closed; no calls remain.**
 Source checkpoint: GitHub `75d7c9f688f8e0746b17b797016947e1ed41f4bb`.
-M5 remains open. That checkpoint passed [push CI](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42709874036)
+At that historical source checkpoint M5 remained open. It passed [push CI](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42709874036)
 and [PR CI](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42709898730).
 Those results do not cover this new correction or establish retail acceptance.
+
+## Executed recovery — 2026-11-10
+
+The user approved this proposal at `f2238775e724630af14bcc0c14ac4cdc150f821c`,
+whose [push CI 42861036450](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42861036450)
+and [PR CI 42861051831](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42861051831)
+were freshly verified. Those runs cover the reviewed operator, not the outcome documentation.
+
+Fresh original **READY v10** preflight passed with exact pins, templates/parameters,
+policies, retention, canonical source/Glue and process/history checks. The one workflow
+then deployed the existing candidate on **READY v11**, passed the fully judged
+**110.25 USD [2025-03-31,2025-04-01)** probe and **36/36 unchanged suite requests**, and
+restored the original artifact/configuration on **Runtime/DEFAULT READY v12**,
+stack **UPDATE_COMPLETE**. North **28.50 USD** / South **13.00 USD** smoke passed.
+A separate final read-only checkpoint and independent report/preservation audits passed.
+
+Suite client p95 **13.381s**, maximum **15.467s**, against unchanged 90s p95 gate;
+complete diagnostics, all authorization/clarification/metadata/session criteria passed.
+Suite work: **74 model calls, 108643 input / 8994 output tokens, 36 unique Athena queries,
+194837 bytes scanned**. The probe is the warm-up and excluded from suite latency.
+No threshold, question, golden, frozen ZIP/version, policy or dataset changed.
+
+Usage is **38/38 new, aggregate 40/40**: probe 1 + suite 36 + protected smoke 1,
+all completed, zero invocation failures/retries/timeouts/incomplete reservations.
+The recovery claim remains retained and retail dispatch closed. **Do not replay
+these commands, restore again or reset a ledger.** M5 is complete for the agreed
+development scope; PR #6 remains unmerged for review, not production-ready.
+
+Evidence root: `artifacts/milestone-5/q18-recovery-v1/operations/20261110T173634Z/`.
+Review `live/probe.json`, `live/suite/{report.json,summary.md,attempts.jsonl}`,
+`live/{campaign-result.json,restored-proof.json,smoke.json}`, final checkpoint,
+controller/read journals and independent audits. `campaign-result.json` reports
+**accepted:true**; the suite-only report's `live_gates_passed:true` is combined
+with restoration/smoke by the campaign. Recovery ledger SHA-256 is
+`2a4004c2056351a4c923c78a3a4aba357baf0500c46e5845ffc8d71e71fa04ce`.
+All 122 protected files and historical ledgers/claims remain unchanged.
+
+The following correction, allocation, pins and commands preserve the reviewed
+procedure and historical offline handoff. The campaign has now completed.
 
 ## Evidence and correction
 
@@ -54,7 +93,7 @@ SDK behavior was checked against the official [retry guide](https://docs.aws.ama
 and [Botocore configuration reference](https://docs.aws.amazon.com/botocore/latest/reference/config.html).
 `total_max_attempts=1` disables nested SDK retries; the operator owns read retries.
 
-## Proposed scope and budget
+## Approved scope and budget (now fully consumed)
 
 Use existing profile **analytics-dev**, account **453711491609**, region **us-west-2**.
 No new AWS profile, IAM permission, ZIP build/upload, data publication or template
@@ -124,10 +163,10 @@ change pins to make it pass. Preserve historical journals/locks/claims.
 
 The handoff includes normal push and exact-commit hosted CI verification, recorded
 in [progress](progress.md). Hosted offline CI is separate from live acceptance.
-The later approved operator must freshly inspect AWS state and process guards;
-this offline verification does not establish a current deployed checkpoint.
+At that offline checkpoint, later execution still required fresh AWS/process checks.
+Those checks and the approved live run are now recorded above.
 
-## Only after explicit approval of this proposal
+## Reviewed execution and restoration commands (historical; campaign closed)
 
 Approval covers one existing-candidate deployment from freshly verified v10,
 the 38-call sequence above, and mandatory original restoration/smoke. It authorizes

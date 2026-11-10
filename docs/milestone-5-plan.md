@@ -1,10 +1,22 @@
 # Milestone 5: repeatable retail demonstration and answer-quality evaluation
 
+**Current status (November 10, 2026): M5 passed the approved recovery and is complete
+for the agreed development scope.** Q18 probe/warm-up and all **36/36** frozen
+requests passed; the original artifact/parity configuration and counted smoke
+passed on **Runtime/DEFAULT READY v12**, runtime stack UPDATE_COMPLETE. Recovery
+is closed **38/38**, aggregate repair **40/40**; historical M5 **38/40**, M4 **28/40**
+and both prior repair histories/claims are unchanged. PR #6 remains unmerged for
+review. No live allowance remains. See [recovery results](milestone-5-q18-recovery-proposal.md)
+and [progress](progress.md). The earlier preparation/failure records below are
+historical; their commands cannot restart a closed campaign.
+
+## Historical preparation and execution records
+
 **Q18 repair checkpoint:** The approved repair uploaded the reviewed candidate and verified READY v7, but local CDK hit its 1800-second bound before any candidate invocation. Mandatory original restoration/smoke passed: Runtime/DEFAULT READY v8, stack UPDATE_COMPLETE, original parity artifact/version/configuration, policies and seven-day retention. Repair usage is 1/40, retail-closed, 39 unspent and no reserve used. M5 remains open; PR #6 remains unmerged. See [progress](progress.md) for actual evidence and the offline next task.
 Original M5 remains 35/36 and closed 38/40; M4 remains 28/40. The following first-campaign
 scope and failure evidence is historical and is not replaced by the repair attempt.
 
-**Current continuation checkpoint:** The approved continuation deployed candidate v9 successfully, but ConnectTimeoutError in the additional checkpoint stopped execution before any candidate call. Mandatory original restoration/smoke passed on Runtime/DEFAULT READY v10, stack UPDATE_COMPLETE. Continuation is 1/39 and closed, aggregate 2/40 with 38 remaining. The required 39-call sequence cannot fit that remainder; M5 remains open and PR #6 unmerged. No automatic retry or budget change is authorized.
+**Historical continuation checkpoint:** The approved continuation deployed candidate v9 successfully, but ConnectTimeoutError in the additional checkpoint stopped execution before any candidate call. Mandatory original restoration/smoke passed on Runtime/DEFAULT READY v10, stack UPDATE_COMPLETE. Continuation is 1/39 and closed, aggregate 2/40 with 38 remaining. The required 39-call sequence cannot fit that remainder; M5 remains open and PR #6 unmerged. No automatic retry or budget change is authorized.
 See [the executed continuation record](milestone-5-q18-continuation-proposal.md) and progress.
 
 Historical first-campaign status: **35/36; corrected base restored; Q18 correctness gate open**. The plan was approved at `ec77533`; the user confirms that commit was pushed and [push CI 42561649592](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42561649592) passed. The user confirms implementation commit `e6f43253a38fceb03508d239b4e8a8842f8bbcfa` was pushed and [push CI 42567676599](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42567676599) passed. Timestamp correction `850bbc8c3a16a4343ece3a4144e3e047eba0917d` was subsequently pushed and passed user-confirmed [push CI 42660104374](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42660104374). These CI results predate live acceptance. The user approved the reviewed environment-only Runtime update, M5 campaign (maximum 40 calls) and mandatory corrected-base restoration/smoke. IAM changes, profiles, package rebuild/upload, dataset publication and ledger resets remain outside scope; actual execution results are separate in [progress](progress.md). The approved separate M5 campaign used 38/40; retail dispatch is closed after successful restoration/smoke on Runtime/DEFAULT READY v6. Q18 alone failed (clarification instead of yesterday's 110.25 USD). Concrete commands and exact template/configuration pins are in the [operator runbook](milestone-5-runbook.md).
@@ -203,6 +215,8 @@ Restoring configuration creates a **later Runtime version**, not version 4 again
 5. Separately approved repair: candidate upload/version and READY v7 passed; local CDK timed out before dispatch. Mandatory original restoration/smoke passed on READY v8. Repair ledger 1/40 is retail-closed with 39 unspent; reserve unused. The unchanged suite/probe have not run against the candidate.
 6. Prepared offline: bounded exact-state deployment controller, explicit reviewed v8 continuation, preserved parent 1/40 hash, separately bound 39-call counter, duplicate-attempt/overlap controls and complete mocked command/failure/restoration regressions. Current source and frozen candidate are intentionally separate for these operator-only changes.
 7. Approved continuation: exact freshv8 and candidate v9 controller proof passed, but a connection timeout in the additional checkpoint stopped all candidate calls. Mandatory original restoration/smoke passed on v10. New ledger1/39 is closed; aggregate 2/40, 38 left. Goldens/artifacts/permissions and all prior ledgers remain unchanged.
-8. **Exact next task:** review this local checkpoint, diagnose the verifier offline and prepare a new reviewed scope/budget decision. The required 39 calls cannot fit38 remaining; no retry, quota reset or automatic expansion. Keep PR #6 unmerged and this checkpoint local.
+8. Historical next task after the continuation failure was offline diagnosis and a newly reviewed allocation. That led to the approved 38-call recovery below; no old ledger was reopened.
 
-Milestone 5 remains open because the 100% case gate is unmet. The actual retained report, usage, restoration evidence and verification commands are in progress. Keep the local checkpoint commit unpushed; no later milestone or production-readiness claim.
+9. Completed approved recovery at f223877: Q18 and all 36 cases passed, complete reporting/latency/security/session gates, original restore/smoke on READY v12, 38/38 new and 40/40 aggregate. Exact evidence and fresh offline checks are in progress.
+
+**Exact next task:** review the pushed M5 outcome commit and exact-commit hosted CI in PR #6, leaving merge to the user. M5 is complete for the agreed development scope. No further live calls, automatic rerun or next milestone is authorized; no production-readiness claim.

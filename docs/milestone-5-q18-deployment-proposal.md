@@ -1,14 +1,18 @@
 # Q18 candidate upload, evaluation and original restoration proposal
 
-**Current status (November 10, 2026): M5 passed the approved recovery and is complete
-for the agreed development scope.** Q18 probe/warm-up and all **36/36** frozen
-requests passed; the original artifact/parity configuration and counted smoke
-passed on **Runtime/DEFAULT READY v12**, runtime stack UPDATE_COMPLETE. Recovery
-is closed **38/38**, aggregate repair **40/40**; historical M5 **38/40**, M4 **28/40**
-and both prior repair histories/claims are unchanged. PR #6 remains unmerged for
-review. No live allowance remains. See [recovery results](milestone-5-q18-recovery-proposal.md)
-and [progress](progress.md). The earlier preparation/failure records below are
-historical; their commands cannot restart a closed campaign.
+**Current status (November 10, 2026): Milestones 1–5 are complete for the agreed
+development proof of concept.** [PR #6](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/6)
+merged completion `7905d13` at [`c0d2c5a`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/c0d2c5a569e2d242bf840a715c31050888b579ab);
+[main CI 42872516193](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42872516193)
+passed for that exact merge. Q18 and **36/36** requests passed; recorded original
+restoration/smoke is **Runtime/DEFAULT READY v12**, runtime stack UPDATE_COMPLETE.
+Recovery is closed **38/38**, aggregate repair **40/40**; historical M5 **38/40**,
+M4 **28/40**, prior repair histories and claims remain unchanged. No AWS check or
+live invocation was repeated for closeout. Further development requires a separately
+defined scope; no production-readiness claim or live allowance is implied.
+See [recovery results](milestone-5-q18-recovery-proposal.md) and [progress](progress.md).
+The earlier preparation/failure records below are historical; their commands
+cannot restart a closed campaign.
 
 ## Historical preparation and execution records
 

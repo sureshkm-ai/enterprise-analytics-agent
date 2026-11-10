@@ -1,14 +1,18 @@
 # Milestone 5: repeatable retail demonstration and answer-quality evaluation
 
-**Current status (November 10, 2026): M5 passed the approved recovery and is complete
-for the agreed development scope.** Q18 probe/warm-up and all **36/36** frozen
-requests passed; the original artifact/parity configuration and counted smoke
-passed on **Runtime/DEFAULT READY v12**, runtime stack UPDATE_COMPLETE. Recovery
-is closed **38/38**, aggregate repair **40/40**; historical M5 **38/40**, M4 **28/40**
-and both prior repair histories/claims are unchanged. PR #6 remains unmerged for
-review. No live allowance remains. See [recovery results](milestone-5-q18-recovery-proposal.md)
-and [progress](progress.md). The earlier preparation/failure records below are
-historical; their commands cannot restart a closed campaign.
+**Current status (November 10, 2026): Milestones 1–5 are complete for the agreed
+development proof of concept.** [PR #6](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/6)
+merged completion `7905d13` at [`c0d2c5a`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/c0d2c5a569e2d242bf840a715c31050888b579ab);
+[main CI 42872516193](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42872516193)
+passed for that exact merge. Q18 and **36/36** requests passed; recorded original
+restoration/smoke is **Runtime/DEFAULT READY v12**, runtime stack UPDATE_COMPLETE.
+Recovery is closed **38/38**, aggregate repair **40/40**; historical M5 **38/40**,
+M4 **28/40**, prior repair histories and claims remain unchanged. No AWS check or
+live invocation was repeated for closeout. Further development requires a separately
+defined scope; no production-readiness claim or live allowance is implied.
+See [recovery results](milestone-5-q18-recovery-proposal.md) and [progress](progress.md).
+The earlier preparation/failure records below are historical; their commands
+cannot restart a closed campaign.
 
 ## Historical preparation and execution records
 
@@ -219,4 +223,4 @@ Restoring configuration creates a **later Runtime version**, not version 4 again
 
 9. Completed approved recovery at f223877: Q18 and all 36 cases passed, complete reporting/latency/security/session gates, original restore/smoke on READY v12, 38/38 new and 40/40 aggregate. Exact evidence and fresh offline checks are in progress.
 
-**Exact next task:** review the pushed M5 outcome commit and exact-commit hosted CI in PR #6, leaving merge to the user. M5 is complete for the agreed development scope. No further live calls, automatic rerun or next milestone is authorized; no production-readiness claim.
+**Exact next task:** Milestones 1–5's agreed development proof of concept is complete, merged and hosted-CI verified. Any further development requires a separately defined scope. No further live calls, automatic rerun or next milestone is authorized; production readiness is not established.

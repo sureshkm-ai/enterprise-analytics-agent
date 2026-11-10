@@ -4,6 +4,7 @@ import json
 import os
 from collections.abc import Callable
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 from uuid import uuid4
@@ -23,10 +24,12 @@ from enterprise_analytics_agent.retail_evaluation.cases import (
 from enterprise_analytics_agent.retail_evaluation.client import CountedAgentClient, RuntimeInvoker
 from enterprise_analytics_agent.retail_evaluation.judge import judge_response
 from enterprise_analytics_agent.retail_evaluation.models import RetailTarget
+from enterprise_analytics_agent.retail_evaluation.operator_errors import error_record
 from enterprise_analytics_agent.retail_evaluation.repair_config import (
     REPOSITORY_ROOT,
     CandidateVersionBinding,
     ContinuationReview,
+    RecoveryReview,
     RepairReview,
     require_starting_checkpoint,
 )
@@ -46,9 +49,9 @@ class RepairOperations:
     """AWS operations are supplied by the adapter, never by model/tool arguments."""
 
     verify_original: Callable[[], RestorationProof]
-    deploy_candidate: Callable[[], None]
+    deploy_candidate: Callable[[], dict[str, Any] | None]
     verify_candidate: Callable[[], dict[str, Any]]
-    restore_original: Callable[[], None]
+    restore_original: Callable[[], RestorationProof | None]
     invoker: Callable[[RetailTarget], RuntimeInvoker]
 
 
@@ -86,32 +89,25 @@ def run_repair(
     *,
     repository_root: Path = REPOSITORY_ROOT,
     restore_only: bool = False,
-    continuation: ContinuationReview | None = None,
+    continuation: ContinuationReview | RecoveryReview | None = None,
 ) -> dict[str, object]:
     """Serialize a continuation's entire candidate/evaluation/restoration lifecycle."""
-    if continuation is not None:
-        ledger = CampaignLedger(
-            binding=continuation.campaign_binding(review, version),
-            repository_root=repository_root,
-        )
-        with ledger.operator_lock():
-            return _run_repair(
-                review,
-                version,
-                operations,
-                directory,
-                repository_root=repository_root,
-                restore_only=restore_only,
-                continuation=continuation,
-            )
-    return _run_repair(
-        review,
-        version,
-        operations,
-        directory,
-        repository_root=repository_root,
-        restore_only=restore_only,
+    binding = (
+        continuation.campaign_binding(review, version)
+        if continuation is not None
+        else campaign_binding(review, version)
     )
+    ledger = CampaignLedger(binding=binding, repository_root=repository_root)
+    with ledger.operator_lock():
+        return _run_repair(
+            review,
+            version,
+            operations,
+            directory,
+            repository_root=repository_root,
+            restore_only=restore_only,
+            continuation=continuation,
+        )
 
 
 def _run_repair(
@@ -122,7 +118,7 @@ def _run_repair(
     *,
     repository_root: Path,
     restore_only: bool,
-    continuation: ContinuationReview | None = None,
+    continuation: ContinuationReview | RecoveryReview | None = None,
 ) -> dict[str, object]:
     """No automatic invocation retries; failed probe stops the suite and always restores.
 
@@ -162,6 +158,11 @@ def _run_repair(
     initial = ledger.summary()
     if not restore_only and initial["used"] != 0:
         raise ValueError("repair campaign already used; resume restoration without resetting it")
+    if not restore_only:
+        assert suite is not None
+        planned_calls = len(suite.cases) + (2 if isinstance(continuation, RecoveryReview) else 3)
+        if planned_calls > ledger.maximum:
+            raise ValueError("reviewed sequence cannot fit the remaining campaign allowance")
     prepare_run_directory(directory)
     write_run_context(
         directory,
@@ -179,6 +180,7 @@ def _run_repair(
         mode="live",
     )
     state: dict[str, object] = {
+        "phase": "starting",
         "campaign_id": binding.campaign_id,
         "accepted": False,
         "candidate_attempted": restore_only and continuation is None,
@@ -198,12 +200,25 @@ def _run_repair(
                 ledger.claim_attempt({"report_directory": str(directory.resolve())})
         if not restore_only:
             assert suite is not None and goldens is not None
+            state["phase"] = "original-preflight"
             original = operations.verify_original()
             require_starting_checkpoint(original, review, continuation)
             _write(directory / "original-proof.json", original.model_dump(mode="json"))
             state["candidate_attempted"] = True
-            operations.deploy_candidate()
-            checkpoint = operations.verify_candidate()
+            state["phase"] = "candidate-deployment"
+            checkpoint = operations.deploy_candidate()
+            state["phase"] = "candidate-checkpoint"
+            if checkpoint is None:
+                # Legacy injected operators can supply their separate verifier.
+                # The AWS adapter returns the final controller checkpoint directly.
+                checkpoint = operations.verify_candidate()
+            else:
+                observed = datetime.fromisoformat(checkpoint["observed_at"])
+                if observed.tzinfo is None:
+                    raise ValueError("candidate checkpoint timestamp requires a timezone")
+                age = (datetime.now(UTC) - observed).total_seconds()
+                if not 0 <= age <= 60:
+                    raise ValueError("controller candidate checkpoint is stale or future-dated")
             if checkpoint["runtime"]["agentRuntimeArn"] != target.runtime_arn:
                 raise ValueError("candidate checkpoint differs from invocation target")
             if continuation is not None:
@@ -224,13 +239,19 @@ def _run_repair(
             write_run_context(
                 ready, target, {"checkpoint": checkpoint}, run_id="candidate-ready", mode="live"
             )
-            warmup = CountedAgentClient(
-                target, ledger, operations.invoker(target), purpose="warmup"
-            )
-            warm = warmup.invoke(WARMUP)
-            _write(directory / "warmup.json", warm.response.model_dump(mode="json"))
-            if warm.response.status != "answer":
-                raise ValueError("warm-up did not produce an answer")
+            if isinstance(continuation, RecoveryReview):
+                # The judged Q18 probe is warm-up; all 36 measured cases still run.
+                state["warmup_mode"] = "q18-probe"
+            else:
+                state["phase"] = "warmup"
+                warmup = CountedAgentClient(
+                    target, ledger, operations.invoker(target), purpose="warmup"
+                )
+                warm = warmup.invoke(WARMUP)
+                _write(directory / "warmup.json", warm.response.model_dump(mode="json"))
+                if warm.response.status != "answer":
+                    raise ValueError("warm-up did not produce an answer")
+            state["phase"] = "q18-probe"
             case = next(case for case in suite.cases if case.id == "Q18")
             golden = next(row for row in goldens.cases if row.case_id == "Q18")
             probe = CountedAgentClient(target, ledger, operations.invoker(target), purpose="probe")
@@ -248,6 +269,7 @@ def _run_repair(
             if assessed.status != "passed":
                 raise ValueError("Q18 probe failed its complete frozen plan/result criteria")
             state["probe_passed"] = True
+            state["phase"] = "suite"
             client = CountedAgentClient(target, ledger, operations.invoker(target), purpose="case")
             suite_directory = directory / "suite"
             prepare_run_directory(suite_directory)
@@ -282,17 +304,21 @@ def _run_repair(
             state["suite_passed"] = bool(report.summary["live_gates_passed"])
     except BaseException as exc:
         state["error_type"] = type(exc).__name__
+        state["error"] = error_record(exc, str(state["phase"]))
         if not isinstance(exc, Exception):
             interrupted = exc
     finally:
         if state["candidate_attempted"]:
             try:
-                operations.restore_original()
-                proof = operations.verify_original()
+                state["phase"] = "original-restoration"
+                proof = operations.restore_original()
+                if proof is None:
+                    proof = operations.verify_original()
                 if proof.runtime_arn != restored_target.runtime_arn:
                     raise ValueError("restoration checkpoint differs from invocation target")
                 _write(directory / "restored-proof.json", proof.model_dump(mode="json"))
                 state["restored"] = True
+                state["phase"] = "restoration-smoke"
                 smoke = CountedAgentClient(
                     restored_target,
                     ledger,
@@ -306,11 +332,17 @@ def _run_repair(
                 state["smoke_passed"] = True
             except BaseException as exc:
                 state["restoration_error_type"] = type(exc).__name__
+                state["restoration_error"] = error_record(exc, str(state["phase"]))
                 if not isinstance(exc, Exception):
                     interrupted = exc
-        state["campaign"] = ledger.summary()
+        try:
+            state["campaign"] = ledger.summary()
+        except Exception as exc:
+            state["accounting_error"] = error_record(exc, "final-accounting")
+        state["phase"] = "finished"
         state["accepted"] = bool(
-            state["probe_passed"]
+            "accounting_error" not in state
+            and state["probe_passed"]
             and state["suite_passed"]
             and state["restored"]
             and state["smoke_passed"]

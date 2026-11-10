@@ -209,6 +209,26 @@ def test_retained_q18_aws_success_with_stalled_cdk_is_verified_and_reaped(harnes
     assert ("signal", signal.SIGTERM) in harness.child.events
 
 
+def test_controller_returns_final_proof_only_after_reaping(harness: Harness) -> None:
+    observations: list[dict[str, object]] = []
+
+    def verify(deadline: float) -> dict[str, object]:
+        proof: dict[str, object] = {
+            "strict": True,
+            "sequence": len(observations),
+            "process_reaped": harness.child.returncode is not None,
+        }
+        observations.append(proof)
+        return proof
+
+    result = harness.controller().deploy(
+        str(harness.root / "assembly"), "candidate-version", "candidate", verify
+    )
+    assert len(observations) == 2
+    assert result is observations[-1] and result["process_reaped"] is True
+    assert observations[0]["process_reaped"] is False
+
+
 @pytest.mark.parametrize(
     "drift", ["template", "version", "bootstrap", "parameter_inventory", "stale"]
 )
@@ -451,7 +471,7 @@ def test_read_budget_caps_sdk_and_checks_every_operation(monkeypatch: pytest.Mon
     class Reads:
         def client(self, name: str, **kwargs: Any) -> Any:
             config = kwargs["config"]
-            assert config.connect_timeout == 3 and config.read_timeout == 10
+            assert config.connect_timeout == 5 and config.read_timeout == 10
             assert config.retries == {"total_max_attempts": 1}
             calls.append(name)
             return self

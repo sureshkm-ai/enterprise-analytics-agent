@@ -111,7 +111,49 @@ class ContinuationCampaignBinding(BaseModel):
         return hashlib.sha256(content.encode()).hexdigest()
 
 
-type CampaignBinding = RepairCampaignBinding | ContinuationCampaignBinding
+class RecoveryCampaignBinding(BaseModel):
+    """A new 38-call campaign preserving both closed one-call histories."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    campaign_id: Literal["milestone-5-q18-recovery-v1"] = "milestone-5-q18-recovery-v1"
+    ledger_path: Literal["artifacts/milestone-5/q18-recovery-v1/runtime-invocations.jsonl"] = (
+        "artifacts/milestone-5/q18-recovery-v1/runtime-invocations.jsonl"
+    )
+    maximum: Literal[38] = 38
+    aggregate_maximum: Literal[40] = 40
+    prior_used: Literal[2] = 2
+    review_sha256: Sha256
+    candidate_sha256: Sha256
+    candidate_template_sha256: Sha256
+    candidate_version_record_sha256: Sha256
+    parent_ledger_sha256: Sha256
+    parent_binding: ContinuationCampaignBinding
+    parent_attempt_sha256: Sha256
+    starting_checkpoint_sha256: Sha256
+
+    @model_validator(mode="after")
+    def same_candidate(self) -> Self:
+        parent = self.parent_binding
+        if (
+            self.candidate_sha256,
+            self.candidate_template_sha256,
+            self.candidate_version_record_sha256,
+        ) != (
+            parent.candidate_sha256,
+            parent.candidate_template_sha256,
+            parent.candidate_version_record_sha256,
+        ):
+            raise ValueError("continuation must preserve the parent candidate/version binding")
+        return self
+
+    @property
+    def sha256(self) -> str:
+        content = json.dumps(self.model_dump(mode="json"), sort_keys=True, separators=(",", ":"))
+        return hashlib.sha256(content.encode()).hexdigest()
+
+
+type CampaignBinding = RepairCampaignBinding | ContinuationCampaignBinding | RecoveryCampaignBinding
 
 
 class RestorationProof(BaseModel):
@@ -196,23 +238,35 @@ class CampaignLedger:
             raise CampaignError("Milestone 4 ledger is immutable; use the separate M5 ledger")
         if self.binding is None and any(
             self.path.parts[-4:] == tuple(Path(value).parts)
-            for value in (REPAIR_LEDGER, CONTINUATION_LEDGER)
+            for value in (
+                REPAIR_LEDGER,
+                CONTINUATION_LEDGER,
+                "artifacts/milestone-5/q18-recovery-v1/runtime-invocations.jsonl",
+            )
         ):
             raise CampaignError("repair ledger requires an explicitly pinned campaign binding")
         self.campaign_id = self.binding.campaign_id if self.binding is not None else CAMPAIGN_ID
         self.maximum = self.binding.maximum if self.binding is not None else MAX_INVOCATIONS
         self.purposes = _PURPOSES | {"probe"} if self.binding is not None else _PURPOSES
+        if isinstance(self.binding, RecoveryCampaignBinding):
+            self.purposes = {"probe", "case", "session", "restoration_smoke"}
         self.now = now
 
     def _validate_parent(self) -> None:
         """Inspect immutable history with a read-only descriptor; never create it."""
-        if not isinstance(self.binding, ContinuationCampaignBinding):
+        if not isinstance(self.binding, (ContinuationCampaignBinding, RecoveryCampaignBinding)):
             return
         binding = self.binding
         parent = CampaignLedger(
             binding=binding.parent_binding, repository_root=self.repository_root, now=self.now
         )
-        if parent.path.resolve() != self.repository_root / REPAIR_LEDGER:
+        parent._validate_parent()
+        if isinstance(binding, RecoveryCampaignBinding):
+            parent.require_attempt()
+            claim_sha = hashlib.sha256(parent.attempt_path.read_bytes()).hexdigest()
+            if claim_sha != binding.parent_attempt_sha256:
+                raise CampaignError("closed parent attempt claim hash changed")
+        if parent.path.resolve() != self.repository_root / binding.parent_binding.ledger_path:
             raise CampaignError("continuation parent ledger aliases another location")
         try:
             descriptor = os.open(parent.path, os.O_RDONLY | os.O_NOFOLLOW)
@@ -233,8 +287,8 @@ class CampaignLedger:
         reservations = [row for row in records if row["event"] == "reserved"]
         outcomes = [row for row in records if row["event"] == "outcome"]
         if (
-            len(reservations) != binding.prior_used
-            or len(outcomes) != binding.prior_used
+            len(reservations) != 1
+            or len(outcomes) != 1
             or reservations[0].get("purpose") != "restoration_smoke"
             or outcomes[0].get("outcome") != "answer"
         ):
@@ -253,7 +307,7 @@ class CampaignLedger:
         candidate while the first operator is still evaluating it. Process death
         releases the lease, without deleting the durable attempt evidence.
         """
-        if not isinstance(self.binding, ContinuationCampaignBinding):
+        if self.binding is None:
             yield
             return
         self._validate_parent()
@@ -261,7 +315,9 @@ class CampaignLedger:
         if self.path.parent.resolve() != self.path.parent:
             raise CampaignError("continuation operator directory aliases another location")
         descriptor = os.open(
-            self.path.with_name("operator.lock"), os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600
+            self.repository_root / "artifacts/milestone-5/runtime-operator.lock",
+            os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW,
+            0o600,
         )
         try:
             try:
@@ -284,7 +340,7 @@ class CampaignLedger:
         quota after an interrupted or failed candidate attempt. Restoration-only
         recovery does not acquire another candidate claim.
         """
-        if not isinstance(self.binding, ContinuationCampaignBinding):
+        if not isinstance(self.binding, (ContinuationCampaignBinding, RecoveryCampaignBinding)):
             raise CampaignError("attempt claims require an explicitly reviewed continuation")
         self._validate_parent()
         before = self.summary()
@@ -450,7 +506,7 @@ class CampaignLedger:
         restoration_proof: RestorationProof | None = None,
     ) -> Reservation:
         self._validate_parent()
-        if isinstance(self.binding, ContinuationCampaignBinding):
+        if isinstance(self.binding, (ContinuationCampaignBinding, RecoveryCampaignBinding)):
             self.require_attempt()
         proof: dict[str, object] | None = None
         if purpose == "restoration_smoke":
@@ -570,7 +626,7 @@ class CampaignLedger:
                     - len(reserved),
                     "parent_ledger_sha256": self.binding.parent_ledger_sha256,
                 }
-                if isinstance(self.binding, ContinuationCampaignBinding)
+                if isinstance(self.binding, (ContinuationCampaignBinding, RecoveryCampaignBinding))
                 else {}
             ),
             "completed": len(outcomes),

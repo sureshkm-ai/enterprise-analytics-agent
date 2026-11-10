@@ -256,5 +256,5 @@ def test_complete_continuation_cli_path_and_duplicate_fail_before_aws_boundary(
     assert boundary_calls == ["read-only-operator-boundary"]
     arguments[-1] = str(continued.root / "duplicate-command")
     assert repair_cli.main(arguments) == 1
-    assert "ValueError; inspect retained evidence" in capsys.readouterr().err
+    assert json.loads(capsys.readouterr().err)["causes"][0]["error_type"] == "ValueError"
     assert boundary_calls == ["read-only-operator-boundary"]

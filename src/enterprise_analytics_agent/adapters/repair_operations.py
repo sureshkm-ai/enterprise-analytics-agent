@@ -8,16 +8,18 @@ from pathlib import Path
 from typing import Any
 
 import boto3
-from botocore.config import Config
 
 from enterprise_analytics_agent.adapters.agentcore_invocation import create_runtime_invoker
 from enterprise_analytics_agent.adapters.deployment_controller import DeploymentController
+from enterprise_analytics_agent.adapters.operator_reads import READ_CONFIG, ReadPool, ReadSession
 from enterprise_analytics_agent.adapters.retail_checkpoint import (
+    restoration_proof,
     verify_candidate_checkpoint,
     verify_checkpoint,
     verify_restoration,
 )
-from enterprise_analytics_agent.retail_evaluation.campaign import CODE_VERSION
+from enterprise_analytics_agent.retail_evaluation.campaign import CODE_VERSION, RestorationProof
+from enterprise_analytics_agent.retail_evaluation.client import RuntimeInvoker
 from enterprise_analytics_agent.retail_evaluation.deployment import (
     BASE_ASSEMBLY,
     TEMPLATE_NAME,
@@ -26,49 +28,19 @@ from enterprise_analytics_agent.retail_evaluation.deployment import (
     review_assemblies,
     review_candidate_assemblies,
 )
+from enterprise_analytics_agent.retail_evaluation.models import RetailTarget
 from enterprise_analytics_agent.retail_evaluation.repair_config import (
     CandidateVersionBinding,
     RepairReview,
 )
 from enterprise_analytics_agent.retail_evaluation.repair_workflow import RepairOperations
 
-READ_CONFIG = Config(connect_timeout=3, read_timeout=10, retries={"total_max_attempts": 1})
 
-
-class _BudgetedClient:
-    def __init__(self, client: Any, deadline: float) -> None:
-        self.client = client
-        self.deadline = deadline
-
-    def __getattr__(self, name: str) -> Any:
-        method = getattr(self.client, name)
-
-        def bounded_read(*args: Any, **kwargs: Any) -> Any:
-            if time.monotonic() >= self.deadline:
-                raise TimeoutError("checkpoint read budget exhausted")
-            result = method(*args, **kwargs)
-            if time.monotonic() >= self.deadline:
-                raise TimeoutError("checkpoint read exceeded its budget")
-            return result
-
-        return bounded_read
-
-
-class _BudgetedSession:
-    """Finite SDK timeouts plus a deadline checked before each checkpoint read."""
+class _BudgetedSession(ReadSession):
+    """Compatibility entry point; live operations share a persistent ReadPool."""
 
     def __init__(self, session: Any, deadline: float) -> None:
-        self.session = session
-        self.deadline = deadline
-
-    def client(self, name: str, **kwargs: Any) -> Any:
-        if time.monotonic() >= self.deadline:
-            raise TimeoutError("checkpoint client budget exhausted")
-        kwargs["config"] = READ_CONFIG
-        client = self.session.client(name, **kwargs)
-        if time.monotonic() >= self.deadline:
-            raise TimeoutError("checkpoint client exceeded its budget")
-        return _BudgetedClient(client, self.deadline)
+        super().__init__(ReadPool(session), deadline, "checkpoint")
 
 
 def verify_uploaded_version(
@@ -80,6 +52,8 @@ def verify_uploaded_version(
     if not isinstance(version, str) or version.casefold() in {"", "null", "pending", "unknown"}:
         raise ValueError("approved upload did not return an immutable candidate S3 VersionId")
     session = session or boto3.Session(profile_name="analytics-dev", region_name="us-west-2")
+    if not isinstance(session, ReadSession):
+        session = _BudgetedSession(session, time.monotonic() + 120)
     if session.client("sts", config=READ_CONFIG).get_caller_identity()["Account"] != "453711491609":
         raise ValueError("operator account differs from the reviewed target")
     bucket = "enterprise-analytics-dev-453711491609-us-west-2-agent-code"
@@ -125,12 +99,19 @@ def operations_for(
     else:
         review_candidate_assemblies(review)
     session = boto3.Session(profile_name="analytics-dev", region_name="us-west-2")
-    if session.client("sts", config=READ_CONFIG).get_caller_identity()["Account"] != "453711491609":
+    # A sibling journal can preserve preflight failures without occupying the
+    # workflow's exclusive report directory before prepare_run_directory.
+    journal = directory.with_name(directory.name + ".operator-reads.jsonl")
+    if journal.exists():
+        raise ValueError("operator read evidence already exists; use a new report directory")
+    reads = ReadPool(session, journal)
+    preflight = reads.view(time.monotonic() + 120, "operator-preflight")
+    if preflight.client("sts").get_caller_identity()["Account"] != "453711491609":
         raise ValueError("operator account differs from the reviewed target")
     # Re-read the uploaded immutable version before any CloudFormation mutation.
     if not restore_only:
         observed = verify_uploaded_version(
-            review, {"VersionId": version.version_id}, session=session
+            review, {"VersionId": version.version_id}, session=preflight
         )
         if (observed.version_id, observed.size_bytes, observed.checksum_sha256) != (
             version.version_id,
@@ -153,42 +134,86 @@ def operations_for(
             if parameters["ArtifactVersionId"] != version.version_id:
                 raise ValueError("candidate baseline template has an unreviewed artifact version")
 
-    cloudformation = session.client("cloudformation", config=READ_CONFIG)
+    cloudformation = preflight.client("cloudformation")
     controller = DeploymentController(
         directory,
         cloudformation,
         lock_path=Path("artifacts/milestone-5/runtime-deployment.lock"),
         baseline_validator=validate_baseline,
+        read_client=lambda deadline: reads.view(deadline, "deployment-reconciliation").client(
+            "cloudformation"
+        ),
     )
 
     def candidate_checkpoint(deadline: float) -> dict[str, Any]:
         return verify_candidate_checkpoint(
-            review, version, session=_BudgetedSession(session, deadline)
+            review, version, session=reads.view(deadline, "candidate-checkpoint")
         )
 
     def original_checkpoint(deadline: float) -> dict[str, Any]:
-        return verify_checkpoint(scope="parity-v1", session=_BudgetedSession(session, deadline))
+        return verify_checkpoint(
+            scope="parity-v1", session=reads.view(deadline, "original-checkpoint")
+        )
 
-    return RepairOperations(
-        verify_original=lambda: verify_restoration(
-            session=_BudgetedSession(session, time.monotonic() + 120)
-        ),
-        deploy_candidate=lambda: controller.deploy(
+    restored: RestorationProof | None = None
+
+    def verify_original() -> RestorationProof:
+        # Cache only an accepted post-cleanup proof, never the starting proof.
+        if restored is not None:
+            age = (datetime.now(UTC) - restored.observed_at).total_seconds()
+            if 0 <= age <= 60:
+                return restored
+        return verify_restoration(
+            session=reads.view(time.monotonic() + 120, "original-verification")
+        )
+
+    def deploy_candidate() -> dict[str, Any]:
+        nonlocal restored
+        restored = None
+        return controller.deploy(
             review.candidate_assembly_path,
             version.version_id,
             "candidate",
             candidate_checkpoint,
             template_sha256=review.candidate_template_sha256,
-        ),
-        verify_candidate=lambda: candidate_checkpoint(time.monotonic() + 120),
-        restore_original=lambda: controller.deploy(
+        )
+
+    def restore_original() -> RestorationProof:
+        nonlocal restored
+        restored = None
+        checkpoint = controller.deploy(
             review.restoration_assembly_path,
             CODE_VERSION,
             "restore",
             original_checkpoint,
             template_sha256=review.restoration_template_sha256,
-        ),
-        invoker=create_runtime_invoker,
+        )
+        restored = restoration_proof(checkpoint)
+        return restored
+
+    invokers: dict[str, RuntimeInvoker] = {}
+
+    def invoker(target: RetailTarget) -> RuntimeInvoker:
+        # STS is a read; InvokeAgentRuntime remains an unretried, counted call.
+        key = target.model_dump_json()
+        if key not in invokers:
+            setup = reads.view(time.monotonic() + 120, "invocation-setup")
+            invokers[key] = create_runtime_invoker(
+                target,
+                session=session,
+                identity_session=setup,
+                client_factory=lambda config: setup.invocation_client(
+                    runtime_arn=target.runtime_arn, config=config
+                ),
+            )
+        return invokers[key]
+
+    return RepairOperations(
+        verify_original=verify_original,
+        deploy_candidate=deploy_candidate,
+        verify_candidate=lambda: candidate_checkpoint(time.monotonic() + 120),
+        restore_original=restore_original,
+        invoker=invoker,
     )
 
 

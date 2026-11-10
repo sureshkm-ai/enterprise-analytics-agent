@@ -282,7 +282,11 @@ def _verify_checkpoint(
 
 
 def verify_restoration(*, session: Any = None) -> RestorationProof:
-    record = verify_checkpoint(scope="parity-v1", session=session)
+    return restoration_proof(verify_checkpoint(scope="parity-v1", session=session))
+
+
+def restoration_proof(record: dict[str, Any]) -> RestorationProof:
+    """Convert an in-memory strict checkpoint after the caller verifies AWS state."""
     runtime, endpoint = record["runtime"], record["endpoint"]
     settings = json.loads(runtime["environmentVariables"]["ANALYTICS_RUNTIME_CONFIG"])
     configuration_sha = canonical_hash(settings)

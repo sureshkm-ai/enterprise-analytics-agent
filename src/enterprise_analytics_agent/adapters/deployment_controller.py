@@ -23,6 +23,7 @@ from pathlib import Path
 from typing import Any, TextIO
 
 from enterprise_analytics_agent.retail_evaluation.deployment import TEMPLATE_NAME, canonical_hash
+from enterprise_analytics_agent.retail_evaluation.operator_errors import error_record
 
 STACK_NAME = "enterprise-analytics-dev-agent-runtime"
 _SUCCESS = {"CREATE_COMPLETE", "UPDATE_COMPLETE"}
@@ -81,11 +82,13 @@ class DeploymentController:
         signal_group: Callable[[int, int], None] = os.killpg,
         group_exists: Callable[[int], bool] = _group_exists,
         baseline_validator: Callable[[dict[str, Any], dict[str, Any]], None] | None = None,
+        read_client: Callable[[float], Any] | None = None,
         monotonic: Callable[[], float] = time.monotonic,
         sleep: Callable[[float], None] = time.sleep,
     ) -> None:
         self.directory = directory
         self.cloudformation = cloudformation
+        self.read_client = read_client
         self.lock_path = lock_path
         self.limits = limits or DeploymentLimits()
         self.process_factory = process_factory
@@ -133,9 +136,19 @@ class DeploymentController:
         if deadline is not None and self.monotonic() >= deadline:
             raise DeploymentTimeout("deployment read deadline exhausted")
 
+    def _reader(self, deadline: float | None) -> Any:
+        if self.read_client is not None:
+            bound = (
+                deadline
+                if deadline is not None
+                else (self.monotonic() + self.limits.verification_seconds)
+            )
+            return self.read_client(bound)
+        return self.cloudformation
+
     def _stack(self, deadline: float | None = None) -> dict[str, Any]:
         self._check_deadline(deadline)
-        stacks = self.cloudformation.describe_stacks(StackName=STACK_NAME)["Stacks"]
+        stacks = self._reader(deadline).describe_stacks(StackName=STACK_NAME)["Stacks"]
         if len(stacks) != 1 or stacks[0].get("StackName") != STACK_NAME:
             raise DeploymentError("unexpected CloudFormation stack identity")
         stack = dict(stacks[0])
@@ -161,7 +174,9 @@ class DeploymentController:
 
     def _template(self, deadline: float | None) -> dict[str, Any]:
         self._check_deadline(deadline)
-        response = self.cloudformation.get_template(StackName=STACK_NAME, TemplateStage="Original")
+        response = self._reader(deadline).get_template(
+            StackName=STACK_NAME, TemplateStage="Original"
+        )
         body = response["TemplateBody"]
         result: dict[str, Any] = json.loads(body) if isinstance(body, str) else dict(body)
         return result
@@ -239,25 +254,26 @@ class DeploymentController:
             evidence["cleanup_error_type"] = type(exc).__name__
             raise ProcessCleanupError("owned CDK process cleanup failed") from exc
 
-    def _verify(
-        self, verify: Callable[[float], Any], deadline: float, evidence: dict[str, Any]
-    ) -> None:
+    def _verify[T](
+        self, verify: Callable[[float], T], deadline: float, evidence: dict[str, Any]
+    ) -> T:
         if self.monotonic() >= deadline:
             raise DeploymentTimeout("strict checkpoint verification budget exhausted")
-        verify(deadline)
+        checkpoint = verify(deadline)
         if self.monotonic() > deadline:
             raise DeploymentTimeout("strict checkpoint verification exceeded its budget")
         evidence["strict_checkpoint_verified"] = True
+        return checkpoint
 
-    def deploy(
+    def deploy[T](
         self,
         assembly: str,
         artifact_version: str,
         name: str,
-        verify: Callable[[float], Any],
+        verify: Callable[[float], T],
         *,
         template_sha256: str | None = None,
-    ) -> None:
+    ) -> T:
         if self.poisoned:
             raise DeploymentError("owned process cleanup failed; stop before another deployment")
         raw = (Path(assembly) / TEMPLATE_NAME).read_bytes()
@@ -274,11 +290,11 @@ class DeploymentController:
         if set(parameters) != set(template["Parameters"]):
             raise DeploymentError("reviewed template has an unbound parameter")
         with self._locked():
-            self._deploy_locked(
+            return self._deploy_locked(
                 assembly, artifact_version, name, template, actual_sha256, parameters, verify
             )
 
-    def _deploy_locked(
+    def _deploy_locked[T](
         self,
         assembly: str,
         artifact_version: str,
@@ -286,8 +302,8 @@ class DeploymentController:
         template: dict[str, Any],
         template_sha256: str,
         parameters: dict[str, str],
-        verify: Callable[[float], Any],
-    ) -> None:
+        verify: Callable[[float], T],
+    ) -> T:
         self.directory.mkdir(parents=True, exist_ok=True)
         started = self.monotonic()
         evidence: dict[str, Any] = {
@@ -324,7 +340,7 @@ class DeploymentController:
             deadline = self.monotonic() + self.limits.verification_seconds
             self._baseline(baseline, parameters, deadline)
             if self._matches(baseline, template, parameters, deadline):
-                self._verify(verify, deadline, evidence)
+                checkpoint = self._verify(verify, deadline, evidence)
                 # Recheck CFN after full verification to catch concurrent updates.
                 final = self._stack(deadline)
                 if (
@@ -334,7 +350,7 @@ class DeploymentController:
                 ):
                     raise DeploymentError("AWS state changed during already-current verification")
                 evidence.update(accepted=True, completion="already_verified_no_mutation")
-                return
+                return checkpoint
             with (
                 (self.directory / f"{name}.stdout.log").open("x") as out,
                 (self.directory / f"{name}.stderr.log").open("x") as err,
@@ -431,19 +447,22 @@ class DeploymentController:
                                 )
                             ):
                                 raise DeploymentError("AWS deployment changed during child cleanup")
-                            self._verify(verify, verification_deadline, evidence)
+                            checkpoint = self._verify(verify, verification_deadline, evidence)
                             evidence.update(accepted=True, completion="fresh_verified_aws_update")
-                            return
+                            return checkpoint
                     except DeploymentError:
                         raise
                     except Exception as exc:
                         evidence["last_verification_error_type"] = type(exc).__name__
+                        evidence["last_verification_error"] = error_record(exc, name)
                         if process is None:
                             raise DeploymentError(
                                 "post-cleanup verification is unavailable"
                             ) from exc
                         # Unavailable reads never establish success; poll only within budget.
-                        code = getattr(exc, "response", {}).get("Error", {}).get("Code")
+                        code = getattr(exc, "diagnostic", {}).get("aws_error_code") or (
+                            getattr(exc, "response", {}).get("Error", {}).get("Code")
+                        )
                         if code:
                             evidence["last_aws_error_code"] = code
                         if code and ("AccessDenied" in code or "Unauthorized" in code):
@@ -458,6 +477,7 @@ class DeploymentController:
                 )
         except BaseException as exc:
             evidence["error_type"] = type(exc).__name__
+            evidence["error"] = error_record(exc, name)
             raise
         finally:
             if process is not None and not self.poisoned:

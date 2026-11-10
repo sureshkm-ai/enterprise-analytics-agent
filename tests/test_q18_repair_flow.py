@@ -114,10 +114,11 @@ class Flow:
             retention_days=7,
         )
 
-    def deploy(self) -> None:
+    def deploy(self) -> dict[str, Any] | None:
         self.events.append("deploy-candidate")
         if self.failure == "deployment":
             raise RuntimeError("candidate update failed")
+        return None
 
     def candidate(self) -> dict[str, Any]:
         self.events.append("verify-candidate")

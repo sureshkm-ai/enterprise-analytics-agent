@@ -10,10 +10,13 @@ from pathlib import Path
 from types import FrameType
 
 from enterprise_analytics_agent.retail_evaluation.campaign import CampaignLedger
+from enterprise_analytics_agent.retail_evaluation.operator_errors import error_record
 from enterprise_analytics_agent.retail_evaluation.repair_config import (
     ContinuationReview,
+    RecoveryReview,
     load_review,
     select_continuation,
+    select_recovery,
     select_repair,
 )
 
@@ -49,10 +52,11 @@ def main(argv: list[str] | None = None) -> int:
         command.add_argument("--report-dir", type=Path, required=True)
     args = parser.parse_args(argv)
     try:
-        continuation: ContinuationReview | None = None
-        if args.campaign not in {"q18-repair-v1", "q18-continuation-v1"}:
+        continuation: ContinuationReview | RecoveryReview | None = None
+        if args.campaign not in {"q18-repair-v1", "q18-continuation-v1", "q18-recovery-v1"}:
             raise ValueError("unknown reviewed campaign")
         review = load_review()
+        selector = select_recovery if args.campaign == "q18-recovery-v1" else select_continuation
         if args.action == "verify-offline":
             from enterprise_analytics_agent.retail_evaluation.deployment import (
                 review_candidate_assemblies,
@@ -62,10 +66,8 @@ def main(argv: list[str] | None = None) -> int:
                 "review_sha256": review.review_sha256,
                 "artifacts": review_candidate_assemblies(review),
             }
-            if args.campaign == "q18-continuation-v1":
-                _, _, binding, continuation = select_continuation(
-                    args.campaign, args.version_record
-                )
+            if args.campaign in {"q18-continuation-v1", "q18-recovery-v1"}:
+                _, _, binding, continuation = selector(args.campaign, args.version_record)
                 evidence.update(
                     continuation=continuation.model_dump(mode="json"),
                     continuation_review_sha256=continuation.review_sha256,
@@ -74,7 +76,7 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps(evidence, indent=2))
             return 0
         if args.action == "bind-upload":
-            if args.campaign == "q18-continuation-v1":
+            if args.campaign in {"q18-continuation-v1", "q18-recovery-v1"}:
                 raise ValueError(
                     "continuation reuses the existing verified upload; no upload binding"
                 )
@@ -91,10 +93,8 @@ def main(argv: list[str] | None = None) -> int:
             write_version_record(args.output, version)
             print(version.model_dump_json(indent=2))
             return 0
-        if args.campaign == "q18-continuation-v1":
-            review, version, binding, continuation = select_continuation(
-                args.campaign, args.version_record
-            )
+        if args.campaign in {"q18-continuation-v1", "q18-recovery-v1"}:
+            review, version, binding, continuation = selector(args.campaign, args.version_record)
             ledger = CampaignLedger(binding=binding)
             if args.action == "restore":
                 ledger.require_attempt()
@@ -133,7 +133,7 @@ def main(argv: list[str] | None = None) -> int:
             return 0 if state["restored"] and state["smoke_passed"] else 1
         return 0 if state["accepted"] else 1
     except Exception as exc:
-        print(f"analytics-repair: {type(exc).__name__}; inspect retained evidence", file=sys.stderr)
+        print(json.dumps(error_record(exc, "repair-command"), indent=2), file=sys.stderr)
         return 1
 
 

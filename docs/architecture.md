@@ -134,3 +134,19 @@ and whole-operator lease prevented duplicate/concurrent work. The exact failed S
 operation/endpoint was not recorded; no IAM or model cause is established. The unchanged
 39-call sequence cannot fit the remainder, so live acceptance stays pending and no
 retry/reset/budget expansion follows automatically. See [the execution record](milestone-5-q18-continuation-proposal.md).
+
+### Proposed v10 recovery operator correction
+
+The operator now consumes the deployment controller's final strict proof directly,
+uses pooled/deadline-bound retries for allowlisted reads (including STS at invocation
+setup), and records operation-level diagnostics without payloads or credentials.
+Runtime invocation-client construction is also journaled without retries; late
+setup fails before dispatch and a raw single-attempt client is reused per target.
+Original restoration proof can be reused for 60 seconds within the same operator;
+mutation invalidates it and expiry requires verification. Invocation SDK retries
+remain disabled. A global operator lease spans selectors. The proposed
+q18-recovery-v1 binds both closed histories and the prior claim, starts at freshly
+verified original v10, and caps new calls at 38 / aggregate 40. Q18 is both probe and
+warm-up; all 36 suite cases and the protected restoration smoke still run. This
+proposal is prepared offline and does not establish deployed acceptance or authorize
+execution. See [scope and commands](milestone-5-q18-recovery-proposal.md).

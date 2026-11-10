@@ -4,7 +4,8 @@ SDK reference: https://docs.aws.amazon.com/boto3/latest/reference/services/
 bedrock-agentcore/client/invoke_agent_runtime.html and botocore Config retries.
 """
 
-from typing import Protocol, cast
+from collections.abc import Callable
+from typing import Any, Protocol, cast
 
 import boto3
 from botocore.config import Config
@@ -36,29 +37,52 @@ class _ResponseBody:
         self.body.close()
 
 
-def create_runtime_invoker(target: RetailTarget) -> RuntimeInvoker:
+def create_runtime_invoker(
+    target: RetailTarget,
+    *,
+    session: Any = None,
+    identity_session: Any = None,
+    client_factory: Callable[[Config], Any] | None = None,
+) -> RuntimeInvoker:
     """Create the sole approved profile/session and verify account before dispatch.
 
     total_max_attempts includes the first HTTP attempt: one disables hidden SDK
     retries, so one persistent reservation always covers at most one invocation.
     """
     try:
-        return _create_runtime_invoker(target)
+        return _create_runtime_invoker(
+            target,
+            session=session,
+            identity_session=identity_session,
+            client_factory=client_factory,
+        )
     except (BotoCoreError, ClientError) as exc:
         raise RuntimeError("AWS operator transport configuration failed") from exc
 
 
-def _create_runtime_invoker(target: RetailTarget) -> RuntimeInvoker:
-    session = boto3.Session(profile_name=target.profile, region_name=target.region)
+def _create_runtime_invoker(
+    target: RetailTarget,
+    *,
+    session: Any = None,
+    identity_session: Any = None,
+    client_factory: Callable[[Config], Any] | None = None,
+) -> RuntimeInvoker:
+    session = session or boto3.Session(profile_name=target.profile, region_name=target.region)
     config = Config(
         connect_timeout=5,
         read_timeout=150,
         retries={"total_max_attempts": 1, "mode": "standard"},
     )
-    identity = session.client("sts", config=config).get_caller_identity()
+    identity_reader = identity_session or session
+    identity = identity_reader.client("sts", config=config).get_caller_identity()
     if identity["Account"] != target.account:
         raise ValueError("AWS identity does not match the approved account")
-    client = cast(RuntimeClient, session.client("bedrock-agentcore", config=config))
+    client = cast(
+        RuntimeClient,
+        client_factory(config)
+        if client_factory is not None
+        else session.client("bedrock-agentcore", config=config),
+    )
 
     def invoke(*, payload: bytes, session_id: str) -> RuntimeReply:
         try:

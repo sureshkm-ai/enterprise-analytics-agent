@@ -2,6 +2,28 @@
 
 **Milestones 1–5 are complete for the agreed development proof of concept.** M5 completion [`7905d13`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/7905d13f59e13d0b5a1b11231348721471a19411) merged through [PR #6](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/6) on **November 10, 2026**, at [`c0d2c5a569e2d242bf840a715c31050888b579ab`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/c0d2c5a569e2d242bf840a715c31050888b579ab). [Main CI 42872516193](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42872516193) passed for that exact merge. Further development requires a separately defined scope; no production-readiness or new-milestone claim follows from this closeout.
 
+## Follow-on scope: local testing UI
+
+The separately authorized shared-code UI implementation is offline ready. Default
+playground remains deterministic/AWS-free. Local agent uses the existing
+BedrockAnalyticsAgent with canonical DuckDB data; AWS uses the same class with Athena.
+Three modes, cost notices, strict release records, persistent shared question/SDK
+counting, offline paired grading and bounded deploy/rollback workflow are implemented.
+All original metric definitions, contracts, frozen data and historical budgets remain
+unchanged. Actual verification is in [progress](progress.md).
+
+Source/dependency/data audits match the accepted frozen candidate; no rebuild/upload
+is needed. Read-only AWS checks find original Runtime/DEFAULT READY v12, not the
+matching candidate. Canonical bytes/current S3 prefixes/Glue bindings verify. Denied
+IAM inspection proves no permission gap; administrator evidence is pending.
+
+Next gate: compare administrator evidence, then seek separate approval of the
+[concrete proposal](ui-shared-code-live.md) and review JSON. Proposed maximum 20
+question attempts (18 paired + Q18 verification + protected original rollback),
+expiring 2026-11-11T23:59:00Z, entirely separate from M1–M5 histories. Success leaves
+the matching candidate/retail deployment; failure requires original restoration.
+No deployment, upload, IAM change or billable call is authorized by offline readiness.
+
 ## Milestone 1: local semantic execution — complete (`64cbea4`)
 
 1. Inspect the repository and active Python environment; preserve existing work.
@@ -87,6 +109,6 @@ The approved [plan](milestone-5-plan.md) is implemented for local review on `fea
 
 11. Approved `q18-recovery-v1` executed once from fresh original v10: deployed pinned candidate READY v11, Q18 **110.25 USD [2025-03-31,2025-04-01)** and all **36/36** cases passed; client p95 **13.381s**, complete diagnostics. Mandatory original restore/smoke and separate read-only final verification passed on READY v12. Recovery **38/38**, aggregate **40/40**, no retries/failures/incomplete calls. All 122 protected files and historical ledgers/claims unchanged. No code/upload/IAM/dataset changes during execution.
 
-Exact next task: the agreed development proof of concept is complete. Any further development requires a separately defined scope. Preserve the recorded v12 checkpoint and all closed histories; no invocation allowance remains and no new milestone is started. Production authorization, broader language coverage, long-duration operational hardening and measured cost remain outside the verified scope.
+Exact next task: M1–M5 remain complete. For the separately requested UI follow-on, compare administrator permission evidence and obtain explicit approval of the shared-release/20-attempt proposal before deployment or billable questions. Preserve the verified original-v12 checkpoint and all closed historical allowances; no new milestone is started. Production authorization, broader language coverage, long-duration operational hardening and measured cost remain outside the verified scope.
 
 Cube remains a later adapter extension outside milestones 2–5 unless separately requested.

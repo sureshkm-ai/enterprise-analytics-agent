@@ -8,6 +8,25 @@ Milestone 3 merged in [PR #2](https://github.com/sureshkm-ai/enterprise-analytic
 
 ## Run locally
 
+For the new **Analytics Workbench** browser UI, run this from the repository root
+after installing the existing Poetry environment:
+
+```sh
+poetry run python -m enterprise_analytics_agent.ui
+```
+
+Open **http://127.0.0.1:8501**. The professional local interface includes a
+three explicit modes, suggested questions, exact result tables, execution details,
+a metric catalog, saved-run viewer and code guide. **Offline playground** uses a
+deterministic planner and temporary DuckDB samples with no AWS sessions. **Local
+agent** uses the existing BedrockAnalyticsAgent with canonical DuckDB data and makes
+billable Bedrock calls. **AWS AgentCore** uses the same agent with Athena. Both
+billable modes require a separately approved release/allowance and show cost notices
+before submission. The matching frozen candidate needs no rebuild/upload; actual
+AWS remains original v12, so shared live equivalence is pending. See
+[UI setup](docs/local-ui.md) and the [20-attempt proposal](docs/ui-shared-code-live.md).
+This follow-on UI scope does not change completed M1–M5 acceptance or their ledgers.
+
 Use Python 3.12 and Poetry 2 in the existing Conda environment. Check that Poetry reports the same environment before running tests:
 
 ```sh

@@ -2,7 +2,221 @@
 
 Updated: 2026-11-10 (America/Chicago).
 
-## Current milestone and repository state
+## Current task: shared Bedrock UI — offline preparation complete; live approval pending
+
+Continued in the **original Mac checkout** on `feat/local-testing-ui`, based on
+`c6e6818fb134ed67249d3eab2bdec7149df2a57b`; branch/history and working tree inspected.
+The user's 19 existing UI files were backed up before changes at
+`/private/tmp/analytics-ui-before-20261110T202858Z`, with hashes and tracked diff.
+No branch switch, reset or unrelated overwrite. The downloaded preflight patch
+passed forward `git apply --check`, was applied once, then passed reverse checking.
+Subsequent implementation intentionally extends its files.
+
+Completed three explicit UI modes: deterministic/AWS-free offline playground,
+billable local `BedrockAnalyticsAgent` with canonical DuckDB, and billable shared
+AgentCore/Athena. Both use the existing agent/catalog/v2 contracts/guard/tools;
+cost notices precede submission. Browser scope/config/history overrides are rejected.
+No runtime/metric/contract/dependency change or artifact rebuild is required.
+
+The accepted candidate's **25-file** common closure matches exactly, fingerprint
+`aefa4ffa38d1d52ad152e98e0293356221bc964be86e3022c12c6871545830be`.
+Original ZIP differs in the Q18 agent/question files. Frozen dependency versions/
+checksums match, with macOS versus ARM64 platform limits explicit. Canonical
+seven-table bytes/schemas/provenance and 36 goldens verify. Offline report:
+`artifacts/ui-shared/preparation/offline-release-audit.json`, SHA
+`ae2e41af49661cc82a2fbf2f1f59e2f0eaf5ce3fa5bf07692902bfc9a64237f9`.
+Prepared exact candidate/rollback assembly copies and inventory at
+`artifacts/ui-shared/deployment/`; pins are in [the runbook/proposal](ui-shared-code-live.md).
+
+Fresh **read-only** analytics-dev STS verified account `453711491609`/us-west-2.
+Evidence at `artifacts/ui-shared/preflight/20261110T204310Z/`: actual Runtime/DEFAULT
+**READY v12**, stack **UPDATE_COMPLETE**, exact original artifact/config/templates/
+parameters, both policies, seven-day retention and process guards passed. Candidate
+S3 version and fresh canonical downloads verify. Nova Lite profile/routing/availability
+passed. Additional `20261110T212343Z/publication-proof.json` verifies eight latest
+S3 identities, seven exact single-object table prefixes and seven Glue bindings.
+
+Effective-permission evidence is still pending: IAM simulation and runtime inline
+policy inspection returned AccessDenied. These establish **inspection limits, not
+missing Bedrock/S3 permission**. The user will supply administrator evidence; compare
+it before proposing any specific correction. No profile/permission change, deployment,
+upload, Athena execution, Runtime invocation or billable model call occurred.
+Matching retained source is established; the active original-v12 release differs,
+so shared live equivalence remains pending.
+
+Persistent `ui-shared-live-v1` counting reserves/fsyncs question and SDK receipts
+before dispatch; no billable retries, failures/unknowns retained, UTC expiry and
+protected verification/rollback slots enforced. Both modes share one new allowance.
+Release records bind actual observed versions; strict source/config/data checks run
+before every new attempt. Offline paired reporting judges complete frozen plans/
+results and missing diagnostics. The operator workflow uses bounded exact-state
+deployment reconciliation, retains failures/interruption evidence, and restores the
+independent original on deployment failure. Evaluation failure requires the explicit
+rollback/smoke commands. Cleanup works independently of candidate/canonical inputs
+and after expiry; new billable smoke still obeys expiry.
+
+The proposed new campaign `ui-shared-retail-v1-01` is **0/20, uncreated**, expiry
+**2026-11-11T23:59:00Z**: Q18 verification 1 + paired regular questions 18 + protected
+original-restoration smoke 1. All five historical ledger files and claims remain
+unchanged: M4 28/40; original M5 closed 38/40; repair 1/40; continuation 1/39;
+recovery closed 38/38, aggregate repair 40/40. Success would leave the matching
+candidate/retail deployment; rollback restores original/parity and disables shared
+billable modes. No remainder is reused and no new milestone begins.
+
+### Actual local verification for this preparation
+
+| Command actually run | Result |
+| --- | --- |
+| Environment assertion / `poetry run python` | Existing enterprise-analytics Conda Python 3.12.16, Poetry 2.3.1; no dependency/environment replacement. |
+| `poetry check --lock` | Passed: All set. |
+| `poetry run pytest` | **1,331 passed, 85 explicitly gated skips in 47.24s**. No AWS/live markers. |
+| `poetry run ruff check .` | Passed. |
+| `poetry run ruff format --check .` | Passed: 147 files formatted. |
+| `poetry run mypy src tests` | Passed: 117 source files. |
+| `node --check src/enterprise_analytics_agent/ui/assets/app.js` | Passed. |
+| `poetry run python -m infrastructure.cdk.app --config infrastructure/cdk/config.example.json --outdir artifacts/ui-shared/verification/cdk.data.out` | Passed offline; separate output, no account lookup. |
+| `poetry run python -m infrastructure.cdk.agentcore_app --config infrastructure/cdk/agentcore.config.example.json --phase foundation --outdir artifacts/ui-shared/verification/cdk.foundation.out` | Passed offline; reviewed assemblies untouched. |
+| `poetry run python -m infrastructure.agentcore.ui_workflow prepare --review evaluations/ui-shared/review.proposed.json --output artifacts/ui-shared/deployment` | Passed; copies/validates retained candidate and original inventories, no upload/build/deployment. |
+| Endpoint regression, original versus fixed | Original **1 failed**, corrected **1 passed**; isolated module replacement, no production rollback. Logs: `/private/tmp/ui-endpoint-regression-20261110/`. |
+| Shared release/publication/workflow/source tests | 90 passed; state drift, exact version/template/config, missing source, bounded reads, failed/interrupted/expired deployment and independent rollback. |
+| Shared operator/HTTP boundary + paired report | 36 + 16 passed; full injected command paths, all metrics, scope/session boundaries, canonical drift before reservation, full Q18 plans/values and offline report gates. |
+| Documentation and preservation audit | 7 Markdown files, 53 local links, 20 shell blocks parsed with `zsh -n` without execution; fences/newlines valid. 121 present protected files and 25 session snapshots unchanged. The old untracked `milestone-5-q18-fix.patch` was already absent; not recreated. |
+| `git diff --check` / staged scope review | Passed. No frozen assets, credentials or generated data staged. |
+
+The first sandbox baseline hit 17 loopback-binding errors; the permitted rerun uses
+loopback for offline HTTP fixtures. Final full-suite failures in two pre-existing
+checkpoint tests were fixed by distinguishing Runtime reads from the new publication
+reads and adding their own bounded retry/diagnostic regressions. Final tests above
+cover the current code. Logs are under `/private/tmp/ui-shared-*`; ignored raw cloud
+evidence remains local. Default CI stays AWS-free. No hosted CI is claimed for this
+unpushed UI commit.
+
+
+Browser checks used the actual default offline server: one fresh question rendered
+exact typed DuckDB results with generated-sample labeling; local Bedrock and AWS cost
+notices appeared before submission and their buttons stayed disabled; switching
+modes cleared the visible prior answer. Desktop 1440px and mobile 390px had no document
+overflow. Browser network evidence showed only localhost requests; the sole console
+error was the harmless missing favicon (404). Separate screenshot:
+`docs/images/analytics-workbench-shared-ui.png`; original screenshot preserved.
+Task-owned browser/server were stopped. No live flags were enabled.
+
+### Exact next task for the UI follow-on
+
+Receive/compare active administrator permission evidence for the existing SSO
+InvokeModel actions/resources and runtime candidate-code grant. Then obtain explicit
+approval of [the concrete deployment/20-attempt proposal](ui-shared-code-live.md)
+before any mutation or billable question. Repeat fresh original-v12/process/source/
+publication checks at execution time; bind the actual resulting candidate version.
+Keep this implementation commit local. Historical M1–M5 completion/CI evidence below
+does not cover these new UI changes.
+
+## Historical supplied preflight patch — isolated handoff evidence
+
+The user completed local UI testing and requests live AWS testing with a common
+codebase. GitHub main remains `c6e6818`; the remote branch list does not yet contain
+the local UI branch. Continued from the previously supplied UI patch in an isolated
+`fix/ui-aws-readiness` branch, preserving the user's separate original checkout.
+
+Found and fixed a UI preflight bug: the actual AgentCore endpoint response exposes
+`liveVersion`, not `agentRuntimeVersion`. The previous fake response reproduced the
+same incorrect field as the implementation. The updated fixture is now validated
+against the installed SDK's `GetAgentRuntimeEndpoint` response shape. Its successful
+dispatch regression failed with `KeyError` against the original patch, then passed
+with the one-field correction. Runtime/endpoint identity and all other strict
+checkpoint gates remain intact; no retry, quota or IAM change was introduced.
+
+Added `infrastructure.agentcore.source_audit`, an offline checksum-pinned ZIP comparison
+against the local runtime/agent/DuckDB static import closure and entrypoint. The current
+closure contains **25** files; this is an explicitly scoped comparison, not the earlier
+28-file preservation inventory or a claim that all packaged operator files match.
+It follows package/relative imports without executing inspected code and returns
+nonzero on changed/missing source or invalid archive/checksum. Actual restoration and
+candidate ZIP audits still require the retained files in the original checkout.
+
+[The shared-code handoff](ui-shared-code-live.md) records the important distinction:
+the two modes currently share semantic code, but local bypasses the Bedrock agent,
+and the last recorded AWS original-v12 archive predates the Q18-corrected source.
+For identical agent behavior, reuse `BedrockAnalyticsAgent` in both runners with
+DuckDB/Athena adapters, make local Bedrock usage explicit and counted, and match the
+actual release/configuration and verified data. That runner/release alignment is
+**not yet implemented or deployed** by this preflight patch. The detailed task is
+prepared for Codex in the original checkout, which has the artifacts and AWS session.
+
+Verification: **1161 passed, 85 gated skips in 96.29s**; targeted UI/audit tests
+**75 passed**. `poetry check --lock`, Ruff lint/format (**137 files**),
+`mypy src tests` (**108 source files**) and `git diff --check` passed. Official AWS
+endpoint/Converse documentation was consulted. No AWS SDK operation, invocation,
+profile/IAM change, source upload, deployment, push or merge occurred. Historical
+campaigns, frozen assets, runtime source and semantic definitions remain unchanged.
+
+Next: apply this incremental patch once in the original UI checkout and follow
+`docs/ui-shared-code-live.md`. Complete shared-agent wiring and read-only release,
+configuration, data and permission verification; produce the concrete new bounded
+live proposal before deployment/invocation. Keep the existing original-v12 guard until
+a separately reviewed replacement is implemented; do not bypass it to enable a toggle.
+
+## Historical supplied local UI — isolated implementation evidence
+
+The user separately requested a professional UI with a **Local DuckDB / AWS AgentCore**
+toggle. Prepared `feat/local-testing-ui` in an isolated snapshot of main
+`c6e6818fb134ed67249d3eab2bdec7149df2a57b`; all 155 baseline tracked file blobs matched
+the GitHub tree before editing. This environment is not the original Mac checkout.
+The portable patch applies to the real main tree; the local snapshot's Git ancestry
+is not a replacement for the repository history.
+
+[PR #7](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/7) is merged at
+that SHA, and [main CI 42876498184](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42876498184)
+passed for it. This closes the earlier documentation branch's pending merge/CI state.
+Those hosted results cover the baseline, **not this new UI implementation**.
+
+Implemented a loopback browser workspace with responsive styling, backend toggle,
+suggested questions, exact typed result tables, Execution/JSON tabs, saved-run
+upload/replay/download, a metric catalog and a code guide. Local mode uses the existing
+question guard, generated temporary Parquet and real DuckDB semantics; it calls no LLM
+or AWS service. AWS mode uses only analytics-dev and the existing original-v12 strict
+checkpoint/invocation adapters. It requires a separately approved 1–20-call review,
+expiry, persistent UI ledger/reservation receipts and the existing operator/deployment
+leases. No automatic invocation retries or infrastructure mutation route was added.
+See [local-ui.md](local-ui.md) for launch commands, examples and the concrete live proposal.
+
+Verification actually run in Python 3.12 / Poetry 2.3.1, using the existing locked
+environment and this checkout's `src` on PYTHONPATH:
+
+- `poetry run pytest -q`: **1155 passed, 85 gated skips in 109.21s**. The 69 new UI
+  cases cover independent accounting fixtures, HTTP/input boundaries, replay/missing
+  diagnostics, failed/uncertain/duplicate dispatch, review/receipt binding and AWS
+  adapter behavior with fake transports. No live marker was enabled.
+- `poetry check --lock`, `poetry run ruff check .`,
+  `poetry run ruff format --check .` (**134 files**),
+  `poetry run mypy src tests` (**107 source files**) and `git diff --check` passed.
+- `node --check src/enterprise_analytics_agent/ui/assets/app.js` passed. Node is a
+  verification tool only, not an application dependency.
+- The binary portable patch applied cleanly to a separate baseline worktree; all
+  19 resulting files matched this implementation byte-for-byte. Documentation
+  relative links and fenced blocks passed inspection.
+- Browser QA passed real local single/multi-metric questions, execution details,
+  metric catalog, AWS-disabled routing, JSON download and saved-response upload/replay.
+  Layout had no document overflow at **1348px** and **449px** CSS widths; the narrow
+  backend toggle remained usable. A screenshot is retained in `docs/images/`.
+  The browser's DevTools policy prevented device emulation; the narrow breakpoint
+  was checked using ordinary browser zoom. Test servers were stopped afterward.
+
+All existing application/runtime source, dependencies, evaluation inputs, goldens and
+infrastructure files remain byte-identical to the main snapshot. Only documentation
+is edited among pre-existing files; UI implementation/tests and the guide/screenshot
+are additions. Original ignored ZIPs, deployment assemblies and historical ledgers
+were not available in this isolated checkout and were not opened, rebuilt or modified.
+No AWS operation, invocation, profile/IAM change, deployment, push or merge occurred.
+M1–M5 completion and all historical live accounting remain unchanged.
+
+Next: apply/review the patch in the original checkout, launch local mode, then commit,
+push and review hosted CI if desired. Optional AWS testing needs explicit approval
+of the new scope/cap/expiry and a fresh original-v12 preflight with retained files;
+the completed M5 aggregate cannot fund it. Local UI readiness is verified; new UI
+live acceptance and hosted CI have not run.
+
+## Completed milestones and retained repository history
 
 **Milestones 1–5 are complete for the agreed development proof of concept.** M5 is implemented, deployed against the frozen retail candidate, live-validated, merged into main and verified by hosted CI. [PR #6](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/6) merged **November 10, 2026**, at [`c0d2c5a569e2d242bf840a715c31050888b579ab`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/c0d2c5a569e2d242bf840a715c31050888b579ab), containing completion commit [`7905d13f59e13d0b5a1b11231348721471a19411`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/7905d13f59e13d0b5a1b11231348721471a19411). [Main CI 42872516193](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42872516193) passed for that exact merge; GitHub API metadata and local merge ancestry confirm the associations. These hosted results cover the named merge, not this documentation closeout.
 
@@ -941,4 +1155,4 @@ Milestone 2 introduced no AWS credentials, calls, deployment, Athena adapter, or
 
 ## Exact next task
 
-The agreed development proof of concept for **Milestones 1–5 is complete**, merged and hosted-CI verified. Any further development requires a separately defined scope. Preserve the recorded original READY v12 checkpoint, frozen assets/goldens and all closed ledgers/claims. **Recovery 38/38 and aggregate repair 40/40 are exhausted**; no rerun, additional demonstration, quota reset, AWS operation or next milestone is authorized by closeout. Production-readiness limitations above remain explicit.
+The agreed development proof of concept for **Milestones 1–5 is complete**, merged and hosted-CI verified. The user separately defined the shared UI follow-on; its exact next task is the permission-evidence review and explicit deployment/budget approval recorded at the top of this document. Other development still requires a separately defined scope. Preserve the recorded original READY v12 checkpoint, frozen assets/goldens and all closed ledgers/claims. **Recovery 38/38 and aggregate repair 40/40 are exhausted**; no rerun, additional demonstration, quota reset, AWS operation or next milestone is authorized by closeout. Production-readiness limitations above remain explicit.

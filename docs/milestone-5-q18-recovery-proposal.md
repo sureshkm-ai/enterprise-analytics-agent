@@ -31,7 +31,7 @@ Usage is **38/38 new, aggregate 40/40**: probe 1 + suite 36 + protected smoke 1,
 all completed, zero invocation failures/retries/timeouts/incomplete reservations.
 The recovery claim remains retained and retail dispatch closed. **Do not replay
 these commands, restore again or reset a ledger.** M5 is complete for the agreed
-development scope; PR #6 remains unmerged for review, not production-ready.
+development proof of concept. [PR #6](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/6) merged completion `7905d13` on November 10, 2026, at [`c0d2c5a`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/c0d2c5a569e2d242bf840a715c31050888b579ab); [main CI 42872516193](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42872516193) passed for the merge. Milestones 1–5 are complete. Further development requires a separately defined scope; production readiness is not established. The recorded v12 checkpoint was not rechecked against AWS during this documentation closeout.
 
 Evidence root: `artifacts/milestone-5/q18-recovery-v1/operations/20261110T173634Z/`.
 Review `live/probe.json`, `live/suite/{report.json,summary.md,attempts.jsonl}`,
@@ -208,4 +208,4 @@ M5 can close only after the Q18 probe and all 36 suite cases meet unchanged gate
 original parity configuration/artifact/templates/policies/retention are verified,
 and the counted North 28.50 / South 13.00 USD smoke passes. Record observed versions,
 actual usage, raw report paths, commit and exact CI links; preserve earlier failed
-attempts. Keep PR #6 unmerged until this evidence is reviewed.
+attempts. This historical review gate was subsequently satisfied; PR #6 merged as recorded above. The agreed development scope is complete, and further development requires a separately defined scope.

@@ -91,3 +91,78 @@ The inbound payload is `AgentRequest(question=...)`, with extra fields rejected.
 Python 3.12 Linux ARM64 direct-code deployment uses a deterministic ZIP of the project wheel and checksum-locked main dependency wheels from Poetry. A standard HTTP server implements `/ping` and `/invocations` on port 8080; no extra agent framework is required. The workload SDK provider supplies runtime credentials. A separate query-role client refreshes its 15-minute STS assumption before expiry; no local profile/SSO configuration is packaged or selected by deployed code.
 
 Two new infrastructure phases prepare a private retained code bucket/execution role and then the Runtime plus inbound policies. A source-controlled, optional extra query-role principal adds only the runtime role while preserving developer trust in the deployed data stack. An offline template comparison shows only that trust policy changes in the data layer. The [AgentCore plan](agentcore-deployment-plan.md) records exact resources, IAM/deployment prerequisites, source regions/model routing, artifact/version binding, commands, costs, acceptance, and cleanup. The approved foundation, additive query trust, retained code upload and Runtime deployment are now in place. Following administrator-applied execution-policy corrections and active-report verification, the recovery passed all live gates using 28/40 invocations. Both inbound policies and seven-day log retention verify, and corrected parity-v1 is restored. Production authorization and operational hardening remain outside this development validation.
+
+## Operator retail evaluation
+
+Milestone 5 adds an operator-side question client and a versioned retail suite, target, golden results, judge and report. It preserves the deployed runtime, four semantic tools, public v1/v2/agent contracts and governed calculations. Target files select an endpoint and expected dataset/model/reference date; only the question enters the invocation payload. SDK integration, canonical S3 acquisition and read-only checkpoint verification remain in adapters. Replay, report generation and fixture tests create no SDK clients.
+
+The independent oracle decodes verified canonical Parquet into rows and uses its own tenant-scoped dictionaries, integer-cent contribution ledger and final Decimal rounding. It does not import production generators, adapters, catalog calculations or rounding helpers. Frozen goldens bind the ready manifest/object identifiers, schemas, checksums, source inventory, oracle source, questions and contribution worksheet. Hand-authored fixtures and selected worksheet arithmetic provide independent evidence; local adapter agreement is an additional check.
+
+The first approved November 9 live campaign performed an environment-only Runtime update from parity-v1/t1/February 1 to retail-v1/retail_demo/April 1, retaining North/South and every other resource/code property. A fail-closed offline template comparison and fresh read-only checkpoint verify the reviewed delta. The M5 campaign uses locked/fsynced reservations before dispatch, no automatic invocation retries and a shared 40-call cap independent of M4. The last slot is reserved for a fresh-verified corrected-base smoke; retail dispatch closes when restoration begins. Per-attempt reports retain structured evidence and failures, exact values, diagnostic missingness, end-to-end/server latency, tokens and unique Athena scans. The campaign passed 35/36 cases; Q18 returned clarification instead of yesterday's required numeric result, leaving M5 open. At that historical checkpoint, corrected parity scope was restored and Runtime/DEFAULT were READY v6, stack UPDATE_COMPLETE; the independent parity smoke passed. M5 used 38/40 with retail dispatch closed; M4 remains 28/40. This validation does not establish production authorization or readiness.
+
+The first approved repair uploaded the reviewed candidate and verified READY v7, but local CDK hit its 1800-second bound before any candidate invocation. Mandatory original restoration/smoke passed: Runtime/DEFAULT READY v8, stack UPDATE_COMPLETE, original parity artifact/version/configuration, policies and seven-day retention. Repair usage is 1/40, retail-closed, 39 unspent and no reserve used. M5 remained open at that historical checkpoint; the completed recovery is recorded below. PR #6 remains unmerged. See [progress](progress.md) for actual evidence and the review handoff.
+
+### Resolved numeric plan fallback (Q18 source correction)
+
+A fully validated numeric question can no longer become a clarification solely because
+the model ends without a query. With no prior metric result or tool error, the server
+constructs the exact metric/period/group/filter plan from `QuestionScope`, enforces the
+remaining tool/time limits, and executes it once through the shared validated semantic
+tool boundary. Trusted identity remains a separate adapter argument. Results are rendered
+from adapter evidence; `resolved-plan-` record IDs distinguish server-planned work without
+fabricating model tool-use turns. No additional model call or hidden retry is added.
+Ambiguous/unsupported questions, partial results, metadata selection and error behavior
+retain their existing handling. See [Q18 repair preparation](milestone-5-q18-repair.md);
+the separately uploaded candidate contains this change. Its later recovery passed
+Q18 and the full frozen live suite, as recorded below; earlier timeout evidence remains historical.
+
+### Operator deployment reconciliation and continuation
+
+The local controller observes exact CloudFormation template/parameters and the complete
+Runtime/DEFAULT checkpoint while supervising an owned CDK process group. A stalled CLI
+can be stopped after independently proven AWS success; the controller reaps it and repeats
+strict verification before proceeding. CLI success or READY alone is insufficient. Failures,
+rollback, stale/unavailable verification and unresolved updates fail closed. A deployment
+lock, durable owned-process journal and bounded cleanup prevent overlapping updates.
+
+The approved `q18-continuation-v1` freshly verified original v8, reused the frozen
+candidate/version and preserved its closed parent 1/40. Candidate deployment/reconciliation
+passed on v9, then an additional checkpoint raised ConnectTimeoutError before candidate
+dispatch. Original restoration/smoke passed on READY v10, stack UPDATE_COMPLETE. The
+continuation ledger is 1/39 and closed; aggregate 2/40 leaves38 unspent. A durable claim
+and whole-operator lease prevented duplicate/concurrent work. The exact failed SDK
+operation/endpoint was not recorded; no IAM or model cause is established. The unchanged
+39-call sequence could not fit the remainder at that continuation checkpoint, so
+live acceptance remained pending until the later approved recovery. No automatic
+retry/reset/budget expansion was authorized. See [the execution record](milestone-5-q18-continuation-proposal.md).
+
+### Executed v10 recovery operator correction
+
+The operator now consumes the deployment controller's final strict proof directly,
+uses pooled/deadline-bound retries for allowlisted reads (including STS at invocation
+setup), and records operation-level diagnostics without payloads or credentials.
+Runtime invocation-client construction is also journaled without retries; late
+setup fails before dispatch and a raw single-attempt client is reused per target.
+Original restoration proof can be reused for 60 seconds within the same operator;
+mutation invalidates it and expiry requires verification. Invocation SDK retries
+remain disabled. A global operator lease spans selectors. The reviewed
+q18-recovery-v1 binds both closed histories and the prior claim, starts at freshly
+verified original v10, and caps new calls at 38 / aggregate 40. Q18 is both probe and
+warm-up; all 36 suite cases and the protected restoration smoke still run. This
+proposal was subsequently explicitly approved and executed once; results are below.
+It does not authorize any additional execution. See [scope and commands](milestone-5-q18-recovery-proposal.md).
+
+### Completed retail recovery and operational checkpoint
+
+The approved `q18-recovery-v1` at f223877 now passes the complete deployed acceptance:
+Q18 probe/warm-up, all 36 frozen cases, diagnostics/security/session/latency gates,
+and mandatory original restoration/smoke. The exact candidate ran on READY v11;
+the original parity-v1/t1/North/South/February-1 configuration and artifact are
+restored on Runtime/DEFAULT READY v12, stack UPDATE_COMPLETE. Both policies,
+seven-day retention, exact stack templates/parameters and retained infrastructure
+verify. No architecture, contract, metric or source change was needed in this execution.
+The new campaign is closed 38/38, aggregate repair 40/40. Historical M4/M5/repair
+ledgers, prior claims, goldens and frozen ZIP/S3 versions remain unchanged.
+This completes M5's agreed development validation; production authorization,
+broader language coverage and measured-cost claims remain outside that evidence.
+PR #6 remains unmerged. See [progress](progress.md) for actual reports and CI coverage.

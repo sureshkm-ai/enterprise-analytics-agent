@@ -1,0 +1,19 @@
+{
+  "base_template_sha256": "dd217890a37cc42e54499c3cc8cba91886ed5ca3dee5de9a5bb11a5e153c64bb",
+  "restore_template_sha256": "dd217890a37cc42e54499c3cc8cba91886ed5ca3dee5de9a5bb11a5e153c64bb",
+  "retail_template_sha256": "ecfbfa8a2f011ce6fe3c765c29660a81e02ad1ca765ad6e497e2502f1fe46ac3",
+  "changes": {
+    "dataset_version": {
+      "before": "parity-v1",
+      "after": "retail-v1"
+    },
+    "tenant_id": {
+      "before": "t1",
+      "after": "retail_demo"
+    },
+    "reference_date": {
+      "before": "2025-02-01",
+      "after": "2025-04-01"
+    }
+  }
+}

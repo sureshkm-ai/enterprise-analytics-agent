@@ -116,7 +116,8 @@ def question_scope(question: str, reference_date: date) -> QuestionScope:
     """Recognize a deliberately small, documented development question vocabulary.
 
     This is a fail-closed planning guard, not an LLM-supplied identity or calendar.
-    The model still selects tools and builds requests, which are checked independently.
+    Model-selected requests are checked independently. A complete numeric scope also
+    supplies a bounded server plan if the model ends without issuing a query.
     """
     text = question.casefold()
     metrics = tuple(

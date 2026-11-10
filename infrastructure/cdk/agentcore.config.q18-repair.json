@@ -1,0 +1,24 @@
+{
+  "account": "453711491609",
+  "profile": "analytics-dev",
+  "region": "us-west-2",
+  "resource_prefix": "enterprise-analytics-dev",
+  "runtime_name": "enterprise_analytics_dev_agent",
+  "approved_caller_arns": [
+    "arn:aws:iam::453711491609:role/aws-reserved/sso.amazonaws.com/us-west-2/AWSReservedSSO_PowerUserAccess_95483085e85e3a9b"
+  ],
+  "model_id": "us.amazon.nova-lite-v1:0",
+  "model_resource_arns": [
+    "arn:aws:bedrock:us-west-2:453711491609:inference-profile/us.amazon.nova-lite-v1:0",
+    "arn:aws:bedrock:us-east-1::foundation-model/amazon.nova-lite-v1:0",
+    "arn:aws:bedrock:us-east-2::foundation-model/amazon.nova-lite-v1:0",
+    "arn:aws:bedrock:us-west-2::foundation-model/amazon.nova-lite-v1:0"
+  ],
+  "query_role_arn": "arn:aws:iam::453711491609:role/enterprise-analytics-dev-query-executor",
+  "artifact_path": "artifacts/milestone-5/q18-repair-v1/candidate/agent.zip",
+  "artifact_sha256": "398124e89d2be1e9ce00f5b57c263fe2cdde0654527b27f949b9f3abb58029f1",
+  "runtime_config_path": "infrastructure/agentcore/runtime.retail-evaluation.json",
+  "idle_session_timeout_seconds": 300,
+  "max_lifetime_seconds": 900,
+  "log_retention_days": 7
+}

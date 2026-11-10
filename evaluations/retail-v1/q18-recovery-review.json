@@ -1,0 +1,57 @@
+{
+  "schema_version": "q18-recovery-review-v1",
+  "campaign_id": "milestone-5-q18-recovery-v1",
+  "ledger_path": "artifacts/milestone-5/q18-recovery-v1/runtime-invocations.jsonl",
+  "maximum": 38,
+  "aggregate_maximum": 40,
+  "prior_used": 2,
+  "probe_is_warmup": true,
+  "repair_review_sha256": "14a817f1ba1ad2b2fa5b5b6c1cfb4aa6250513f971153003b9ddc5ca8b193401",
+  "parent_ledger_sha256": "4943c554d4a856621ef126389f7666bfcd2e32a16be2ef2cd024c0d4ab5d9ca5",
+  "parent_binding": {
+    "campaign_id": "milestone-5-q18-continuation-v1",
+    "ledger_path": "artifacts/milestone-5/q18-continuation-v1/runtime-invocations.jsonl",
+    "maximum": 39,
+    "aggregate_maximum": 40,
+    "prior_used": 1,
+    "review_sha256": "13f9bff2a91cc17fc5177e9e8d7814101231ab0d8fc9d839ec19d47cbaae3354",
+    "candidate_sha256": "398124e89d2be1e9ce00f5b57c263fe2cdde0654527b27f949b9f3abb58029f1",
+    "candidate_template_sha256": "faca6d23b85038d5c8ad16b1fe73c95b910d9d05c6a4fccf3be8ca82cd9eb368",
+    "candidate_version_record_sha256": "7c24d31c7368c6e78a1c4b9ddb1ca0ca156fcba9df57a90414a6a49d18ea7e48",
+    "parent_ledger_sha256": "6f39bc49361a718e221fd1bd4b38fc12c2b0c305cfa30246ef1a22005d5bf7e8",
+    "parent_binding": {
+      "campaign_id": "milestone-5-q18-repair-v1",
+      "ledger_path": "artifacts/milestone-5/q18-repair-v1/runtime-invocations.jsonl",
+      "maximum": 40,
+      "review_sha256": "14a817f1ba1ad2b2fa5b5b6c1cfb4aa6250513f971153003b9ddc5ca8b193401",
+      "candidate_sha256": "398124e89d2be1e9ce00f5b57c263fe2cdde0654527b27f949b9f3abb58029f1",
+      "candidate_template_sha256": "faca6d23b85038d5c8ad16b1fe73c95b910d9d05c6a4fccf3be8ca82cd9eb368",
+      "candidate_version_record_sha256": "7c24d31c7368c6e78a1c4b9ddb1ca0ca156fcba9df57a90414a6a49d18ea7e48"
+    },
+    "starting_checkpoint_sha256": "759ac09495e5be6f2bc49ef9e63f54d86f1fdc7bb232dc22cf50ee627659978b"
+  },
+  "parent_attempt_sha256": "a741c8a0bb6c7acfaebe0c3e2a92c43d8d8df3147c95a039561760dd7e4be137",
+  "candidate_sha256": "398124e89d2be1e9ce00f5b57c263fe2cdde0654527b27f949b9f3abb58029f1",
+  "candidate_template_sha256": "faca6d23b85038d5c8ad16b1fe73c95b910d9d05c6a4fccf3be8ca82cd9eb368",
+  "candidate_version_id": "V5Q8e8e6w2tkkVghXn.BrFs1mqQU.Ncu",
+  "candidate_version_record_sha256": "7c24d31c7368c6e78a1c4b9ddb1ca0ca156fcba9df57a90414a6a49d18ea7e48",
+  "starting_checkpoint": {
+    "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_dev_agent-HlWywlG60h",
+    "runtime_version": "10",
+    "endpoint_version": "10",
+    "dataset_version": "parity-v1",
+    "tenant_id": "t1",
+    "allowed_regions": [
+      "North",
+      "South"
+    ],
+    "reference_date": "2025-02-01",
+    "configuration_sha256": "67056f86738cdfec508a9c00cd99c42767a8360b417c31928eb626eca3e530b3",
+    "template_sha256": "dd217890a37cc42e54499c3cc8cba91886ed5ca3dee5de9a5bb11a5e153c64bb",
+    "code_sha256": "51eaeac6b9eb107f4634aea9e3180fa1db7dce1380fbe166415fbfed8185ded1",
+    "code_version_id": "HSRXiFjg0w2W77InULH4.fn32Y.JH8b9",
+    "resource_policies_verified": true,
+    "retention_days": 7,
+    "source_checkpoint_commit": "75d7c9f688f8e0746b17b797016947e1ed41f4bb"
+  }
+}

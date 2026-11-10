@@ -1,0 +1,141 @@
+"""Offline review by default; upload binding and execution require separate explicit gates."""
+
+import argparse
+import json
+import signal
+import sys
+from collections.abc import Iterator
+from contextlib import contextmanager
+from pathlib import Path
+from types import FrameType
+
+from enterprise_analytics_agent.retail_evaluation.campaign import CampaignLedger
+from enterprise_analytics_agent.retail_evaluation.operator_errors import error_record
+from enterprise_analytics_agent.retail_evaluation.repair_config import (
+    ContinuationReview,
+    RecoveryReview,
+    load_review,
+    select_continuation,
+    select_recovery,
+    select_repair,
+)
+
+
+@contextmanager
+def interruption_guard() -> Iterator[None]:
+    """Make ordinary SIGTERM follow the same restoration path as Ctrl-C."""
+
+    def terminate(signum: int, frame: FrameType | None) -> None:
+        raise KeyboardInterrupt("termination requested; restoring the original runtime")
+
+    previous = signal.signal(signal.SIGTERM, terminate)
+    try:
+        yield
+    finally:
+        signal.signal(signal.SIGTERM, previous)
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--campaign", required=True)
+    action = parser.add_subparsers(dest="action", required=True)
+    verify = action.add_parser("verify-offline")
+    verify.add_argument("--version-record", type=Path)
+    bind = action.add_parser("bind-upload")
+    bind.add_argument("--verify-upload", action="store_true", required=True)
+    bind.add_argument("--upload-response", type=Path, required=True)
+    bind.add_argument("--output", type=Path, required=True)
+    for name in ("run", "restore"):
+        command = action.add_parser(name)
+        command.add_argument("--invoke-live", action="store_true", required=True)
+        command.add_argument("--version-record", type=Path, required=True)
+        command.add_argument("--report-dir", type=Path, required=True)
+    args = parser.parse_args(argv)
+    try:
+        continuation: ContinuationReview | RecoveryReview | None = None
+        if args.campaign not in {"q18-repair-v1", "q18-continuation-v1", "q18-recovery-v1"}:
+            raise ValueError("unknown reviewed campaign")
+        review = load_review()
+        selector = select_recovery if args.campaign == "q18-recovery-v1" else select_continuation
+        if args.action == "verify-offline":
+            from enterprise_analytics_agent.retail_evaluation.deployment import (
+                review_candidate_assemblies,
+            )
+
+            evidence: dict[str, object] = {
+                "review_sha256": review.review_sha256,
+                "artifacts": review_candidate_assemblies(review),
+            }
+            if args.campaign in {"q18-continuation-v1", "q18-recovery-v1"}:
+                _, _, binding, continuation = selector(args.campaign, args.version_record)
+                evidence.update(
+                    continuation=continuation.model_dump(mode="json"),
+                    continuation_review_sha256=continuation.review_sha256,
+                    campaign=CampaignLedger(binding=binding).summary(),
+                )
+            print(json.dumps(evidence, indent=2))
+            return 0
+        if args.action == "bind-upload":
+            if args.campaign in {"q18-continuation-v1", "q18-recovery-v1"}:
+                raise ValueError(
+                    "continuation reuses the existing verified upload; no upload binding"
+                )
+            from enterprise_analytics_agent.adapters.repair_operations import (
+                verify_uploaded_version,
+                write_version_record,
+            )
+
+            # Constructing/reading this model never invents a production VersionId.
+            uploaded = json.loads(args.upload_response.read_bytes())
+            if not isinstance(uploaded, dict):
+                raise ValueError("upload response must be an object")
+            version = verify_uploaded_version(review, uploaded)
+            write_version_record(args.output, version)
+            print(version.model_dump_json(indent=2))
+            return 0
+        if args.campaign in {"q18-continuation-v1", "q18-recovery-v1"}:
+            review, version, binding, continuation = selector(args.campaign, args.version_record)
+            ledger = CampaignLedger(binding=binding)
+            if args.action == "restore":
+                ledger.require_attempt()
+            elif ledger.attempt_path.exists():
+                raise ValueError("continuation already claimed; use restoration-only recovery")
+        else:
+            review, version, _ = select_repair(args.campaign, args.version_record)
+        if args.report_dir.exists():
+            raise ValueError("report directory already exists; preserve previous evidence")
+        from enterprise_analytics_agent.adapters.repair_operations import operations_for
+        from enterprise_analytics_agent.retail_evaluation.repair_workflow import run_repair
+
+        with interruption_guard():
+            operations = operations_for(
+                review, version, args.report_dir, restore_only=args.action == "restore"
+            )
+            if continuation is not None:
+                state = run_repair(
+                    review,
+                    version,
+                    operations,
+                    args.report_dir,
+                    restore_only=args.action == "restore",
+                    continuation=continuation,
+                )
+            else:
+                state = run_repair(
+                    review,
+                    version,
+                    operations,
+                    args.report_dir,
+                    restore_only=args.action == "restore",
+                )
+        print(json.dumps(state, indent=2))
+        if args.action == "restore":
+            return 0 if state["restored"] and state["smoke_passed"] else 1
+        return 0 if state["accepted"] else 1
+    except Exception as exc:
+        print(json.dumps(error_record(exc, "repair-command"), indent=2), file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

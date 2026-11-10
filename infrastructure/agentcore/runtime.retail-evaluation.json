@@ -1,0 +1,24 @@
+{
+  "account": "453711491609",
+  "region": "us-west-2",
+  "model_id": "us.amazon.nova-lite-v1:0",
+  "query_role_arn": "arn:aws:iam::453711491609:role/enterprise-analytics-dev-query-executor",
+  "database": "enterprise_analytics_dev",
+  "workgroup": "enterprise-analytics-dev",
+  "source_bucket": "enterprise-analytics-dev-453711491609-us-west-2-data",
+  "results_bucket": "enterprise-analytics-dev-453711491609-us-west-2-results",
+  "dataset_version": "retail-v1",
+  "reference_date": "2025-04-01",
+  "principal_id": "analytics-development-runtime",
+  "tenant_id": "retail_demo",
+  "allowed_regions": [
+    "North",
+    "South"
+  ],
+  "max_iterations": 6,
+  "max_tool_calls": 16,
+  "max_output_tokens": 1024,
+  "max_total_tokens": 12000,
+  "timeout_seconds": 90,
+  "query_timeout_seconds": 60
+}

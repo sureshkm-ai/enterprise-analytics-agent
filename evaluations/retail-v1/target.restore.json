@@ -1,0 +1,10 @@
+{
+  "profile": "analytics-dev",
+  "account": "453711491609",
+  "region": "us-west-2",
+  "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_dev_agent-HlWywlG60h",
+  "qualifier": "DEFAULT",
+  "model_id": "us.amazon.nova-lite-v1:0",
+  "dataset_version": "parity-v1",
+  "reference_date": "2025-02-01"
+}

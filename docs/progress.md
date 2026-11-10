@@ -1,16 +1,407 @@
 # Progress
 
-Updated: 2026-11-08 (America/Chicago).
+Updated: 2026-11-10 (America/Chicago).
 
 ## Current milestone and repository state
 
-**Milestone 4 — implemented, deployed, live-validated, merged into main and verified by hosted CI for the agreed development scope.** [PR #4](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/4) merged on November 8, 2026, at [`47c3afc1dd948fa8ddcb074151b9f22af31dad48`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/47c3afc1dd948fa8ddcb074151b9f22af31dad48), containing completion commit [`51c1d4ccb0581ed35e2cace9bafb758bf1f05dbf`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/51c1d4ccb0581ed35e2cace9bafb758bf1f05dbf). The completion commit passed [push CI 42515746487](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42515746487) and [PR CI 42515722610](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42515722610); the merge passed [main CI 42516820774](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42516820774). GitHub API metadata confirms the PR/commit/run associations. Recorded live evidence remains **18 + 3 + 3 tests plus warm-up**, **28/40 invocations used**, corrected `parity-v1` restored, Runtime `enterprise_analytics_dev_agent-HlWywlG60h` and DEFAULT **READY on version 4**, and runtime stack UPDATE_COMPLETE. The reviewed artifact/S3 VersionId, M3 infrastructure, query trust and permissions remain unchanged. No AWS state or test result was refreshed during this documentation-only update; no production-readiness claim.
+**Milestone 5 is complete for the agreed development scope: implemented, deployed against the frozen retail candidate, live-validated, and original parity configuration restored.** The approved `q18-recovery-v1` run passed its Q18 probe/warm-up, **all 36 unchanged suite requests**, reporting gates and protected original-restoration smoke. Candidate Runtime/DEFAULT were READY **v11**; original Runtime/DEFAULT are now freshly verified **READY v12**, runtime stack **UPDATE_COMPLETE**. Recovery is closed at **38/38 new calls**, aggregate repair **40/40** including the two historical calls, with no failures/retries/incomplete reservations. Original M5 **38/40**, M4 **28/40**, both earlier closed repair histories, frozen ZIPs/versions, goldens and permissions remain unchanged. PR #6 remains open/unmerged for review; completion is not a production-readiness claim.
 
-Local synchronization was verified: clean `main` at `47c3afc1dd948fa8ddcb074151b9f22af31dad48`; `git fetch origin` and `git merge --ff-only origin/main` succeeded (already up to date), with HEAD/main/origin/main equal. Created `docs/milestone-4-merge-status` from that commit without resetting or discarding work. This new documentation commit stays local and is **not covered** by the three earlier CI runs.
+The user approved execution at [`f2238775e724630af14bcc0c14ac4cdc150f821c`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/f2238775e724630af14bcc0c14ac4cdc150f821c). Its successful [push CI 42861036450](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42861036450) and [PR CI 42861051831](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42861051831) were freshly verified against that exact SHA. They cover the reviewed operator checkpoint, not this outcome-documentation commit. The outcome-documentation commit has a separate normal push/CI handoff, whose actual results are reported in the session handoff. Earlier implementation `8f6b271` passed [push CI 42860069230](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42860069230) and [PR CI 42860082151](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42860082151); those remain historical preparation evidence.
+
+**Milestone 4 — implemented, deployed, live-validated, merged into main and verified by hosted CI for the agreed development scope.** [PR #4](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/4) merged on November 8, 2026, at [`47c3afc1dd948fa8ddcb074151b9f22af31dad48`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/47c3afc1dd948fa8ddcb074151b9f22af31dad48), containing completion commit [`51c1d4ccb0581ed35e2cace9bafb758bf1f05dbf`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/51c1d4ccb0581ed35e2cace9bafb758bf1f05dbf). The completion commit passed [push CI 42515746487](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42515746487) and [PR CI 42515722610](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42515722610); the merge passed [main CI 42516820774](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42516820774). GitHub API metadata confirms the PR/commit/run associations. Recorded live evidence remains **18 + 3 + 3 tests plus warm-up**, **28/40 invocations used**, corrected `parity-v1` restored, Runtime `enterprise_analytics_dev_agent-HlWywlG60h` and DEFAULT **READY on version 4**, and runtime stack UPDATE_COMPLETE. The reviewed artifact/S3 VersionId, M3 infrastructure, query trust and permissions remain unchanged. Historical live tests were not rerun; M5 read-only verification below freshly confirms the deployment checkpoint without modifying it. No production-readiness claim.
+
+Milestone 4's documentation handoff is also merged: Git records PR #5 at `d7e0f19e646f239bcf2f2641cb829cd1090be562`, with parents `47c3afc` and `39523f402c6cdf499b162efaccff72282fc8f360`. After `git fetch origin` and `git merge --ff-only origin/main`, clean main/HEAD/origin/main matched `d7e0f19` (already up to date). Created the requested feature branch without resetting or discarding work. Earlier hosted CI results below cover their named M4 commits; no CI result for PR #5 or this new planning commit was inferred.
 
 **Milestone 3 is complete: implemented, deployed, live-validated, merged, and hosted-CI verified.** The user confirmed [PR #2](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/2), merge [`ae378e4c289144164a8a7a6a85fa8c71ae5bcacc`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/ae378e4c289144164a8a7a6a85fa8c71ae5bcacc), and successful [CI run 42166641840](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42166641840). Milestone 4 implementation originally started from main `6bf1220`, containing that merge and its documentation update. Historical AWS/live results below retain their user-executed attribution; that parity suite was not rerun during milestone 4 preparation.
 
 **Milestone 2 remains implemented, merged into `main`, and verified by hosted CI.** [PR #1](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/1) merged implementation commit `e13b1ea` at merge commit `9dc5989353459e2651ba5cced882534d8d573783`. [GitHub Actions run 42113416826](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42113416826) passed for that merge commit, as confirmed by the user.
+
+## Approved Q18 recovery and M5 completion — 2026-11-10
+
+Executed the user's exact approval at `f223877` using only `analytics-dev`, account **453711491609**, region **us-west-2**. The checkout/remote ref matched that commit, with only the preserved untracked `milestone-5-q18-fix.patch`. Rechecked all 122 protected files, both frozen ZIPs and actual VersionId records, corrected assemblies, goldens, closed parent ledgers/claim and inactive process guards. The pure offline command returned **0/38 new, prior 2, aggregate 2/40** without creating a ledger/claim.
+
+Fresh read-only preflight verified original Runtime/DEFAULT **READY v10**, full original configuration/artifact, exact CloudFormation templates/complete parameter inventory, both resource policies, seven-day retention and retained foundation/data/query trust. Version-specific S3 reads verified the original `HSRXiFjg0w2W77InULH4.fn32Y.JH8b9` and candidate `V5Q8e8e6w2tkkVghXn.BrFs1mqQU.Ncu` pins. Fresh canonical retail downloads into the new evidence directory match committed provenance; all seven Glue schemas/source locations match. No goldens or dataset objects changed.
+
+The first command launch was rejected before process creation because automatic permission review timed out. Inspected files/processes to confirm no operator, recovery claim, ledger or mutation had started, then used the tool's single permitted retry of the same approved command. The actual workflow executed **once**. A transient CloudFormation `describe_stacks` connection failure recovered on bounded read attempt 2; its operation-level diagnostics remain in the journal. No deployment or billable invocation was automatically repeated.
+
+| Gate / operation | Actual result |
+| --- | --- |
+| Candidate deployment/reconciliation | Passed: exact frozen candidate on Runtime/DEFAULT **READY v11**; controller **123.441476s**, CDK exit 0, owned process reaped, no cleanup signals. |
+| Fully judged Q18 probe serving as warm-up | Passed: ungrouped `net_revenue`, no filters, **[2025-03-31, 2025-04-01)**, **110.25 USD**, metric definition **1.0.0**, dataset **retail-v1**. One model call; full expected request/result matched. |
+| Unchanged suite | **36/36 passed**, no failures/unrun cases. Numeric 27/27, clarifications 4/4, authorization 2/2, metadata 3/3; complete structured requests/results and shared S01 session pair verified. No false clarification or authorization leak. |
+| Reporting/latency | Complete token/tool/Athena diagnostics. Client median **8.541s**, p95 **13.381s**, maximum **15.467s** (36 samples; nearest-rank p95), meeting the unchanged **90s** gate. Server p95 **6.661s**. |
+| Suite work counters | **74 model calls**, **108643 input / 8994 output tokens**; **36 unique successful Athena queries**, **194837 scanned bytes**. These are reported work counters, not measured charges. |
+| Mandatory original restoration | Passed: Runtime/DEFAULT **READY v12**, runtime stack **UPDATE_COMPLETE**, original ZIP/key/VersionId and parity-v1/t1/North/South/reference **2025-02-01**, both policies, seven-day retention and retained stack templates verified. CDK exit 0; process reaped. A separate final read-only checkpoint confirms the exact final state/parameters. |
+| Protected counted smoke | Passed on original v12: `net_revenue` **[2025-01-01, 2025-02-01)** by region, North **28.50 USD**, South **13.00 USD**, definition **1.0.0**. |
+| Invocation accounting | **38/38 reserved and completed**: probe 1 + suite 36 + smoke 1. Prior 2 gives **40/40 aggregate**, zero remaining; no failed, retried, timed-out or incomplete invocation. Recovery is retail-closed, durable attempt claim retained, final reservation is the protected smoke. |
+| Scope/preservation | All **122** protected files and **28** runtime sources remain unchanged, including historical ledgers/claims/evidence and all frozen pins. No upload, rebuild, dataset publication/modification, profile/IAM change, extra demonstration, quota reset or additional campaign. Deployment journal inactive; no operator/CDK process remains. |
+
+Evidence root: `artifacts/milestone-5/q18-recovery-v1/operations/20261110T173634Z/`. It contains fresh identity/preflight/canonical evidence, `original-checkpoint.json`, both controller reports/logs/outputs, `live/candidate-ready/run-context.json`, `live/probe.json`, complete `live/suite/{report.json,summary.md,attempts.jsonl}`, `live/{campaign-result.json,restored-proof.json,smoke.json}`, final strict checkpoint/parameters and independent acceptance/preservation audits. Raw evidence remains ignored locally. `campaign-summary.json` binds all **51** retained evidence files, SHA-256 **`347e3b556d7f8be17b16646add79740d6f0af78d16688c1a3441090a1f6d8362`**; suite report SHA-256 `f07e6c1ae3554fd6b97c02547f015285ef9d236ef4b061d41b2589d00432ea7f`. `campaign-result.json` has **accepted:true**. The suite-only report deliberately leaves `live_acceptance_claimed:false`; its **live_gates_passed:true** is combined with restoration/smoke by the enclosing campaign, rather than claiming full acceptance before restoration.
+
+Recovery ledger SHA-256: **`2a4004c2056351a4c923c78a3a4aba357baf0500c46e5845ffc8d71e71fa04ce`**. New attempt claim SHA-256: `2d7dda32673198fd9a0aeae8e45dc0472fe01e1792531bdcef373044bc614dd5`. Original M5/M4 and both prior repair ledgers/claim stay byte-identical. Across all 38 new calls, diagnostics report **78 model calls**, **114373 input / 9448 output tokens**, **38 unique Athena queries / 202104 bytes**; probe and smoke are excluded from suite latency samples. Historical failure causes below remain qualified; successful recovery does not retroactively establish their transport cause.
+
+### Checks actually run for this execution
+
+Existing Conda Python **3.12.16** / Poetry **2.3.1**, exact Poetry interpreter verified. `poetry check --lock` passed; default `poetry run pytest` **1086 passed, 85 gated skips in 36.29s**; `poetry run ruff check .` passed; `poetry run ruff format --check .` passed (**124 files**); `poetry run mypy src tests` passed (**98 source files**). These fresh offline results preceded the deployment and are separate from live evaluation and f223877 CI. No application/operator source changed afterward.
+
+Offline synthesis also passed into separate verification directories: `poetry run python -m infrastructure.cdk.app --config infrastructure/cdk/config.example.json --outdir artifacts/q18-recovery-completion-verification/data-example.out` (**41 resources**) and `poetry run python -m infrastructure.cdk.agentcore_app --config infrastructure/cdk/agentcore.config.example.json --phase foundation --outdir artifacts/q18-recovery-completion-verification/agentcore-foundation-example.out` (**4 resources**), no missing lookup context. Retained deployment assemblies were not regenerated. Documentation links/fences, shell examples parsed with `zsh -n` without execution, and `git diff --check` passed. Final report/preservation review found no remaining acceptance blocker.
+
+Exact next task: review the M5 completion diff and hosted CI for the pushed outcome commit in PR #6. Keep PR #6 unmerged until the user's review/merge decision. No live allowance remains; further AWS mutations or invocations need a separate approved scope/budget. Do not start another milestone.
+
+## Historical offline recovery verification and GitHub handoff — 2026-11-10
+
+Inspected the applied diff on `feat/milestone-5-retail-evaluation` at `75d7c9f`; the tracked remote branch and PR #6 head matched that SHA. PR #6 is open and unmerged. Preserved the unrelated untracked `milestone-5-q18-fix.patch`. Used the existing `/opt/homebrew/anaconda3/envs/enterprise-analytics/bin/python`, Python **3.12.16**, Poetry **2.3.1**; no environment replacement or dependency change. No AWS operations were performed.
+
+Reviewed deployment reconciliation, checkpoint reads, invocation setup, complete evaluation and mandatory restoration together. Allowlisted transient reads have at most three operator attempts, finite socket timeouts and shared monotonic deadlines; denied/invalid reads fail without retry. Mutations and billable dispatch are outside this retry wrapper. Controller acceptance still requires exact template/parameters plus the full artifact/configuration/policy/readiness proof, and only its fresh in-memory result may bypass immediate duplicate verification. Restoration cache expiry/invalidation and primary/restoration/accounting diagnostics are covered.
+
+Fixed one additional gap: Runtime client construction after STS now records operation-level setup diagnostics, rejects a late client before dispatch, and keeps client construction and `InvokeAgentRuntime` unretried. The optional injected factory preserves existing invocation callers. Three realistic setup/dispatch regressions failed before this correction and pass afterward; they verify safe endpoint/target diagnostics, redaction, no invocation after setup failure, per-target reuse and exactly one SDK attempt.
+
+Local preservation audit passed against the retained 122-file inventory (SHA-256 `5ebc3997e8c1ce7682ce54c5e47d8e3c83118d768ab0a273c0e2e42110a46ee3`). Frozen candidate/original ZIPs, S3 VersionId records, corrected candidate/restoration assemblies, goldens, historical review JSON, both closed repair ledgers and the prior attempt claim match their pins. All 28 runtime sources are unchanged; 47 packaged project sources match the frozen baseline, with operator-only changes intentionally excluded. The M4 **28/40**, original M5 **38/40**, repair **1/40** and continuation **1/39** histories are byte-for-byte unchanged. No recovery ledger or attempt claim was created. The retained deployment journal is inactive; no earlier task-owned operator/CDK process was active at inspection.
+
+Inspected the actual retained first-repair and continuation operation directories: all **28 + 30** summary-linked evidence hashes match. The first local CDK timeout and later post-controller `ConnectTimeoutError` remain distinct failures. The latter's exact SDK operation/transport cause was not captured and remains unproved. Retained evidence establishes original Runtime/DEFAULT READY **v10**, stack UPDATE_COMPLETE and successful original smoke; this session made no fresh AWS state claim. The historical v8 review is unchanged. Later approved recovery must freshly prove the separate original-v10 checkpoint.
+
+| Command actually run in this checkout | Actual result |
+| --- | --- |
+| `poetry run analytics-repair --campaign q18-recovery-v1 verify-offline --version-record artifacts/milestone-5/q18-repair-v1/candidate-version.json` | Passed: **0/38 new, prior 2, aggregate 2/40, remaining 38**, one protected restoration slot; no ledger/claim created. |
+| `poetry check --lock` | Passed; lockfile unchanged. |
+| `poetry run pytest` | **1086 passed, 85 gated skips in 36.12s**; no live flags or AWS calls. |
+| `poetry run ruff check .` | Passed. |
+| `poetry run ruff format --check .` | Passed: **124 files** already formatted. |
+| `poetry run mypy src tests` | Passed: **98 source files**. |
+| `poetry run python -m infrastructure.cdk.app --config infrastructure/cdk/config.example.json --outdir artifacts/q18-recovery-verification/data-example.out` | Passed offline: **41 resources**, no missing context. |
+| `poetry run python -m infrastructure.cdk.agentcore_app --config infrastructure/cdk/agentcore.config.example.json --phase foundation --outdir artifacts/q18-recovery-verification/agentcore-foundation-example.out` | Passed offline: **4 resources**, no missing context. |
+| Documentation links/fences and `zsh -n` on shell examples; `git diff --check` | Passed; examples parsed only, not executed. |
+
+The first jsii verification attempt encountered a corrupt pre-existing shared cache. Kept it untouched and reran successfully with separate caches under `/private/tmp/q18-recovery-jsii-fresh-*`; final tests used `/private/tmp/q18-recovery-final-jsii-tests`. Syntheses use separate verification directories and do not replace approved deployment assemblies. The patch author's **1083-test** result below is historical reference, not this checkout's result.
+
+GitHub handoff: normally pushed implementation commit **`8f6b2714cecbe97a40ef65dd2901acd9ec9a2ed4`** to the existing branch. GitHub reports successful **push 42860069230** and **PR 42860082151**, both with that exact head SHA; hosted lockfile, tests, Ruff, formatting, mypy and both offline synthesis steps passed. This documentation-only follow-up records those completed runs; they do not cover the follow-up commit. Its own push/PR CI will be inspected after the normal push and reported separately in the session handoff. No source changed after the recorded full local checks; documentation links/fences, shell syntax and diff checks were rerun for the follow-up. PR #6 remains open/unmerged. No live recovery, upload, rebuild, IAM change or invocation is authorized in this handoff.
+
+## Historical portable-patch review — 2026-11-10
+
+The patch author reported the following reference verification in a separate source snapshot, before this checkout verification. Reconstructed a clean review checkout by verifying all 147 repository blobs against GitHub 75d7c9f, then reviewed the controller, adapter, complete workflow, invocation transport and quota paths. This is a source snapshot for a portable patch, not the user's original Git history. The original Mac checkout's ignored ZIPs, deployment assemblies, raw live logs, ledgers and 122-file preservation inventory are unavailable here; their live observations retain their recorded attribution and must be checked in that checkout before approval. No actual historical ledger was initialized, edited or consumed here.
+
+Implemented together:
+
+- Controller returns the final strict checkpoint after process cleanup; the workflow uses it directly, with a 60-second freshness check. Exact template/parameters, account/region, Runtime/DEFAULT/artifact/configuration/policy/retention requirements remain. A second full verifier no longer introduces the reported post-controller failure point.
+- A shared read pool gives each allowlisted AWS read at most 3 attempts with finite socket timeouts, exponential backoff and existing monotonic deadlines. STS during invocation-client construction is included; invocation clients are reused. Access denial/validation errors do not retry. Mutations, Athena submissions and model/Runtime invocations cannot use this read wrapper; invocation SDK attempts remain 1.
+- Persistent, payload-free read diagnostics record operation/phase/endpoint hostname/safe target/attempt/timing and available AWS code/request ID. Workflow evidence retains primary, restoration and accounting failures separately. The old timeout's exact SDK operation cannot be recovered from the committed evidence and is not guessed.
+- Restoration consumes the controller's verified in-memory proof through the immediate smoke gate, with 60-second expiry and invalidation before mutation. Original preflight or saved JSON cannot populate this cache. Expired restoration proof requires a fresh read.
+- Proposed q18-recovery-v1 requires freshly verified original v10 and a new ledger/claim tied to both closed parent histories and the old continuation claim. Global operator exclusion covers all repair selectors. Planned usage is Q18 probe/warm-up 1 + unchanged suite 36 + protected smoke 1 =38; aggregate prior 2 + 38 =40. No old review or counter is rewritten. Execution is pending a reviewed scope decision, not authorized by unused quota.
+
+### Patch-author reference verification (not this checkout)
+
+Used Python 3.12.14 and Poetry 2.3.1 with the existing locked dependency environment, explicitly resolving imports to this review checkout. Installed package versions match the lockfile (the Windows-only colorama package is not applicable on this Linux host). `AWS_EC2_METADATA_DISABLED=true` and a writable jsii cache were used for offline verification.
+
+| Check actually run | Result |
+| --- | --- |
+| Full default `poetry run pytest -q` | **1083 passed, 85 gated skips in 101.00s**; no live flags. |
+| Focused controller/read/recovery tests before final transport addition | **87 passed**; the final full suite includes the additional invocation-setup regression. |
+| `poetry check --lock` | Passed; dependencies/lockfile unchanged. |
+| `poetry run ruff check .`, `ruff format --check .`, `mypy src tests` | Passed: 123 files formatted; 97 typed source files. |
+| Offline CDK example data/foundation synthesis | Passed: both example assemblies generated without AWS lookups or missing context. |
+| Documentation, patch application and preservation checks | Passed: 6 Markdown files, 39 local links, 12 shell blocks parsed without execution. Patch applies cleanly to the verified baseline and reproduces all 23 changed files. Protected tracked inputs/old reviews/contracts/policies/dependencies unchanged. |
+
+A regression was also reproduced against the original 75d7c9f wrapper: one connection timeout aborts immediately; the corrected wrapper succeeds on the second read attempt. Fault injection covers every strict-checkpoint SDK operation, transient retry exhaustion, denied access, late responses, no read-wrapper access to billable/mutating operations, unretried invocation timeout, final controller receipt, stale proof, original-proof cache expiry/invalidation, preflight report-directory reservation, full38-call acceptance with both session requests, failed probe, interruption, restoration-only recovery, dual failures, final accounting failure, parent/claim drift and cross-selector operator exclusion. All36 frozen cases and historical review/binding hashes remain unchanged. Existing semantic/Q18 regression coverage also passes.
+
+At that historical handoff, the next task was to apply/review the portable patch and verify it in the original checkout. That offline verification is now complete as recorded above; live execution still requires approval of the concrete 38-call proposal. Preserve the v10 checkpoint, frozen candidate/version, original restoration assets, all historical records and existing permissions; no new profile, rebuild/upload or IAM change is proposed.
+
+## Approved Q18 continuation live window — 2026-11-09
+
+The user approved the exact e8e4b0f controller/proposal, all 39 remaining calls including the formerly controlled reserve, and mandatory original restoration/smoke. Used only q18-continuation-v1, analytics-dev/account 453711491609/us-west-2 and the existing candidate/version. Remote HEAD and push/PR CI 42698850994/42698861471 were independently verified; source/config/tests/lock matched the approved commit. Preserved the untracked patch. Explicit STS confirmed the existing approved developer SSO principal/account. No previous repair/CDK process, continuation ledger/claim or process journal was present.
+
+Fresh preflight passed before mutation: exact original Runtime/DEFAULT READY v8; complete CloudFormation parameter inventory/values and original template; both policies, seven-day retention and retained foundation/data/query-trust templates; actual candidate S3 VersionId/checksum/size; canonical ready manifest/all seven source objects and Glue schemas; closed parent and all 122 protected file hashes. No code upload, rebuild/resynthesis, publication or IAM change was needed.
+
+| Gate / step | Actual result |
+| --- | --- |
+| Candidate deployment/controller | **Passed**, candidate **v9**; exact reviewed template/parameters and full strict checkpoint before/after process reaping. Controller 43.431s; CDK exit 0, process reaped, no cleanup signal. Historical GetAgentRuntime v9 readback confirms the existing candidate code/version. |
+| Additional candidate checkpoint | **Failed with `ConnectTimeoutError`** after controller acceptance and before candidate-ready context or any retail reservation. The exact SDK operation/endpoint and full exception message were not recorded by the workflow; do not infer them or a network/service root cause. |
+| Candidate acceptance | **Unrun:** no warm-up, Q18 probe or 36-case suite; no new metric-quality or latency-gate result. `accepted:false`; workflow exit 1. |
+| Mandatory original restoration | **Passed** in `finally`; restore controller accepted in 67.194s, CDK exit 0, process reaped. Runtime/DEFAULT **READY v10**, runtime stack UPDATE_COMPLETE. Fresh independent verification confirms original parity-v1/t1/North/South/reference 2025-02-01, original ZIP/key/VersionId/template/configuration, both policies, seven-day retention and retained infrastructure. |
+| Counted restoration smoke | **Passed on v10**, net revenue[2025-01-01,2025-02-01), North **28.50** / South **13.00 USD**, definition 1.0.0. |
+| Continuation accounting | **1/39** reserved/completed, solely restoration smoke; zero incomplete reservations, invocation failures/timeouts or retries. Retail dispatch closed; durable attempt claim retained. |
+| Aggregate repair budget | Parent 1 + continuation 1 = **2/40 used, 38 remaining**. Parent ledger remains closed 1/40, original M5 38/40 and M4 28/40 unchanged. The remaining 38 cannot fit the required 39-call sequence; do not reopen/reset or borrow another campaign's quota. |
+| Scope / process state | No application-source/IAM/profile/data or frozen ZIP/S3-version/assembly changes, uploads, permission expansion or repeated deployment attempt. Deployment journal is inactive with no process group; operator exited. Captured CloudTrail has two successful Runtime updates and two change-set executions with no error codes/messages; it does not identify the connection timeout or prove exhaustive absence of transport failures. |
+
+The sole smoke reported **3 model calls**, **4599 input / 345 output tokens**, **8498ms client / 4769ms server latency**, **one successful Athena query / 2252 scanned bytes**. These are work counters, not measured charges or retail-suite acceptance. The connection timeout occurred outside the invocation ledger, so zero invocation-timeout counters do not erase the failed checkpoint.
+
+Evidence root: `artifacts/milestone-5/q18-continuation-v1/operations/20261109T215224Z/`. Retained local/fresh preflight, original full checkpoint/proof/parameters, fresh candidate-version verification, controller reports/logs/outputs, `live/{run-context.json,campaign-result.json,restored-proof.json,smoke.json}`, candidate v9 readback, final v10 full checkpoint/events/resources, CloudTrail and independent audits. No probe/suite report exists because dispatch never began. Summary SHA **`4d04ea290defddd9f136e21134bc535a7f57556be302c3d722483770ad77f8b0`**; continuation ledger SHA **`4943c554d4a856621ef126389f7666bfcd2e32a16be2ef2cd024c0d4ab5d9ca5`**; retained claim SHA `a741c8a0bb6c7acfaebe0c3e2a92c43d8d8df3147c95a039561760dd7e4be137`. All 122 protected files and earlier evidence remain byte-identical. Independent saved-file audit confirms accounting/restoration and unrun gates.
+
+### Checks actually run in this execution
+
+Existing Conda Python 3.12.16 / Poetry 2.3.1 interpreter verified; writable jsii cache used as documented. Before deployment, unchanged execution source passed `poetry check --lock`; default `poetry run pytest` (**1042 passed, 85 gated skips in 38.99s**); `poetry run ruff check .`; `poetry run ruff format --check .` (**117 files**); `poetry run mypy src tests` (**92 source files**); `git diff --check`. Pure-local continuation verification passed in 0.57s and created no ledger/claim. These are actual fresh local results, separate from hosted CI and the failed live checkpoint. No source changed afterward, so source checks were not repeated for documentation-only edits. Final `git diff --check` and documentation checks passed: 11 Markdown files, 74 local links, 33 shell blocks parsed without execution, 2 JSON blocks. Independent final diff/evidence review found no blocking issue; source and all 122 protected files remained unchanged.
+
+**Remaining blocker:** additional post-controller verification raised a connection timeout before candidate testing. Diagnose it offline with better SDK-operation/error evidence before proposing further live work. The reviewed v8 continuation is now closed and the actual restored checkpoint is v10. A fresh unchanged 39-call sequence would bring aggregate usage to 41, exceeding the authorized 40; a new reviewed scope/budget decision is required before execution. No further call, permission or deployment is authorized automatically. M5 remains open and PR #6 unmerged.
+
+## Historical controller correction and continuation preparation — 2026-11-09
+
+Read repository/milestone instructions and all retained operation files under `artifacts/milestone-5/q18-repair-v1/operations/20261109T193234Z/`. Verified 41 prior protected hashes, 28 operation-evidence hashes and a new 122-file preservation inventory, including the three historical ledgers, frozen candidate/original ZIPs/assemblies, goldens/configuration and 28 runtime-source files. All 47 packaged Python sources match the e0f028c build baseline; intentionally changed operator modules do not require a new runtime ZIP. Existing enterprise-analytics Conda Python 3.12.16 / Poetry 2.3.1 and Poetry interpreter were verified. GitHub-only reads verified remote/CI; no AWS client operation ran.
+
+**Evidence correction:** CloudFormation completion, exact candidate READY v7 proof, local 1800s `TimeoutExpired`, no candidate reservations, original restoration READY v8 and one passed smoke are established by retained files. The one-second native sample establishes an event loop waiting in `uv__io_poll`/`kevent`; it does not identify a pending SDK request or prove a transport cause. Captured CloudTrail has no authorization error, without establishing exhaustive absence of service/transport errors. Earlier I/O wording is qualified accordingly; raw historical evidence is unchanged.
+
+Implemented together:
+
+- A bounded CDK controller reconciles stable named CloudFormation state, full template/parameters and the strict Runtime/DEFAULT artifact/configuration/policy/retention checkpoint. A stalled owned child can be cleaned up after independently verified AWS success, then the whole proof is repeated. A zero CLI exit or READY alone cannot pass; rollback, nonzero exit (including during verification), stale/wrong state or unavailable proof fail closed. Baseline drift is checked before mutation.
+- Owned process-group cleanup is bounded; logs and structured controller evidence are retained. A global deployment lock, durable process-intent journal and previous-update barrier prevent overlap. Unresolved child/update state blocks further mutation, including restoration until safe; no foreign process is killed.
+- Separate reviewed `q18-continuation-v1` configuration pins the original v8 checkpoint and actual existing candidate/version, with fresh original proof required. Historical v6 handling remains isolated for the old closed campaign; no original artifact/configuration pin is relaxed.
+- New immutable continuation identity/ledger binds the parent ledger SHA `6f39bc49361a718e221fd1bd4b38fc12c2b0c305cfa30246ef1a22005d5bf7e8`, existing candidate/version and reviewed checkpoint. Parent reads are read-only; drift blocks accounting. A durable exclusive claim prevents a duplicate zero-call attempt; an operator lease excludes concurrent evaluation/recovery. The cap is 39 new calls, aggregate 1 + 39 = 40, with the last continuation call protected for fresh-verified original restoration. No historic counter is reopened/reset.
+- Complete offline command/workflow tests cover v8 start, incorrect/stale checkpoints, all 36 cases plus probe/warm-up/smoke, aggregate limits, session pair, failed probe/deployment, interrupted invocation, missing claim and restoration-only recovery. Default tests remain credential/AWS-free.
+
+[One continuation proposal](milestone-5-q18-continuation-proposal.md) contains fixed pins, read-only offline verification, later gated deployment/evaluation/restoration commands, exact bounds and failure handling. Proposed usage is 1 warm-up + 1 Q18 probe + 36 suite + 1 original smoke = 39. Together with the prior smoke this exhausts 40 and uses the previously controlled reserve; **explicit approval is required before execution**. No automatic spare/retry is proposed. The candidate upload VersionId remains `V5Q8e8e6w2tkkVghXn.BrFs1mqQU.Ncu`; no upload or version-record rewrite is needed.
+
+### Actual local verification
+
+All required final checks ran in the existing enterprise-analytics Conda environment:
+
+| Command/check actually run | Actual result |
+| --- | --- |
+| `poetry check --lock` | Passed: All set. |
+| `poetry run pytest` | **1042 passed, 85 gated skips in 39.68s**; includes 82 additional controller/continuation cases, original semantic/agent regressions and offline CDK assertions. No live flags or credentials. |
+| `poetry run ruff check .` | Passed. |
+| `poetry run ruff format --check .` | Passed: 117 files. |
+| `poetry run mypy src tests` | Passed: 92 source files. |
+| `git diff --check` and documentation checks | Passed: 10 Markdown files, 65 local links, 23 shell blocks parsed without execution, 1 JSON block. Final diff/source and evidence reviews found no remaining blocking issues. |
+| Protected artifact/history verification | Passed: 122 unchanged files; historical M4 28/40, original M5 38/40 and closed repair 1/40 remain byte-identical. |
+
+An initial full pytest run stopped with two CDK collection errors because the default
+jsii cache was outside writable sandbox roots. Setting
+`JSII_RUNTIME_PACKAGE_CACHE_ROOT=/private/tmp/enterprise-analytics-jsii-cache` resolved
+that environment issue for the successful full run; no dependency or interpreter change
+was made. Focused verification also passed15 continuation-flow cases and58 controller/configuration
+cases. Review identified and fixed a late nonzero-CDK-exit
+race and baseline parameter/template drift before the final complete checks. A final
+regression rejects prior candidatev7, currentv8 or malformed version responses after the
+reviewed v8 start, before any candidate invocation; original restoration still runs.
+
+Pure local `poetry run analytics-repair --campaign q18-continuation-v1 verify-offline --version-record artifacts/milestone-5/q18-repair-v1/candidate-version.json` passed against retained actual pins, showing continuation 0/39 and aggregate 1/40; no continuation directory, ledger or claim was created. Review SHA `13f9bff2a91cc17fc5177e9e8d7814101231ab0d8fc9d839ec19d47cbaae3354`; binding SHA `6988ae16e484bfe9229994eb473c3bb9b8361086a69d7cdd76e7e35b63205333`. Parent/historical ledgers and protected artifacts were byte-identical at that preparation checkpoint. That controller commit became e8e4b0f, was pushed and passed CI 42698850994/42698861471 before the separately recorded live attempt above. No retail acceptance is inferred from hosted/offline checks.
+
+## Approved Q18 repair live window — 2026-11-09
+
+Used only analytics-dev/account 453711491609/us-west-2; STS verified the expected developer SSO principal. The user approved the exact proposal and supplied administrator policy `enterprise-analytics-dev-q18-candidate-code` on `enterprise-analytics-dev-agent-runtime`. Its Sid/actions/exact candidate-key resource match the reviewed statement. This is supplied administrator evidence, not a new IAM inspection or change by this agent. Remote HEAD/PR #6 and successful hosted checks for 661aba9 were verified separately from this execution.
+
+Fresh original preflight passed on parity-v1 READY v6: original ZIP/version/templates/policies/retention and retained foundation/data/query trust; canonical ready manifest and all seven source object identifiers/hashes/sizes/schemas plus Glue tables. Candidate/reproduction/source and review/template/golden pins matched. All 41 protected file hashes, including both historical ledgers, remained unchanged throughout. The new repair allowance began at 0/40.
+
+| Step / gate | Actual result |
+| --- | --- |
+| Conditional candidate upload | Uploaded **once**, with owner/checksum/If-None-Match guards and AWS_MAX_ATTEMPTS=1. SHA `398124e89d2be1e9ce00f5b57c263fe2cdde0654527b27f949b9f3abb58029f1`; actual returned S3 VersionId **`V5Q8e8e6w2tkkVghXn.BrFs1mqQU.Ncu`**. |
+| Actual version binding | `analytics-repair --campaign q18-repair-v1 bind-upload --verify-upload` passed version-specific HEAD/checksum/size/owner verification; write-once candidate-version record retained. |
+| Candidate deployment | Approved assembly updated the Runtime stack to UPDATE_COMPLETE; strict independent verification confirmed Runtime/DEFAULT **READY v7**, exact candidate artifact/version/template/configuration, both policies and seven-day retention. |
+| Local deployment command | The CDK child did not return after the successful AWS update. The reviewed **1800-second subprocess bound** raised `TimeoutExpired`; supervised workflow exited 1 after restoration. The native sample shows an event-loop wait; logs do not establish the pending request or transport cause. No deployment retry occurred. |
+| Candidate acceptance | **Not run:** no warm-up, Q18 probe or 36-case suite dispatch. No candidate quality/report pass is claimed; `accepted:false`. |
+| Mandatory restoration | `finally` deployed `artifacts/milestone-5/cdk.restore.out` using original VersionId `HSRXiFjg0w2W77InULH4.fn32Y.JH8b9`; CDK succeeded (37.34s total). Runtime/DEFAULT **READY v8**, stack UPDATE_COMPLETE. Original parity-v1/t1/North/South/reference 2025-02-01, ZIP/template/configuration, both policies, seven-day logs and retained foundation/data/query trust verify. |
+| Counted restoration smoke | Passed on v8: net revenue for [2025-01-01,2025-02-01), North **28.50** / South **13.00 USD**, definition 1.0.0. One reserved call and one answer outcome. |
+| Final repair ledger | **1/40**, solely restoration smoke; 39 unspent, no incomplete reservation, invocation failure, invocation timeout or retry. Retail dispatch is closed; reserve was not used. The CDK timeout is recorded separately from invocation counters. M4 remains 28/40; original M5 remains 38/40, byte-for-byte. |
+| Authorization / scope | Captured CloudTrail CFN/Runtime records contain no authorization error; no additional permissions proposed. No IAM/profile/data/publication/foundation/M3 changes or original code upload. |
+
+Evidence root: `artifacts/milestone-5/q18-repair-v1/operations/20261109T193234Z/`. Retained local/fresh preflight, administrator comparison, original/candidate/final checkpoints, upload/version binding, stack events/resources, CloudTrail, process sample, CDK logs/restore outputs and `live/{run-context.json,campaign-result.json,restored-proof.json,smoke.json}`. Probe and suite files are absent because dispatch never began. `campaign-summary.json` SHA **`8e24b5f83de7f36ecf1d8f05d3dba170c58dce3562ee9d87fb6d51362d8a2c5e`**; repair ledger SHA **`6f39bc49361a718e221fd1bd4b38fc12c2b0c305cfa30246ef1a22005d5bf7e8`**. Candidate binding SHA `7201841f3570412e02a02b7f769351eb3aff1a2719ab35ba35964559552fdb4b`. An independent saved-evidence audit passed strict restoration and preservation checks.
+
+The sole smoke reported **3 model calls**, **4599 input / 328 output tokens**, **9927ms client / 4743ms server latency**, and **one successful Athena query / 2252 scanned bytes**. These are work counters, not measured charges or suite-quality evidence. No automatic reserve use or selective rerun occurred.
+
+### Verification actually run in this execution
+
+Existing enterprise-analytics Conda Python 3.12.16 / Poetry 2.3.1 was verified. Before deployment, the unchanged execution source passed:
+
+| Command | Result |
+| --- | --- |
+| `poetry check --lock` | Passed. |
+| `poetry run pytest` | **960 passed, 85 gated skips in 53.94s**; no live flags. |
+| `poetry run ruff check .` | Passed. |
+| `poetry run ruff format --check .` | Passed: 112 files. |
+| `poetry run mypy src tests` | Passed: 88 source files. |
+| `analytics-repair --campaign q18-repair-v1 verify-offline`, protected hash/source audit | Passed; no rebuild, resynthesis or dependency update. |
+| Final read-only restoration and saved-evidence audit | Passed: READY v8, stack UPDATE_COMPLETE, original scope/artifact/policies/retention, smoke and unchanged protected inputs. |
+| `git diff --check` and documentation checks | Passed: 9 Markdown files, 63 local links, 30 shell blocks parsed without execution, 2 JSON blocks; independent final diff/evidence review found no blocking issue. Historical local/pending matches were reviewed separately from current status. |
+
+Source checks were not rerun after documentation-only edits. That checkpoint was local when created as e0f028c; it has since been pushed and passed CI 42691865683/42691880796 as recorded above. Those runs do not cover the later controller correction. **M5 remains open.** Diagnose the CDK completion wait offline and prepare a reviewed continuation that preserves the closed ledger and restoration allowance; do not replay the current command, reset counters or automatically consume the reserve.
+
+## Historical Q18 offline preparation — 2026-11-09 (before approval)
+
+Read instructions, implementation/progress and the supplied patch; the repair document was introduced by that patch. Both compatibility checks passed before application. Preserved the original input patch (SHA recorded in the review) unmodified/untracked. Inspected retained `artifacts/milestone-5/operations/20261109T171341Z/retail-evaluation/report.json`, verifying SHA `7ccd5b43ec1ea38dfc0a17c562e1cd51a74f36e0bff247fac5a1759da5855021`, Q18's one model call/no tools/clarification and frozen 110.25 USD expectation. Existing Conda interpreter is Python 3.12.16, Poetry 2.3.1, `/opt/homebrew/anaconda3/envs/enterprise-analytics/bin/python`; no replacement environment or dependency update.
+
+Completed bundle:
+
+- Shared validated executor plus once-only resolved-plan fallback, with trusted context and whole-plan limits preserved. Focused source/limits/question tests **187 passed**. Independent authored no-tool turns through real canonical DuckDB/guard/agent/tool/render matched all 36 frozen cases; this is offline orchestration evidence, not live quality.
+- Candidate Python 3.12 Linux ARM64 ZIP built in `artifacts/milestone-5/q18-repair-v1/candidate/`; two separate Poetry wheel builds and ZIP builds reproduced byte-for-byte. All packaged project source files match the checkout; resolved-plan correction is present, dependencies match the committed lock/cache. Original ZIP untouched. A public Botocore CA certificate initially tripped an overly broad archive assertion; narrowed that check, created the candidate config and reran synthesis successfully. No package contents changed to remove dependency certificates.
+- Candidate assembly permits only the new SHA-addressed code key and the existing three trusted retail settings. Original restoration assembly/config/ZIP/version stay pinned; a bundle copy was compared byte-for-byte. No IAM resources/policies, model, networking, lifecycle, dataset, limits or public contracts changed.
+- Candidate/original verification is explicit. Candidate local ZIP/template and post-upload VersionId/checksum/size/key bind to a canonical review digest. Fresh version-specific HEAD is required before future CloudFormation mutation. Original restoration retains its original constants/proof; it cannot accept the candidate. No real candidate VersionId was invented or recorded.
+- `analytics-repair --campaign q18-repair-v1` provides offline review, gated upload-version binding, run and restoration-only commands. New campaign `milestone-5-q18-repair-v1` fixes its separate ledger path and40-call cap; every event binds review/candidate/template/upload-record hashes. Historical/default campaign behavior remains unchanged. The new real ledger is absent/unused; no histories were reset or redirected.
+- Full operator tests execute a 39-call successful mock path: warm-up 1, separate frozen Q18 probe 1, complete 36-request suite including Q18/S01, original smoke 1. Failed probe stops before the suite; failures/interruption still restore. Coverage includes wrong hashes/versions, old-ledger reuse, binding drift, SDK timestamps/redaction, alternate Runtime targets, SIGTERM/Ctrl-C cleanup and recovery without retail/candidate input access. Review identified and corrected the latter three lifecycle/scope issues before packaging.
+
+| Reviewed artifact | SHA-256 |
+| --- | --- |
+| New candidate ZIP | `398124e89d2be1e9ce00f5b57c263fe2cdde0654527b27f949b9f3abb58029f1` |
+| New project wheel | `4b8f655516c53a33aac3772311024b7301663aeda5c7a6cdf8960ef85c4476cd` |
+| Candidate template | `faca6d23b85038d5c8ad16b1fe73c95b910d9d05c6a4fccf3be8ca82cd9eb368` |
+| Canonical review identity | `14a817f1ba1ad2b2fa5b5b6c1cfb4aa6250513f971153003b9ddc5ca8b193401` |
+| Original restoration ZIP | `51eaeac6b9eb107f4634aea9e3180fa1db7dce1380fbe166415fbfed8185ded1` |
+| Original restoration template | `dd217890a37cc42e54499c3cc8cba91886ed5ca3dee5de9a5bb11a5e153c64bb` |
+
+Candidate sizes 39171778 / 85816131 compressed/unpacked bytes. Original VersionId remains `HSRXiFjg0w2W77InULH4.fn32Y.JH8b9`. Review/build/template manifests are under `evaluations/retail-v1/q18-*.json`; binary/reproduction/source inspection evidence stays ignored under the new candidate directory. Build inputs use SOURCE_DATE_EPOCH=1735689600; original embedded base config is retained, with the reviewed environment selecting retail scope.
+
+### Commands actually run and verification
+
+| Command | Actual result |
+| --- | --- |
+| `git apply --check milestone-5-q18-fix.patch`; `git apply milestone-5-q18-fix.patch` | Passed; no force/reset or conflict discard. |
+| `poetry check --lock` | Passed: All set. |
+| `poetry run pytest` | **960 passed, 85 gated skips in 56.70s**; earlier complete run 960/85 in 56.62s. Skips are explicit live gates, not acceptance. |
+| `poetry run ruff check .`; `poetry run ruff format --check .` | Passed; 112 files already formatted. Intermediate formatting/type issues were fixed before final checks/build. |
+| `poetry run mypy src tests`; extended `poetry run mypy src tests infrastructure/cdk` | Passed: 88/95 source files. |
+| `poetry build -f wheel --output <candidate/reproduction>/project-dist` | Both passed; identical wheel SHA above. |
+| `poetry run python -m infrastructure.agentcore.package --offline --config infrastructure/agentcore/runtime.development.json --output <candidate/reproduction>/agent.zip --wheel-dir artifacts/agentcore/wheels --project-wheel <matching explicit wheel>` | Both passed with cached checksum-locked wheels; identical ZIP SHA above, original output untouched. |
+| Locked CDK `synth --app 'poetry run python -m infrastructure.cdk.agentcore_app --config infrastructure/cdk/agentcore.config.q18-repair.json --phase runtime' --no-lookups --no-telemetry --no-notices --output artifacts/milestone-5/q18-repair-v1/cdk.candidate.out --quiet` | Passed offline; exact scoped diff and original restore hash verified. Existing deprecation/feature-flag advisories only. |
+| `poetry install --only-root --no-interaction`; `poetry run analytics-repair --help`; `poetry run analytics-repair --campaign q18-repair-v1 verify-offline` | Passed; only editable entry point registered in existing environment, no dependency changes or AWS client construction. |
+| `git diff --check`, documentation checks, preservation/source audit | Passed: preservation/source audit and 9 Markdown files / 53 local links / 20 shell blocks (parsed only); final diff reviewed. |
+
+All 72 captured historical/input hashes remain unchanged, including both real ledgers, original ZIP/assemblies, golden files and original report. New candidate-version/ledger files are absent. The supplied patch's separate review-checkout results below retain their original attribution and do not substitute for these actual checks. No AWS API, publication, upload, deployment, invocation, profile/permission mutation or PR merge occurred.
+
+### Proposal and prerequisite at that preparation checkpoint
+
+[One concrete proposal](milestone-5-q18-deployment-proposal.md) covers immutable candidate upload, actual returned VersionId binding, fresh original preflight, candidate deployment/READY, counted warm-up/probe/full suite, mandatory original restoration/proof/smoke and recovery. Proposed new maximum 40 = 1 + 1 + 36 + 1 + 1 reserve; normal successful use 39. Existing original M5/M4 quotas are not borrowed. The future run stops after a failed probe and preserves the full-suite denominator.
+
+The retained runtime execution-role policy grants reads only to the old SHA key. Current official Python deployment requirements require package S3 access. No live IAM inspection is authorized here: an administrator must confirm candidate-key access and separately approve an exact additive read grant if missing. The proposal supplies the precise statement; no current permission or foundation stack was changed. Candidate upload and deployment are not claimed ready under unchanged effective IAM. M5 remains open pending separately approved live acceptance and original restoration; the last reported deployed state remains parity-v1 READYv6, not a fresh AWS assertion.
+
+## Supplied patch-author Q18 review — 2026-11-09
+
+The supplied patch records this separate review (not rerun or independently attributed to the current session): reconstructed and Git-blob-verified all 126 files at upstream `28ffcf18` in an isolated local review checkout. The local baseline commit is a source snapshot, not imported upstream history. Inspected instructions, milestone progress/plan, agent/question/tool code, evaluator, deployment and campaign verification. In that patch-author review checkout, original ignored operation reports and frozen artifacts/ledgers were not present; they are present and separately verified in the current preparation above.
+
+Recorded Q18 evidence is one model call/no tools, so a valid numeric request reached the generic empty-end-turn clarification path. The date guard already computes March 31–April 1 correctly. Extracted one shared tool executor and added a bounded, once-only server-plan fallback for fully resolved numeric scopes with no prior metric result/tool error. It preserves the exact trusted context, contracts, response checks, limits and diagnostics, then renders actual adapter results. Server-planned record IDs are distinct; no model messages or numerical answers are fabricated. Unsupported/ambiguous intent and model/tool failures remain fail-closed.
+
+Seven selected regressions failed before the correction (all five metrics, Q18 and tool budget). Focused initial verification passed **183 tests** before additional session, metadata-ID, missing-source and multi-period regressions were added. The new file has 55 cases, including all 36 frozen cases through real agent orchestration. Independent real-adapter Q18 fixture arithmetic produces 110.25 USD; mock golden replay is explicitly not live answer-quality evidence.
+
+Final verification ran in the isolated review checkout using the existing locked Python 3.12.14 environment, with `PYTHONPATH` pointing at this checkout's `src` and SDK metadata access disabled. Poetry 2.3.1 was installed in a separate temporary tooling environment after the prior temporary Poetry path was no longer present; no project dependency or lockfile changed.
+
+| Check actually run | Result |
+| --- | --- |
+| `python -m pytest -q` | **892 passed, 85 gated live skips in 91.59s**. |
+| `poetry check --lock` | Passed: All set. |
+| `python -m ruff check .` | Passed. One test string line-length issue was corrected before the final run. |
+| `python -m ruff format --check .` | Passed: 103 files already formatted. |
+| `python -m mypy src tests` | Passed: 80 source files. |
+| `git diff --check` | Passed. |
+| Markdown links/fences/newlines | Passed: 5 Markdown files and 20 local links. |
+| Upstream Git blob comparison excluding the six intentionally edited existing files | **120 unchanged file hashes**, including all goldens, policies, configs, pinned checks and the first-campaign implementation. |
+
+The full suite includes the corrected serialization regression and all new agent regressions. No live gate was enabled and no upstream CI result is claimed for this local repair.
+
+Preservation: only agent orchestration, its explanatory docstring, a new regression file and repair documentation are changed. No metric calculation, public schema, golden, IAM/profile, original artifact pin, campaign counter or restored baseline is changed. The new preparation document identifies the necessary candidate-versus-restore verifier and separate campaign work before any live approval, so the old closed-ledger/frozen-artifact workflow is not reused accidentally. No AWS calls, source publication, ZIP rebuild/upload, deployment or Runtime invocations occurred.
+
+Exact next task: apply this reviewed patch in the original checkout and prepare the entire candidate artifact, explicit artifact checks, new campaign selection/ledger and restoration bundle offline as described in [the repair plan](milestone-5-q18-repair.md). Review retained evidence there, complete all checks, then request one concrete approval for upload/deployment and a new bounded campaign. Keep the failed first campaign and M4 history intact and M5 open.
+
+## Milestone 5 approved live campaign — 2026-11-09
+
+The user approved the existing runbook's environment-only retail Runtime update, counted warm-up and 36-request evaluation, mandatory corrected-base restoration and counted smoke, within **40 total M5 calls**. Git status was clean on the requested branch at `850bbc8`; `git ls-remote --heads origin feat/milestone-5-retail-evaluation` returned exact SHA `850bbc8c3a16a4343ece3a4144e3e047eba0917d`. User-confirmed push CI `42660104374` covers that correction and predates this live campaign. Existing Conda Python 3.12.16/Poetry interpreter and explicit analytics-dev STS account 453711491609/us-west-2 passed. No alternative profile was selected.
+
+Fresh preflight passed: reviewed retail/restore template hashes and exactly three trusted configuration deltas; frozen ZIP/S3 version; both inbound policies; live parity-v1 READY v4 and stack UPDATE_COMPLETE; retained foundation/data/query-trust templates; seven-day retention; canonical version-pinned ready manifest and all seven source byte hashes/sizes/schemas; seven Glue schemas/locations. Frozen question/oracle/golden/contribution bindings passed. M4 ledger hash/count verified unchanged at 28/40; M5 began at 0/40 with its final restoration slot protected.
+
+Operation evidence is retained under ignored `artifacts/milestone-5/operations/20261109T171341Z/`: local/fresh preflight, original checkpoint, deploy outputs/logs, execution-state, suite run context/report/attempts, restoration proof/checkpoint and smoke outputs. Deployment/evaluation/restoration execute sequentially under a supervisor that enters restoration in `finally` after any attempted retail update; no automatic Runtime retries are enabled. CDK may publish the reviewed CloudFormation template as part of deployment; the frozen code ZIP is never rebuilt/uploaded.
+
+### Actual deployment, evaluation and restoration results
+
+| Gate / evidence | Actual result |
+| --- | --- |
+| Retail deployment | Approved assembly deployed; Runtime/DEFAULT READY **v5**, stack UPDATE_COMPLETE. |
+| Counted warm-up | Passed; net revenue North 172.17 / South 313.44 USD; one M5 reservation. |
+| Authored retail suite | **35 passed, 1 failed, 0 unrun**; CLI exited 1. All 29 observed metric requests matched complete independent frozen plans/results. |
+| Q18 failure | `Show net_revenue for yesterday.` returned clarification after **1 model call, zero tools/results**. Expected net_revenue for **[2025-03-31,2025-04-01)**, ungrouped **110.25 USD**. No adapter query was issued; no AWS denial/transport failure occurred. |
+| Other behavioral gates | Four expected clarifications, both authorization cases, all three metadata cases and S01 shared-session isolation passed. Numeric answer coverage 26/27; false clarification 1/27. |
+| Diagnostics / latency | Complete diagnostics, no missing samples/scans; client median 7.354s / p95 10.403s / max 10.649s (36 samples, nearest rank, warm-up excluded). Server p95 6.849s; latency gate passed. |
+| Suite usage | **77 model calls**, **114378 input / 9301 output tokens**, **33 unique successful Athena queries / 179826 scanned bytes**; zero failed queries. |
+| Corrected-base restoration | Deployed the reviewed restore assembly; Runtime/DEFAULT **READY v6**, stack UPDATE_COMPLETE, parity-v1/t1/North/South/reference 2025-02-01; exact base template/configuration, policies, artifact/version, seven-day retention and retained data/foundation/trust verify. |
+| Counted restoration smoke | Passed on v6; independent net revenue North **28.50** / South **13.00** USD. Fresh restoration proof is stored in its ledger reservation. |
+| Final M5 counter | **38/40**: warm-up 1 + suite 36 + restoration smoke 1; all 38 outcomes recorded; zero incomplete reservations, transport failures, timeouts or retries. Retail dispatch is closed; 2 unused calls remain. |
+| M4 / preservation | Original ledger remains **28/40**, hash `f04f9cc568d4842b6c9e0118f01cf5b92e496c40658f25a9fdc364075eb17f14`; all 35 captured frozen-input/ZIP/assembly/M4 hashes unchanged. No IAM/profile changes, code ZIP rebuild/upload, bootstrap, source publication or foundation/data deployment. |
+
+Whole campaign including warm-up/smoke: **83 model calls**, **123820 input / 9974 output tokens**, **35 unique Athena queries / 188403 scanned bytes**. These are reported work counters, not measured charges. The suite report snapshots 37 reservations before restoration; final `campaign-summary.json` and the persistent ledger include the 38th smoke. The ledger records valid clarification outcomes separately from judge correctness, so zero transport failures does not make Q18 pass.
+
+Retained local evidence: operation root `artifacts/milestone-5/operations/20261109T171341Z/`; `retail-evaluation/{run-context.json,attempts.jsonl,report.json,summary.md}`, deploy outputs/logs, restored/final checkpoint, smoke output, CloudFormation events/resources and `campaign-summary.json`. Suite report SHA **`7ccd5b43ec1ea38dfc0a17c562e1cd51a74f36e0bff247fac5a1759da5855021`**; final M5 ledger SHA **`fad2f259d79c98d694b6452aec675df474726c225ff5bf72244b5abbef7713c9`**. An independent agent review verified source/hash/attempt/session associations and all passed/failed gates using saved evidence only. No reruns or selective omissions were used. M4's version 4 acceptance remains historical; v6 is the new operational restoration.
+
+### Verification and checkpoint status
+
+Required offline checks passed on unchanged execution code: `poetry check --lock`; `poetry run pytest` (**837 passed, 85 gated skips in 51.22s**); `poetry run ruff check .`; `poetry run ruff format --check .` (**101 files**); `poetry run mypy src tests` (**79 source files**). Final `git diff --check` and documentation checks passed: **7 Markdown files, 47 local links and 26 shell blocks**, parsed without executing the embedded commands. These results and hosted CI are separate from the failed live quality gate. Application code, public contracts, calculations and goldens were not changed in this window.
+
+**M5 remains open solely because the all-cases correctness gate failed at Q18.** Restoration and infrastructure/diagnostic/authorization gates passed; no additional permission was requested or needed. Investigate Q18 offline using the saved one-model-call/no-tool response, preserving the frozen numeric expectation and existing runtime artifact. Prepare a reviewed correction; any changed runtime package/deployment or fresh full campaign needs separate approval. The current campaign is retail-closed at 38/40, so its two unused slots cannot cover another 36-request suite; preserve both ledgers and never reset/relabel the failed result.
+
+## Milestone 5 checkpoint serialization correction — 2026-11-09
+
+Inspected AGENTS, current milestone documents, branch/status/history and the reporting/runner/checkpoint path. Initial working tree was clean at `e6f4325`. Confirmed existing Conda Python 3.12.16 and Poetry use `/opt/homebrew/anaconda3/envs/enterprise-analytics/bin/python`; focused baseline `poetry run pytest tests/test_retail_evaluation.py -q` passed **53 tests in 0.43s**.
+
+The checkpoint contains nested Runtime/endpoint `createdAt`/`lastUpdatedAt` and S3 `LastModified` datetime objects. Plain context JSON serialization raised TypeError after opening the destination, leaving an empty file before dispatch. The correction explicitly normalizes supported datetime values with `isoformat()` (retaining offset and precision), keeps existing redaction, and fully serializes context JSON before creating its exclusive final file. Unsupported objects still fail before any invocation instead of being silently stringified.
+
+Four new regressions failed against the original code (**4 failed in 0.34s**), then passed after the fix. Focused `poetry run pytest tests/test_retail_reporting.py tests/test_retail_evaluation.py -q` passed **57 tests in 0.49s**. The complete command path uses realistic timestamp-bearing checkpoints, mocked AWS/invocation boundaries and a real temporary campaign ledger/client: it verifies context/report JSON, timezone offsets/microseconds/redaction, **36 reservations and 36 matching outcomes**, fresh question sessions plus the shared S01 pair. Unsupported values cause zero dispatch/reservations and leave the final context file absent. These authored mock responses verify the operator path, not live answer quality; neither real ledger is used.
+
+Required checks in the existing environment:
+
+| Command | Actual result |
+| --- | --- |
+| `poetry check --lock` | Passed: All set. |
+| `poetry run pytest` | **837 passed, 85 skipped in 54.04s**; skips are explicitly gated live suites, not acceptance evidence. |
+| `poetry run ruff check .` | Passed. |
+| `poetry run ruff format --check .` | Passed: 101 files already formatted. |
+| `poetry run mypy src tests` | Passed: 79 source files. |
+| `git diff --check` and documentation checks | Passed; 4 Markdown files, 33 local links and 10 shell blocks checked without executing commands. |
+
+Preservation checks passed for all **54 protected file hashes/absence states**, including frozen inputs/goldens, ZIP, corrected assemblies, deployment configuration and both real ledgers. The S3 VersionId, M3 permissions and existing analytics-dev profile are unchanged. No AWS state or live result is refreshed here.
+
+Exact next task: review the local correction, then obtain separate deployment/live approval and follow the existing M5 runbook. M5 remains open until deployed evaluation and corrected-base restoration pass. CI `42567676599` is user-confirmed earlier-commit evidence, not validation of this fix.
+
+## Historical Milestone 5 implementation checkpoint — 2026-11-08 America/Chicago
+
+Read root instructions and current plan/architecture/metric definitions/progress; inspected branch/status/history, implementation and Conda/Poetry interpreter. Python and Poetry use `/opt/homebrew/anaconda3/envs/enterprise-analytics/bin/python`, Python 3.12.16 / Poetry 2.3.1. Existing work was clean at `ec77533`; continued on the same branch without branch switching or resetting. M4 completion/merge and documentation handoff ancestry is intact.
+
+Completed locally:
+
+- Added `analytics-ask` with saved-response replay and injectable counted invocation, exact numeric/unit/null/date/version display, sanitized diagnostics and answer/clarification/error exits. Added strict retail target/case/golden/report models, all Q01–Q34 plus S01A/B, complete-plan/result judge and reusable `analytics-evaluate` replay/live gate. Default tests and replay create no AWS clients. Existing public schemas, agent/runtime behavior, metrics and M4 tests remain unchanged.
+- Added independent row-decoding oracle with its own tenant-scoped keys/relationship checks, duplicate/conflict rules, integer-cent ledger and final HALF_UP ratios; **48 handwritten oracle tests**. Source acquisition uses only STS and version/ETag-pinned S3 HEAD/GET. No generator, adapter or demo output supplied expected values.
+- Frozen all 36 case records, 480 item contributions and cohort worksheets from verified canonical inputs. Root-agent arithmetic review covers January totals/aggregate versus subgroup AOV, full-period totals, refund-only and return-only cohorts, and March 31's three-item order. This is automated-agent review, not human/live acceptance. All **30 complete structured metric queries** then matched DuckDB against these frozen literals across all five metrics, without rewriting expectations.
+- Added durable attempt/context reports with correctness/clarification denominators, separate client/server latency (nearest-rank p95), missing token/scan evidence and unique Athena query IDs/scans. Failed/incomplete cases cannot disappear. Review fixed dispatch continuing after actual Athena errors and invalid scan counters incorrectly satisfying completeness; regressions cover both. Report directories are reserved before dispatch; fsynced per-case/context evidence survives interruption.
+- Added separate repository-anchored locked/fsynced M5 counter, reserve-before-dispatch, SDK invocation attempts=1, durable failure/timeout/interruption accounting, 39-call retail ceiling and protected fresh-verified parity smoke slot. No real M5 ledger was initialized/consumed. M4 ledger remains 28 reservations with SHA `f04f9cc568d4842b6c9e0118f01cf5b92e496c40658f25a9fdc364075eb17f14`.
+- Prepared separate retail runtime/CDK settings and offline retail/restoration assemblies; three trusted JSON fields only: parity-v1→retail-v1, t1→retail_demo, February 1→April 1. North/South, model, limits, artifact/S3 version, IAM/resource policies and all other properties stay fixed. Retail template SHA `ecfbfa8a2f011ce6fe3c765c29660a81e02ad1ca765ad6e497e2502f1fe46ac3`; restore SHA exactly matches corrected base `dd217890a37cc42e54499c3cc8cba91886ed5ca3dee5de9a5bb11a5e153c64bb`. First direct Python synthesis lacked CLI path metadata; reran through the locked CDK CLI to reproduce the exact reviewed bytes, without changing original assemblies.
+
+### Read-only canonical and deployment evidence
+
+Initial `aws sts get-caller-identity --profile analytics-dev --region us-west-2` failed because SSO expired, before any retrieval. After the user's login, the same explicit profile verified account `453711491609`, region `us-west-2`, selected SSO PowerUser principal. No alternate profile or administrator IAM inspection was used.
+
+Downloaded ready manifest SHA **`99e9115edc990decf5b15e5de1ad693772e3bd03ec6767b880ebbdd4135b8797`**, S3 VersionId **`cvCWKV3bv9Ub4iZOPSh79W4TnizV6FmJ`**, from `enterprise-analytics-dev-453711491609-us-west-2-data/manifests/retail-v1.json`. All seven exact source versions passed hash/size/schema/inventory/required-field checks, followed by independent relationships/duplicates validation. Inventory: customers48/products24/orders240/items480/payments240/refunds96/returns40. Published canonical bytes were used; raw/generated local files and the earlier prepared-manifest serialization were not substituted. Committed `evaluations/retail-v1/{ready-manifest.json,oracle-provenance.json}` preserve object IDs and hashes; downloaded Parquet stays ignored under `artifacts/milestone-5/canonical/retail-v1`.
+
+Read-only CloudFormation/AgentCore/S3/Logs checks confirmed Runtime `enterprise_analytics_dev_agent-HlWywlG60h` and DEFAULT READY **v4**, runtime stack UPDATE_COMPLETE, exact corrected template/base settings, both policies matching, seven-day retention, frozen local ZIP/upload checksum and VersionId `HSRXiFjg0w2W77InULH4.fn32Y.JH8b9`, and retained foundation/data/query-trust templates. Seven Glue GetTable reads confirmed retail source locations and schemas. No Athena query access/execution was tested. Full ignored records: `artifacts/milestone-5/{preimplementation-checkpoint.json,verified-checkpoint.json,glue-verification.json}`. Canonical/provenance timestamps are UTC (November 9 UTC / November 8 America/Chicago).
+
+### Local verification for this implementation
+
+| Command actually run | Result |
+| --- | --- |
+| Existing tracked-test baseline via `poetry run pytest <git ls-files tests/test_*.py>` | **663 passed, 84 skipped in 50.31s** before new tests. |
+| `poetry install --only-root --no-interaction` | Installed only editable project/new CLI entry points in the existing environment; dependencies/lockfile unchanged. |
+| `poetry check --lock` | Passed: All set. |
+| `poetry run pytest` | **833 passed, 85 skipped in 55.93s** on final current code. Skips are explicitly gated live suites, not acceptance evidence. First invocation without the sandbox cache override hit two jsii collection permission errors; setting `JSII_RUNTIME_PACKAGE_CACHE_ROOT=/private/tmp/enterprise-analytics-jsii-cache` resolved it. An intermediate complete run passed **827 tests, 85 skipped in 54.93s** before final review regressions. |
+| `poetry run ruff check .`; `poetry run ruff format --check .`; `poetry run mypy src tests`; extended `poetry run mypy src tests infrastructure/cdk` | All passed: Ruff lint clean, **100 files already formatted**, mypy **78 source files**, extended mypy **85 source files**. Formatting/type issues found while implementing were fixed. |
+| Locked CDK `synth --app 'poetry run python -m infrastructure.cdk.agentcore_app --config <retail/development config> --phase runtime' --no-lookups --no-telemetry --no-notices --output artifacts/milestone-5/cdk.<retail/restore>.out --quiet` | Both passed offline; scoped template review passed. Existing CDK deprecation/feature-flag advisories only. No source ZIP rebuild/upload. |
+| `poetry run python -m enterprise_analytics_agent.adapters.retail_provenance --directory artifacts/milestone-5/canonical/retail-v1` | Local manifest/hash/size/schema/inventory verification; read-only acquisition was performed before the module was moved into adapters. |
+| Offline frozen canonical comparison script using DuckDB and existing public v2 requests | **30 queries passed**, exact independent literal results. Initial script omitted keyword-only `context=`; corrected and reran successfully. |
+| `poetry run analytics-ask --help`; `poetry run analytics-evaluate --help` | Passed after editable entry-point installation; no AWS client construction. |
+| `poetry run analytics-ask --response-file artifacts/milestone-5/authored-replay/Q02.json --format text`; `poetry run analytics-evaluate --target-config evaluations/retail-v1/target.json --response-dir artifacts/milestone-5/authored-replay --report-dir artifacts/milestone-5/runs/authored-offline-replay` | Passed: exact January North172.17/South313.44 display and **36/36 authored replay cases**. This checks tool/report behavior, not model quality; diagnostics missingness is explicit and live gates are false. |
+| `poetry run pytest --run-retail-live --collect-only -q` | Expected exit4: missing `--retail-config`; no invocation. |
+| `git diff --check`; documentation shell/link/JSON checks | Passed: diff reviewed; **7 Markdown files, 39 local links, 16 shell blocks** parsed without execution, all retail JSON parsed. |
+
+Required live work remains pending approval. Reports/CLI tests use authored saved responses and make no model-quality claim. Metadata grading checks tool/metric selection only because current public agent responses do not expose structured metadata contents. Independent synthetic data is small and fixed; no production/per-user authorization or broad natural-language capability is claimed. Future restoration advances the Runtime version; do not relabel M4's historical v4 acceptance.
+
+### Exact next task
+
+Review this local implementation checkpoint, frozen provenance/worksheets, three-field deployment diff, separate 40-call campaign and [runbook](milestone-5-runbook.md). Obtain explicit approval for the supervised environment-only Runtime update and billable campaign. Then, within that scope only: fresh read-only preflight, retail update/READY check, counted warm-up and 36-case evaluation, mandatory corrected-base restoration/fresh proof/counted independent smoke, report review and M5 completion evidence. Do not deploy/invoke from this implementation authorization, push the local commit, or start another milestone.
+
+## Historical Milestone 5 planning — 2026-11-08
+
+Read AGENTS, README, architecture, metric definitions, implementation plan and progress. Inspected CLI, agent/request contracts, question guard, evaluator/live tests, generator, snapshot publication, runtime settings, CDK configuration and retained local manifests/checkpoints. Git ancestry confirms both M4 completion `51c1d4c`/merge `47c3afc` and documentation `39523f4`/merge `d7e0f19` are in current main. No AWS or GitHub API calls were used to refresh cloud/CI state; the only remote operation was the requested Git fetch.
+
+Proposed work: a separate analytics-ask CLI, versioned retail cases/independent literal expectations, multi-result semantic judging, and an evaluation report covering correctness/clarification, client versus server latency, tokens and unique Athena scans. The current CLI is direct DuckDB metric execution; the M4 evaluator is parity-only and assumes one result, so retail needs a separate operator path. Application code stays unchanged in this session.
+
+Important decisions and dependencies:
+
+- Retail data uses tenant `retail_demo`, not `t1`. Propose separate trusted deployment settings for `retail-v1`/`retail_demo`, retaining North/South, with reference date `2025-04-01`. The same retained ZIP/version can accept this environment JSON; no model/IAM/foundation/data/publication change is expected. Future source/config verification and a reviewed environment-only diff are prerequisites, not an assertion of fresh cloud readiness.
+- Exact published canonical source files must be verified before goldens are frozen. Existing raw local files differ in bytes from the publication inventory; do not calculate expected results using the generator, adapters or demo output. The plan specifies independent calculations, contribution ledgers and handwritten fixture proofs.
+- Proposed live usage is **40 separate M5 calls**: 1 warm-up + 34 individual cases + 2 session requests + 1 restored parity smoke + 2 reserve. Preserve M4 ledger `artifacts/agentcore/runtime-invocations.jsonl` at **28 reservations**, SHA `f04f9cc568d4842b6c9e0118f01cf5b92e496c40658f25a9fdc364075eb17f14`. Protect the final M5 call for restored-parity smoke; retail/demo/retry dispatch must stop at 39 total reservations. No new ledger was created or invocation used.
+- Restore exact corrected M4 scope/configuration after any attempted retail change, even on failure. The resulting Runtime version advances; do not claim a return to numerical version 4 or modify that historical M4 evidence. Completion requires all agreed result/security/clarification/report and restoration gates.
+
+This session creates only `docs/milestone-5-plan.md` and updates implementation/progress documentation. Documentation checks passed: `git diff --check`; a local Python check across **3 Markdown files**, **15 local links**, balanced fences/newlines and **3 shell blocks** parsed with `zsh -n` without execution. It also verified all **34 question IDs**, the **40-call** budget arithmetic/protected restoration slot, unchanged M4 ledger hash/count, unchanged historical recovery text, and only the three intended documentation files touched. Two independent read-only implementation/plan reviews found no blocking issue; the protected restoration reserve was added from review feedback. No implementation tests or live results are claimed; M5 implementation/deployment/live acceptance remain pending a separate authorized task.
 
 ## Milestone 4 merge and hosted CI — 2026-11-08
 
@@ -127,7 +518,7 @@ Baseline required checks passed before recovery: **662 passed, 84 skipped in 37.
 
 | Command | Actual result |
 | --- | --- |
-| `poetry run pytest tests/test_agentcore_cdk.py -q -k directory_tagging_matches_denial_and_preserves_active_version4` | **1 failed, 25 deselected in 1.04s against active V4**: no matching directory grant. Passes with the proposal in focused/full checks. |
+| `poetry run pytest tests/test_agentcore_cdk.py -q -k directory_tagging_matches_denial_and_preserves_active_version 4` | **1 failed, 25 deselected in 1.04s against active V4**: no matching directory grant. Passes with the proposal in focused/full checks. |
 | `poetry run pytest tests/test_agentcore_cdk.py tests/test_cdk.py -q` | **51 passed in 2.26s**. |
 | `poetry check --lock` | Passed: All set. No dependency/lockfile changes. |
 | `poetry run pytest` | **663 passed, 84 skipped in 36.45s**. The 66 AWS parity and 18 billable agent tests remain gated; no live acceptance is claimed. |
@@ -513,9 +904,9 @@ Read AGENTS, this progress log, and the implementation plan. Inspected `git stat
 
 ## Completion status and known limitations
 
-Milestones **1–4 are complete for the agreed development scope**. M4's recovered Runtime/DEFAULT are READY on restored `parity-v1` version 4, both resource policies and seven-day retention verify, and all 24 deployed tests plus warm-up passed within **28/40** calls. Source/package/template bytes and retained foundation/data/query trust remain unchanged. Historical M3 user-run parity and prior hosted CI retain their attribution. Completion commit `51c1d4c` is now merged through PR #4 at `47c3afc`, with its push/PR CI and merge-commit main CI successful. Milestone 4's implementation, deployment, live validation, merge and hosted CI gates are complete for the agreed development scope. The new documentation-only commit is a separate local handoff and has no hosted result claimed. Production authentication/policy services, broader question vocabulary, retail demonstrations, long-duration credential refresh/cancellation fault injection and measured-cost validation were not part of this live gate.
+Milestones **1–5 are complete for the agreed development scope**. M4's merged/CI evidence and 28/40 history remain intact. M5's first 35/36 campaign and both failed repair attempts remain historical evidence; the approved recovery now passed Q18 and all 36 frozen cases, reporting gates and original restoration/smoke on **READY v12**, runtime stack UPDATE_COMPLETE. The recovery ledger is closed **38/38**, aggregate repair **40/40**; earlier M5 **38/40**, M4 **28/40**, repair **1/40** and continuation **1/39** histories are unchanged. The implementation/recovery checkpoint `f223877` passed the exact push/PR CI linked above. Outcome documentation has a separate Git/CI handoff from the reviewed f223877 checkpoint; PR #6 is not yet merged. Broader vocabulary, production authorization, long-duration fault injection and measured cost remain unverified.
 
-Runtime packaging targets Linux ARM64, not the local macOS native libraries. API/CloudFormation/model compatibility passed the agreed development live acceptance; broader production behavior remains unverified. Scheduling deadlines and Athena cancellation remain best effort; an in-flight SDK call can outlast them. The operator's denied IAM inspection is an administrator prerequisite, not a reason to broaden permissions automatically. Initial acceptance uses parity snapshots even though retail publication metadata is now verified. No production isolation/policy service or measured-cost claim is made.
+Runtime packaging targets Linux ARM64, not the local macOS native libraries. API/CloudFormation/model compatibility passed the agreed development live acceptance; broader production behavior remains unverified. Scheduling deadlines and Athena cancellation remain best effort; an in-flight SDK call can outlast them. Administrator evidence supplies the candidate-key grant; no new IAM failure occurred in this execution. The retail candidate passed the agreed full live suite; original parity scope and artifact are restored on v12. Denied IAM inspection is not a reason to broaden permissions automatically. No production isolation/policy service or measured-cost claim is made.
 
 Source versions are immutable through the approved loader protocol; partial publication is deliberately not resumed automatically. New dataset versions require reviewed infrastructure inventory changes. Athena aggregates have a 38-digit bound. Application authorization is not a database security boundary, and 10 MiB per-query limits do not cap aggregate spend. Stored data is retained by default; no explicit cleanup was reported or performed in this update.
 
@@ -525,6 +916,4 @@ Milestone 2 introduced no AWS credentials, calls, deployment, Athena adapter, or
 
 ## Exact next task
 
-Review the documentation-only `docs/milestone-4-merge-status` commit, then the user can push it and arrange its own CI/review/merge. Milestone 4 itself is already implemented, deployed, live-validated, merged into main and hosted-CI verified for the agreed development scope; do not repeat those completed gates or attribute their CI results to this new documentation commit.
-
-Preserve the recorded **28/40** ledger and ignored deployment/diagnostic evidence. No AWS operation, new evaluation, application change or next milestone is part of this update. Await a separately requested scope before further milestone work. Keep this commit local; no push was performed here.
+Review the pushed M5 completion checkpoint and its exact-commit hosted CI in **PR #6**, keeping the PR unmerged until the user decides. M5's agreed live/reporting/restoration gates passed. Preserve the original READY v12 checkpoint, frozen assets/goldens and every closed ledger/claim. **Recovery 38/38 and aggregate repair 40/40 are exhausted**; no rerun, additional demonstration, quota reset, profile/IAM change, rebuild/upload or next milestone is authorized automatically.

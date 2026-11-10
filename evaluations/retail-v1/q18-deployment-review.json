@@ -1,0 +1,25 @@
+{
+  "review_sha256": "14a817f1ba1ad2b2fa5b5b6c1cfb4aa6250513f971153003b9ddc5ca8b193401",
+  "candidate_sha256": "398124e89d2be1e9ce00f5b57c263fe2cdde0654527b27f949b9f3abb58029f1",
+  "candidate_template_sha256": "faca6d23b85038d5c8ad16b1fe73c95b910d9d05c6a4fccf3be8ca82cd9eb368",
+  "restoration_sha256": "51eaeac6b9eb107f4634aea9e3180fa1db7dce1380fbe166415fbfed8185ded1",
+  "restoration_template_sha256": "dd217890a37cc42e54499c3cc8cba91886ed5ca3dee5de9a5bb11a5e153c64bb",
+  "changes": {
+    "dataset_version": {
+      "before": "parity-v1",
+      "after": "retail-v1"
+    },
+    "tenant_id": {
+      "before": "t1",
+      "after": "retail_demo"
+    },
+    "reference_date": {
+      "before": "2025-02-01",
+      "after": "2025-04-01"
+    },
+    "artifact_key": {
+      "before": "releases/51eaeac6b9eb107f4634aea9e3180fa1db7dce1380fbe166415fbfed8185ded1/agent.zip",
+      "after": "releases/398124e89d2be1e9ce00f5b57c263fe2cdde0654527b27f949b9f3abb58029f1/agent.zip"
+    }
+  }
+}

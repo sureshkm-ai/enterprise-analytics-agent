@@ -232,6 +232,89 @@ class BedrockAnalyticsAgent:
             if self.clock() >= deadline:
                 raise _LoopFailure("time_limit")
 
+        def execute_call(name: str, identifier: str, supplied: object) -> dict[str, object]:
+            """Use the same authorization, validation and evidence path for every tool."""
+            nonlocal last_tool_error
+            check_time()
+            arguments: dict[str, object] = {}
+            error_code: str | None = None
+            try:
+                parsed = validate_tool_request(name, supplied)
+                arguments = parsed.model_dump(mode="json")
+                self._validate_scope(parsed, scope)
+                response_model = execute_tool(self.adapter, parsed, context=context)
+                # Reject model_construct/adapter corruption at this boundary too.
+                response_model = type(response_model).model_validate_json(
+                    response_model.model_dump_json()
+                )
+                if isinstance(parsed, QueryMetricRequestV2) and (
+                    not isinstance(response_model, QueryMetricResponseV2)
+                    or response_model.metric_id != parsed.metric_id
+                    or response_model.time_range != parsed.time_range
+                    or response_model.group_by != parsed.group_by
+                ):
+                    raise _LoopFailure("invalid_tool_response")
+                if isinstance(response_model, QueryMetricResponseV2):
+                    results.append(response_model)
+                else:
+                    metadata.append(response_model)
+                payload_result: dict[str, object] = response_model.model_dump(mode="json")
+            except _LoopFailure as exc:
+                records.append(
+                    ToolCallRecord(
+                        tool_use_id=identifier,
+                        name=name,
+                        arguments=arguments,
+                        status="error",
+                        error_code=exc.code,
+                    )
+                )
+                raise
+            except (ValidationError, ValueError):
+                error_code = "invalid_tool_arguments" if name in REQUEST_MODELS else "unknown_tool"
+                payload_result = {
+                    "error": error_code,
+                    "message": (
+                        "Use a listed tool and its v2 schema, matching the user's "
+                        "metric, period, grouping and filters."
+                    ),
+                }
+            except SemanticError as exc:
+                error_code = type(exc).__name__
+                payload_result = {
+                    "error": error_code,
+                    "message": (
+                        "The governed request could not be completed; missing sources, "
+                        "unsupported metrics and authorization restrictions must "
+                        "not be bypassed."
+                    ),
+                }
+            except Exception:
+                error_code = "tool_error"
+                payload_result = {
+                    "error": error_code,
+                    "message": "The governed tool failed; no result is available.",
+                }
+            records.append(
+                ToolCallRecord(
+                    tool_use_id=identifier,
+                    name=name,
+                    arguments=arguments,
+                    status="error" if error_code else "success",
+                    error_code=error_code,
+                )
+            )
+            check_time()
+            if error_code:
+                last_tool_error = error_code
+            return {
+                "toolResult": {
+                    "toolUseId": identifier,
+                    "status": "error" if error_code else "success",
+                    "content": [{"json": payload_result}],
+                }
+            }
+
         try:
             for _ in range(self.config.max_iterations):
                 check_time()
@@ -309,94 +392,9 @@ class BedrockAnalyticsAgent:
                     messages.append(message)
                     tool_results: list[dict[str, object]] = []
                     for call in calls:
-                        check_time()
-                        name, identifier = str(call["name"]), str(call["toolUseId"])
-                        arguments: dict[str, object] = {}
-                        error_code: str | None = None
-                        try:
-                            parsed = validate_tool_request(name, call["input"])
-                            arguments = parsed.model_dump(mode="json")
-                            self._validate_scope(parsed, scope)
-                            response_model = execute_tool(self.adapter, parsed, context=context)
-                            # Reject model_construct/adapter corruption at this boundary too.
-                            response_model = type(response_model).model_validate_json(
-                                response_model.model_dump_json()
-                            )
-                            if isinstance(parsed, QueryMetricRequestV2) and (
-                                not isinstance(response_model, QueryMetricResponseV2)
-                                or response_model.metric_id != parsed.metric_id
-                                or response_model.time_range != parsed.time_range
-                                or response_model.group_by != parsed.group_by
-                            ):
-                                raise _LoopFailure("invalid_tool_response")
-                            if isinstance(response_model, QueryMetricResponseV2):
-                                results.append(response_model)
-                            else:
-                                metadata.append(response_model)
-                            payload_result: dict[str, object] = response_model.model_dump(
-                                mode="json"
-                            )
-                        except _LoopFailure as exc:
-                            records.append(
-                                ToolCallRecord(
-                                    tool_use_id=identifier,
-                                    name=name,
-                                    arguments=arguments,
-                                    status="error",
-                                    error_code=exc.code,
-                                )
-                            )
-                            raise
-                        except (ValidationError, ValueError):
-                            error_code = (
-                                "invalid_tool_arguments"
-                                if name in REQUEST_MODELS
-                                else "unknown_tool"
-                            )
-                            payload_result = {
-                                "error": error_code,
-                                "message": (
-                                    "Use a listed tool and its v2 schema, matching the user's "
-                                    "metric, period, grouping and filters."
-                                ),
-                            }
-                        except SemanticError as exc:
-                            error_code = type(exc).__name__
-                            payload_result = {
-                                "error": error_code,
-                                "message": (
-                                    "The governed request could not be completed; missing sources, "
-                                    "unsupported metrics and authorization restrictions must "
-                                    "not be bypassed."
-                                ),
-                            }
-                        except Exception:
-                            error_code = "tool_error"
-                            payload_result = {
-                                "error": error_code,
-                                "message": "The governed tool failed; no result is available.",
-                            }
-                        records.append(
-                            ToolCallRecord(
-                                tool_use_id=identifier,
-                                name=name,
-                                arguments=arguments,
-                                status="error" if error_code else "success",
-                                error_code=error_code,
-                            )
-                        )
-                        check_time()
                         tool_results.append(
-                            {
-                                "toolResult": {
-                                    "toolUseId": identifier,
-                                    "status": "error" if error_code else "success",
-                                    "content": [{"json": payload_result}],
-                                }
-                            }
+                            execute_call(str(call["name"]), str(call["toolUseId"]), call["input"])
                         )
-                        if error_code:
-                            last_tool_error = error_code
                     messages.append({"role": "user", "content": tool_results})
                 elif stop == "end_turn" and not calls:
                     if results:
@@ -424,6 +422,40 @@ class BedrockAnalyticsAgent:
                             "The governed request could not be completed: " + last_tool_error,
                             last_tool_error,
                         )
+                    if not scope.metadata and scope.metric_ids and scope.periods:
+                        # The question guard already resolved the complete numeric plan.
+                        # A model's text-only turn is not evidence of user ambiguity.
+                        # Execute that plan once, without another model call or guessed values.
+                        planned = tuple(
+                            QueryMetricRequestV2(
+                                metric_id=metric,
+                                time_range=period,
+                                group_by=scope.group_by,
+                                dimension_filters=scope.filters,
+                            )
+                            for metric in scope.metric_ids
+                            for period in scope.periods
+                        )
+                        if len(records) + len(planned) > self.config.max_tool_calls:
+                            raise _LoopFailure("tool_limit")
+                        for parsed in planned:
+                            number = len(records) + 1
+                            identifier = f"resolved-plan-{number}"
+                            while identifier in seen_ids:
+                                number += 1
+                                identifier = f"resolved-plan-{number}"
+                            seen_ids.add(identifier)
+                            # These IDs identify actual server-planned work, not model toolUse
+                            # messages. Do not append fabricated model turns to conversation.
+                            execute_call("query_metric", identifier, parsed.model_dump(mode="json"))
+                            if last_tool_error:
+                                return finish(
+                                    "error",
+                                    "The governed request could not be completed: "
+                                    + last_tool_error,
+                                    last_tool_error,
+                                )
+                        return finish("answer", _render(results))
                     return finish(
                         "clarification",
                         "Please clarify the requested metric, period, grouping, or comparison.",

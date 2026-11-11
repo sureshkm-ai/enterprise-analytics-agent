@@ -29,6 +29,23 @@ exact-commit CI. Next task: user review and merge decision. Default/offline save
 remains available with no further invocation. No next milestone or production-readiness
 claim is implied.
 
+## Follow-on validation: execute every test — prepared; new live approval pending
+
+The user explicitly requested that all 85 live items run, rather than treating their
+exclusion as passed coverage. The [full validation plan](full-live-validation-plan.md)
+prepares all offline tests, 66 direct Athena tests, one 36-request retail evaluation,
+18 parity-agent tests (19 requests), and a protected restored-retail Q18 smoke.
+Default offline pytest/CI now explicitly select offline tests and fail any selected
+skip. Only the complete staged live run can establish the requested live result.
+
+The proposed separate `full-live-v1` allowance is **56 Runtime invocations** and
+**201 direct Athena submission attempts**, expiry **2026-11-13T23:59:00Z**.
+Prepared parity configuration changes only dataset/tenant/reference date; code stays
+on the accepted candidate ZIP/version. The operator restores the accepted retail
+configuration and records its resulting actual version. All historical budgets,
+frozen inputs and PR #8 remain unchanged. No AWS call or billable execution occurred
+during preparation. Next task: approve the concrete new scope before execution.
+
 ## Milestone 1: local semantic execution — complete (`64cbea4`)
 
 1. Inspect the repository and active Python environment; preserve existing work.

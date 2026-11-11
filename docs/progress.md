@@ -2,7 +2,86 @@
 
 Updated: 2026-11-11 (America/Chicago).
 
-## Current task: shared UI deployment and live acceptance — passed; PR handoff
+## Current task: execute every test — offline preparation verified; new live approval pending
+
+The user clarified that all **85 live tests must actually run**. Test exclusion is
+not accepted as live coverage. Prepared a separate full-validation operator and
+[concrete execution plan](full-live-validation-plan.md), without an AWS call or
+billable invocation. Live execution remains pending the new scoped budget/configuration
+approval required by the repository's existing allowance rules.
+
+Started clean on the completed UI branch at `0c5b57e2427f3932c5407f46b991406397b704c9`;
+read instructions/progress/plan, inspected Git/environment, and isolated this new
+preparation on local **`feat/full-live-validation`**. PR #8 and its pushed head/CI
+remain unchanged. Existing Conda Python 3.12.16 / Poetry 2.3.1 and lockfile are reused.
+
+### Prepared implementation and exact scope
+
+- New `FullLiveReview`/`FullLiveBudget` and adapter SDK guard bind profile/account/
+  region/Runtime/configuration/pins and reserve every dispatch durably. Maximum
+  **56 Runtime invocations**: retail36 + parity19 + protected restored-retail smoke1.
+  Direct Athena cap **201 total StartQueryExecution SDK attempts**, including
+  existing idempotent/terminal retry behavior; no Runtime SDK retries or extra reserve.
+- New operator runs every offline test, **66 direct Athena items**, **one retail
+  campaign item (all36 requests)**, then a temporary candidate/parity configuration
+  for **18 agent items (19 requests)**. Exact suite/JUnit counts, no skipped/duplicate
+  items, complete retail reports and actual dispatch totals are acceptance gates.
+- Typed trusted live dependencies let the existing retail runner use the new
+  candidate-aware checkpoint/counter. The default historical path is unchanged:
+  no closed M5/repair/UI ledger is reset or redirected. No metric/contract/agent
+  calculation or runtime artifact change.
+- Temporary parity changes only dataset `parity-v1`, tenant `t1`, reference
+  `2025-02-01`; candidate ZIP398/S3V5 and all other properties remain unchanged.
+  The operator restores accepted candidate/retail config and runs full Q18 smoke
+  **110.25 USD [2025-03-31,2025-04-01)**. It records actual resulting versions.
+  Start requires four hours left; parity update requires two hours for bounded
+  tests/restoration. Nonbillable cleanup is independent of source/canonical/accounting
+  availability; untrusted accounting blocks smoke and records unknown usage.
+- Default pytest/CI explicitly select the offline suite and `--fail-on-skip` makes
+  a selected skip fail verification. The 85 excluded live items are never labeled
+  passed; only the separately executed staged campaign can satisfy that requirement.
+
+Review: [review.proposed.json](../evaluations/full-live/review.proposed.json), SHA
+**bd3724d46181ec3e7b0181987c48d3a535ab4815d02897305cd36b7ba44d8845**,
+proposed expiry **2026-11-13T23:59:00Z**. This is not an extension of any old approval.
+Prepared copies/inventory: `artifacts/full-live/prepared/`.
+Parity template SHA **9b84152070e6e5babf4f2469abdde3a6e504d29c8887127a155f71ab871df83d**;
+retail restoration template remains **faca6d23...**. The complete M3 configuration is
+also pinned, preventing an alternate profile from being selected before clients exist.
+
+### Actual offline verification
+
+| Command | Actual result |
+| --- | --- |
+| `poetry check --lock` | Passed: All set. |
+| `poetry run pytest` | **1,460 passed, 85 deselected in 52.77s; zero skipped**. This is offline verification, not the requested live acceptance. |
+| `poetry run ruff check .` | Passed. |
+| `poetry run ruff format --check .` | Passed: 155 files formatted. |
+| `poetry run mypy src tests infrastructure/agentcore/full_live.py` | Passed: 124 source files. |
+| Offline CDK data/foundation synthesis | Both passed into separate `artifacts/full-live/verification/` directories; no lookups or credentials. |
+| `python -m infrastructure.agentcore.full_live prepare` / `verify-offline` through Poetry | Passed: exact retained ZIP/source/dependencies/canonical inputs, environment-only parity delta and review-bound inventory. Final evidence `artifacts/full-live/offline-readiness.final.json`. |
+| Failure/recovery and gate regressions | Source/config drift, no implicit profiles, skip-failure/empty-suite rules, 56/201 caps, SDK retry/unknown outcomes, primary-error preservation, interruption, exact JUnit counts, protected smoke, and cleanup independent of unavailable source/accounting covered. |
+
+Historical verification counts remain unchanged below. Official pytest marker,
+hook and fixture documentation was checked for these changes. Final checks passed:
+**6 Markdown files, 55 local links, 14 shell blocks parsed without execution**,
+review JSON/model/pins and `git diff --check`. All **121 present protected files**,
+**25 session snapshots** and **13 UI acceptance evidence files** remain unchanged.
+Fresh offline readiness records **0/56 Runtime calls, 0/201 Athena submissions**,
+with no real campaign/claim created. No new live ledger,
+claim, profile, permissions, source publication, artifact rebuild/upload or deployment
+was created; last accepted AWS state remains the recorded candidate/retail **READY v13**.
+
+### Exact next task
+
+Approve the new [full-live scope](full-live-validation-plan.md), review SHA and expiry:
+**56 Runtime attempts, 201 direct Athena submissions, temporary parity configuration
+and mandatory accepted-retail restoration**. Then run fresh starting-v13/identity/
+source/publication/process preflight and the complete staged tests. The 85 live items
+have **not yet run** in this task. Keep this preparation commit local and PR #8
+unmerged/unchanged. No production-readiness or next-milestone claim is implied.
+
+## Completed task: shared UI deployment and live acceptance — passed; PR #8 handoff
 
 Approved scope at `a1132205b54b31dcec712425a8a0861f650fdcfa` executed on November 11,
 2026, using only analytics-dev / account 453711491609 / us-west-2. GitHub confirms

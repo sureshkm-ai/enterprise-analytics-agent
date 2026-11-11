@@ -12,6 +12,9 @@ from enterprise_analytics_agent.data import TABLE_SCHEMAS, DataRow
 
 def pytest_addoption(parser: pytest.Parser) -> None:
     parser.addoption(
+        "--fail-on-skip", action="store_true", help="Fail verification if a selected test skips"
+    )
+    parser.addoption(
         "--run-retail-live",
         action="store_true",
         help="Explicitly enable the separately approved M5 retail campaign",
@@ -116,6 +119,16 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
         item.add_marker(
             pytest.mark.skip(reason="Live AWS tests require explicit --run-aws/--aws-config")
         )
+
+
+@pytest.hookimpl(trylast=True)
+def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:
+    if session.config.getoption("fail_on_skip"):
+        reporter = session.config.pluginmanager.get_plugin("terminalreporter")
+        if reporter is not None and reporter.stats.get("skipped"):
+            if session.exitstatus == pytest.ExitCode.OK:
+                session.exitstatus = pytest.ExitCode.TESTS_FAILED
+            reporter.write_sep("=", "Selected tests skipped: verification is incomplete")
 
 
 @pytest.fixture

@@ -77,6 +77,13 @@ poetry run ruff format --check .
 poetry run mypy src tests
 ```
 
+Default pytest and CI explicitly select offline tests and fail if any selected test
+skips. The 85 live items are separately selected for approved execution; deselection
+does not mean they passed. The [full-live validation plan](docs/full-live-validation-plan.md)
+prepares all 66 Athena, 18 AgentCore and one 36-request retail campaign test, with a
+new counted allowance and mandatory restoration. That live run is pending approval;
+the completed UI acceptance and its closed regular budget are unchanged.
+
 The CLI is a trusted local application and fixes its own demo tenant and authorized regions. Semantic requests cannot supply a principal, tenant, or authorization scope. This is an enforcement boundary demonstration, not a production authentication system.
 
 ## Retail demonstration and evaluation
@@ -146,7 +153,7 @@ JSII_RUNTIME_PACKAGE_CACHE_ROOT=/private/tmp/enterprise-analytics-jsii-cache \
   --config infrastructure/cdk/agentcore.config.development.json --outdir artifacts/cdk.agentcore.out
 ```
 
-The build downloads only checksum-locked Linux ARM64 wheels from the package index and writes local ignored artifacts; `--offline` reuses them. Runtime synthesis requires the actual archive SHA recorded in the deployment configuration. Explicit deployed-agent evaluations require both flags below, a real reviewed runtime ARN, and approval; default tests skip them without creating AWS clients:
+The build downloads only checksum-locked Linux ARM64 wheels from the package index and writes local ignored artifacts; `--offline` reuses them. Runtime synthesis requires the actual archive SHA recorded in the deployment configuration. Explicit deployed-agent evaluations require both flags below, a real reviewed runtime ARN, and approval; default tests explicitly exclude them without creating AWS clients:
 
 ```sh
 poetry run pytest tests --run-agent-live --agent-config=artifacts/agentcore/live.parity-v1.json -m agent_live -q
@@ -172,7 +179,7 @@ These commands prepare local artifacts only. Source snapshots use separate `snap
 
 `AthenaSemanticAdapter` implements the same four operations as DuckDB and returns only the existing semantic contracts. AWS-specific configuration, encoded execution parameters, query lifecycle, exact numeric conversion, and diagnostics remain internal. Dataset loaders/query executors are separate narrow roles. Tenant/region filtering is application enforcement: direct access to those development roles/storage is **not** Lake Formation row-level security.
 
-Default `poetry run pytest` skips explicitly marked live tests without creating SDK sessions. An intentionally requested live run fails if its configuration is missing. The user executed this live command from the repository root:
+Default `poetry run pytest` explicitly selects offline tests without creating SDK sessions; selected skips fail verification. An intentionally requested live run fails if its configuration is missing. The user executed this live command from the repository root:
 
 ```sh
 poetry run pytest tests --run-aws --aws-config=infrastructure/cdk/config.development.json -m aws_integration -q

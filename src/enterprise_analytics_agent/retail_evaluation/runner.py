@@ -7,6 +7,7 @@ import json
 import subprocess
 import sys
 from collections.abc import Callable
+from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Literal, Protocol, cast
 from uuid import uuid4
@@ -39,6 +40,21 @@ if TYPE_CHECKING:
 
 class Invoker(Protocol):
     def __call__(self, question: str, *, session_id: str | None = None) -> InvocationResult: ...
+
+
+@dataclass(frozen=True)
+class LiveRunDependencies:
+    """Trusted operator bindings for a separately reviewed live campaign.
+
+    These objects cannot be supplied by a model, question or CLI payload. The
+    operator owns fresh checkpoint verification, durable counting and dispatch;
+    the runner still validates frozen inputs and writes context before invoking.
+    Omitting this binding preserves the original campaign and its closed ledger.
+    """
+
+    checkpoint: Callable[[RetailTarget], dict[str, object]]
+    invoke: Invoker
+    summary: Callable[[], dict[str, object]]
 
 
 def run_suite(
@@ -158,7 +174,9 @@ class ReplayInvoker:
         )
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(
+    argv: list[str] | None = None, *, live_dependencies: LiveRunDependencies | None = None
+) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--questions", type=Path, default=Path("evaluations/retail-v1/questions.json")
@@ -179,6 +197,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--run-id", default=None)
     arguments = parser.parse_args(argv)
     try:
+        if live_dependencies is not None and not arguments.invoke_live:
+            raise ValueError("live dependencies require explicit --invoke-live")
         suite = load_suite(arguments.questions)
         goldens = load_goldens(arguments.expected, suite)
         target = RetailTarget.model_validate_json(arguments.target_config.read_bytes())
@@ -196,16 +216,8 @@ def main(argv: list[str] | None = None) -> int:
         )
         evidence["git_revision"] = revision.stdout.strip() if revision.returncode == 0 else None
         prepare_run_directory(arguments.report_dir)
-        ledger = None
+        campaign_summary: Callable[[], dict[str, object]] | None = None
         if arguments.invoke_live:
-            # All AWS-capable imports and calls sit behind this explicit gate.
-            from enterprise_analytics_agent.adapters.agentcore_invocation import (
-                create_runtime_invoker,
-            )
-            from enterprise_analytics_agent.adapters.retail_checkpoint import verify_checkpoint
-            from enterprise_analytics_agent.retail_evaluation.campaign import CampaignLedger
-            from enterprise_analytics_agent.retail_evaluation.client import CountedAgentClient
-
             evidence.update(
                 verify_frozen_inputs(
                     arguments.questions,
@@ -214,14 +226,37 @@ def main(argv: list[str] | None = None) -> int:
                     goldens,
                 )
             )
-            checkpoint = verify_checkpoint(scope="retail-v1")
-            if checkpoint["runtime"]["agentRuntimeArn"] != target.runtime_arn:
+            if live_dependencies is None:
+                # Original CLI path: never redirect or reopen its historical ledger.
+                from enterprise_analytics_agent.adapters.agentcore_invocation import (
+                    create_runtime_invoker,
+                )
+                from enterprise_analytics_agent.adapters.retail_checkpoint import (
+                    verify_checkpoint,
+                )
+                from enterprise_analytics_agent.retail_evaluation.campaign import CampaignLedger
+                from enterprise_analytics_agent.retail_evaluation.client import CountedAgentClient
+
+                checkpoint = verify_checkpoint(scope="retail-v1")
+            else:
+                checkpoint = live_dependencies.checkpoint(target)
+            runtime = checkpoint["runtime"]
+            if (
+                not isinstance(runtime, dict)
+                or runtime.get("agentRuntimeArn") != target.runtime_arn
+            ):
                 raise ValueError("verified Runtime differs from the approved target")
             evidence["checkpoint"] = checkpoint
-            ledger = CampaignLedger()
-            evidence["campaign_before"] = ledger.summary()
-            client = CountedAgentClient(target, ledger, create_runtime_invoker(target))
-            invoke: Invoker = client.invoke
+            if live_dependencies is None:
+                ledger = CampaignLedger()
+                campaign_summary = ledger.summary
+                evidence["campaign_before"] = campaign_summary()
+                client = CountedAgentClient(target, ledger, create_runtime_invoker(target))
+                invoke: Invoker = client.invoke
+            else:
+                campaign_summary = live_dependencies.summary
+                evidence["campaign_before"] = campaign_summary()
+                invoke = live_dependencies.invoke
         else:
             invoke = ReplayInvoker(suite, arguments.response_dir)
         run_identifier = arguments.run_id or str(uuid4())
@@ -242,8 +277,8 @@ def main(argv: list[str] | None = None) -> int:
             evidence=evidence,
             on_case=lambda case: append_attempt(arguments.report_dir, case),
         )
-        if ledger is not None:
-            report = report.model_copy(update={"campaign": ledger.summary()})
+        if campaign_summary is not None:
+            report = report.model_copy(update={"campaign": campaign_summary()})
         write_report(report, arguments.report_dir, prepared=True)
         print(json.dumps(report.summary, indent=2))
         if arguments.invoke_live:

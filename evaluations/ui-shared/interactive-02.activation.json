@@ -1,0 +1,196 @@
+{
+  "schema_version": "ui-interactive-activation-v1",
+  "recorded_at": "2026-11-11T22:00:49.318879+00:00",
+  "approved_commit": "319a872aaf5de89075d59f78221122efa1d43e30",
+  "review_path": "evaluations/ui-shared/interactive-02.proposed.json",
+  "review_sha256": "385f936a719ca17ee09fe4c62af7d7153d04e8cc9d6ee3e2aaf7bd7defa8bbc8",
+  "billable_execution_approved": true,
+  "campaign_id": "ui-shared-retail-v1-02",
+  "expires_at": "2026-11-13T23:59:00Z",
+  "target": {
+    "profile": "analytics-dev",
+    "account": "453711491609",
+    "region": "us-west-2",
+    "dataset_version": "retail-v1",
+    "runtime_version": "15",
+    "endpoint_version": "15",
+    "runtime_status": "READY",
+    "endpoint_status": "READY",
+    "stack_status": "UPDATE_COMPLETE",
+    "observed_at": "2026-11-11T21:52:13.167966+00:00"
+  },
+  "q18": {
+    "request_id": "0dddc9ee-a875-4d96-91c2-16c1119bef3d",
+    "status": "passed",
+    "expected_queries": [
+      {
+        "api_version": "v2",
+        "metric_id": "net_revenue",
+        "time_range": {
+          "api_version": "v2",
+          "start": "2025-03-31",
+          "end": "2025-04-01"
+        },
+        "group_by": [],
+        "dimension_filters": {}
+      }
+    ],
+    "expected_results": [
+      {
+        "api_version": "v2",
+        "metric_id": "net_revenue",
+        "definition_version": "1.0.0",
+        "time_range": {
+          "api_version": "v2",
+          "start": "2025-03-31",
+          "end": "2025-04-01"
+        },
+        "group_by": [],
+        "unit": "currency",
+        "currency": "USD",
+        "rows": [
+          {
+            "api_version": "v2",
+            "dimensions": {},
+            "value": "110.25"
+          }
+        ]
+      }
+    ],
+    "judgment_sha256": "69009a16538b0798e4483738f254394a03e08935117a9c2bbc6b3a3374d6bad3",
+    "preflight_sha256": "7d619208d786bbf0e53bbaf490c93ad1ec10f244f28fda6dbbf21f4014c6e1b3"
+  },
+  "budget_at_activation": {
+    "campaign_id": "ui-shared-retail-v1-02",
+    "used": 1,
+    "maximum": 20,
+    "remaining": 19,
+    "blocked": false,
+    "incomplete": false,
+    "failed": false,
+    "expired": false,
+    "regular_remaining": 18,
+    "verification_remaining": 0,
+    "rollback_remaining": 1,
+    "purposes": {
+      "question": 0,
+      "verification": 1,
+      "rollback_smoke": 0
+    },
+    "sdk_attempts": {
+      "local_converse_attempts": 0,
+      "agentcore_invocations": 1,
+      "failed_sdk_attempts": 0,
+      "incomplete_sdk_attempts": 0
+    },
+    "modes": {
+      "local_agent": 0,
+      "live": 1
+    }
+  },
+  "user_regular_questions_remaining_at_activation": 18,
+  "original_rollback_slot_approved": false,
+  "ordinary_questions_automated": 0,
+  "browser_readiness": {
+    "local_agent_enabled": true,
+    "aws_agentcore_enabled": true,
+    "mode_selection_only": true,
+    "questions_submitted": 0,
+    "task_owned_browser_closed": true,
+    "ui_server_left_running": true,
+    "url": "http://127.0.0.1:8501"
+  },
+  "preservation": [
+    {
+      "inventory": "/Users/suresh/Library/CloudStorage/OneDrive-Personal/Documents - OneDrive/projects/agenticai/agentcore/enterprise-analytics-agent/artifacts/ui-shared/interactive-02-preparation/preservation-before.json",
+      "present": 203,
+      "historically_absent": 0
+    },
+    {
+      "inventory": "/private/tmp/m5-closeout-preservation-before.json",
+      "present": 121,
+      "historically_absent": 1
+    },
+    {
+      "inventory": "/Users/suresh/Library/CloudStorage/OneDrive-Personal/Documents - OneDrive/projects/agenticai/agentcore/enterprise-analytics-agent/artifacts/full-live/verification/failed-run-preservation.json",
+      "present": 134,
+      "historically_absent": 0
+    },
+    {
+      "inventory": "/Users/suresh/Library/CloudStorage/OneDrive-Personal/Documents - OneDrive/projects/agenticai/agentcore/enterprise-analytics-agent/artifacts/full-live/verification/continuation-completion-inventory.json",
+      "present": 50,
+      "historically_absent": 0
+    }
+  ],
+  "evidence": {
+    "artifacts/ui-shared/interactive-02-preparation/approval.json": {
+      "sha256": "78c9be049c4d57c16d66b9198511ae8a34acc730da252c8c03738d7e698b042a",
+      "size_bytes": 648
+    },
+    "artifacts/ui-shared/interactive-02-preparation/execution-audit.json": {
+      "sha256": "a6feebc9ff9ece48fd8ec9b2a9e10e914e63101388c07b2bef47cce236835541",
+      "size_bytes": 4489
+    },
+    "artifacts/ui-shared/interactive-02-preparation/verification.json": {
+      "sha256": "14d121257fc1391935b615ac96a2ec9c06d737ca382f574a2118ce8cbfd346c7",
+      "size_bytes": 3205
+    },
+    "artifacts/ui-shared/interactive-02-preparation/server-process.json": {
+      "sha256": "4058453025b15957cfc050cd19659128bf9d2051e8104527c7575925bdae13fe",
+      "size_bytes": 850
+    },
+    "artifacts/ui-shared/interactive-02-preparation/server-readiness.json": {
+      "sha256": "104fd9e3a70dcd4ed69ab53eaf97f2081e16355dd7a55479398c3b48d87df432",
+      "size_bytes": 3310
+    },
+    "artifacts/ui-shared/interactive-02-preparation/release-record.json": {
+      "sha256": "3908c11e5de25907451e0cc382afe54260b2a1d41a517438003e719449630ebe",
+      "size_bytes": 903
+    },
+    "artifacts/ui-shared/ui-shared-retail-v1-02/preflight-0dddc9ee-a875-4d96-91c2-16c1119bef3d.json": {
+      "sha256": "7d619208d786bbf0e53bbaf490c93ad1ec10f244f28fda6dbbf21f4014c6e1b3",
+      "size_bytes": 31036
+    },
+    "artifacts/ui-shared/ui-shared-retail-v1-02/verification-0dddc9ee-a875-4d96-91c2-16c1119bef3d.json": {
+      "sha256": "69009a16538b0798e4483738f254394a03e08935117a9c2bbc6b3a3374d6bad3",
+      "size_bytes": 4092
+    },
+    "output/playwright/session02-local-agent.png": {
+      "sha256": "07071a5a778d94e9eed0a352a3396034a4dfa3cdbf03e084b952fdc33eb69674",
+      "size_bytes": 130462
+    },
+    "output/playwright/session02-aws-agentcore.png": {
+      "sha256": "51510c6ef67fece01a1f5d3a7135ba374a5f1eefdbc5cc92d139ee096e45d3a6",
+      "size_bytes": 129030
+    },
+    "output/playwright/.playwright-cli/page-2026-11-11T21-55-52-443Z.yml": {
+      "sha256": "2b06ed5de8cdc1ee72650c6d77be59d1c0bb73c27badf6a44700d90f9c8b69aa",
+      "size_bytes": 4869
+    },
+    "output/playwright/.playwright-cli/page-2026-11-11T21-58-22-082Z.yml": {
+      "sha256": "65d525a725629b908feeeec664f3f25413cb0bc5bc0fdbaac06f7c3a134ade2e",
+      "size_bytes": 4849
+    },
+    "artifacts/ui-shared/interactive-02-preparation/activation-question-attempts.jsonl": {
+      "sha256": "f46cac652b5e34e4d966d5421f34ddba6fa40ef146557c015f561512c8e81936",
+      "size_bytes": 2217
+    },
+    "artifacts/ui-shared/interactive-02-preparation/activation-sdk-attempts.jsonl": {
+      "sha256": "ea6a2a11fb6d03c5ae1fb5f58dc10006dbfe9dad0f8af89d4a158640fc3322ab",
+      "size_bytes": 704
+    }
+  },
+  "limitations": [
+    "Usage and READY assertions are activation observations; read the persistent ledger and verify AWS freshly before later dispatch.",
+    "The 20-slot schema includes an unavailable/unapproved original-rollback slot; only 18 regular user questions remain after Q18.",
+    "No deployment, IAM change, rebuild/upload, dataset change or historical-ledger reset occurred.",
+    "Earlier preparation/readiness snapshots remain unchanged historical evidence.",
+    "Existing policy-content evidence is not an exhaustive verification of attachments or effective-access constraints.",
+    "Hosted CI links for this new documentation handoff will be reported in the PR/final response rather than claimed from earlier commits.",
+    "Activation journal evidence pins refer to immutable snapshots. The live authoritative journals append during authorized interactive usage; read their current summary without resetting them."
+  ],
+  "mutable_authoritative_journals": {
+    "question_ledger": "artifacts/ui-shared/ui-shared-retail-v1-02/question-attempts.jsonl",
+    "sdk_ledger": "artifacts/ui-shared/ui-shared-retail-v1-02/sdk-attempts.jsonl"
+  }
+}

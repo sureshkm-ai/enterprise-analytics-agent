@@ -2,7 +2,79 @@
 
 Updated: 2026-11-11 (America/Chicago).
 
-## Current task: merge-status closeout complete; interactive session 02 ready for approval
+## Current task: approved interactive session 02 activated; push/PR handoff
+
+The user approved the exact session scope at **319a872aaf5de89075d59f78221122efa1d43e30**
+and explicitly requested a push and PR. Preserved the clean checkout on
+**docs/ui-interactive-session-02**; fetched origin and verified main remains
+**1dfd788a9b773fbf8abd39a554033cccd683c4ee**. No application, infrastructure,
+dependency, metric, source, artifact or permission change was required.
+
+### Actual approved activation — November 11, 2026
+
+- Used only **analytics-dev / 453711491609 / us-west-2**. Fresh full pre-dispatch
+  proof at **21:52:13.167966Z** verified exact candidate-retail Runtime/DEFAULT
+  **READY v15**, stack **UPDATE_COMPLETE**, templates/parameters, policies,
+  seven-day retention, 25-file source/dependency closure and canonical S3/Glue data.
+  The existing frozen ZIP/S3 version and configuration remain unchanged.
+- Ran the one approved counted verification command documented in
+  [the session runbook](ui-interactive-session-02.md). Q18 **passed** against the
+  complete independent request/result: **net_revenue 110.25 USD**, ungrouped,
+  no filters, **[2025-03-31,2025-04-01)**, metric version 1.0.0 / retail-v1.
+  Request `0dddc9ee-a875-4d96-91c2-16c1119bef3d`; one Runtime SDK attempt,
+  one model call, **1,131 input / 110 output tokens**, **2,871ms** server latency,
+  **5,015 Athena bytes** scanned. No retry, failed or incomplete attempt.
+- Campaign **ui-shared-retail-v1-02** at activation: **1/20 used** (Q18 only),
+  **18 user-owned regular questions remain** across Local Bedrock/AWS combined.
+  The unused original-rollback slot is **unapproved/unavailable**. Expiry remains
+  **2026-11-13T23:59Z**, November 13 **5:59 p.m. CST**. No other campaign funds this
+  window. Do not repeat the successful verification or automate ordinary questions.
+- Started the single loopback UI at **http://127.0.0.1:8501**, task-owned PID 44994.
+  Actual Playwright mode-selection checks confirmed Local agent (Bedrock/DuckDB)
+  and AWS AgentCore (Bedrock/Athena) enabled, retail-v1 and cost notices visible.
+  **Zero ordinary questions submitted**; screenshots/snapshots retained under
+  `output/playwright/`. Closed only the readiness browser and left the UI running.
+  Its incidental missing favicon returned 404; no application script error occurred.
+
+The committed [activation summary](../evaluations/ui-shared/interactive-02.activation.json)
+pins approval, release, Q18 judgment/preflight, immutable activation-counter snapshots,
+browser and offline-audit
+evidence. Raw records remain in `artifacts/ui-shared/interactive-02-preparation/`
+and `artifacts/ui-shared/ui-shared-retail-v1-02/`. The earlier readiness JSON and
+preparation entry below remain immutable history, with their original attribution.
+
+### Verification and preservation
+
+All required local checks had already passed on this unchanged application code
+at 319a872: `poetry check --lock`; `poetry run pytest` **1,570 passed, 85 deselected,
+zero skipped in 55.45s**; Ruff lint/format (**161** files); mypy (**127** source files).
+Those checks were not repeated for this documentation/evidence-only activation.
+All 85 live items retain their separate completed acceptance, not a new suite run.
+The fresh saved-evidence audit independently rejudged full Q18, strict release and
+counter receipts with AWS client creation blocked. It verified both modes enabled
+and all **203 + 121 + 134 + 50** protected inventory entries unchanged (inventories
+overlap; counts are not a unique-file total). Historical campaigns, original/candidate
+ZIPs, S3 VersionIds, corrected assemblies, source/data/goldens and claims are preserved.
+Documentation checks passed across **10 Markdown files / 101 local links / 34 shell
+blocks parsed without execution**; all **14** activation evidence pins, immutable
+review/readiness records, final budget and `git diff --check` passed. The live journals
+remain mutable authorities for later usage; their saved activation copies preserve
+the original evidence pins. Exact-final-commit hosted CI will be inspected after
+the authorized normal push and reported in the PR/final handoff; earlier CI is not
+its evidence.
+
+### Exact next task
+
+Use the running UI for up to **18 user-chosen questions** in either billable mode,
+before expiry and within the persistent allowance. Offline playground/Saved runs
+remain AWS-free. Read the session runbook for the exact restart command; do not
+start a second server or rerun Q18. On drift/failure/expiry/exhaustion, stop dispatch,
+retain retail v15 and diagnostics; no deployment, original rollback or permission
+change is authorized. The documentation branch is to be pushed normally with an
+open PR and successful exact-head CI handed back for the user's merge. M1–M5 and
+full validation remain complete; no new milestone or production-readiness claim.
+
+## Historical session 02 preparation at 319a872 — superseded by approved activation above
 
 Inspected instructions/plan/progress, clean Git status and recent history; fetched
 origin without resetting work. Local main and origin/main both matched

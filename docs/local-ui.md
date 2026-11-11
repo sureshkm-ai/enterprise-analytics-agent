@@ -17,15 +17,37 @@ at `e222875` on November 11, 2026. Full validation merged through
 [main CI](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43100659276)
 passed for that merge. The implementation and completed live acceptance are preserved.
 
-[Interactive session 02](ui-interactive-session-02.md) is prepared with a new review
-and fresh read-only release proof: Runtime/DEFAULT **READY v15**, verified
-November 11, 2026 at **21:26:03Z**, with matching source/artifact/configuration and
-canonical data. Its proposed allowance is one AWS Q18 verification plus **18 user
-questions total across Local agent/AWS**, pending explicit approval through
-**November 13, 5:59 p.m. CST**. The protected original-rollback slot is unavailable.
-No new question ledger, billable call or deployment was created during preparation.
-Use that session's activation commands after approval; keep the historical commands
-and reviews below unchanged. Offline playground/Saved runs work immediately.
+[Interactive session 02](ui-interactive-session-02.md) was approved at `319a872` and
+is active at **http://127.0.0.1:8501**. Both **Local agent** and **AWS AgentCore** are
+enabled. The required Q18 verification passed its full request/result gate:
+**110.25 USD [2025-03-31,2025-04-01)**. Fresh proof at **21:52:13Z** on November 11,
+2026 verified the matching source/artifact/configuration/canonical data and
+Runtime/DEFAULT **READY v15**, stack UPDATE_COMPLETE. No deployment, IAM change,
+upload or rebuild was needed.
+
+At activation, usage was **1 verification, 1 Runtime invocation, 0 ordinary questions
+and 0 direct local Converse calls**, leaving **18 regular questions total across both
+modes** through **November 13, 5:59 p.m. CST** (`2026-11-13T23:59Z`). The protected
+original-rollback slot is unavailable and cannot fund a question or retry. Browser
+mode checks submitted no ordinary question. Historical ledgers/reviews remain intact. The UI's durable counter is authoritative as the user submits questions.
+
+Use the running server. If it needs restarting, first stop that Workbench process
+and launch one server from the repository root with the same session and record:
+
+```sh
+conda activate enterprise-analytics
+poetry run python -m enterprise_analytics_agent.ui \
+  --allow-live \
+  --shared-review evaluations/ui-shared/interactive-02.proposed.json \
+  --release-record artifacts/ui-shared/interactive-02-preparation/release-record.json \
+  --canonical-dir artifacts/milestone-5/canonical/retail-v1 \
+  --report artifacts/ui-shared/replay-aws-agentcore.json \
+  --port 8501
+```
+
+Restarting does not reset the allowance or repeat Q18. The existing counter and fresh
+per-question release checks remain enforced. Keep the historical commands/reviews
+below unchanged; Offline playground and Saved runs remain AWS-free.
 
 ## Approved live acceptance completed
 
@@ -39,13 +61,12 @@ A later separately approved full-test campaign restored and finally verified the
 same candidate/retail artifact/configuration on **READY v15** at 19:59:56Z on
 November 11, 2026. All 85 live tests passed; see [the evidence](../evaluations/full-live/acceptance-2026-11-11.json).
 This did not refresh the completed UI allowance or its historical v13 release record.
-The completed review remains offline/replay-only; the new session above is prepared
-and awaits explicit billable approval.
+The completed historical review remains offline/replay-only. The separately approved
+session 02 above has passed its own Q18 gate and has 18 user-owned questions remaining.
 
-All regular live slots in the historical session are spent, so its completed review
-cannot restart billable mode. The new session has zero usage and needs its own
-approval. Inspect the actual
-nine AWS responses without another call:
+All regular slots in the historical session are spent, so its completed review cannot
+restart billable mode. Only session 02's separate allowance funds the newly enabled
+modes. Inspect the actual nine historical AWS responses without another call:
 
 ```sh
 conda activate enterprise-analytics

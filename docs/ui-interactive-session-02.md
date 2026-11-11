@@ -1,6 +1,6 @@
 # Interactive Workbench session 02
 
-## Readiness and approval
+## Approved activation
 
 The merge-status closeout is complete. [PR #8](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/8)
 merged on November 11, 2026 at `e22287538e22e1917eb2a21efbeadc4cec5c6d75`.
@@ -11,19 +11,30 @@ passed for that exact merge: 1,570 offline tests, zero skips, lint, formatting, 
 and both offline syntheses. The 85 live items passed separately in the completed
 approved campaigns; this session does not rerun that acceptance or spend those ledgers.
 
-The new interactive session is **prepared and freshly verified read-only, with
-billable execution awaiting explicit approval of the scope below**. No application,
-infrastructure, deployment, IAM or ZIP change is needed. No model/Runtime invocation,
-Athena query, upload, publication or new live ledger has occurred in preparation.
+The user approved this exact scope at commit **319a872aaf5de89075d59f78221122efa1d43e30**,
+including push and PR creation. The counted AWS Q18 verification **passed** with
+**110.25 USD for [2025-03-31,2025-04-01)** and the complete expected semantic request.
+Its fresh pre-dispatch proof at **2026-11-11T21:52:13.167966Z** confirmed the exact
+candidate-retail Runtime/DEFAULT **READY v15**, stack UPDATE_COMPLETE, source,
+artifact/configuration, policies and canonical publication. No deployment, IAM,
+upload, rebuild or dataset change occurred.
+
+The UI is running at **http://127.0.0.1:8501**, with both Local agent and AWS
+AgentCore enabled. At activation: **1/20 used**, one Runtime invocation, zero direct
+Converse calls, **18 user-owned regular questions remaining**. Browser mode-selection
+checks submitted no ordinary question. Consult the persistent ledger for later usage.
+The [activation summary](../evaluations/ui-shared/interactive-02.activation.json)
+records actual evidence; the earlier readiness JSON remains unchanged preparation
+history and does not describe the current approval or usage.
 
 Review: [interactive-02.proposed.json](../evaluations/ui-shared/interactive-02.proposed.json).
 Validated review SHA-256:
 **385f936a719ca17ee09fe4c62af7d7153d04e8cc9d6ee3e2aaf7bd7defa8bbc8**.
 Campaign: **`ui-shared-retail-v1-02`**. Existing campaign files are immutable.
 
-## Concrete proposed allowance
+## Approved allowance
 
-Approve **19 usable question attempts total**, shared across both billable modes:
+Approved **19 usable question attempts total**, shared across both billable modes:
 
 - **1 AWS Q18 verification**, run by the operator before either UI agent mode opens.
 - **18 interactive questions total**, chosen/submitted by the user in Local agent
@@ -116,16 +127,17 @@ the new review, both UI agent modes stay disabled before verification, and offli
 construction/status create no AWS session or campaign ledger. Historical ledgers,
 artifacts, source/data/goldens and claims remain unchanged.
 
-## Activation commands — only after approval
+## Completed verification and UI launch
 
-Do not run these billable commands until this exact scope/review is approved. The
-operator performs only the fixed Q18 verification; the user owns all regular UI
-submissions. One loopback UI process/user at a time.
+The fixed Q18 verification below has already passed; **do not repeat it**. The user
+owns all regular UI submissions. The server is already running; use the launch
+command only after stopping the existing instance. One loopback UI process/user at
+a time. Restarting retains the same ledger and expiry.
 
 ```sh
 conda activate enterprise-analytics
 
-# One counted AWS call; requires full Q18 plan/value before UI agent modes open.
+# Historical completed command: DO NOT rerun the spent Q18 verification.
 poetry run python -m enterprise_analytics_agent.adapters.ui_shared \
   --purpose verification --invoke-live \
   --review evaluations/ui-shared/interactive-02.proposed.json \
@@ -152,7 +164,7 @@ If your offline UI already occupies port 8501, stop it in its terminal first or 
 
 The Q18 gate requires the full `net_revenue` request for
 **[2025-03-31,2025-04-01)** and independently expected **110.25 USD**, correct units,
-versions, scope and diagnostics. On success, used 1/20, regular 18 remaining, protected
+versions, scope and diagnostics. Successful activation used 1/20, regular 18 remaining, protected
 original-rollback 1 unavailable. After all 18 regular submissions, used 19/20 and
 ordinary dispatch is blocked even though the protected slot remains unused.
 

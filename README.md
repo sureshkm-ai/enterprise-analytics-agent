@@ -37,7 +37,7 @@ This follow-on UI scope does not change completed M1–M5 acceptance or their le
 The separate UI campaign used **19/20 attempts**: Q18 verification 1 and all 18
 regular slots; the protected rollback smoke was unused. No regular live allowance
 remains, and the completed review cannot restart billable mode. Additional billable
-questions require a separately approved allowance. The [next interactive session](docs/ui-interactive-session-02.md) is prepared with a fresh read-only v15 release proof: one required Q18 verification plus 18 interactive questions, pending explicit approval. Its protected original-rollback slot is unavailable; no deployment, IAM change or code upload is proposed. Inspect the saved AWS acceptance responses offline without spending another call:
+questions cannot reuse that completed review. The user approved [interactive session 02](docs/ui-interactive-session-02.md) at `319a872`; it is now active at **http://127.0.0.1:8501** with both Local agent and AWS AgentCore enabled. Its counted Q18 verification passed **110.25 USD [2025-03-31,2025-04-01)** after a fresh **READY v15** proof at **21:52:13Z** on November 11, 2026. At activation, usage was **1 verification / 1 Runtime invocation / 0 ordinary questions / 0 direct local Converse calls**, leaving **18 user-owned questions across both modes** until **2026-11-13T23:59Z**. The protected original-rollback slot stays unavailable. No deployment, IAM change, upload or rebuild occurred. See the session plan for the exact restart command; restarting does not reset its counter. Inspect the saved historical AWS acceptance responses offline without spending another call:
 
 ```sh
 conda activate enterprise-analytics

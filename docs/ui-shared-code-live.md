@@ -10,14 +10,22 @@ merged at `1dfd788a9b773fbf8abd39a554033cccd683c4ee`, with successful
 The separately approved shared UI execution and Milestones 1–5 remain complete;
 their evidence is unchanged. This remains a development-only scope.
 
-The [next interactive session](ui-interactive-session-02.md) is prepared with a
-distinct review/counter and fresh read-only **READY v15** proof at 21:26:03Z on
-November 11, 2026. The proposed 19 usable attempts are one required AWS Q18 plus 18
-regular questions across both modes; explicit approval is pending. Its 20-slot schema
-keeps the original-rollback slot unavailable in this no-deployment session. No old
-allowance is reopened, no new question ledger is created and neither billable mode
-is enabled by preparation. Exact expiry, pins, stop procedure and launch commands
-are in that new plan; the completed scope/commands below remain historical.
+[Interactive session 02](ui-interactive-session-02.md) was explicitly approved at
+`319a872` and is active at **http://127.0.0.1:8501**, with both Local agent and AWS
+AgentCore enabled. Fresh proof at **21:52:13Z** on November 11, 2026 verified the
+existing candidate-retail Runtime/DEFAULT **READY v15**, stack UPDATE_COMPLETE.
+One counted Q18 passed the complete request/result gate:
+**110.25 USD [2025-03-31,2025-04-01)**. No deployment, IAM change, upload or rebuild
+occurred; review SHA `385f936a719ca17ee09fe4c62af7d7153d04e8cc9d6ee3e2aaf7bd7defa8bbc8`
+is unchanged.
+
+The activation record shows **one verification / one Runtime invocation**, with
+**zero ordinary questions / zero direct local Converse calls**, leaving **18 user-owned
+questions across both modes**, expiring **2026-11-13T23:59Z** (November 13,
+5:59 p.m. CST). The existing 20-slot schema retains an unavailable original-rollback
+slot; it cannot fund another ordinary request or retry. No old allowance was reopened.
+Mode-only browser checks sent no question. The session plan contains the exact launch
+command, pins and stop procedure; historical scope/commands below remain unchanged.
 
 The later full-validation campaign passed all 85 live items and restored the same
 candidate/retail release on **Runtime/DEFAULT READY v15**, stack UPDATE_COMPLETE,

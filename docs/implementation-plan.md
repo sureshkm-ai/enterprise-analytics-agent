@@ -13,11 +13,15 @@ All original metric definitions, contracts, frozen data and historical budgets r
 unchanged. Actual verification is in [progress](progress.md).
 
 Source/dependency/data audits match the accepted frozen candidate; no rebuild/upload
-is needed. Read-only AWS checks find original Runtime/DEFAULT READY v12, not the
-matching candidate. Canonical bytes/current S3 prefixes/Glue bindings verify. Denied
-IAM inspection proves no permission gap; administrator evidence is pending.
+is needed. November 10 read-only AWS checks found original Runtime/DEFAULT READY v12,
+not the matching candidate. Canonical bytes/current S3 prefixes/Glue bindings verify. Denied
+IAM inspection proves no permission gap. Supplied administrator-console contents
+cover the required Bedrock and candidate S3 read actions/resources; reported role
+associations are not independent attachment/effective-access verification. See the
+[policy-content review](ui-shared-code-live.md#administrator-console-policy-review--november-11-2026).
+No new/duplicate grant is proposed.
 
-Next gate: compare administrator evidence, then seek separate approval of the
+Next gate: seek separate approval of the finalized
 [concrete proposal](ui-shared-code-live.md) and review JSON. Proposed maximum 20
 question attempts (18 paired + Q18 verification + protected original rollback),
 expiring 2026-11-11T23:59:00Z, entirely separate from M1–M5 histories. Success leaves
@@ -109,6 +113,6 @@ The approved [plan](milestone-5-plan.md) is implemented for local review on `fea
 
 11. Approved `q18-recovery-v1` executed once from fresh original v10: deployed pinned candidate READY v11, Q18 **110.25 USD [2025-03-31,2025-04-01)** and all **36/36** cases passed; client p95 **13.381s**, complete diagnostics. Mandatory original restore/smoke and separate read-only final verification passed on READY v12. Recovery **38/38**, aggregate **40/40**, no retries/failures/incomplete calls. All 122 protected files and historical ledgers/claims unchanged. No code/upload/IAM/dataset changes during execution.
 
-Exact next task: M1–M5 remain complete. For the separately requested UI follow-on, compare administrator permission evidence and obtain explicit approval of the shared-release/20-attempt proposal before deployment or billable questions. Preserve the verified original-v12 checkpoint and all closed historical allowances; no new milestone is started. Production authorization, broader language coverage, long-duration operational hardening and measured cost remain outside the verified scope.
+Exact next task: M1–M5 remain complete. For the separately requested UI follow-on, review the recorded administrator policy-content evidence/limitations and obtain explicit approval of the finalized shared-release/20-attempt proposal before deployment or billable questions. Repeat fresh original-v12/process/source/publication preflight at execution; preserve all closed historical allowances. No new milestone is started. Production authorization, broader language coverage, long-duration operational hardening and measured cost remain outside the verified scope.
 
 Cube remains a later adapter extension outside milestones 2–5 unless separately requested.

@@ -1,0 +1,115 @@
+{
+  "schema_version": "ui-admin-policy-evidence-v1",
+  "recorded_on": "2026-11-11",
+  "provenance": {
+    "source": "Administrator-console policy contents supplied by the user in this conversation",
+    "aws_api_retrieval_by_agent": false,
+    "console_capture_timestamp": null,
+    "normalization": "JSON whitespace/formatting only; semantic contents preserved. policy_sha256 uses UTF-8 json.dumps(sort_keys=True,separators=(',',':'))."
+  },
+  "target": {
+    "profile": "analytics-dev",
+    "account": "453711491609",
+    "region": "us-west-2"
+  },
+  "policies": [
+    {
+      "policy_name": "PowerUserAccess",
+      "reported_role_arn": "arn:aws:iam::453711491609:role/aws-reserved/sso.amazonaws.com/us-west-2/AWSReservedSSO_PowerUserAccess_95483085e85e3a9b",
+      "role_association_evidence": "administrator-reported",
+      "attachment_independently_verified": false,
+      "effective_access_verified": false,
+      "default_policy_version_supplied": null,
+      "policy": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "NotAction": [
+              "iam:*",
+              "organizations:*",
+              "account:*"
+            ],
+            "Resource": "*"
+          },
+          {
+            "Effect": "Allow",
+            "Action": [
+              "account:GetAccountInformation",
+              "account:GetGovCloudAccountInformation",
+              "account:GetPrimaryEmail",
+              "account:ListRegions",
+              "iam:CreateServiceLinkedRole",
+              "iam:DeleteServiceLinkedRole",
+              "iam:ListRoles",
+              "organizations:DescribeEffectivePolicy",
+              "organizations:DescribeOrganization"
+            ],
+            "Resource": "*"
+          }
+        ]
+      },
+      "coverage": {
+        "content_covers_required_actions": true,
+        "actions": [
+          "bedrock:InvokeModel"
+        ],
+        "resources": [
+          "arn:aws:bedrock:us-west-2:453711491609:inference-profile/us.amazon.nova-lite-v1:0",
+          "arn:aws:bedrock:us-east-1::foundation-model/amazon.nova-lite-v1:0",
+          "arn:aws:bedrock:us-east-2::foundation-model/amazon.nova-lite-v1:0",
+          "arn:aws:bedrock:us-west-2::foundation-model/amazon.nova-lite-v1:0"
+        ],
+        "reason": "The Allow/NotAction statement excludes iam, organizations and account actions, not bedrock:InvokeModel; Resource '*' covers all four required ARNs. No Condition or Deny appears in the supplied document."
+      },
+      "policy_sha256": "7d7c0418e91ec1f2640b715c0875135c7067bc9e4ead04064398e51160c03a0b"
+    },
+    {
+      "policy_name": "enterprise-analytics-dev-q18-candidate-code",
+      "reported_role_arn": "arn:aws:iam::453711491609:role/enterprise-analytics-dev-agent-runtime",
+      "role_association_evidence": "administrator-reported",
+      "attachment_independently_verified": false,
+      "effective_access_verified": false,
+      "default_policy_version_supplied": null,
+      "policy": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Sid": "ReadReviewedQ18CandidateCode",
+            "Effect": "Allow",
+            "Action": [
+              "s3:GetObject",
+              "s3:GetObjectVersion"
+            ],
+            "Resource": "arn:aws:s3:::enterprise-analytics-dev-453711491609-us-west-2-agent-code/releases/398124e89d2be1e9ce00f5b57c263fe2cdde0654527b27f949b9f3abb58029f1/agent.zip"
+          }
+        ]
+      },
+      "coverage": {
+        "content_covers_required_actions": true,
+        "actions": [
+          "s3:GetObject",
+          "s3:GetObjectVersion"
+        ],
+        "resources": [
+          "arn:aws:s3:::enterprise-analytics-dev-453711491609-us-west-2-agent-code/releases/398124e89d2be1e9ce00f5b57c263fe2cdde0654527b27f949b9f3abb58029f1/agent.zip"
+        ],
+        "reason": "Both object-read actions explicitly allow the exact reviewed candidate key, including versioned reads; the application separately pins VersionId V5Q8e8e6w2tkkVghXn.BrFs1mqQU.Ncu."
+      },
+      "policy_sha256": "82dd281e0e982f27134b0583a84a998886272f713b3a39ccb069183deb8853a7"
+    }
+  ],
+  "assessment": {
+    "policy_content_review_complete": true,
+    "specific_permission_gap_established": false,
+    "permission_change_proposed": false,
+    "live_access_test_performed": false,
+    "execution_approval_granted": false,
+    "limitations": [
+      "Supplied documents and reported role associations are accepted as administrator-provided evidence, not independently queried attachment/default-version proof.",
+      "Permissions boundaries, session policies, organization controls, resource policies and other explicit denies are not enumerated by these two documents.",
+      "November 10 denied IAM inspection proves limited inspection access, not denied Bedrock inference or candidate-code reads.",
+      "No duplicate grants, permission changes, deployment or billable access probe are authorized by recording this evidence."
+    ]
+  }
+}

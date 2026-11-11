@@ -1,8 +1,81 @@
 # Progress
 
-Updated: 2026-11-10 (America/Chicago).
+Updated: 2026-11-11 (America/Chicago).
 
-## Current task: shared Bedrock UI — offline preparation complete; live approval pending
+## Current task: administrator policy review — complete; live approval pending
+
+On **November 11, 2026**, continued on clean `feat/local-testing-ui` at local
+implementation `d3925321b3631e355e08dda34c9b552faaf6185c`. Read root instructions,
+current progress/implementation plan and shared UI runbooks; inspected status/history
+and verified the existing Conda Python 3.12.16 / Poetry 2.3.1 interpreter. No branch
+switch or unrelated changes. No AWS service call occurred during this review.
+
+Recorded the two administrator-console documents supplied by the user in
+[evaluations/ui-shared/admin-policy-evidence.json](../evaluations/ui-shared/admin-policy-evidence.json),
+including unchanged semantic contents, canonical JSON hashes, reported role
+associations, exact required actions/ARNs and explicit verification limitations.
+
+- PowerUserAccess's Allow/NotAction excludes IAM, Organizations and Account, leaving
+  `bedrock:InvokeModel` allowed on `*`: the configured Nova Lite inference profile
+  and all three regional model ARNs have **policy-content coverage**.
+- The runtime candidate-code statement explicitly allows `s3:GetObject` and
+  `s3:GetObjectVersion` on the exact accepted candidate key; the pinned S3 VersionId
+  remains separately enforced.
+- Association with the named roles is **administrator-reported**. Current attachment,
+  default-version identity and effective access are **not independently verified**.
+  These documents do not enumerate boundaries/session policies, organization controls
+  or other applicable denies. The historical denied IAM inspection establishes no
+  missing Bedrock/S3 access. **No specific gap, duplicate grant or IAM change is proposed.**
+
+Finalized [the concrete proposal](ui-shared-code-live.md): reuse the accepted frozen
+candidate/S3 version and prepared assemblies; analytics-dev only, account 453711491609,
+us-west-2. New UI allowance remains **0/20, uncreated**, unchanged review hash
+`168abce7775cf9620992c545037643193c41b6756e61179f093c5a8a5653283d`,
+expiry **2026-11-11T23:59:00Z**. Allocation: Q18 verification 1, nine frozen questions
+in each agent mode 18, protected original-restoration smoke 1. Successful acceptance
+leaves the matching candidate/retail release; failed deployment/evaluation requires
+original restoration and smoke. Fresh exact original-v12/process/source/publication
+preflight is mandatory during later approved execution. November 10 AWS observations
+are retained historical evidence, not a new effective-access/READY assertion.
+
+Independent read-only review found no further implementation blocker. Corrected the
+runbook's shared ledger filename to `question-attempts.jsonl`. Application code,
+IAM/infrastructure definitions, review/pins and all frozen inputs are unchanged.
+Policy evidence is documentation, never an input to IAM deployment.
+
+### Actual offline verification — November 11
+
+| Command/check | Actual result |
+| --- | --- |
+| `poetry check --lock` | Passed: All set. |
+| `poetry run pytest` | **1,331 passed, 85 live-gated skips in 45.10s**; no AWS/live markers. |
+| `poetry run ruff check .` | Passed. |
+| `poetry run ruff format --check .` | Passed: 147 files already formatted. |
+| `poetry run mypy src tests` | Passed: 117 source files. |
+| `poetry run python /private/tmp/ui-admin-policy-offline-check.py` | Passed; narrow policy-content/hash/action/resource assertions, 25-file source/dependency/canonical verification, prepared assembly inventories and 25 retained session snapshots unchanged. AWS Session construction is forbidden by the check. |
+| Documentation/JSON/diff/preservation checks | Passed: 7 Markdown files, 58 local links, 20 shell blocks parsed with `zsh -n` without execution; supplied evidence JSON/hashes validated. All 121 present protected files and 25 session snapshots unchanged; the historically absent untracked patch remains absent. `git diff --check` passed. |
+
+Offline review evidence:
+`artifacts/ui-shared/policy-review/20261111T163148Z/offline-review.json`.
+The new question allowance was not created; all historical ledgers/claims remain
+unchanged (M4 28/40, original M5 closed 38/40, repair 1/40, continuation 1/39,
+recovery closed 38/38, aggregate repair 40/40). Prior offline CDK syntheses remain
+valid for unchanged infrastructure/source and were not rerun for this evidence-only
+update. Official IAM NotAction/evaluation, Bedrock routing and S3 permission references
+were checked and linked in the proposal. No upload, deployment, new profile, IAM
+change, Athena execution or billable invocation occurred; no push/merge is authorized.
+
+### Exact next task
+
+Review/approve the finalized candidate deployment, 20-attempt allocation, expiry,
+success steady state and failure rollback **with the administrator-reported policy
+evidence limitations understood**. Deployment and billable questions stay paused
+until that decision. If approval arrives after expiry or cannot leave adequate cleanup
+time, obtain a separately reviewed unconsumed allowance/window; do not silently edit
+the existing review or reset a ledger. Current content establishes no need for another
+grant. Preserve all historical proof-of-concept completion evidence.
+
+## Previous preparation: shared Bedrock UI — November 10 implementation evidence
 
 Continued in the **original Mac checkout** on `feat/local-testing-ui`, based on
 `c6e6818fb134ed67249d3eab2bdec7149df2a57b`; branch/history and working tree inspected.
@@ -36,11 +109,11 @@ S3 version and fresh canonical downloads verify. Nova Lite profile/routing/avail
 passed. Additional `20261110T212343Z/publication-proof.json` verifies eight latest
 S3 identities, seven exact single-object table prefixes and seven Glue bindings.
 
-Effective-permission evidence is still pending: IAM simulation and runtime inline
-policy inspection returned AccessDenied. These establish **inspection limits, not
-missing Bedrock/S3 permission**. The user will supply administrator evidence; compare
-it before proposing any specific correction. No profile/permission change, deployment,
-upload, Athena execution, Runtime invocation or billable model call occurred.
+At the November 10 preflight, administrator policy contents were pending: IAM
+simulation and runtime inline-policy inspection returned AccessDenied. These establish
+**inspection limits, not missing Bedrock/S3 permission**. The November 11 review above
+records the subsequently supplied contents and their limitations. No profile/permission
+change, deployment, upload, Athena execution, Runtime invocation or billable model call occurred.
 Matching retained source is established; the active original-v12 release differs,
 so shared live equivalence remains pending.
 
@@ -103,11 +176,11 @@ Task-owned browser/server were stopped. No live flags were enabled.
 
 ### Exact next task for the UI follow-on
 
-Receive/compare active administrator permission evidence for the existing SSO
-InvokeModel actions/resources and runtime candidate-code grant. Then obtain explicit
-approval of [the concrete deployment/20-attempt proposal](ui-shared-code-live.md)
-before any mutation or billable question. Repeat fresh original-v12/process/source/
-publication checks at execution time; bind the actual resulting candidate version.
+The administrator policy-content review is now recorded above. Obtain explicit
+approval of [the finalized deployment/20-attempt proposal](ui-shared-code-live.md)
+with its reported-association/effective-access limitations before any mutation or
+billable question. Repeat fresh original-v12/process/source/publication checks at
+execution time; bind the actual resulting candidate version.
 Keep this implementation commit local. Historical M1–M5 completion/CI evidence below
 does not cover these new UI changes.
 
@@ -1155,4 +1228,4 @@ Milestone 2 introduced no AWS credentials, calls, deployment, Athena adapter, or
 
 ## Exact next task
 
-The agreed development proof of concept for **Milestones 1–5 is complete**, merged and hosted-CI verified. The user separately defined the shared UI follow-on; its exact next task is the permission-evidence review and explicit deployment/budget approval recorded at the top of this document. Other development still requires a separately defined scope. Preserve the recorded original READY v12 checkpoint, frozen assets/goldens and all closed ledgers/claims. **Recovery 38/38 and aggregate repair 40/40 are exhausted**; no rerun, additional demonstration, quota reset, AWS operation or next milestone is authorized by closeout. Production-readiness limitations above remain explicit.
+The agreed development proof of concept for **Milestones 1–5 is complete**, merged and hosted-CI verified. The user separately defined the shared UI follow-on; its exact next task is explicit approval of the finalized deployment/budget proposal and policy-evidence limitations recorded at the top of this document. Other development still requires a separately defined scope. Preserve the recorded original READY v12 checkpoint, frozen assets/goldens and all closed ledgers/claims. **Recovery 38/38 and aggregate repair 40/40 are exhausted**; no rerun, additional demonstration, quota reset, AWS operation or next milestone is authorized by closeout. Production-readiness limitations above remain explicit.

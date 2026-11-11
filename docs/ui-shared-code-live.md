@@ -3,9 +3,9 @@
 ## Status
 
 Implemented in the original `feat/local-testing-ui` checkout based on `c6e6818`.
-Deployment and billable execution remain paused pending administrator permission
-evidence and separate execution approval. Milestones 1–5 stay complete; this is
-separately requested UI work.
+Administrator-supplied policy contents have been reviewed; deployment and billable
+execution remain paused pending separate execution approval. Milestones 1–5 stay
+complete; this is separately requested UI work.
 
 | Mode | Implementation/data | AWS usage |
 | --- | --- | --- |
@@ -69,16 +69,35 @@ account 453711491609, us-west-2.
   and entitlement records passed; effective caller IAM permission is a separate fact.
 - IAM simulation for the existing SSO caller and inspection of the runtime candidate-key
   policy were denied. **These inspection limits do not prove missing access.**
-  The user will supply administrator evidence; no permission change is proposed.
+  Administrator-console documents were subsequently supplied and reviewed below.
 
-Required evidence: SSO role `AWSReservedSSO_PowerUserAccess_95483085e85e3a9b` effective
-`bedrock:InvokeModel` access to
-`arn:aws:bedrock:us-west-2:453711491609:inference-profile/us.amazon.nova-lite-v1:0`
-and the three `arn:aws:bedrock:{us-east-1,us-east-2,us-west-2}::foundation-model/amazon.nova-lite-v1:0`
-resources, including conditions/denies; plus runtime role's existing
-`s3:GetObject`/`s3:GetObjectVersion` candidate-key grant in
-`enterprise-analytics-dev-453711491609-us-west-2-agent-code`.
-Preserve original-artifact access, M3 permissions and query-role trust.
+### Administrator-console policy review — November 11, 2026
+
+[admin-policy-evidence.json](../evaluations/ui-shared/admin-policy-evidence.json)
+preserves both supplied JSON documents, canonical content hashes, reported roles,
+exact required ARNs and explicit evidence limitations. It is a review record, not
+an IAM policy deployment input or an AWS API export retrieved by this agent.
+
+| Supplied document | Content coverage | Evidence status |
+| --- | --- | --- |
+| PowerUserAccess for the existing `AWSReservedSSO_PowerUserAccess_95483085e85e3a9b` role | Unconditional Allow/NotAction excludes `iam:*`, `organizations:*`, `account:*`; `bedrock:InvokeModel` remains allowed on Resource `*`, covering the Nova Lite profile and all three US model ARNs listed in the record. | Administrator-supplied contents and reported association; current attachment/default version and effective access are not independently verified. |
+| `enterprise-analytics-dev-q18-candidate-code` for `enterprise-analytics-dev-agent-runtime` | Explicitly allows `s3:GetObject` and `s3:GetObjectVersion` on the exact candidate key. The same object ARN covers versioned reads; the application separately enforces the pinned VersionId. | Administrator-supplied contents and reported association; current attachment and effective access are not independently verified. |
+
+Neither supplied document has a Condition or Deny. Canonical policy hashes are
+`7d7c0418e91ec1f2640b715c0875135c7067bc9e4ead04064398e51160c03a0b`
+and `82dd281e0e982f27134b0583a84a998886272f713b3a39ccb069183deb8853a7`,
+respectively. No policy version/capture timestamp was supplied; none is invented.
+The excluded IAM actions explain why this content does not itself grant the failed
+inspection calls. Those failures are not evidence of denied Bedrock or S3 reads.
+
+This completes the requested policy-content review. Effective authorization also
+depends on actual attachment, boundaries/session policies, organization controls and
+applicable resource-policy/explicit denies; these two documents do not enumerate
+that state. No billable probe or further IAM inspection was performed for this review.
+No specific missing permission is established, and **no new/duplicate grant or IAM
+change is proposed**. Accept the stated administrator-reported provenance in the
+execution review, preserve original-code access/M3 permissions/query trust, then
+repeat fresh target/process/source/publication checks before any approved deployment.
 
 No deployment, upload, IAM change, Athena query, model call or Runtime invocation ran.
 Matching source/artifacts are established; **shared live equivalence is pending**.
@@ -110,6 +129,17 @@ The proposed deployment updates only the existing Runtime to the pinned candidat
 and retail configuration. No new resources, bootstrap, IAM changes, dataset publication,
 rebuild or upload. Existing per-query 10 MiB Athena and model limits remain; these do
 not establish an aggregate dollar cap. Record tokens, latency and query scans.
+The regular allocation permits at most 54 direct local Converse SDK attempts
+(nine local questions × six); AWS allocation permits ten planned Runtime invocations
+(Q18 plus nine paired questions), or eleven including a needed rollback smoke.
+Model calls inside Runtime remain separately bounded by its six-iteration agent.
+These are separate work ceilings, not additional question allowance.
+
+The proposal is finalized for review with the supplied policy-content evidence,
+without claiming effective-access verification. Approval must explicitly cover the
+existing candidate/version, successful candidate-retail steady state, failure rollback,
+the 20-attempt allocation and the UTC expiry. The review file/pins remain unchanged.
+The November 10 AWS observations are historical; fresh execution preflight must pass.
 
 ### Commands after permission review and execution approval
 
@@ -212,3 +242,9 @@ Official references:
 [Botocore configuration](https://docs.aws.amazon.com/botocore/latest/reference/config.html),
 [S3 prefix inventories](https://docs.aws.amazon.com/boto3/latest/reference/services/s3/client/list_objects_v2.html),
 [Glue table schemas and locations](https://docs.aws.amazon.com/boto3/latest/reference/services/glue/client/get_table.html).
+
+Policy review references checked November 11, 2026:
+[IAM Allow with NotAction](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_notaction.html),
+[IAM effective-policy evaluation](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html),
+[Bedrock profile and regional-model prerequisites](https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles-prereq.html),
+[S3 operation permissions](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-with-s3-policy-actions.html).

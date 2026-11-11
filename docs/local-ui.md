@@ -77,8 +77,11 @@ checks; drift blocks execution before reserving a question.
 
 The shared deployment and live comparison remain **pending separate execution
 approval**. Direct developer Bedrock access and the runtime candidate-key read grant
-still need administrator evidence; denied inspection is not proof that
-those permissions are absent. No new live question, deployment, upload or IAM change
+are covered by the supplied administrator-console policy contents recorded in
+[the policy review](ui-shared-code-live.md#administrator-console-policy-review--november-11-2026).
+Current attachment/effective access are not independently verified; denied IAM
+inspection is not proof of missing access. No additional grant is proposed.
+No new live question, deployment, upload or IAM change
 has been performed for this UI preparation. Historical ledgers remain unchanged.
 
 ## Inspect saved acceptance without new calls
@@ -179,7 +182,7 @@ Failures and unknown outcomes stay spent and stop regular execution; no automati
 SDK invocation retry or reservation refund occurs. Successful duplicate IDs replay
 saved results. **Clear workspace** affects only the browser display.
 
-Evidence is under `artifacts/ui-shared/<campaign_id>/`: `invocations.jsonl`, exclusive
+Evidence is under `artifacts/ui-shared/<campaign_id>/`: `question-attempts.jsonl`, exclusive
 `reservations/`, `sdk-attempts.jsonl` and SDK receipts, `operator-reads.jsonl`, per-request
 preflight JSON and protected verification output. Preserve the review hash binding,
 all evidence and the existing operator/deployment guards across restarts.

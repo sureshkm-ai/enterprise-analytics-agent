@@ -54,6 +54,17 @@ retain their replay label. A default/offline launch remains available after the
 live cap is reached. The independent original rollback artifact/configuration,
 historical acceptance evidence and all earlier ledgers remain preserved.
 
+The UI implementation merged through [PR #8](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/8) on November 11, 2026, at `e22287538e22e1917eb2a21efbeadc4cec5c6d75`. The full-live follow-up merged through [PR #9](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/9) at `1dfd788a9b773fbf8abd39a554033cccd683c4ee`; [main CI 43100659276](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43100659276) passed for that merge. Historical v13 UI and v15 full-validation proofs remain distinct.
+
+The [next interactive review](ui-interactive-session-02.md) reuses the accepted
+candidate-retail artifact/configuration without changing application code or deploying.
+A fresh read-only proof at 21:26:03Z on November 11, 2026, verified READY v15. A new
+review and actual-version record bind the new campaign; previous records/ledgers stay
+immutable. Its one Q18 verification plus 18 regular questions require explicit
+approval. The existing schema's original-rollback slot remains unavailable in this
+no-deployment scope; failures stop dispatch and preserve retail v15. Preparation
+creates no new question ledger and does not enable billable modes.
+
 Saved responses and suite reports are validated data, displayed with recorded verdicts
 and explicit replay labels. No saved answer is presented as a fresh local or live query.
 Exact values are rendered directly from typed semantic results. Questions and reports
@@ -123,7 +134,10 @@ and protected smoke, preserving the blocked 37-call parent. Combined acceptance 
 **1,570 offline + 85 live items, zero skips**; new 20/20 and aggregate 57/57 Runtime calls.
 Parity v14 was fully verified, then accepted candidate-retail was restored and finally
 verified READY v15 at 19:59:56Z on November 11, 2026. Runtime source, contracts, metrics,
-permissions and all historical ledgers are unchanged; no live allowance remains.
+permissions and all historical ledgers are unchanged; no allowance remains in those
+completed campaigns. The merged implementation passed main CI 43100659276: 1,570
+offline tests, zero skips, and the remaining required checks. The 85 live results
+remain separate from hosted CI and any later proposed interactive allowance.
 
 ## Future integrations
 

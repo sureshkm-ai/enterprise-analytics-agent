@@ -2,9 +2,30 @@
 
 ## Status
 
-Implemented and accepted in the original `feat/local-testing-ui` checkout. The
-separately approved shared UI execution completed successfully; Milestones 1–5 remain
-complete and their evidence is unchanged. This remains a development-only scope.
+Implemented, accepted and merged through [PR #8](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/8)
+at `e22287538e22e1917eb2a21efbeadc4cec5c6d75` on November 11, 2026. The subsequent
+full-validation [PR #9](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/9)
+merged at `1dfd788a9b773fbf8abd39a554033cccd683c4ee`, with successful
+[main CI 43100659276](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43100659276).
+The separately approved shared UI execution and Milestones 1–5 remain complete;
+their evidence is unchanged. This remains a development-only scope.
+
+[Interactive session 02](ui-interactive-session-02.md) was explicitly approved at
+`319a872` and is active at **http://127.0.0.1:8501**, with both Local agent and AWS
+AgentCore enabled. Fresh proof at **21:52:13Z** on November 11, 2026 verified the
+existing candidate-retail Runtime/DEFAULT **READY v15**, stack UPDATE_COMPLETE.
+One counted Q18 passed the complete request/result gate:
+**110.25 USD [2025-03-31,2025-04-01)**. No deployment, IAM change, upload or rebuild
+occurred; review SHA `385f936a719ca17ee09fe4c62af7d7153d04e8cc9d6ee3e2aaf7bd7defa8bbc8`
+is unchanged.
+
+The activation record shows **one verification / one Runtime invocation**, with
+**zero ordinary questions / zero direct local Converse calls**, leaving **18 user-owned
+questions across both modes**, expiring **2026-11-13T23:59Z** (November 13,
+5:59 p.m. CST). The existing 20-slot schema retains an unavailable original-rollback
+slot; it cannot fund another ordinary request or retry. No old allowance was reopened.
+Mode-only browser checks sent no question. The session plan contains the exact launch
+command, pins and stop procedure; historical scope/commands below remain unchanged.
 
 The later full-validation campaign passed all 85 live items and restored the same
 candidate/retail release on **Runtime/DEFAULT READY v15**, stack UPDATE_COMPLETE,

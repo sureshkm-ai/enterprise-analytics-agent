@@ -36,7 +36,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
-addopts = "-ra"
+addopts = "-ra --fail-on-skip -m 'not aws_integration and not agent_live and not retail_live'"
 markers = [
     "retail_live: separately approved M5 campaign (--run-retail-live)",
     "aws_integration: explicitly enabled live AWS parity tests (--run-aws)",

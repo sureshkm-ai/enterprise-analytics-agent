@@ -1,0 +1,78 @@
+{
+  "schema_version": "full-live-checkpoint-v1",
+  "tested_commit": "870e3502fb037b9bc324666eddfa45078a68a41d",
+  "approved_review_sha256": "bd3724d46181ec3e7b0181987c48d3a535ab4815d02897305cd36b7ba44d8845",
+  "date": "2026-11-11",
+  "accepted": false,
+  "offline_passed": 1460,
+  "live_pytest_passed": 67,
+  "live_pytest_unrun": 18,
+  "selected_skips": 0,
+  "retail_cases_passed": 36,
+  "runtime_invocations": 37,
+  "direct_athena_submissions": 67,
+  "runtime_version": "13",
+  "default_version": "13",
+  "runtime_status": "READY",
+  "default_status": "READY",
+  "runtime_stack_status": "UPDATE_COMPLETE",
+  "restoration": "already_verified_no_mutation",
+  "restoration_smoke_passed": true,
+  "restoration_smoke_value": "110.25 USD",
+  "failure": "Stale CDK parity template asset references caused no-change deployment; controller rejected mismatch and timed out. No parity-agent tests dispatched.",
+  "new_live_execution_authorized": false,
+  "evidence": {
+    "artifacts/full-live/operations/approved-run-20261111/result.json": {
+      "sha256": "06e15a4a94ec28a5e0060f0ea9937eac75feef3c11bd7194943269d8dc6d6a18"
+    },
+    "artifacts/full-live/operations/approved-run-20261111/starting-checkpoint.json": {
+      "sha256": "ca2b2b3c113d25b506d5ef140632a343c7e8fec8066d4f7c66ac43664ab208ba"
+    },
+    "artifacts/full-live/operations/approved-run-20261111/restored-checkpoint.json": {
+      "sha256": "7afcbf41cee65fc295e66b04a1369f6a7cd0d6208971edce174b67569dac95c9"
+    },
+    "artifacts/full-live/operations/approved-run-20261111/restoration-smoke.json": {
+      "sha256": "186b7de00eaff8621baf6ff7805bdc7ba6da74908c88c733e768fcdd4a1da9ce"
+    },
+    "artifacts/full-live/operations/approved-run-20261111/parity.controller.json": {
+      "sha256": "4aa33293780ba1aaa740a6e2e757c2e3cdccbe5ce31f8f67adf99826c198955a"
+    },
+    "artifacts/full-live/operations/approved-run-20261111/parity.stdout.log": {
+      "sha256": "9044473aabc9ba825e76bd282eeb1ad6dc9e42e780c4fd824ba4da211ee1567a"
+    },
+    "artifacts/full-live/operations/approved-run-20261111/parity.stderr.log": {
+      "sha256": "7c74bab4eb6c83732e67dcc5c27a3e869c46e172c40f1c659cb819b631fc6d1c"
+    },
+    "artifacts/full-live/operations/approved-run-20261111/retail.controller.json": {
+      "sha256": "e5a32248ed79d2d789fa21d3781ce458cf76e60e0e0e652854de87eb43db622a"
+    },
+    "artifacts/full-live/operations/approved-run-20261111/partial-audit/partial-result.json": {
+      "sha256": "a9290dd85136b73752130bc3f216370907f36189f884bd16f8de452e44cc088d"
+    },
+    "artifacts/full-live/operations/approved-run-20261111/offline/junit.xml": {
+      "sha256": "ca239938864fb54bcc4266b06fd8eed5f6ac4b02b72d1387fa143e4805f0efb6"
+    },
+    "artifacts/full-live/operations/approved-run-20261111/athena_parity/junit.xml": {
+      "sha256": "db9e7d328ff4aacc82dea499b6df2386c3e0964a26421e50e6849f7ee187fd7b"
+    },
+    "artifacts/full-live/operations/approved-run-20261111/retail/junit.xml": {
+      "sha256": "2707a3949e911eadb35148735e7fd9c53d015c0c22d07b4d7aa72b45404bd5d2"
+    },
+    "artifacts/full-live/operations/approved-run-20261111/retail/retail-report/report.json": {
+      "sha256": "d939d44febaa496b236dc3556f1283b5372d5515ece48dd07966ca72056aa117"
+    }
+  },
+  "parent_preservation_sha256": "5f60b2a02da1b0f84cb5872292382d92aa9e545831e3954a74aefa9984657dcb",
+  "diagnostics": {
+    "runtime_model_calls": 77,
+    "runtime_input_tokens": 113106,
+    "runtime_output_tokens": 9177,
+    "retail_client_p95_ms": 9011,
+    "direct_athena_queries": 67,
+    "direct_athena_scanned_bytes": 91059,
+    "runtime_internal_athena_queries": 35,
+    "runtime_internal_athena_scanned_bytes": 189856,
+    "combined_athena_queries": 102,
+    "combined_scanned_bytes": 280915
+  }
+}

@@ -108,6 +108,23 @@ Ingestion requires exact storage types, nonnull required fields, nonnegative sou
 
 Push/PR CI uses read-only repository permissions, Python 3.12, immutable action SHAs, pinned Poetry 2.3.1 in a separate environment, and locked project installation. It checks the lockfile, tests, Ruff lint/format, and mypy. CI has no AWS credentials. Local work continues in the existing `enterprise-analytics` Conda environment; CI creates an isolated project environment instead. Hosted workflow execution requires a user-initiated push and is not part of local verification.
 
+The separate full-live verification operator keeps ordinary CI offline with explicit
+marker selection and `--fail-on-skip`. A selected skip fails the phase; unselected
+live items are never reported as passed. The reviewed all-tests workflow executes
+66 Athena items, one 36-request retail item and 18 parity-agent items in stages,
+using a new durable budget and candidate-aware trusted runner injection. It preserves
+the existing public contracts and historical closed counters, then restores the
+accepted candidate/retail state with a protected Q18 smoke. See
+[the full-live plan](full-live-validation-plan.md). The first attempt's stale CDK asset
+URL was rejected by strict reconciliation. Asset validation now binds template bytes,
+stack URL, asset ID/source and every destination before AWS setup. The separately
+approved [continuation](full-live-continuation-proposal.md) passed all 18 parity items
+and protected smoke, preserving the blocked 37-call parent. Combined acceptance is
+**1,570 offline + 85 live items, zero skips**; new 20/20 and aggregate 57/57 Runtime calls.
+Parity v14 was fully verified, then accepted candidate-retail was restored and finally
+verified READY v15 at 19:59:56Z on November 11, 2026. Runtime source, contracts, metrics,
+permissions and all historical ledgers are unchanged; no live allowance remains.
+
 ## Future integrations
 
 Milestone 4 adds Bedrock and AgentCore Runtime, without Gateway, Memory, Browser, Code Interpreter, or managed Evaluations. Cube and a UI remain later separate work. External SDK usage must be checked against current official documentation, with references recorded. Provider-specific identity propagation, query lifecycle, credentials, and errors remain in adapters or trusted hosting code.

@@ -37,7 +37,7 @@ jobs:
       - name: Install locked dependencies
         run: poetry sync --with dev --no-interaction
 
-      - name: Run tests
+      - name: Run offline tests (live suites require separate approved execution)
         run: poetry run pytest
 
       - name: Run Ruff

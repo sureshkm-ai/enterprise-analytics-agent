@@ -3,18 +3,25 @@
 ## Status and approval boundary
 
 This records the original **`full-live-v1`** plan approved by the user at `870e350`
-on November 11, 2026. It reused no completed UI or milestone allowance. Actual execution
-passed offline 1,460, Athena 66 and retail 36, but stale copied parity CDK asset references
-caused a no-change deployment. The controller refused acceptance;18 parity-agent
-items remain unrun. Accepted-retail verification and protected smoke passed on
-unchanged READY v13. Usage37/56 Runtime and 67/201 Athena, ordinary dispatch blocked.
-See [the actual checkpoint](../evaluations/full-live/checkpoint-2026-11-11.json).
+on November 11, 2026. It reused no completed UI or milestone allowance. Its first
+attempt passed offline 1,460/Athena 66/retail 36, but stale parity CDK asset references
+caused a no-change deployment. Strict reconciliation refused acceptance; mandatory
+retail/smoke passed on unchanged READY v13. That blocked parent remains 37/56 Runtime
+and 67/201 Athena. See [the preserved partial checkpoint](../evaluations/full-live/checkpoint-2026-11-11.json).
+
+The separately approved continuation at **09ef680** then passed all remaining 18 agent
+items, bringing combined acceptance to **1,570 offline + 85 live items, zero skips**.
+Parity v14 was verified and retail/smoke/final read-only verification passed on
+**Runtime/DEFAULT READY v15**, stack UPDATE_COMPLETE. New 20/20 Runtime calls, aggregate
+57/57; no allowance remains. [Final acceptance](../evaluations/full-live/acceptance-2026-11-11.json)
+binds actual results, diagnostics and evidence. No code ZIP, IAM or dataset changed.
 
 **Do not rerun this original campaign or alter its review/assemblies.** Its historical
 preparation missed the asset-URL/file-asset references even though template bytes
-were pinned. A [corrected continuation](full-live-continuation-proposal.md) is prepared
-offline; it requires new approval for 20 calls, prior 37/aggregate 57. The plan below
-preserves the original approved scope and failure/restoration procedure as evidence.
+were pinned. The [corrected continuation](full-live-continuation-proposal.md) completed
+under its new 20-call/prior 37/aggregate 57 approval. The plan below preserves the
+original reviewed scope and failure/restoration procedure as historical evidence;
+its example commands must not be replayed with exhausted counters.
 
 Use only `analytics-dev`, account `453711491609`, region `us-west-2`. Do not create
 profiles, add permissions, upload/rebuild the code archive, publish datasets or modify
@@ -246,10 +253,10 @@ can perform multiple model/tool/Athena operations; those internal queries must b
 included in actual usage reporting. No production load/concurrency, extra demo, warm-up,
 reserve, additional service or next milestone is authorized by this plan.
 
-The user approved this exact review/hash, expiry, configuration updates and
-**56 Runtime / 201 direct Athena** caps. The actual partial run and mandatory cleanup
-are recorded above. The remaining18 agent tests require the corrected continuation;
-this historical approval does not increase the cap, reopen the parent or authorize
-a further deployment/call. Full85-item acceptance is still incomplete.
+The user approved this original review/hash, expiry, configuration updates and
+**56 Runtime /201 direct Athena** caps. Its partial result and cleanup remain above.
+A separate approval covered the corrected continuation's 20 calls and aggregate 57;
+all 85-item acceptance/restoration gates have now passed. Neither historical approval
+reopens a spent campaign or authorizes further deployment/invocation.
 
 References checked November 11, 2026: [pytest marker selection](https://docs.pytest.org/en/stable/how-to/mark.html), [pytest hooks](https://docs.pytest.org/en/stable/reference/reference.html#pytest.hookspec.pytest_sessionfinish), [fixture resolution](https://docs.pytest.org/en/stable/how-to/fixtures.html#overriding-fixtures-at-various-levels).

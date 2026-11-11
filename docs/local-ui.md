@@ -17,6 +17,12 @@ UPDATE_COMPLETE. Usage **19/20**: all 18 regular slots plus protected verificati
 rollback unused. The candidate remains deployed; historical M4/M5 original-v12
 restoration evidence is unchanged. See [the acceptance record](ui-shared-code-live.md).
 
+A later separately approved full-test campaign restored and finally verified the
+same candidate/retail artifact/configuration on **READY v15** at 19:59:56Z on
+November 11, 2026. All 85 live tests passed; see [the evidence](../evaluations/full-live/acceptance-2026-11-11.json).
+This did not refresh the completed UI allowance or its historical v13 release record.
+The instructions below remain offline/replay-only without a new reviewed live scope.
+
 All regular live slots are spent, so the completed review cannot restart billable
 mode. Further live questions need a separately approved allowance. Inspect the actual
 nine AWS responses without another call:

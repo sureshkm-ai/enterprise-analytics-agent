@@ -1,0 +1,148 @@
+{
+  "schema_version": "full-live-acceptance-v1",
+  "date": "2026-11-11",
+  "accepted": true,
+  "scope": "Agreed development proof of concept; all85liveitems actually executed across separately approved staged campaigns. Ordinary CI remains AWS-free.",
+  "tested_commits": {
+    "parent": "870e3502fb037b9bc324666eddfa45078a68a41d",
+    "continuation": "09ef680154a54f86796aefd6a02ca1a932f6b9c4"
+  },
+  "review_sha256": "70161d5cb64bdc44f72a1cd61a3df614c53bdd879bb102e21a6c28dc07f0bc8a",
+  "pytest": {
+    "offline_passed": 1570,
+    "athena_parity_passed": 66,
+    "retail_items_passed": 1,
+    "agent_parity_passed": 18,
+    "live_passed": 85,
+    "total_distinct_passed": 1655,
+    "selected_skipped": 0,
+    "retail_case_requests_passed": 36,
+    "agent_requests_passed": 19
+  },
+  "budget": {
+    "parent_runtime_used": 37,
+    "continuation_runtime_used": 20,
+    "continuation_runtime_maximum": 20,
+    "aggregate_runtime_used": 57,
+    "aggregate_runtime_maximum": 57,
+    "direct_athena_submissions": 67,
+    "continuation_direct_athena_submissions": 0,
+    "failed_sdk_attempts": 0,
+    "incomplete_sdk_attempts": 0,
+    "remaining_runtime_calls": 0,
+    "further_live_execution_authorized": false
+  },
+  "deployment": {
+    "starting_runtime_version": "13",
+    "parity_runtime_version": "14",
+    "restored_runtime_version": "15",
+    "default_version": "15",
+    "runtime_status": "READY",
+    "default_status": "READY",
+    "runtime_stack_status": "UPDATE_COMPLETE",
+    "final_observed_at": "2026-11-11T19:59:56.955940+00:00",
+    "archive_sha256": "398124e89d2be1e9ce00f5b57c263fe2cdde0654527b27f949b9f3abb58029f1",
+    "artifact_version_id": "V5Q8e8e6w2tkkVghXn.BrFs1mqQU.Ncu",
+    "dataset_version": "retail-v1",
+    "retention_days": 7
+  },
+  "restoration_smoke": {
+    "passed": true,
+    "value": "110.25",
+    "currency": "USD",
+    "start": "2025-03-31",
+    "end_exclusive": "2025-04-01",
+    "runtime_version": "15"
+  },
+  "diagnostics": {
+    "runtime_totals": {
+      "requests": 57,
+      "model_calls": 118,
+      "input_tokens": 175099,
+      "output_tokens": 13799
+    },
+    "unique_athena_queries": 117,
+    "reported_scanned_bytes": 313177,
+    "queries_missing_scan_bytes": 0
+  },
+  "preservation": {
+    "historical_files": 121,
+    "session_snapshots": 25,
+    "ui_acceptance_files": 13,
+    "parent_pinned_files": 134,
+    "original_preparation_files": 18,
+    "corrected_preparation_files": 18,
+    "all_unchanged": true
+  },
+  "evidence": {
+    "artifacts/full-live/operations/continuation-approved-run/audit/aggregate-audit.json": {
+      "sha256": "ac1c238c422928de13fe6bdbca9232c4c4adf52e53f89d651ae5cbecff92e653",
+      "size_bytes": 293991
+    },
+    "artifacts/full-live/operations/continuation-approved-run/result.json": {
+      "sha256": "c8dbc2205dc27d91e6ce38ddcfa47ec5bd64a1bd3079537250c3ded34e853887",
+      "size_bytes": 1248
+    },
+    "artifacts/full-live/operations/continuation-approved-run/offline/junit.xml": {
+      "sha256": "0ac314d2dbdbe17ba2fdde2d7ccce81fb5a5100a3c7a0cb8f29fbe97bc3cb674",
+      "size_bytes": 224795
+    },
+    "artifacts/full-live/operations/continuation-approved-run/agent_parity/junit.xml": {
+      "sha256": "b60bc3841c2c34f1f12aeda98050981d2ebadb6d5e8cef8d30375b5cc8bc36f1",
+      "size_bytes": 2720
+    },
+    "artifacts/full-live/operations/continuation-approved-run/parity.controller.json": {
+      "sha256": "7e044f080a8ee2b4779a7ff92c028c20e2d84e84b57ae086a28948e511f1077c",
+      "size_bytes": 2454
+    },
+    "artifacts/full-live/operations/continuation-approved-run/retail.controller.json": {
+      "sha256": "f5ea728ac2bc40f5ac419ceaecd4d0538a9250db42cab78e1c3a4fb8b98d1862",
+      "size_bytes": 2330
+    },
+    "artifacts/full-live/operations/continuation-approved-run/starting-checkpoint.json": {
+      "sha256": "1bf81b1328ba667acd02d5021053d492e17f2f5a027893b83db4e50842290ebc",
+      "size_bytes": 8054
+    },
+    "artifacts/full-live/operations/continuation-approved-run/parity-checkpoint.json": {
+      "sha256": "24e1e99a6a92e38bc42a282d56fbcb7e04288146aae0ef2e3bc373f852096ea1",
+      "size_bytes": 8087
+    },
+    "artifacts/full-live/operations/continuation-approved-run/restored-checkpoint.json": {
+      "sha256": "af937cfee27591be8e5a707e01fe5b65123875885ee34a4167e6728130d2b96c",
+      "size_bytes": 8054
+    },
+    "artifacts/full-live/operations/continuation-approved-run/restoration-smoke.json": {
+      "sha256": "71eff1fd9da86b4ab91d9bb52bfc3f8f6fbd5a2320dbf5dec3e5a51519e1c6b6",
+      "size_bytes": 10676
+    },
+    "artifacts/full-live/operations/continuation-approved-run/final-verification/final-checkpoint.json": {
+      "sha256": "cb925cc7b729032dd0fa78dd38270c5640a15b03bf1940b0f615c01b38162c81",
+      "size_bytes": 8054
+    },
+    "artifacts/full-live/verification/continuation-completion-inventory.json": {
+      "sha256": "c42ba55a027fbda1071e5c2256ee532244fe621e93cd9787726f3c1442b966e6",
+      "size_bytes": 10034
+    },
+    "artifacts/full-live/operations/approved-run-20261111/result.json": {
+      "sha256": "06e15a4a94ec28a5e0060f0ea9937eac75feef3c11bd7194943269d8dc6d6a18",
+      "size_bytes": 1812
+    },
+    "artifacts/full-live/operations/approved-run-20261111/athena_parity/junit.xml": {
+      "sha256": "db9e7d328ff4aacc82dea499b6df2386c3e0964a26421e50e6849f7ee187fd7b",
+      "size_bytes": 10171
+    },
+    "artifacts/full-live/operations/approved-run-20261111/retail/junit.xml": {
+      "sha256": "2707a3949e911eadb35148735e7fd9c53d015c0c22d07b4d7aa72b45404bd5d2",
+      "size_bytes": 354
+    },
+    "artifacts/full-live/operations/approved-run-20261111/retail/retail-report/report.json": {
+      "sha256": "d939d44febaa496b236dc3556f1283b5372d5515ece48dd07966ca72056aa117",
+      "size_bytes": 201747
+    },
+    "artifacts/full-live/verification/failed-run-preservation.json": {
+      "sha256": "5f60b2a02da1b0f84cb5872292382d92aa9e545831e3954a74aefa9984657dcb",
+      "size_bytes": 24799
+    }
+  },
+  "completion_commit_status": "Reported in local handoff; no push or hosted CI is claimed for this documentation commit."
+}

@@ -6,6 +6,13 @@ Implemented and accepted in the original `feat/local-testing-ui` checkout. The
 separately approved shared UI execution completed successfully; Milestones 1–5 remain
 complete and their evidence is unchanged. This remains a development-only scope.
 
+The later full-validation campaign passed all 85 live items and restored the same
+candidate/retail release on **Runtime/DEFAULT READY v15**, stack UPDATE_COMPLETE,
+finally verified November 11, 2026 at 19:59:56Z. Its 20/20 continuation and 57/57 aggregate
+Runtime allowance are exhausted. [Acceptance evidence](../evaluations/full-live/acceptance-2026-11-11.json)
+is separate from the unchanged UI v13 window, review/release record and 19/20 ledger.
+No UI allowance was reopened or extended.
+
 | Mode | Implementation/data | AWS usage |
 | --- | --- | --- |
 | Offline playground | Deterministic planner, generated temporary sample, DuckDB | No SDK sessions or model calls |

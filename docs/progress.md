@@ -2,7 +2,114 @@
 
 Updated: 2026-11-11 (America/Chicago).
 
-## Current task: full-live validation — partial execution; corrected continuation prepared
+## Current task: full-live validation — complete, zero skipped tests
+
+The user approved the corrected continuation at **09ef680** and review SHA
+**70161d5cb64bdc44f72a1cd61a3df614c53bdd879bb102e21a6c28dc07f0bc8a**,
+including 20 new Runtime calls and the increase to aggregate 57. Executed once on
+November 11, 2026, using only `analytics-dev`, account 453711491609, us-west-2.
+The checkout was clean on `feat/full-live-validation` at the reviewed commit;
+Conda Python 3.12.16/Poetry 2.3.1 and the committed lockfile were unchanged.
+
+### Actual results and final deployment
+
+| Gate | Actual result |
+| --- | --- |
+| Fresh approved preflight | Passed **19:53:14Z**: exact accepted candidate-retail READY v13, identity, artifact/version, full template/parameters, both policies, retention, canonical publication and process guards. |
+| `poetry run pytest` inside the supervised continuation | **1,570 passed, 85 deselected in 52.15s; zero skipped**. No AWS calls in this phase. |
+| Corrected parity deployment | Accepted exact template/configuration on **Runtime/DEFAULT READY v14**, stack UPDATE_COMPLETE, proof **19:55:17Z**. Controller 38.818s, CDK 0, owned process reaped, no cleanup signals. |
+| Remaining parity-agent pytest | **18 passed, 1,637 deselected in 117.45s; zero skipped**. All 19 requests passed independent expectations, including both same-session requests. |
+| Mandatory accepted-retail restoration | Exact pinned candidate-retail restored on **Runtime/DEFAULT READY v15**, stack UPDATE_COMPLETE, proof **19:57:52Z**. Controller 35.740s, CDK 0, owned process reaped. |
+| Protected restoration smoke | Full Q18 request/result passed: **110.25 USD [2025-03-31,2025-04-01)** on retail-v1/v15. |
+| Final read-only checkpoint | Passed **19:59:56Z**, Runtime/DEFAULT **READY v15**, stack UPDATE_COMPLETE, exact artifact/config/template/parameters/policies/retention/publication, counters unchanged. |
+| Combined offline evidence audit | **1,655 distinct pytest items passed: 1,570 offline + 85 live; zero skips, failures or unrun items.** Live 85 = parent Athena 66 + parent retail 1 (all 36 requests) + continuation agent 18. |
+
+The earlier failed parity attempt and its successful retail 36/Athena 66 results were
+preserved, not repeated or relabeled. The combined audit validates the complete
+JUnit inventory, literal/independent expectations, all retail case judgments,
+shared-session behavior, typed responses, both restoration smokes and diagnostics.
+The completed development validation is not a production-readiness claim.
+
+### Exact commands and evidence
+
+```sh
+poetry run python -m infrastructure.agentcore.full_live_continuation verify-offline \
+  --review evaluations/full-live/continuation.proposed.json \
+  --output artifacts/full-live/verification/continuation-approved-offline.json
+poetry run python -m infrastructure.agentcore.full_live_continuation preflight \
+  --review evaluations/full-live/continuation.proposed.json \
+  --output artifacts/full-live/operations/continuation-approved-preflight
+poetry run python -m infrastructure.agentcore.full_live_continuation run \
+  --execute-approved \
+  --review evaluations/full-live/continuation.proposed.json \
+  --output artifacts/full-live/operations/continuation-approved-run
+poetry run python /private/tmp/full-live-continuation-final-audit.py \
+  --run artifacts/full-live/operations/continuation-approved-run
+```
+
+Preflight's first tool permission review timed out before process launch; confirmed
+no output/log existed and retried once as explicitly permitted by that tool result.
+It then passed. This was not an AWS retry, deployment attempt or invocation.
+The final read-only check reused the existing strict operation/checkpoint functions,
+compared actual restored versions and verified counters unchanged. No repeat billable
+call or ordinary campaign retry occurred.
+
+[Committed acceptance summary](../evaluations/full-live/acceptance-2026-11-11.json)
+binds both tested commits (parent 870e350 and continuation 09ef680), review, budgets,
+versions, complete diagnostics and evidence hashes. Retained authority:
+
+- `artifacts/full-live/operations/continuation-approved-run/`: offline/agent JUnit,
+  CDK/controller stdout/stderr/results, strict checkpoints and protected smoke.
+- `audit/aggregate-audit.json`, SHA
+  **ac1c238c422928de13fe6bdbca9232c4c4adf52e53f89d651ae5cbecff92e653**,
+  reports accepted=true/errors=[] and 1,655 unique passes. Current appended AgentCore
+  responses 19 are extracted separately from historical JSONL prefixes.
+- `final-verification/final-checkpoint.json` records the final observed v15 state.
+  Completion inventory `artifacts/full-live/verification/continuation-completion-inventory.json`
+  binds 50 new-campaign/report/review/approval files. Parent 134-file inventory stays fixed.
+
+### Budget, preservation and verification
+
+New campaign **20/20**: parity 19 + protected smoke 1. Prior parent **37**; aggregate
+**57/57**, zero remaining Runtime calls. Direct Athena remains **67** from the parent;
+continuation submitted **0** direct queries. No failed/incomplete SDK attempt,
+Runtime retry, extra warm-up or demonstration. Both durable claims/counters remain
+blocked/exhausted; expiry 2026-11-13T23:59Z does not authorize reuse of spent quota.
+Historical M4/M5/repair/UI ledgers are unchanged.
+
+Aggregate 57 Runtime responses reported **118 model calls**, **175,099 input / 13,799
+output tokens**. Parity server latency p95 **5.367s**; retained retail client p95
+**9.011s**. Across direct and Runtime-internal Athena work: **117 unique queries,
+313,177 reported scanned bytes**, zero missing scan diagnostics. These totals include
+both parent/current protected smokes and exclude unrelated historical campaigns.
+
+Preservation passed without discrepancies: **121 historical files, 25 session snapshots,
+13 UI acceptance files, all 134 parent pins, 18 original preparation files and 18 corrected
+preparation files unchanged**. Frozen ZIP 398/S3 VersionId V5, 25-file shared source,
+canonical data/goldens, original restoration assets, M3/foundation resources and
+permissions remain fixed. Only the approved trusted Runtime configuration updates and
+normal corrected CloudFormation template asset publication occurred.
+
+The lockfile, Ruff lint/format, mypy and offline data/foundation synthesis results
+recorded for 09ef680 below cover this unchanged implementation. They were not rerun
+for this documentation-only outcome. The supervised run did freshly execute the
+full offline pytest suite. Documentation/link/preservation and diff checks cover
+this final documentation change; hosted CI is not claimed for the local commit.
+Final documentation verification passed: **9 Markdown files, 85 local links, 30 shell
+blocks parsed without execution**, acceptance JSON/evidence hashes and
+`git diff --check`. All 50 completion-inventory files are unchanged. A scoped Git
+check confirms only documentation and the new acceptance summary changed; application,
+infrastructure, frozen inputs, counters and claims were preserved.
+
+### Exact next task
+
+Review the local completion commit and decide separately whether to push it. Keep
+PR #8 unmerged/unchanged. The requested full-live validation and agreed M1–M5/UI
+acceptance are complete for the development scope. All new Runtime allowance is
+spent. No further invocation, deployment, counter reset or milestone is implied;
+new live/development work needs a separately defined scope and authorization.
+
+## Historical full-live-v1 attempt and continuation preparation at 09ef680
 
 The user approved the exact plan at local commit **870e350** on November 11, 2026,
 including the new 56 Runtime / 201 direct Athena caps and expiry
@@ -115,9 +222,9 @@ differ in the fresh preparation. No real continuation ledger or claim was create
 Hosted CI does not cover these new local commits. The old UI PR/CI evidence below is
 unchanged and must not be attributed to this correction.
 
-### Exact next task
+### Historical handoff before continuation approval
 
-Review this local correction/checkpoint commit and explicitly approve or decline the
+At this checkpoint, the next decision was to approve or decline the
 [20-call continuation](full-live-continuation-proposal.md), including the one-call
 increase to aggregate 57. Only after approval: fresh exact retail-v13 identity/
 artifact/publication/process preflight, corrected parity deployment, missing 18 agent

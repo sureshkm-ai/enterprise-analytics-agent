@@ -81,11 +81,14 @@ Default pytest and CI explicitly select offline tests and fail if any selected t
 skips. The 85 live items are separately selected for approved execution; deselection
 does not mean they passed. The [full-live validation plan](docs/full-live-validation-plan.md)
 stages all 66 Athena, 18 AgentCore and one 36-request retail campaign test. The approved
-run passed Athena 66 and retail 36, but a CDK asset metadata defect prevented parity
-deployment; 18 agent items remain unrun. Accepted retail READY v13 and its protected
-Q18 smoke verify. The [corrected continuation](docs/full-live-continuation-proposal.md)
-is prepared offline and needs a new 20-call approval (aggregate 57, one more than the
-original 56). The earlier UI acceptance and all historical budgets are unchanged.
+run and [corrected continuation](docs/full-live-continuation-proposal.md) completed on
+November 11, 2026: **1,570 offline + all 85 live items passed, zero skipped**; all 36
+retail requests and protected restoration smoke passed too. Accepted candidate-retail
+Runtime/DEFAULT were restored and finally verified **READY v15**, stack UPDATE_COMPLETE.
+Usage is **20/20 continuation, 57/57 aggregate Runtime calls**; no allowance remains.
+See the [acceptance evidence](evaluations/full-live/acceptance-2026-11-11.json).
+The earlier UI acceptance and every historical ledger remain unchanged; these local
+live results are separate from hosted CI.
 
 The CLI is a trusted local application and fixes its own demo tenant and authorized regions. Semantic requests cannot supply a principal, tenant, or authorization scope. This is an enforcement boundary demonstration, not a production authentication system.
 

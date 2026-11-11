@@ -2,7 +2,16 @@
 
 ## Status and exact decision
 
-**Offline preparation only; new execution approval is required.** The approved
+**Completed under the user's approval of commit 09ef680.** The corrected parity
+configuration verified READY v14; all 18 parity pytest items/19 requests passed.
+Mandatory accepted-retail restoration and protected Q18 smoke passed on READY v15,
+stack UPDATE_COMPLETE. Final read-only verification at 19:59:56Z on November 11, 2026,
+confirmed the same state and unchanged counters. New 20/20, aggregate 57/57 Runtime
+calls, zero failed/incomplete SDK attempts. Combined 1,570 offline + 85 live items
+passed with zero skips. See [acceptance evidence](../evaluations/full-live/acceptance-2026-11-11.json).
+No allowance remains; do not replay the commands below or reset either claim/counter.
+
+The following proposal preserves the exact scope reviewed before execution. The approved
 `full-live-v1` run at `870e350` passed 1,460 offline tests, all 66 Athena items and
 the retail item containing all 36 questions. The parity update did not take effect:
 the copied CDK manifest and asset manifest still referenced the retail template.
@@ -143,7 +152,7 @@ Keep original errors and restoration errors separately. Stop on drift/denial and
 capture the complete operation-level failure; do not broaden permissions, mutate a
 review, reset a counter or automatically start another attempt.
 
-## Acceptance and remaining approval
+## Reviewed acceptance and allowance — completed
 
 Combine the pinned parent results (66 Athena + one 36-case retail item) with all
 18 distinct new agent items to establish **85 live pytest items actually passed**,
@@ -158,9 +167,10 @@ Runtime-internal model/tool/Athena activity remains under existing bounded contr
 and must appear in diagnostics; the allowance is not a fixed dollar ceiling.
 Billable failures/uncertain outcomes remain spent. No reserve or replay is proposed.
 
-**Required decision: approve this exact corrected assembly/review, two existing
-Runtime configuration updates, 20 new calls and the one-call increase to aggregate 57.**
-The earlier approval at `870e350` does not cover that increase or reopen its ledger.
+The user explicitly approved this corrected assembly/review, two existing Runtime
+configuration updates,20 new calls and aggregate 57. That execution is complete.
+The earlier approval at `870e350` was not reused to cover the increase, and its
+blocked ledger remains unchanged. Any additional live work needs a new scoped approval.
 
 Official CDK references checked November 11, 2026:
 [stack template asset URL](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.cloud_assembly_schema.AwsCloudFormationStackProperties.html?lang=python),

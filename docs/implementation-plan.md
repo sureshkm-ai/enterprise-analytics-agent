@@ -24,35 +24,36 @@ required actions; actual calls succeeded, without independently enumerating poli
 attachments or broadening IAM. See [acceptance/results](ui-shared-code-live.md) and
 [progress](progress.md).
 
-The session handoff supplies the pushed outcome/docs checkpoint, UI PR and verified
+The UI session handoff supplies the pushed outcome/docs checkpoint, UI PR and verified
 exact-commit CI. Next task: user review and merge decision. Default/offline saved-report viewing
 remains available with no further invocation. No next milestone or production-readiness
 claim is implied.
 
-## Follow-on validation: execute every test — partial run; corrected continuation pending
+## Follow-on validation: execute every test — complete, zero skipped tests
 
-The user explicitly requested that all 85 live items run, rather than treating their
-exclusion as passed coverage. The [full validation plan](full-live-validation-plan.md)
-prepares all offline tests, 66 direct Athena tests, one 36-request retail evaluation,
-18 parity-agent tests (19 requests), and a protected restored-retail Q18 smoke.
-Default offline pytest/CI now explicitly select offline tests and fail any selected
-skip. Only the complete staged live run can establish the requested live result.
+The requested all-tests development validation passed on November 11, 2026:
+**1,570 offline + all 85 live pytest items = 1,655 distinct passes, zero skips**.
+Live coverage is 66 Athena items, one 36-request retail item and 18 agent items
+(19 requests, including the shared session). Default CI remains AWS-free and fails
+selected skips; live coverage comes from the approved staged executions.
 
-The user approved `full-live-v1` at `870e350`:56 Runtime calls / 201 direct Athena
-submissions, expiry 2026-11-13T23:59Z. Actual offline 1,460, Athena 66 and retail 36 passed,
-zero selected skips. Stale parity CDK asset references caused a no-change deployment;
-the strict controller rejected it. Missing18 agent items were not dispatched. Mandatory
-accepted-retail verification and Q18 smoke passed on unchanged READY v13, stack
-UPDATE_COMPLETE. The parent is blocked at 37/56 Runtime,67/201 Athena; all historical
-evidence/ledgers remain fixed.
+The original approved run at 870e350 passed Athena 66 and retail 36, but stale CDK
+asset references caused a rejected no-change parity deployment. Its cleanup/smoke
+passed on unchanged retail v13, preserving the blocked parent at 37 Runtime/67 direct
+Athena. The user then approved the [corrected continuation](full-live-continuation-proposal.md)
+at 09ef680 and its 20 new calls, aggregate 57. Corrected parity verified READY v14;
+all 18 remaining items passed, then mandatory accepted-retail restoration/smoke and
+final read-only verification passed on **Runtime/DEFAULT READY v15**, stack UPDATE_COMPLETE.
+New usage 20/20, aggregate 57/57, no failures/incomplete attempts or remaining allowance.
+The [acceptance summary](../evaluations/full-live/acceptance-2026-11-11.json) binds
+both commits/results, budgets, exact artifact/version/configuration and diagnostics.
 
-Offline correction binds complete CDK metadata to template bytes and prepares a new
-assembly copy. A [separate continuation](full-live-continuation-proposal.md) proposes
-only missing 18 items/19 requests plus one protected retail-restoration smoke:20 new
-calls, aggregate 57 including prior 37, **one more than the original 56 approval**.
-No additional direct Athena/retail run, code rebuild/upload, IAM change or dataset
-mutation is proposed. Keep PR #8 and all retained artifacts unchanged. Next task:
-review the local fix and explicitly approve the corrected scope before live execution.
+Frozen archives/S3 VersionIds, source closure, independent goldens/publication,
+permissions, M3/foundation infrastructure and every historical ledger/claim remain
+unchanged. No code upload, rebuild, dataset change or IAM expansion occurred. The
+current completion commit remains local, separately from earlier UI hosted CI.
+Exact next task: review that commit and decide separately whether to push. Keep
+PR #8 unmerged. No next milestone, live replay or production-readiness claim is implied.
 
 ## Milestone 1: local semantic execution — complete (`64cbea4`)
 
@@ -139,6 +140,6 @@ The approved [plan](milestone-5-plan.md) is implemented for local review on `fea
 
 11. Approved `q18-recovery-v1` executed once from fresh original v10: deployed pinned candidate READY v11, Q18 **110.25 USD [2025-03-31,2025-04-01)** and all **36/36** cases passed; client p95 **13.381s**, complete diagnostics. Mandatory original restore/smoke and separate read-only final verification passed on READY v12. Recovery **38/38**, aggregate **40/40**, no retries/failures/incomplete calls. All 122 protected files and historical ledgers/claims unchanged. No code/upload/IAM/dataset changes during execution.
 
-Exact next task: M1–M5 remain complete and the separately approved shared UI acceptance passed. Review the UI PR and its exact-head CI linked in the session handoff; leave merging to the user. Preserve the observed candidate-v13 checkpoint and all historical allowances; new billable work needs new explicit scope. No next milestone or production-readiness claim is implied.
+Exact next task: review the local full-validation completion commit; keep PR #8 unmerged and pushing separate. M1–M5, the shared UI acceptance and the separately approved all-tests validation are complete for the development scope. Preserve the observed candidate-retail v15 checkpoint, both exhausted full-live counters and all historical evidence. Further development/live work needs a separately defined scope and authorization; no production-readiness claim is implied.
 
 Cube remains a later adapter extension outside milestones 2–5 unless separately requested.

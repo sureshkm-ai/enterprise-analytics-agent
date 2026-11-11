@@ -35,10 +35,24 @@ mode/purpose/request binding, no SDK retries and expiry enforcement. Eighteen re
 questions plus protected verification/rollback slots fit within 20. Failure/unknown
 outcomes stop normal dispatch; a valid rollback slot remains protected. Existing
 operator/deployment leases prevent overlap without rewriting historical evidence.
-Source audit proves the accepted candidate's 25-file common closure matches; the
-currently verified original-v12 deployment differs. No live equivalence claim is
-made until approved deployment and paired result verification. Success retains the
-shared candidate; rollback restores the independent original and disables live modes.
+Source audit proves the accepted candidate's 25-file common closure matches. The
+approved November 11, 2026, execution deployed that frozen candidate and trusted
+retail configuration; final exact preflight verified Runtime/DEFAULT **READY v13**
+and runtime stack **UPDATE_COMPLETE**. Q18 verification and all eighteen actual-UI
+paired outcomes passed independent expected requests/results, including all five
+metrics, filtering, relative dates, clarification and authorization boundaries.
+This proves the tested scope rather than identical model output or production
+equivalence. The matching candidate remains deployed; original rollback was not needed.
+
+The separate campaign consumed nineteen attempts: verification one and regular
+questions eighteen. Its protected original-restoration smoke remains unused; it is
+not an extra ordinary question. The regular cap blocks both agent modes and the
+billable CLI startup path. Further live questions require another explicit reviewed
+allowance; no historical counter or current receipt is reset. Saved-mode viewer
+reports derived from the authoritative paired report create no AWS session and
+retain their replay label. A default/offline launch remains available after the
+live cap is reached. The independent original rollback artifact/configuration,
+historical acceptance evidence and all earlier ledgers remain preserved.
 
 Saved responses and suite reports are validated data, displayed with recorded verdicts
 and explicit replay labels. No saved answer is presented as a fresh local or live query.

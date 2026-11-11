@@ -4,29 +4,30 @@
 
 ## Follow-on scope: local testing UI
 
-The separately authorized shared-code UI implementation is offline ready. Default
-playground remains deterministic/AWS-free. Local agent uses the existing
-BedrockAnalyticsAgent with canonical DuckDB data; AWS uses the same class with Athena.
-Three modes, cost notices, strict release records, persistent shared question/SDK
-counting, offline paired grading and bounded deploy/rollback workflow are implemented.
-All original metric definitions, contracts, frozen data and historical budgets remain
-unchanged. Actual verification is in [progress](progress.md).
+The separately authorized shared-code UI scope is implemented and accepted. The
+default playground stays AWS-free; local Bedrock uses canonical DuckDB and the same
+agent class/catalog/contracts/tools as candidate AgentCore/Athena. Source/dependency/
+canonical verification, exact release records, persistent question/SDK counting,
+bounded deployment/rollback and offline paired reporting are implemented.
 
-Source/dependency/data audits match the accepted frozen candidate; no rebuild/upload
-is needed. November 10 read-only AWS checks found original Runtime/DEFAULT READY v12,
-not the matching candidate. Canonical bytes/current S3 prefixes/Glue bindings verify. Denied
-IAM inspection proves no permission gap. Supplied administrator-console contents
-cover the required Bedrock and candidate S3 read actions/resources; reported role
-associations are not independent attachment/effective-access verification. See the
-[policy-content review](ui-shared-code-live.md#administrator-console-policy-review--november-11-2026).
-No new/duplicate grant is proposed.
+Approved execution at a113220 passed Q18 and **18/18 paired actual-UI outcomes**.
+Fresh final proof at November 11, 2026, 16:58:11Z verifies candidate/retail
+Runtime/DEFAULT **READY v13**, runtime stack UPDATE_COMPLETE. Candidate ZIP/version
+and reviewed configuration remain pinned. Existing infrastructure, permissions,
+goldens and historical M1–M5 ledgers are unchanged.
 
-Next gate: seek separate approval of the finalized
-[concrete proposal](ui-shared-code-live.md) and review JSON. Proposed maximum 20
-question attempts (18 paired + Q18 verification + protected original rollback),
-expiring 2026-11-11T23:59:00Z, entirely separate from M1–M5 histories. Success leaves
-the matching candidate/retail deployment; failure requires original restoration.
-No deployment, upload, IAM change or billable call is authorized by offline readiness.
+The separate allowance used **19/20**: verification1 + regular18, protected rollback0.
+All normal slots are spent; no further demonstration/retry/reset is permitted.
+Success intentionally leaves the shared candidate deployed. New billable work needs
+a separately reviewed scope/allowance. Administrator policy contents covered the
+required actions; actual calls succeeded, without independently enumerating policy
+attachments or broadening IAM. See [acceptance/results](ui-shared-code-live.md) and
+[progress](progress.md).
+
+The session handoff supplies the pushed outcome/docs checkpoint, UI PR and verified
+exact-commit CI. Next task: user review and merge decision. Default/offline saved-report viewing
+remains available with no further invocation. No next milestone or production-readiness
+claim is implied.
 
 ## Milestone 1: local semantic execution — complete (`64cbea4`)
 
@@ -113,6 +114,6 @@ The approved [plan](milestone-5-plan.md) is implemented for local review on `fea
 
 11. Approved `q18-recovery-v1` executed once from fresh original v10: deployed pinned candidate READY v11, Q18 **110.25 USD [2025-03-31,2025-04-01)** and all **36/36** cases passed; client p95 **13.381s**, complete diagnostics. Mandatory original restore/smoke and separate read-only final verification passed on READY v12. Recovery **38/38**, aggregate **40/40**, no retries/failures/incomplete calls. All 122 protected files and historical ledgers/claims unchanged. No code/upload/IAM/dataset changes during execution.
 
-Exact next task: M1–M5 remain complete. For the separately requested UI follow-on, review the recorded administrator policy-content evidence/limitations and obtain explicit approval of the finalized shared-release/20-attempt proposal before deployment or billable questions. Repeat fresh original-v12/process/source/publication preflight at execution; preserve all closed historical allowances. No new milestone is started. Production authorization, broader language coverage, long-duration operational hardening and measured cost remain outside the verified scope.
+Exact next task: M1–M5 remain complete and the separately approved shared UI acceptance passed. Review the UI PR and its exact-head CI linked in the session handoff; leave merging to the user. Preserve the observed candidate-v13 checkpoint and all historical allowances; new billable work needs new explicit scope. No next milestone or production-readiness claim is implied.
 
 Cube remains a later adapter extension outside milestones 2–5 unless separately requested.

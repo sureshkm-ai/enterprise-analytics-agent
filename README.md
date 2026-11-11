@@ -15,17 +15,37 @@ after installing the existing Poetry environment:
 poetry run python -m enterprise_analytics_agent.ui
 ```
 
-Open **http://127.0.0.1:8501**. The professional local interface includes a
+Open **http://127.0.0.1:8501**. The professional local interface includes
 three explicit modes, suggested questions, exact result tables, execution details,
 a metric catalog, saved-run viewer and code guide. **Offline playground** uses a
 deterministic planner and temporary DuckDB samples with no AWS sessions. **Local
 agent** uses the existing BedrockAnalyticsAgent with canonical DuckDB data and makes
 billable Bedrock calls. **AWS AgentCore** uses the same agent with Athena. Both
 billable modes require a separately approved release/allowance and show cost notices
-before submission. The matching frozen candidate needs no rebuild/upload; actual
-AWS remains original v12, so shared live equivalence is pending. See
-[UI setup](docs/local-ui.md) and the [20-attempt proposal](docs/ui-shared-code-live.md).
+before submission. Approved live acceptance on November 11, 2026, passed Q18
+(**110.25 USD** for March 31 inclusive to April 1 exclusive) and **all 18 paired UI
+outcomes** against independent goldens. The frozen candidate/retail release remains
+deployed on Runtime/DEFAULT **READY v13**, with runtime stack **UPDATE_COMPLETE**.
+This establishes the tested behavior for the nine reviewed questions, not identical
+model prose or general production equivalence. See [UI setup](docs/local-ui.md)
+and [shared-code acceptance evidence](docs/ui-shared-code-live.md).
 This follow-on UI scope does not change completed M1–M5 acceptance or their ledgers.
+
+The separate UI campaign used **19/20 attempts**: Q18 verification 1 and all 18
+regular slots; the protected rollback smoke was unused. No regular live allowance
+remains, and the completed review cannot restart billable mode. Additional billable
+questions require a separately approved allowance. Inspect the saved AWS acceptance
+responses offline without spending another call:
+
+```sh
+conda activate enterprise-analytics
+poetry run python -m enterprise_analytics_agent.ui \
+  --report artifacts/ui-shared/replay-aws-agentcore.json --port 8501
+```
+
+This derived report is explicitly replayed evidence, not fresh agent execution.
+It is retained in the original checkout; generated reports are not included in a
+fresh clone. The default launch above remains fully offline.
 
 Use Python 3.12 and Poetry 2 in the existing Conda environment. Check that Poetry reports the same environment before running tests:
 

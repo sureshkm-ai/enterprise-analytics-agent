@@ -9,6 +9,27 @@ The catalog, v2 contracts, question guard and semantic tools remain shared.
 
 ![Analytics Workbench with three explicit execution modes](images/analytics-workbench-shared-ui.png)
 
+## Approved live acceptance completed
+
+On November 11, 2026, Q18 and **18/18 paired UI outcomes** passed against independent
+goldens. Final proof verified candidate/retail Runtime/DEFAULT **READY v13**, stack
+UPDATE_COMPLETE. Usage **19/20**: all 18 regular slots plus protected verification;
+rollback unused. The candidate remains deployed; historical M4/M5 original-v12
+restoration evidence is unchanged. See [the acceptance record](ui-shared-code-live.md).
+
+All regular live slots are spent, so the completed review cannot restart billable
+mode. Further live questions need a separately approved allowance. Inspect the actual
+nine AWS responses without another call:
+
+```sh
+conda activate enterprise-analytics
+poetry run python -m enterprise_analytics_agent.ui   --report artifacts/ui-shared/replay-aws-agentcore.json --port 8501
+```
+
+Choose **Saved runs**. This export is an explicitly labeled replay derived from the
+paired report. Use `replay-local-agent.json` for the nine local responses. Reports
+remain in the original checkout; omit `--report` in a fresh clone.
+
 ## Start the offline playground
 
 From the repository root, use the existing environment:
@@ -60,14 +81,15 @@ null ratios remain distinct from zero, and absent diagnostics are labeled unrepo
 The two agent modes are disabled by default. Local agent execution is **not offline
 model execution**: its button and mode notice disclose Bedrock usage before submission.
 
-Fresh read-only checks on November 10, 2026, found the existing original/parity
-Runtime and DEFAULT **READY v12**. Its original artifact differs from the local Q18
+Historical read-only checks on November 10, 2026, found original/parity
+Runtime and DEFAULT **READY v12**, before the separately approved v13 deployment. Its original artifact differs from the local Q18
 correction in `bedrock_agent.py` and `agent/questions.py`. It is not the proposed shared
 retail release. The accepted frozen candidate matches all **25** audited shared source
 files; it can be reused without rebuilding or uploading a ZIP. Its dependency/build,
 configuration, artifact and canonical-data evidence are recorded in
 [the shared-code proposal](ui-shared-code-live.md). This source comparison alone does
-not prove that AWS currently executes the candidate or establish new live parity.
+not prove which code is active. The approved execution and final v13 proof above
+establish the tested candidate behavior.
 
 Read-only publication verification also checked all eight current object identities,
 seven exclusive source prefixes and seven actual Glue schemas/locations. The retained
@@ -75,14 +97,15 @@ proof is `artifacts/ui-shared/preflight/20261110T212343Z/publication-proof.json`
 Every candidate deployment preflight and new shared question repeats these bounded
 checks; drift blocks execution before reserving a question.
 
-The shared deployment and live comparison remain **pending separate execution
-approval**. Direct developer Bedrock access and the runtime candidate-key read grant
+The shared deployment and live comparison **passed within the separately approved
+scope**. Direct developer Bedrock access and the runtime candidate-key read grant
 are covered by the supplied administrator-console policy contents recorded in
 [the policy review](ui-shared-code-live.md#administrator-console-policy-review--november-11-2026).
 Current attachment/effective access are not independently verified; denied IAM
 inspection is not proof of missing access. No additional grant is proposed.
-No new live question, deployment, upload or IAM change
-has been performed for this UI preparation. Historical ledgers remain unchanged.
+The accepted execution exercised direct Bedrock and candidate Runtime access;
+policy attachment enumeration remains unverified. No upload/IAM change occurred;
+historical ledgers remain unchanged.
 
 ## Inspect saved acceptance without new calls
 
@@ -102,7 +125,7 @@ poetry run python -m enterprise_analytics_agent.ui \
 Ignored reports and frozen artifacts are unavailable in a fresh clone. Do not fabricate
 or regenerate historical evidence to fill the view.
 
-## Shared-release operator workflow
+## Shared-release operator workflow — completed execution record
 
 The concrete proposed resources, permission prerequisites, nine paired questions,
 expiry, cost limits and rollback gates are in
@@ -111,7 +134,8 @@ expiry, cost limits and rollback gates are in
 **18 regular attempts + one protected Q18 verification + one protected original rollback
 smoke**, expiring **2026-11-11T23:59:00Z**. Both agent modes share that allowance.
 The historical M4/M5/repair/continuation/recovery counters cannot fund these calls.
-The new proposal remains unconsumed; neither the file nor an enabling flag is approval.
+The approved execution consumed 19 attempts and all regular slots. The remaining
+protected smoke cannot fund ordinary questions; do not reuse or reset this review.
 
 `infrastructure.agentcore.ui_workflow` prepares/reviews existing assemblies and manages
 bounded deployment reconciliation. It never invokes a model. Offline preparation
@@ -134,8 +158,8 @@ poetry run python -m infrastructure.agentcore.ui_workflow preflight \
   --output artifacts/ui-shared/preflight/fresh-original.json
 ```
 
-**The following deployment and counted execution commands require approval of the
-concrete proposal first. They have not been executed during preparation.** Output
+**The following commands document the completed approved execution. Do not repeat
+them or use the completed review for another demonstration.** Output
 paths are write-once and must be unused. Do not change campaign IDs or delete evidence
 to bypass an existing reservation, failed run or unresolved process journal.
 
@@ -160,7 +184,8 @@ deployed. The protected verifier fixes its own question to **“Show net_revenue
 yesterday.”** and requires the complete independent Q18 request/result: **110.25 USD**
 for **[2025-03-31, 2025-04-01)**. Normal shared questions remain disabled until it passes.
 
-After successful counted verification, launch both shared agent modes:
+During acceptance, both shared agent modes were launched with this command; it now
+correctly refuses the completed regular allowance:
 
 ```sh
 poetry run python -m enterprise_analytics_agent.ui \

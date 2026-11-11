@@ -2,10 +2,9 @@
 
 ## Status
 
-Implemented in the original `feat/local-testing-ui` checkout based on `c6e6818`.
-Administrator-supplied policy contents have been reviewed; deployment and billable
-execution remain paused pending separate execution approval. Milestones 1–5 stay
-complete; this is separately requested UI work.
+Implemented and accepted in the original `feat/local-testing-ui` checkout. The
+separately approved shared UI execution completed successfully; Milestones 1–5 remain
+complete and their evidence is unchanged. This remains a development-only scope.
 
 | Mode | Implementation/data | AWS usage |
 | --- | --- | --- |
@@ -17,6 +16,64 @@ Cost notices appear before submission. Both agent modes require a reviewed relea
 allowance and successful counted Q18 verification. The offline sample is not canonical
 retail. Browser fields cannot set identity, configuration, SQL, history or quota purpose.
 AWS payloads remain question-only; authorization is fixed server-side.
+
+## Completed approved execution — November 11, 2026
+
+The approved review `168abce7775cf9620992c545037643193c41b6756e61179f093c5a8a5653283d`
+was executed once using analytics-dev, account 453711491609, us-west-2. Approved commit
+`a113220` is pushed and [CI 43060085091](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43060085091)
+passed for that exact commit. The new outcome commit has separate PR/CI coverage.
+
+- Fresh original **READY v12** preflight passed before mutation. The existing Runtime
+  updated successfully to the pinned candidate/retail configuration on **v13**.
+- Protected Q18 passed the complete request and **110.25 USD [2025-03-31, 2025-04-01)**.
+  All **18 actual-UI paired outcomes passed** against independent goldens: nine per
+  backend, including all metrics, filters, boundaries, clarification and authorization.
+- Final preflight at **16:58:11Z** verified Runtime/DEFAULT **READY v13**, stack
+  **UPDATE_COMPLETE**, exact artifact/configuration/templates/parameters, both policies,
+  seven-day retention and canonical publication. The matching candidate remains deployed.
+- Usage is **19/20**: verification 1 + regular 18; rollback 0. SDK work: **16 direct
+  Converse attempts**, **10 Runtime invocations**, no failed/incomplete SDK attempts.
+  Local/AWS pair p95 execution times: **4.186s / 8.926s**; paired AWS scans 41,157 bytes,
+  or **46,172 bytes across 8 queries** including protected Q18.
+- The user manually submitted the Q02 pair and confirmed ownership; both graded passed.
+  Automation paused on the existing in-flight lock, then ran only the other sixteen
+  regular questions. Nothing was retried or repeated. All historical assets/counters
+  and permissions are unchanged; no rebuild/upload/publication/IAM change occurred.
+
+The [committed acceptance summary](../evaluations/ui-shared/acceptance-2026-11-11.json)
+binds reports, versions, metrics and evidence hashes. Retained authority:
+`artifacts/ui-shared/paired-report.json` SHA
+`5b9db8c3b90d44d5fc63f42367dd36fd7cb158e1ab340bb5c4dc6910cdec613d`;
+`final-preflight.json` SHA
+`0f4b438fb5264b6d3ec5f28df160dca854765a76a87ed7384c5a6f3ea9159324`.
+The 218-file acceptance inventory is retained separately. Direct Bedrock and candidate
+Runtime execution succeeded in this window; policy attachments were not independently
+queried and no denied IAM inspection was repeated.
+
+All **18 regular slots are exhausted**. The protected slot remains reserved for
+approved failure cleanup, not demonstrations. The completed review cannot restart
+billable UI mode; new questions require a new explicit allowance/scope. Original
+rollback was unnecessary and was not performed. Expiry remains **2026-11-11T23:59:00Z**;
+the allowance has not been extended or reset.
+
+### Launch the completed results without another call
+
+```sh
+conda activate enterprise-analytics
+poetry run python -m enterprise_analytics_agent.ui \
+  --report artifacts/ui-shared/replay-aws-agentcore.json --port 8501
+```
+
+Open http://127.0.0.1:8501 and choose **Saved runs**. The nine AWS responses are
+explicitly replayed, with their recorded judgments; this is not fresh model execution.
+Use `replay-local-agent.json` for the nine local-agent results, or omit `--report`
+for the offline playground. The exports are validated existing EvaluationReport data
+derived from the authoritative paired report, not a new acceptance run. Generated
+evidence remains in the original checkout, not a fresh clone. The billable UI used
+the command below during acceptance; it now correctly rejects the spent review.
+
+![Accepted shared AWS UI displaying the retained Q18 result](images/analytics-workbench-live-accepted.png)
 
 ## Actual source, artifact and data evidence
 
@@ -99,16 +156,17 @@ change is proposed**. Accept the stated administrator-reported provenance in the
 execution review, preserve original-code access/M3 permissions/query trust, then
 repeat fresh target/process/source/publication checks before any approved deployment.
 
-No deployment, upload, IAM change, Athena query, model call or Runtime invocation ran.
-Matching source/artifacts are established; **shared live equivalence is pending**.
+During preparation/policy review no deployment or billable call ran. The subsequent
+approved execution above establishes the tested shared behavior for nine questions;
+it does not enumerate all effective policies or establish production equivalence.
 
-## Concrete proposal — separate approval required
+## Approved proposal — executed; historical scope and commands
 
 [review.proposed.json](../evaluations/ui-shared/review.proposed.json) binds
 campaign `ui-shared-retail-v1-01`, **20 question attempts**, expiry
 **2026-11-11T23:59:00Z**, review SHA
 `168abce7775cf9620992c545037643193c41b6756e61179f093c5a8a5653283d`.
-New allowance is **0/20, uncreated**; historical campaigns stay unchanged.
+Completed usage is **19/20**, all 18 regular slots spent and protected rollback unused; historical campaigns stay unchanged.
 
 One protected AWS Q18 verification + eighteen regular attempts + one protected
 original-restoration smoke. Regular attempts are frozen **Q01–Q05, Q13, Q18, Q29,
@@ -135,13 +193,12 @@ The regular allocation permits at most 54 direct local Converse SDK attempts
 Model calls inside Runtime remain separately bounded by its six-iteration agent.
 These are separate work ceilings, not additional question allowance.
 
-The proposal is finalized for review with the supplied policy-content evidence,
-without claiming effective-access verification. Approval must explicitly cover the
-existing candidate/version, successful candidate-retail steady state, failure rollback,
-the 20-attempt allocation and the UTC expiry. The review file/pins remain unchanged.
-The November 10 AWS observations are historical; fresh execution preflight must pass.
+The user explicitly approved this scope and policy-evidence limitations at a113220.
+Fresh execution preflight and final acceptance passed as recorded above; the review
+file/pins remain unchanged. The commands below are historical evidence, not another
+execution authorization. New billable questions require a new reviewed allowance.
 
-### Commands after permission review and execution approval
+### Commands used during the approved execution — do not rerun the spent campaign
 
 Run from the original root in `conda activate enterprise-analytics`. Output paths
 must be unused. Prepared copies are already in `artifacts/ui-shared/deployment`;

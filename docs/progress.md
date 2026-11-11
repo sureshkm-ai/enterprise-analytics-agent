@@ -2,7 +2,110 @@
 
 Updated: 2026-11-11 (America/Chicago).
 
-## Current task: administrator policy review — complete; live approval pending
+## Current task: shared UI deployment and live acceptance — passed; PR handoff
+
+Approved scope at `a1132205b54b31dcec712425a8a0861f650fdcfa` executed on November 11,
+2026, using only analytics-dev / account 453711491609 / us-west-2. GitHub confirms
+that approved commit is pushed and [CI 43060085091](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43060085091)
+passed for that exact SHA. Metadata is retained at
+`artifacts/ui-shared/github/20261111T164640Z/approved-commit-ci.json`. Final outcome
+PR/CI coverage is reported separately in the handoff, without another self-CI commit.
+
+### Actual deployment and acceptance
+
+- Fresh original preflight passed at **16:46:09Z**: original Runtime/DEFAULT READY v12,
+  exact code/version/config/template/parameters, both policies, retention, process
+  guards and canonical publication. Review SHA matched the approved
+  `168abce7775cf9620992c545037643193c41b6756e61179f093c5a8a5653283d`.
+- Bounded controller deployment succeeded, updating only the existing Runtime's pinned
+  candidate code/version and trusted retail configuration. Runtime/DEFAULT are
+  **READY v13**, runtime stack **UPDATE_COMPLETE**. Final exact proof at **16:58:11Z**
+  reverified artifact/configuration/templates/parameters/policies/retention/publication.
+  The matching candidate remains deployed; no original restoration was needed.
+- Protected Q18 verification passed full plan/result **110.25 USD [2025-03-31,2025-04-01)**.
+  All **18 actual-UI paired outcomes passed**, nine reviewed questions per backend,
+  against frozen independent plans/values, including all five metrics, filters,
+  relative dates, clarification and authorization boundaries.
+- The user submitted Q02 once per mode, then explicitly confirmed those two calls.
+  Automation's pre-dispatch ledger read encountered that in-flight lock before sending
+  any question. Paused the UI, preserved/graded both outcomes, confirmed ownership and
+  resumed only the other sixteen cases. No duplicate question or billable retry.
+- Final campaign **19/20**: verification1 + regular18 + rollback0. All regular slots
+  are exhausted; protected smoke unused. SDK work **16 direct Converse attempts**,
+  **10 Runtime invocations**, zero failed/incomplete attempts. Expiry remains
+  **2026-11-11T23:59:00Z**; no extension/reset/remainder reuse.
+- Pair p95 execution latency: local **4.186s**, AWS **8.926s**. Local pair tokens
+  **23,283 input / 1,750 output**; AWS pair tokens **25,149 / 1,819**. Paired AWS
+  queries **7 / 41,157 scanned bytes**; including protected Q18 **8 / 46,172 bytes**.
+  These execution timings exclude separate read-only preflight overhead; browser
+  per-case logs also preserve end-to-end UI timing. Model prose/call counts can differ.
+
+### Evidence, preservation and verification
+
+[Committed acceptance summary](../evaluations/ui-shared/acceptance-2026-11-11.json)
+binds observed versions, results, budget and evidence hashes. Retained raw authority:
+
+- `artifacts/ui-shared/operations/approved-deploy/`: deployment logs, controller
+  reconciliation, exact original/candidate checkpoints and actual-version release record.
+- `artifacts/ui-shared/verification.json`, `paired-report.json`,
+  `final-preflight.json`, and complete browser/counter/operator evidence.
+  Paired report SHA **5b9db8c3b90d44d5fc63f42367dd36fd7cb158e1ab340bb5c4dc6910cdec613d**;
+  final proof SHA **0f4b438fb5264b6d3ec5f28df160dca854765a76a87ed7384c5a6f3ea9159324**.
+- `artifacts/ui-shared/acceptance-evidence-inventory.json`: **218** files captured at
+  acceptance, SHA **b03ce3ae161494489daebb3bd980b00a83da579e35b269443d3a80861a197349**.
+  Later final-commit GitHub evidence is separate from that capture.
+- Two validated nine-case viewer exports, `replay-local-agent.json` and
+  `replay-aws-agentcore.json`, explicitly marked replay and bound to the paired report.
+  New screenshot `docs/images/analytics-workbench-live-accepted.png`; old images intact.
+
+All **121 present protected files** and **25** session snapshots are unchanged:
+original/candidate ZIPs, actual S3 VersionIds, corrected original assemblies, canonical
+inputs, goldens, prior ledgers and claims. M4 28/40, original M5 closed38/40, repair1/40,
+continuation1/39, recovery closed38/38 (aggregate40/40) remain intact. No rebuild,
+upload, dataset/publication, permission/trust, bootstrap or retained-infrastructure
+change occurred. Supplied policy provenance remains administrator-reported; actual
+direct Bedrock/candidate execution succeeded, without another denied IAM inspection
+or a claim to enumerate every effective policy/attachment.
+
+Commands actually executed include the reviewed ui_workflow preflight/deploy commands,
+one ui_shared protected verification, eighteen actual UI submissions (two by user),
+paired_report and final candidate preflight. Each automated question was judged before
+continuing. The task-owned browser and server were stopped after evidence capture.
+
+Final repository changes are documentation, a screenshot and acceptance JSON only.
+`git diff a113220 -- src tests infrastructure pyproject.toml poetry.lock` is empty.
+The same implementation already passed today's required checks: **1,331 tests passed,
+85 live-gated skips**, lockfile, Ruff, formatting and mypy; hosted CI 43060085091 also
+covers that exact source. Those unchanged checks/syntheses were not needlessly rerun.
+Final documentation/link/shell syntax, JSON/model validation and evidence/preservation
+checks passed: **8 Markdown files, 73 local links, 34 shell blocks parsed without
+execution, 1 JSON block, 218 evidence-file hashes, two nine-case viewer exports**.
+`poetry run python /private/tmp/ui-approved-closeout-check.py` and `git diff --check`
+passed. Source/infrastructure/lockfile diffs from the approved commit are empty.
+Final staged-scope review accompanies the outcome commit; its hosted CI links are
+returned in the session handoff rather than recorded by a self-CI follow-up commit.
+
+### Exact next task and launch
+
+The session handoff supplies the normally pushed outcome commit, UI PR and verified
+exact-commit CI links. The next task is **user review and merge decision**. No new milestone, further
+billable question or production-readiness claim is implied. Additional live UI work
+needs a separately approved allowance; the protected slot cannot fund demonstrations.
+Historical original-v12 restoration remains recorded; observed UI steady state is v13.
+
+Valid offline/saved-result launch from the original checkout:
+
+```sh
+conda activate enterprise-analytics
+poetry run python -m enterprise_analytics_agent.ui \
+  --report artifacts/ui-shared/replay-aws-agentcore.json --port 8501
+```
+
+Choose **Saved runs**. This replays recorded AWS acceptance without another call.
+Omit `--report` for the offline playground. The spent live-review startup is
+intentionally blocked; do not advertise it as an enabled allowance.
+
+## Previous task: administrator policy review — completed before execution approval
 
 On **November 11, 2026**, continued on clean `feat/local-testing-ui` at local
 implementation `d3925321b3631e355e08dda34c9b552faaf6185c`. Read root instructions,
@@ -1228,4 +1331,4 @@ Milestone 2 introduced no AWS credentials, calls, deployment, Athena adapter, or
 
 ## Exact next task
 
-The agreed development proof of concept for **Milestones 1–5 is complete**, merged and hosted-CI verified. The user separately defined the shared UI follow-on; its exact next task is explicit approval of the finalized deployment/budget proposal and policy-evidence limitations recorded at the top of this document. Other development still requires a separately defined scope. Preserve the recorded original READY v12 checkpoint, frozen assets/goldens and all closed ledgers/claims. **Recovery 38/38 and aggregate repair 40/40 are exhausted**; no rerun, additional demonstration, quota reset, AWS operation or next milestone is authorized by closeout. Production-readiness limitations above remain explicit.
+The agreed development proof of concept for **Milestones 1–5 is complete**, merged and hosted-CI verified. The separately approved shared UI follow-on also passed Q18/all 18 paired outcomes on candidate READY v13. Its next task is the outcome PR/CI/user-review handoff recorded above; no ordinary live allowance remains. Other development still requires a separately defined scope. Preserve the recorded original READY v12 checkpoint, frozen assets/goldens and all closed ledgers/claims. **Recovery 38/38 and aggregate repair 40/40 are exhausted**; no rerun, additional demonstration, quota reset, AWS operation or next milestone is authorized by closeout. Production-readiness limitations above remain explicit.

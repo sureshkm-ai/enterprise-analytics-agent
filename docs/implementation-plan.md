@@ -29,7 +29,7 @@ exact-commit CI. Next task: user review and merge decision. Default/offline save
 remains available with no further invocation. No next milestone or production-readiness
 claim is implied.
 
-## Follow-on validation: execute every test — prepared; new live approval pending
+## Follow-on validation: execute every test — partial run; corrected continuation pending
 
 The user explicitly requested that all 85 live items run, rather than treating their
 exclusion as passed coverage. The [full validation plan](full-live-validation-plan.md)
@@ -38,13 +38,21 @@ prepares all offline tests, 66 direct Athena tests, one 36-request retail evalua
 Default offline pytest/CI now explicitly select offline tests and fail any selected
 skip. Only the complete staged live run can establish the requested live result.
 
-The proposed separate `full-live-v1` allowance is **56 Runtime invocations** and
-**201 direct Athena submission attempts**, expiry **2026-11-13T23:59:00Z**.
-Prepared parity configuration changes only dataset/tenant/reference date; code stays
-on the accepted candidate ZIP/version. The operator restores the accepted retail
-configuration and records its resulting actual version. All historical budgets,
-frozen inputs and PR #8 remain unchanged. No AWS call or billable execution occurred
-during preparation. Next task: approve the concrete new scope before execution.
+The user approved `full-live-v1` at `870e350`:56 Runtime calls / 201 direct Athena
+submissions, expiry 2026-11-13T23:59Z. Actual offline 1,460, Athena 66 and retail 36 passed,
+zero selected skips. Stale parity CDK asset references caused a no-change deployment;
+the strict controller rejected it. Missing18 agent items were not dispatched. Mandatory
+accepted-retail verification and Q18 smoke passed on unchanged READY v13, stack
+UPDATE_COMPLETE. The parent is blocked at 37/56 Runtime,67/201 Athena; all historical
+evidence/ledgers remain fixed.
+
+Offline correction binds complete CDK metadata to template bytes and prepares a new
+assembly copy. A [separate continuation](full-live-continuation-proposal.md) proposes
+only missing 18 items/19 requests plus one protected retail-restoration smoke:20 new
+calls, aggregate 57 including prior 37, **one more than the original 56 approval**.
+No additional direct Athena/retail run, code rebuild/upload, IAM change or dataset
+mutation is proposed. Keep PR #8 and all retained artifacts unchanged. Next task:
+review the local fix and explicitly approve the corrected scope before live execution.
 
 ## Milestone 1: local semantic execution — complete (`64cbea4`)
 

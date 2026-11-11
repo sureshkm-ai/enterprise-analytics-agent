@@ -2,11 +2,19 @@
 
 ## Status and approval boundary
 
-This is a new validation campaign, **`full-live-v1`**, prepared offline after the
-user requested that the 85 live tests actually run. It does not reuse the completed
-UI or milestone allowances. **Deployment, Athena execution and Runtime/model calls
-remain pending approval of this plan and its exact review JSON.** Offline preparation
-does not establish a new live result.
+This records the original **`full-live-v1`** plan approved by the user at `870e350`
+on November 11, 2026. It reused no completed UI or milestone allowance. Actual execution
+passed offline 1,460, Athena 66 and retail 36, but stale copied parity CDK asset references
+caused a no-change deployment. The controller refused acceptance;18 parity-agent
+items remain unrun. Accepted-retail verification and protected smoke passed on
+unchanged READY v13. Usage37/56 Runtime and 67/201 Athena, ordinary dispatch blocked.
+See [the actual checkpoint](../evaluations/full-live/checkpoint-2026-11-11.json).
+
+**Do not rerun this original campaign or alter its review/assemblies.** Its historical
+preparation missed the asset-URL/file-asset references even though template bytes
+were pinned. A [corrected continuation](full-live-continuation-proposal.md) is prepared
+offline; it requires new approval for 20 calls, prior 37/aggregate 57. The plan below
+preserves the original approved scope and failure/restoration procedure as evidence.
 
 Use only `analytics-dev`, account `453711491609`, region `us-west-2`. Do not create
 profiles, add permissions, upload/rebuild the code archive, publish datasets or modify
@@ -50,9 +58,11 @@ No coverage is relabeled as passed merely because a test was deselected.
 ## Separate budget and immutable pins
 
 Review file: `evaluations/full-live/review.proposed.json`, review SHA-256
-`bd3724d46181ec3e7b0181987c48d3a535ab4815d02897305cd36b7ba44d8845`. Proposed expiry:
-**2026-11-13T23:59:00Z**. This is an unapproved window, not an extension of a prior
-campaign. The proposed allowance is **56 Runtime attempts**:
+`bd3724d46181ec3e7b0181987c48d3a535ab4815d02897305cd36b7ba44d8845`. Approved expiry:
+**2026-11-13T23:59:00Z**, November 13 at 5:59 p.m. CST. It bounds billable authorization,
+prevents indefinite saved approval and retains cleanup margins. It neither permits
+replay of a completed/blocked campaign nor prevents nonbillable restoration.
+The original approved allowance was **56 Runtime attempts**:
 
 - Retail suite: 36.
 - AgentCore parity suite: 19.
@@ -236,9 +246,10 @@ can perform multiple model/tool/Athena operations; those internal queries must b
 included in actual usage reporting. No production load/concurrency, extra demo, warm-up,
 reserve, additional service or next milestone is authorized by this plan.
 
-The requested decision is approval of the exact review/hash, expiry, configuration
-updates, **56 Runtime / 201 direct Athena submission** caps and mandatory restoration
-procedure after offline checks and artifact hashes are complete. Until then, no live
-scope is executed and none of the 85 tests is claimed newly passed.
+The user approved this exact review/hash, expiry, configuration updates and
+**56 Runtime / 201 direct Athena** caps. The actual partial run and mandatory cleanup
+are recorded above. The remaining18 agent tests require the corrected continuation;
+this historical approval does not increase the cap, reopen the parent or authorize
+a further deployment/call. Full85-item acceptance is still incomplete.
 
 References checked November 11, 2026: [pytest marker selection](https://docs.pytest.org/en/stable/how-to/mark.html), [pytest hooks](https://docs.pytest.org/en/stable/reference/reference.html#pytest.hookspec.pytest_sessionfinish), [fixture resolution](https://docs.pytest.org/en/stable/how-to/fixtures.html#overriding-fixtures-at-various-levels).

@@ -2,7 +2,130 @@
 
 Updated: 2026-11-11 (America/Chicago).
 
-## Current task: execute every test — offline preparation verified; new live approval pending
+## Current task: full-live validation — partial execution; corrected continuation prepared
+
+The user approved the exact plan at local commit **870e350** on November 11, 2026,
+including the new 56 Runtime / 201 direct Athena caps and expiry
+**2026-11-13T23:59:00Z**. This means November 13 at **5:59 p.m. CST**: a billable
+execution cutoff, not permission to replay a campaign before that date. Start/switch
+margins protect cleanup; nonbillable restoration remains available after expiry.
+Approval is retained at `artifacts/full-live/approval-20261111.json`.
+
+### Actual approved run and safe stop
+
+Fresh identity/checkpoint/publication preflight passed at 18:10:03Z using only
+`analytics-dev`, account 453711491609, us-west-2. The existing candidate ZIP/S3 VersionId,
+25-file source closure/dependencies, canonical retail bindings, exact template/
+parameters, policies and retention matched accepted **Runtime/DEFAULT READY v13**.
+No profile, permission, code upload, source publication or dataset change occurred.
+
+The supervised command was:
+
+```sh
+poetry run python -m infrastructure.agentcore.full_live preflight \
+  --review evaluations/full-live/review.proposed.json \
+  --output artifacts/full-live/operations/approved-preflight-20261111
+poetry run python -m infrastructure.agentcore.full_live run --execute-approved \
+  --review evaluations/full-live/review.proposed.json \
+  --output artifacts/full-live/operations/approved-run-20261111
+```
+
+| Executed gate | Actual result |
+| --- | --- |
+| Offline pytest | **1,460 passed, zero skipped**, 85 deselected in 49.74s. |
+| Direct Athena parity | **66 passed, zero skipped**, 1,479 deselected in 141.00s. All 67 expected logical queries completed. |
+| Retail pytest | **1 passed, zero skipped**, 1,544 deselected in 249.95s; all **36/36** independent request/result cases passed, including sessions/auth/clarification. |
+| Temporary parity deployment | **Not accepted.** CDK exited 0 and reported no changes; strict controller timed out after 130.342s without accepting the wrong configuration. |
+| Agent parity | **18 items unrun**, zero parity requests. They are not passed or labeled skipped. |
+| Mandatory cleanup | Exact accepted-retail proof at **18:20:29Z**, READY **v13**, stack UPDATE_COMPLETE. Already current; no mutation/new version. Protected Q18 **110.25 USD [2025-03-31,2025-04-01)** passed. |
+
+The preparation missed CDK asset metadata: parity template bytes were 9b8415..., but
+`manifest.json`'s template URL and the asset manifest's identity/key still pointed
+at retail's faca6d23... cached template. This explains CDK's no-change result;
+there is no evidence of an IAM denial or transport failure. The controller correctly
+prevented parity questions running against retail. Its owned process was reaped,
+return code 0, no cleanup signals. It then freshly verified unchanged retail and
+spent the protected smoke. No deployment or billable retry followed the failure.
+
+This requested full-validation acceptance is **incomplete: 67/85 live items passed,
+18 unrun**. All selected executed tests had zero skips. Parent campaign is blocked
+at **37/56 Runtime calls** (retail 36+smoke 1) and **67/201 Athena submissions**, with
+zero failed/incomplete SDK attempts. Its durable claim and spent restoration phase
+prevent ordinary reuse. Historical M4/M5/repair/UI budgets remain unchanged.
+Retail client p95 **9.011s**; current 37 calls reported 77 model calls,
+113,106 input/9,177 output tokens and 35 internal Athena queries/189,856 bytes.
+Direct Athena 67 added 91,059 bytes; combined 102 queries/280,915 reported scanned bytes.
+
+[Committed checkpoint](../evaluations/full-live/checkpoint-2026-11-11.json) binds the
+raw run/controller/JUnit/retail/restoration evidence. Parent preservation inventory
+pins **134 files**, SHA **5f60b2a02da1b0f84cb5872292382d92aa9e545831e3954a74aefa9984657dcb**.
+Historical JSONL prefixes are unchanged; extracted new rows are retained separately.
+The original 18 preparation files are unchanged, including the defective parity copy.
+
+### Offline correction and proposed continuation
+
+- Added complete CDK asset consistency validation and a repair applied only to fresh
+  copies. Check actual template bytes against stack URL, asset identity/source,
+  every destination and full metadata/file inventory before any AWS client.
+- Prepared `artifacts/full-live/prepared-v2/`: parity template 9b8415... unchanged;
+  corrected only its two metadata files. Retail restoration matches the accepted
+  assembly byte-for-byte. ZIP 398/S3 V5, source closure, goldens and permissions remain fixed.
+- Added a separate strict continuation review/counter and operator. Preserve parent
+  bytes and actual 37/67 accounting before dispatch, use fresh retail-v13 preflight,
+  run only missing 18 items/19 requests, and always restore retail+protected Q18 smoke.
+  No new real continuation ledger/claim or AWS operation was created in preparation.
+- New proposal is **20 calls**, prior 37, **aggregate 57**: **one additional call beyond
+  the original 56 approval**. The nineteen original unused calls cannot also fund a
+  replacement smoke; counters cannot be reset/reopened. Execution requires a new
+  explicit decision. No passed Athena/retail suite is repeated.
+
+[Continuation plan](full-live-continuation-proposal.md) and
+[review](../evaluations/full-live/continuation.proposed.json), SHA
+**70161d5cb64bdc44f72a1cd61a3df614c53bdd879bb102e21a6c28dc07f0bc8a**,
+pin prepared inventory **8d1b2b88f933d80e7283019bcae5dcaeae8e3fb05fa622d665964ca3de249bd2**.
+Expiry remains November 13 23:59Z. Offline readiness verifies **0/20 new**, prior 37,
+aggregate 37/57, with no ledger/claim created. The original review/pins are unchanged.
+
+### Actual correction verification
+
+| Command | Actual final result |
+| --- | --- |
+| `poetry check --lock` | Passed: All set. |
+| `poetry run pytest` | **1,570 passed, 85 deselected in 51.31s; zero skipped**, no AWS flags/calls. |
+| `poetry run pytest tests/test_full_live_workflow.py tests/test_full_live_assembly.py tests/test_full_live_continuation_workflow.py tests/test_full_live_continuation_budget.py -q` | **150 passed in 2.75s**. |
+| `poetry run ruff check .` | Passed. |
+| `poetry run ruff format --check .` | Passed: 161 files already formatted. |
+| `poetry run mypy src tests infrastructure/agentcore/full_live.py infrastructure/agentcore/full_live_continuation.py` | Passed: 129 source files. |
+| Offline data/foundation CDK synthesis | Both passed into separate `artifacts/full-live/verification/metadata-fix.cdk-{data,foundation}.out`, without lookups/credentials. |
+| New preparation + continuation `verify-offline` | Passed: full metadata/inventory/source/parent pins; 0/20 new, prior 37/aggregate 37/57, no campaign/claim created. |
+
+The first correction-wide pytest found one captured-default preparation-path
+regression; fixed dynamic default resolution, reran 150 affected regressions and then
+the full suite above. Meaningful new coverage includes the exact stale-URL defect,
+changed asset keys/destinations, rejection before AWS, preserved source/restoration,
+parent tampering/missing/alias detection, aggregate budget, duplicate claims,
+interruption, process cleanup and mandatory restoration. No test expectation or
+metric/golden was weakened to obtain a pass.
+
+Final documentation checks passed: **7 Markdown files, 65 local links, 17 shell
+blocks parsed without execution**; `git diff --check` passed. Preservation verified
+**121 historical files, 25 session snapshots, 13 UI acceptance files, all 134 parent
+pins and 18 original preparation files unchanged**. Only two parity metadata files
+differ in the fresh preparation. No real continuation ledger or claim was created.
+Hosted CI does not cover these new local commits. The old UI PR/CI evidence below is
+unchanged and must not be attributed to this correction.
+
+### Exact next task
+
+Review this local correction/checkpoint commit and explicitly approve or decline the
+[20-call continuation](full-live-continuation-proposal.md), including the one-call
+increase to aggregate 57. Only after approval: fresh exact retail-v13 identity/
+artifact/publication/process preflight, corrected parity deployment, missing 18 agent
+items, mandatory accepted-retail restoration and protected smoke. Do not rerun/reopen
+full-live-v1. Keep commits local, PR #8 unchanged/unmerged. M1–M5 and the earlier UI
+acceptance remain complete; the new full-live validation remains incomplete.
+
+## Preparation checkpoint at 870e350 — historical, before approval
 
 The user clarified that all **85 live tests must actually run**. Test exclusion is
 not accepted as live coverage. Prepared a separate full-validation operator and
@@ -72,14 +195,9 @@ with no real campaign/claim created. No new live ledger,
 claim, profile, permissions, source publication, artifact rebuild/upload or deployment
 was created; last accepted AWS state remains the recorded candidate/retail **READY v13**.
 
-### Exact next task
-
-Approve the new [full-live scope](full-live-validation-plan.md), review SHA and expiry:
-**56 Runtime attempts, 201 direct Athena submissions, temporary parity configuration
-and mandatory accepted-retail restoration**. Then run fresh starting-v13/identity/
-source/publication/process preflight and the complete staged tests. The 85 live items
-have **not yet run** in this task. Keep this preparation commit local and PR #8
-unmerged/unchanged. No production-readiness or next-milestone claim is implied.
+At this historical preparation checkpoint, execution approval and all 85 live items
+were still pending. The actual approved run and corrected continuation status above
+supersede that handoff; its original command results remain evidence of preparation.
 
 ## Completed task: shared UI deployment and live acceptance — passed; PR #8 handoff
 

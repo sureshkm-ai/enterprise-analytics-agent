@@ -31,9 +31,17 @@ from enterprise_analytics_agent.adapters.retail_checkpoint import _verify_checkp
 from enterprise_analytics_agent.adapters.ui_release import verify_local_release, verify_publication
 from enterprise_analytics_agent.agent.contracts import AgentRequest, AgentResponse
 from enterprise_analytics_agent.contracts_v2 import QueryMetricRequestV2
+from enterprise_analytics_agent.retail_evaluation.assembly_assets import (
+    rewrite_template_asset,
+    validate_assembly,
+)
 from enterprise_analytics_agent.retail_evaluation.client import InvocationResult
 from enterprise_analytics_agent.retail_evaluation.deployment import TEMPLATE_NAME, digest
-from enterprise_analytics_agent.retail_evaluation.full_live import FullLiveBudget, FullLiveReview
+from enterprise_analytics_agent.retail_evaluation.full_live import (
+    FullLiveBudget,
+    FullLiveContinuationReview,
+    FullLiveReview,
+)
 from enterprise_analytics_agent.retail_evaluation.models import RetailTarget
 from enterprise_analytics_agent.retail_evaluation.operator_errors import error_record
 from enterprise_analytics_agent.retail_evaluation.reporting import _redact
@@ -66,7 +74,7 @@ def local_review(root: Path = ROOT) -> dict[str, Any]:
     return verify_local_release(root, ui, root / "artifacts/milestone-5/canonical/retail-v1")
 
 
-def retail_target(review: FullLiveReview) -> RetailTarget:
+def retail_target(review: FullLiveReview | FullLiveContinuationReview) -> RetailTarget:
     return RetailTarget(
         profile=review.profile,
         account=review.account,
@@ -79,7 +87,9 @@ def retail_target(review: FullLiveReview) -> RetailTarget:
     )
 
 
-def validate_smoke(result: AgentResponse, review: FullLiveReview) -> None:
+def validate_smoke(
+    result: AgentResponse, review: FullLiveReview | FullLiveContinuationReview
+) -> None:
     """Full independent Q18 plan/result gate without canonical files or adapter output."""
     expected_query = QueryMetricRequestV2.model_validate(
         {"metric_id": "net_revenue", "time_range": {"start": "2025-03-31", "end": "2025-04-01"}}
@@ -161,6 +171,9 @@ def prepare(output: Path, *, root: Path = ROOT) -> dict[str, Any]:
     parity = parity_variant(retail)
     parity_path = output / "parity" / TEMPLATE_NAME
     parity_path.write_text(json.dumps(parity, indent=2) + "\n")
+    validate_assembly(output / "retail", digest(retail_path))
+    rewrite_template_asset(output / "parity")
+    validate_assembly(output / "parity", digest(parity_path))
     # Fail if any resource/IAM/code difference sneaks into the environment-only variant.
     compared = json.loads(json.dumps(parity))
     compared["Resources"]["AnalyticsRuntime"]["Properties"]["EnvironmentVariables"] = retail[
@@ -195,7 +208,11 @@ def prepare(output: Path, *, root: Path = ROOT) -> dict[str, Any]:
 
 
 def verify_offline(
-    review: FullLiveReview, *, root: Path = ROOT, restore_only: bool = False
+    review: FullLiveReview | FullLiveContinuationReview,
+    *,
+    root: Path = ROOT,
+    restore_only: bool = False,
+    prepared: Path | None = None,
 ) -> dict[str, Any]:
     if not restore_only:
         config_path = root / "infrastructure/cdk/config.development.json"
@@ -209,8 +226,14 @@ def verify_offline(
             or config.workgroup_name != review.workgroup_name
         ):
             raise ValueError("Athena profile/account/region/workgroup differs from review")
-    prepared = root / "artifacts/full-live/prepared"
-    record = json.loads((prepared / "assembly-review.json").read_bytes())
+    prepared = prepared if prepared is not None else root / "artifacts/full-live/prepared"
+    record_path = prepared / "assembly-review.json"
+    if (
+        isinstance(review, FullLiveContinuationReview)
+        and digest(record_path) != review.prepared_inventory_sha256
+    ):
+        raise ValueError("Continuation prepared inventory differs from its reviewed pin")
+    record = json.loads(record_path.read_bytes())
     expected = {
         name: value
         for name, value in record["files"].items()
@@ -233,6 +256,9 @@ def verify_offline(
         raise ValueError("Parity template differs from reviewed pin")
     if digest(prepared / "retail" / TEMPLATE_NAME) != review.retail_template_sha256:
         raise ValueError("Retail restoration template differs from reviewed pin")
+    validate_assembly(prepared / "retail", review.retail_template_sha256)
+    if not restore_only:
+        validate_assembly(prepared / "parity", review.parity_template_sha256)
     retail = json.loads((prepared / "retail" / TEMPLATE_NAME).read_bytes())
     derived = json.dumps(parity_variant(retail), indent=2) + "\n"
     if hashlib.sha256(derived.encode()).hexdigest() != review.parity_template_sha256:
@@ -256,16 +282,17 @@ def verify_offline(
 
 
 def checkpoint(
-    review: FullLiveReview,
+    review: FullLiveReview | FullLiveContinuationReview,
     kind: str,
     reads: ReadPool,
     *,
     root: Path = ROOT,
     deadline: float | None = None,
+    prepared: Path | None = None,
 ) -> dict[str, Any]:
     if kind not in {"retail", "parity"}:
         raise ValueError("Unknown reviewed configuration")
-    path = root / "artifacts/full-live/prepared" / kind / TEMPLATE_NAME
+    path = (prepared or root / "artifacts/full-live/prepared") / kind / TEMPLATE_NAME
     expected = review.retail_template_sha256 if kind == "retail" else review.parity_template_sha256
     if digest(path) != expected:
         raise ValueError("Reviewed template changed")
@@ -293,9 +320,14 @@ def checkpoint(
 
 
 def operations(
-    review: FullLiveReview, output: Path, *, restore_only: bool = False
+    review: FullLiveReview | FullLiveContinuationReview,
+    output: Path,
+    *,
+    restore_only: bool = False,
+    prepared: Path | None = None,
 ) -> dict[str, Callable[..., Any]]:
-    verify_offline(review, restore_only=restore_only)
+    prepared = prepared if prepared is not None else PREPARED
+    verify_offline(review, restore_only=restore_only, prepared=prepared)
     session = boto3.Session(profile_name="analytics-dev", region_name="us-west-2")
     reads = ReadPool(session, output / "operator-reads.jsonl")
     identity = (
@@ -312,7 +344,7 @@ def operations(
         )
         write(output / "publication.json", publication)
     templates = {
-        kind: json.loads((PREPARED / kind / TEMPLATE_NAME).read_bytes())
+        kind: json.loads((prepared / kind / TEMPLATE_NAME).read_bytes())
         for kind in (("retail",) if restore_only else ("parity", "retail"))
     }
     if restore_only:
@@ -337,17 +369,17 @@ def operations(
 
     def deploy(kind: str) -> dict[str, Any]:
         return controller.deploy(
-            str(PREPARED / kind),
+            str(prepared / kind),
             review.artifact_version_id,
             kind,
-            lambda deadline: checkpoint(review, kind, reads, deadline=deadline),
+            lambda deadline: checkpoint(review, kind, reads, deadline=deadline, prepared=prepared),
             template_sha256=(
                 review.retail_template_sha256 if kind == "retail" else review.parity_template_sha256
             ),
         )
 
     def smoke() -> AgentResponse:
-        proof = checkpoint(review, "retail", reads)
+        proof = checkpoint(review, "retail", reads, prepared=prepared)
         target = retail_target(review)
         invoke = create_runtime_invoker(
             target,
@@ -377,13 +409,18 @@ def operations(
         return result
 
     return {
-        "verify": lambda kind: checkpoint(review, kind, reads),
+        "verify": lambda kind: checkpoint(review, kind, reads, prepared=prepared),
         "deploy": deploy,
         "smoke": smoke,
     }
 
 
-def run_phase(phase: str, review: FullLiveReview, review_path: Path, output: Path) -> bool:
+def run_phase(
+    phase: str,
+    review: FullLiveReview | FullLiveContinuationReview,
+    review_path: Path,
+    output: Path,
+) -> bool:
     reports = output / phase
     reports.mkdir()
     base = [

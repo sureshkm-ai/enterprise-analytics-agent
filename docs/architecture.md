@@ -115,7 +115,14 @@ live items are never reported as passed. The reviewed all-tests workflow execute
 using a new durable budget and candidate-aware trusted runner injection. It preserves
 the existing public contracts and historical closed counters, then restores the
 accepted candidate/retail state with a protected Q18 smoke. See
-[the full-live plan](full-live-validation-plan.md); live approval is pending.
+[the full-live plan](full-live-validation-plan.md). Its approved run passed Athena 66
+and retail 36, but the copied parity CDK asset URL still referenced retail. The strict
+controller rejected the no-change outcome and verified unchanged retail v13/smoke.
+Asset validation now binds template bytes to the stack URL, asset ID/source and every
+destination before AWS setup. The separate [continuation](full-live-continuation-proposal.md)
+preserves the blocked 37-call parent and proposes20 new calls for the missing 19 parity
+requests and protected smoke, aggregate 57. Execution requires a new approval; accepted
+Runtime source, contracts, metrics, permissions and historical ledgers are unchanged.
 
 ## Future integrations
 

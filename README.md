@@ -80,9 +80,12 @@ poetry run mypy src tests
 Default pytest and CI explicitly select offline tests and fail if any selected test
 skips. The 85 live items are separately selected for approved execution; deselection
 does not mean they passed. The [full-live validation plan](docs/full-live-validation-plan.md)
-prepares all 66 Athena, 18 AgentCore and one 36-request retail campaign test, with a
-new counted allowance and mandatory restoration. That live run is pending approval;
-the completed UI acceptance and its closed regular budget are unchanged.
+stages all 66 Athena, 18 AgentCore and one 36-request retail campaign test. The approved
+run passed Athena 66 and retail 36, but a CDK asset metadata defect prevented parity
+deployment; 18 agent items remain unrun. Accepted retail READY v13 and its protected
+Q18 smoke verify. The [corrected continuation](docs/full-live-continuation-proposal.md)
+is prepared offline and needs a new 20-call approval (aggregate 57, one more than the
+original 56). The earlier UI acceptance and all historical budgets are unchanged.
 
 The CLI is a trusted local application and fixes its own demo tenant and authorized regions. Semantic requests cannot supply a principal, tenant, or authorization scope. This is an enforcement boundary demonstration, not a production authentication system.
 

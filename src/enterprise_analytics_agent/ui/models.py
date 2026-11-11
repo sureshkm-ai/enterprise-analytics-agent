@@ -11,6 +11,7 @@ from enterprise_analytics_agent.agent.contracts import AgentRequest, AgentRespon
 class AskRequest(AgentRequest):
     mode: Literal["local", "local_agent", "live"] = "local"
     request_id: UUID
+    model_key: Annotated[str, Field(pattern=r"^[a-z][a-z0-9_-]{0,63}$")] | None = None
 
 
 class UiResult(BaseModel):

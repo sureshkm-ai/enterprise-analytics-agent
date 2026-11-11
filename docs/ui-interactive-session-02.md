@@ -27,6 +27,15 @@ The [activation summary](../evaluations/ui-shared/interactive-02.activation.json
 records actual evidence; the earlier readiness JSON remains unchanged preparation
 history and does not describe the current approval or usage.
 
+The subsequent local UI interaction update clears the input on submission and
+streams execution progress followed by validated output. Its model selector exposes
+only trusted configured choices; this approved runtime remains Nova Lite. Local
+inspection before reload found one user-submitted question after activation:
+**2/20 used / 17 regular remaining**. This does not change the approved review,
+expiry, frozen release, historical activation evidence or any ledger. No extra
+verification question or AWS operation was run for the UI update. See
+[current interaction behavior](local-ui.md#submit-follow-progress-and-choose-a-model).
+
 Review: [interactive-02.proposed.json](../evaluations/ui-shared/interactive-02.proposed.json).
 Validated review SHA-256:
 **385f936a719ca17ee09fe4c62af7d7153d04e8cc9d6ee3e2aaf7bd7defa8bbc8**.

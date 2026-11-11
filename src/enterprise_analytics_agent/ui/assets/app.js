@@ -10,6 +10,8 @@ const element = (tag, className, text) => {
 let state = null;
 let mode = "local";
 let busy = false;
+let modelKey = null;
+let progressMessage = "";
 const modeNames = {local:"Offline playground", local_agent:"Local Bedrock", live:"AWS AgentCore", replay:"Saved replay"};
 let savedCases = [];
 const history = [];
@@ -30,14 +32,51 @@ function usage(config) {
   return `${config.budget.used} / ${config.budget.maximum} question attempts${config.budget.blocked ? " · blocked" : ""}` +
     (sdk ? ` · ${sdk.local_converse_attempts} direct model / ${sdk.agentcore_invocations} Runtime calls` : "");
 }
+function availableModels() {
+  return (state?.model_options || []).filter(option => option.modes?.[mode]);
+}
+function selectedModel() {
+  return availableModels().find(option => option.key === modelKey);
+}
+function activeConfig() {
+  return selectedModel()?.modes[mode] || state?.[mode];
+}
+function modelPicker() {
+  const picker = $("model-choice");
+  const options = mode === "local" ? [] : availableModels();
+  if (mode !== "local" && !options.some(option => option.key === modelKey)) modelKey = options[0]?.key || null;
+  picker.replaceChildren();
+  if (!options.length) {
+    const option = element("option", "", mode === "local" ? "No model · deterministic planner" : "No reviewed model configured");
+    option.value = "";
+    picker.append(option);
+  } else {
+    options.forEach(item => {
+      const option = element("option", "", item.label);
+      option.value = item.key;
+      picker.append(option);
+    });
+    picker.value = modelKey;
+  }
+  picker.disabled = busy || !options.length;
+  $("model-help").textContent = mode === "local"
+    ? "The offline playground uses its deterministic planner, with no model calls."
+    : options.length > 1
+      ? "Choose a server-configured model. Each choice keeps its reviewed release and allowance."
+      : options.length === 1
+        ? "One reviewed model is configured. Additional models require approved server targets."
+        : "Enable a reviewed server target to choose a model. The browser cannot supply a model ID.";
+  $("model-identifier").textContent = selectedModel()?.model_id || "";
+}
 function ready() {
-  const config = state?.[mode];
+  const config = activeConfig();
   const blocked = mode !== "local" && (!config?.enabled || config.budget?.blocked);
   $("ask-button").disabled = busy || !state || blocked || !$("question").value.trim();
   $("question").disabled = busy;
   ["local", "local_agent", "live"].forEach(value => { $(`mode-${value}`).disabled = busy; });
+  $("model-choice").disabled = busy || mode === "local" || !availableModels().length;
   $("ask-button").textContent = busy ? "Running…" : mode === "live" ? "Ask AWS" : mode === "local_agent" ? "Ask Bedrock" : "Run offline question";
-  $("execution-state").textContent = busy ? (mode === "local" ? "Calculating your answer…" : "Verifying release and requesting agent answer…") : "Ready for a question";
+  $("execution-state").textContent = busy ? progressMessage || "Submitting your question…" : "Ready for a question";
 }
 function selectMode(next) {
   if (busy || !state) return;
@@ -46,7 +85,14 @@ function selectMode(next) {
     $(`mode-${value}`).classList.toggle("selected", mode === value);
     $(`mode-${value}`).setAttribute("aria-pressed", String(mode === value));
   });
-  const config = state[mode];
+  modelPicker();
+  updateContext();
+  $("answer").hidden = true;
+  $("welcome").hidden = false;
+  ready();
+}
+function updateContext() {
+  const config = activeConfig();
   $("dataset").textContent = config.dataset;
   $("reference-date").textContent = config.reference_date;
   $("usage-label").textContent = mode === "local" ? "MODEL CALLS" : "SHARED QUESTION ALLOWANCE";
@@ -59,15 +105,101 @@ function selectMode(next) {
   if (mode !== "local" && config.error) message(config.error);
   else if (mode !== "local" && config.budget?.blocked) message("This shared allowance is exhausted, expired or needs inspection. See docs/ui-shared-code-live.md.");
   else message("");
-  $("answer").hidden = true;
-  $("welcome").hidden = false;
-  ready();
 }
 async function post(path, data) {
   const response = await fetch(path, {method:"POST", headers:{"Content-Type":"application/json", "X-UI-Token":state.token}, body:JSON.stringify(data)});
   const value = await response.json();
   if (!response.ok) throw new Error(value.error || "The request could not be completed.");
   return value;
+}
+function beginProgress(question, selectedMode) {
+  $("welcome").hidden = true;
+  $("answer").hidden = false;
+  const shell = element("div", "answer-shell streaming-answer");
+  const header = element("div", "answer-heading");
+  header.append(element("span", `badge ${selectedMode}`, modeNames[selectedMode]), element("span", "stream-label", "LIVE PROGRESS"));
+  shell.append(header, element("h2", "answer-title", question));
+  shell.append(element("p", "answer-description", "Progress updates arrive while your question runs. Exact answers appear after validation."));
+  const status = element("div", "stream-status");
+  status.id = "stream-status";
+  status.setAttribute("role", "status");
+  status.setAttribute("aria-live", "polite");
+  status.setAttribute("aria-atomic", "true");
+  status.append(element("span", "status-dot"), element("span", "", "Submitting your question…"));
+  const elapsed = element("span", "stream-elapsed", "0.0 s");
+  elapsed.id = "stream-elapsed";
+  const timeline = element("ol", "stream-timeline");
+  timeline.id = "stream-timeline";
+  shell.append(status, elapsed, timeline);
+  $("answer").replaceChildren(shell);
+}
+function showProgress(event) {
+  if (typeof event.message !== "string" || !Number.isFinite(event.elapsed_ms) || event.elapsed_ms < 0) {
+    throw new Error("The progress stream was invalid. No automatic retry was sent.");
+  }
+  const changed = event.message !== progressMessage;
+  progressMessage = event.message;
+  $("execution-state").textContent = progressMessage;
+  const status = $("stream-status");
+  if (changed) status.replaceChildren(element("span", "status-dot"), element("span", "", progressMessage));
+  $("stream-elapsed").textContent = `${(event.elapsed_ms / 1000).toFixed(1)} s`;
+  if (changed) {
+    const timeline = $("stream-timeline");
+    timeline.append(element("li", "", progressMessage));
+    while (timeline.children.length > 8) timeline.firstElementChild.remove();
+  }
+}
+async function streamedQuestion(data) {
+  const response = await fetch("/api/ask/stream", {
+    method:"POST",
+    headers:{"Content-Type":"application/json", "X-UI-Token":state.token, "Accept":"application/x-ndjson"},
+    body:JSON.stringify(data)
+  });
+  if (!response.ok) {
+    const value = await response.json();
+    throw new Error(value.error || "The question could not be started.");
+  }
+  if (!response.body || !response.headers.get("Content-Type")?.startsWith("application/x-ndjson")) {
+    throw new Error("The server did not provide a progress stream. No automatic retry was sent.");
+  }
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder("utf-8", {fatal:true});
+  let buffer = "";
+  let result = null;
+  let terminal = false;
+  function record(line) {
+    if (!line.trim()) return;
+    if (terminal) throw new Error("The server sent output after the final response.");
+    const event = JSON.parse(line);
+    if (!event || typeof event !== "object") throw new Error("The server sent an invalid progress record. No automatic retry was sent.");
+    if (event.type === "status") showProgress(event);
+    else if (event.type === "result" && event.result?.response) {
+      result = event.result;
+      terminal = true;
+    } else if (event.type === "error" && typeof event.error === "string") {
+      terminal = true;
+      throw new Error(event.error);
+    } else throw new Error("The server sent an invalid progress record. No automatic retry was sent.");
+  }
+  try {
+    while (true) {
+      const {value, done} = await reader.read();
+      buffer += done ? decoder.decode() : decoder.decode(value, {stream:true});
+      if (buffer.length > 16 * 1024 * 1024) throw new Error("The progress record exceeded the browser limit.");
+      let newline;
+      while ((newline = buffer.indexOf("\n")) !== -1) {
+        record(buffer.slice(0, newline));
+        buffer = buffer.slice(newline + 1);
+      }
+      if (done) break;
+    }
+    if (buffer.trim()) record(buffer);
+    if (!terminal || !result) throw new Error("The stream ended without a complete answer. A billable question may still be running; inspect the ledger before another request. No automatic retry was sent.");
+    return result;
+  } finally {
+    await reader.cancel().catch(() => {});
+    reader.releaseLock();
+  }
 }
 function labelFor(metric) { return state.metrics.find(item => item.metric_id === metric)?.display_name || metric; }
 function formatValue(value) { return value === null ? "No value" : String(value); }
@@ -166,13 +298,20 @@ function addHistory(question, result) {
 async function ask(event) {
   event.preventDefault(); if (busy || $("ask-button").disabled) return;
   const question = $("question").value.trim(); const selectedMode = mode;
-  busy = true; message(""); ready();
+  const selectedKey = modelKey;
+  $("question").value = "";
+  busy = true; progressMessage = ""; message(""); ready();
+  beginProgress(question, selectedMode);
   try {
-    const value = await post("/api/ask", {question, mode:selectedMode, request_id:crypto.randomUUID()});
-    $("welcome").hidden = true; $("answer").hidden = false;
-    renderResult($("answer"), value.result, question); addHistory(question, value.result);
+    const request = {question, mode:selectedMode, request_id:crypto.randomUUID()};
+    if (selectedMode !== "local" && selectedKey) request.model_key = selectedKey;
+    const result = await streamedQuestion(request);
+    renderResult($("answer"), result, question); addHistory(question, result);
   } catch (error) {
-    message(error instanceof TypeError ? "Connection interrupted. A billable question may still be running; inspect the UI ledger before another live request. No automatic retry was sent." : error.message);
+    const text = error instanceof TypeError ? "Connection interrupted. A billable question may still be running; inspect the UI ledger before another live request. No automatic retry was sent." : error instanceof SyntaxError ? "The response stream was invalid. Inspect the UI ledger before another billable request. No automatic retry was sent." : error.message;
+    message(text);
+    const status = $("stream-status");
+    if (status) { status.classList.add("failed"); status.textContent = "Question stopped. Inspect the message above before another submission."; }
   } finally {
     busy = false;
     try {
@@ -181,10 +320,13 @@ async function ask(event) {
       const refreshed = await response.json();
       state.live = refreshed.live;
       state.local_agent = refreshed.local_agent;
-      $("usage").textContent = usage(state[mode]);
+      state.model_options = refreshed.model_options || [];
+      modelPicker();
+      $("usage").textContent = usage(activeConfig());
     } catch (_) {
       if (state.live) state.live.enabled = false;
       if (state.local_agent) state.local_agent.enabled = false;
+      (state.model_options || []).forEach(option => Object.values(option.modes).forEach(config => { config.enabled = false; }));
     }
     ready();
   }
@@ -248,6 +390,11 @@ document.querySelectorAll("[data-view]").forEach(button => button.addEventListen
 $("mode-local").addEventListener("click", () => selectMode("local"));
 $("mode-live").addEventListener("click", () => selectMode("live"));
 $("mode-local_agent").addEventListener("click", () => selectMode("local_agent"));
+$("model-choice").addEventListener("change", () => {
+  if (busy) return;
+  modelKey = $("model-choice").value;
+  modelPicker(); updateContext(); ready();
+});
 $("setup-guide").addEventListener("click", event => { event.preventDefault(); showView("guide"); });
 $("question").addEventListener("input", ready);
 $("question").addEventListener("keydown", event => { if ((event.ctrlKey || event.metaKey) && event.key === "Enter") $("ask-form").requestSubmit(); });

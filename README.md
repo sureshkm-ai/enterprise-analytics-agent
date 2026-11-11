@@ -34,6 +34,12 @@ model prose or general production equivalence. See [UI setup](docs/local-ui.md)
 and [shared-code acceptance evidence](docs/ui-shared-code-live.md).
 This follow-on UI scope does not change completed M1–M5 acceptance or their ledgers.
 
+Submitting a question clears the text box immediately and opens a live progress
+stream; exact results appear once validated. The model selector lists configured,
+approved backends. The current release has **Amazon Nova Lite**; additional models
+need separately reviewed server/runtime configuration. Progress updates are streamed
+by the UI; the frozen AWS runtime still returns its validated answer as JSON.
+
 The separate UI campaign used **19/20 attempts**: Q18 verification 1 and all 18
 regular slots; the protected rollback smoke was unused. No regular live allowance
 remains, and the completed review cannot restart billable mode. Additional billable

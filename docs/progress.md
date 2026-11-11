@@ -2,7 +2,87 @@
 
 Updated: 2026-11-11 (America/Chicago).
 
-## Current task: approved interactive session 02 activated; push/PR handoff
+## Current task: UI input clearing, progress streaming and trusted model selection
+
+Implemented the requested local UI changes on **feat/ui-streaming-model-selection**,
+branched from pushed **2488e284395b3038f781f14f1e8a0d5dd621506c** with a clean working
+tree. Preserved the enterprise-analytics Conda environment: Python **3.12.16**,
+Poetry **2.3.1**, existing lockfile. The earlier activation handoff is
+[PR #10](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/10), with
+successful [push CI 43108364020](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43108364020)
+and [PR CI 43108417902](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43108417902)
+for **2488e28**. Those hosted results predate this feature and do not cover it.
+
+### Completed behavior and boundaries
+
+- Clicking Run captures the question, immediately clears the text box and leaves
+  it empty on success/failure. A neutral placeholder avoids displaying the example
+  question in the cleared composer. The submitted question remains in its result card.
+- `/api/ask/stream` sends actual NDJSON accepted/running/elapsed progress while one
+  worker executes, then the validated result or a safe terminal error. Deep dump and
+  revalidation reject invalid nested Pydantic instances before either JSON or stream
+  publication, including model_copy bypasses found during review. The existing
+  JSON API remains compatible. This is **live progress with validated final output**,
+  not raw Bedrock-token streaming or invented tool-stage/typewriter output.
+- A model selector uses trusted `AgentModel` backend bindings and an opaque
+  `model_key`; the key is stripped before backend dispatch and the SDK payload
+  remains question-only. Unknown/mode-incompatible choices fail before execution;
+  returned model/mode diagnostics must match. Multiple choices were exercised with
+  offline fake backends. The actual approved shared release still exposes only
+  **Amazon Nova Lite**; review pins/model configuration were not loosened.
+- A disconnected browser cannot retry the operation or release the execution lock
+  before its worker finishes backend accounting. Interrupted/invalid streams display
+  an error without a second POST. Existing authorization, counters and expiry apply.
+- Stopped only the verified idle task-owned old UI (PID 44994), after confirming no
+  incomplete attempt. Reloaded the same approved session/release on
+  **http://127.0.0.1:8501**, task-owned PID **51167**. Both agent modes are enabled;
+  refresh the browser to load the new assets/token. Startup/status made no AWS call.
+
+Local ledger inspection before reload found the user had completed one AWS question
+after Q18: **2/20 used**, **17 regular questions remaining**, two Runtime SDK attempts
+total, no failures/incomplete work. All **10** existing session files remained
+byte-for-byte unchanged through implementation/tests/reload. Expiry stays
+**2026-11-13T23:59Z**; the protected original-rollback slot remains unavailable.
+No automated billable question, AWS operation, deployment, IAM change, upload,
+rebuild, publication, dataset change or ledger reset was performed for this feature.
+
+### Actual verification
+
+| Command/check | Result |
+| --- | --- |
+| `poetry check --lock` | Passed: All set. |
+| `poetry run pytest` | Final **1,599 passed, 85 deselected in 65.16s, zero skipped**, including the deep nested-validation correction. Earlier 1,594 / 1,597 runs passed before the final authorization/publication regressions. Live suites were not run. |
+| `poetry run pytest tests/test_ui_streaming.py -q` | Final **29 passed in 10.40s** (earlier 27 passed in 8.75s): real HTTP early progress/heartbeat, exact Decimal/Unicode, trusted routing, errors, disconnect ownership, no retries, authorization and legacy JSON. |
+| `poetry run ruff check .` | Passed. |
+| `poetry run ruff format --check .` | Passed: **163** files formatted. |
+| `poetry run mypy src tests` | Passed: **128** source files. |
+| `node --check src/enterprise_analytics_agent/ui/assets/app.js` | Passed. |
+| Actual Playwright browser checks | **18 passed**, only fake model backends/deterministic offline data: immediate empty composer/neutral prompt, early progress, selected-model routing, exact result/Unicode, safe errors, truncated-stream no retry, busy controls and offline mode. Final browser run: four test POSTs; zero AWS clients/calls and no real allowance spent. |
+| Offline source/artifact/canonical verification | `verify_local_release` passed with AWS session creation blocked: unchanged 25-file common source, dependencies, accepted ZIP and canonical publication bytes. **203** protected historical files and the 10 current-session files unchanged. |
+
+Initial HTTP tests required loopback sandbox escalation; their socket-bind
+PermissionErrors were environment restrictions, not application failures. The
+focused and final suites then passed. Documentation checks passed across **7 Markdown
+files / 87 local links / 27 shell blocks parsed without execution**, along with
+`git diff --check`. Infrastructure and frozen runtime
+are unchanged; no deployment/synthesis/live-acceptance result is inferred from UI tests.
+Retained local evidence: `artifacts/ui-shared/ui-streaming-preparation/`; browser
+screenshots at `output/playwright/streaming-in-progress.png` and
+`output/playwright/streaming-complete.png`. The offline test browser/server were closed.
+
+### Exact next task and limitations
+
+Refresh **http://127.0.0.1:8501** and use the new composer/progress/model controls
+within the existing user-owned allowance. The current model remains Nova Lite.
+Adding real models or upstream model-token streaming needs a separately reviewed
+server/runtime configuration, applicable access verification and deployment scope;
+this feature neither creates those resources nor expands the live budget. Official
+AWS references and the unchanged launch command are in [the UI runbook](local-ui.md).
+This feature is a local implementation/verification checkpoint; it has no new hosted
+CI claim. M1–M5, frozen assets, existing releases and all historical acceptance remain
+complete/preserved; no new milestone or production-readiness claim is implied.
+
+## Completed session 02 activation and push/PR handoff at 2488e28 — historical
 
 The user approved the exact session scope at **319a872aaf5de89075d59f78221122efa1d43e30**
 and explicitly requested a push and PR. Preserved the clean checkout on

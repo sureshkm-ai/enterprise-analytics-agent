@@ -9,7 +9,7 @@ The catalog, v2 contracts, question guard and semantic tools remain shared.
 
 ![Analytics Workbench with three explicit execution modes](images/analytics-workbench-shared-ui.png)
 
-## Merged application and next interactive session
+## Merged application and approved interactive session
 
 The Workbench merged through [PR #8](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/8)
 at `e222875` on November 11, 2026. Full validation merged through
@@ -31,6 +31,12 @@ modes** through **November 13, 5:59 p.m. CST** (`2026-11-13T23:59Z`). The protec
 original-rollback slot is unavailable and cannot fund a question or retry. Browser
 mode checks submitted no ordinary question. Historical ledgers/reviews remain intact. The UI's durable counter is authoritative as the user submits questions.
 
+A later local ledger inspection for the current UI update found **2/20 used**:
+the Q18 verification and one completed user question, leaving **17 regular questions**.
+This is a local counter observation, not another invocation or fresh AWS readiness
+assertion. The activation's 18-question record remains unchanged historical evidence;
+read the persistent counter for subsequent usage.
+
 Use the running server. If it needs restarting, first stop that Workbench process
 and launch one server from the repository root with the same session and record:
 
@@ -49,6 +55,48 @@ Restarting does not reset the allowance or repeat Q18. The existing counter and 
 per-question release checks remain enforced. Keep the historical commands/reviews
 below unchanged; Offline playground and Saved runs remain AWS-free.
 
+## Submit, follow progress and choose a model
+
+Clicking the run button captures the question and **clears the text box immediately**.
+The submitted question stays with its answer in the results area. A failed request
+does not refill the composer or submit it again; enter a new question only after
+inspecting the displayed error and, for billable work, its retained counter evidence.
+
+The browser reads a live newline-delimited JSON response from `/api/ask/stream`.
+Accepted/running messages and elapsed time arrive while execution is in progress;
+the typed answer, exact metric tables and diagnostics appear when validation
+finishes. These are actual progress events, with no invented tool stages or delayed
+typing animation. They are **not raw Bedrock token streaming**. The existing frozen
+AgentCore handler still returns its complete validated JSON response. Closing the
+browser does not retry a billable request or release the execution lock while its
+backend continues; that worker finishes its existing accounting and diagnostics.
+
+The **Model** selector lists server-configured models available for the selected
+agent mode. The existing accepted release offers **Amazon Nova Lite**
+(`us.amazon.nova-lite-v1:0`) only. Multiple choices appear when the trusted
+application supplies multiple reviewed `AgentModel` backend bindings. This change
+does not configure or approve another model, target, allowance or deployment. The
+offline playground has no Bedrock model to select.
+
+The browser sends an opaque `model_key` for UI routing. Python resolves it against
+the configured bindings and removes it before the backend receives the request;
+the AgentCore payload remains question-only. Unknown choices or choices unavailable
+for the selected mode fail before dispatch; returned model diagnostics must match
+the selected binding. Neither a label nor a browser-supplied model ID can override the
+server's model configuration, authorization, release checks or question allowance.
+
+AgentCore invocation selects a runtime and endpoint qualifier; model choice belongs
+to the hosted application, rather than an invocation-level model parameter. Its
+HTTP contract supports JSON or SSE when the application implements the appropriate
+response. [InvokeAgentRuntime](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_InvokeAgentRuntime.html),
+[HTTP protocol contract](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-http-protocol-contract.html).
+True upstream model-token streaming would require a separately reviewed runtime
+implementation/release and verification of `bedrock:InvokeModelWithResponseStream`
+access and the chosen model's streaming/tool-use compatibility.
+[ConverseStream](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html),
+[client-side tool use](https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use-client-side.html).
+No such AWS, IAM or frozen-artifact change is part of this local UI update.
+
 ## Approved live acceptance completed
 
 On November 11, 2026, Q18 and **18/18 paired UI outcomes** passed against independent
@@ -62,7 +110,8 @@ same candidate/retail artifact/configuration on **READY v15** at 19:59:56Z on
 November 11, 2026. All 85 live tests passed; see [the evidence](../evaluations/full-live/acceptance-2026-11-11.json).
 This did not refresh the completed UI allowance or its historical v13 release record.
 The completed historical review remains offline/replay-only. The separately approved
-session 02 above has passed its own Q18 gate and has 18 user-owned questions remaining.
+session 02 above has passed its own Q18 gate; its current persistent counter determines
+the remaining user-owned questions.
 
 All regular slots in the historical session are spent, so its completed review cannot
 restart billable mode. Only session 02's separate allowance funds the newly enabled

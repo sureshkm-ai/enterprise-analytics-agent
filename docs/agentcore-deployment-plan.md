@@ -1,5 +1,15 @@
 # Milestone 4 AgentCore deployment and live-test plan
 
+Current separately approved UI state (November 11, 2026): the matching frozen
+candidate/retail release is retained on Runtime/DEFAULT **READY v13**, runtime stack
+**UPDATE_COMPLETE**, after Q18 and **18/18 paired UI outcomes** passed. UI usage is
+**19/20**, all regular slots spent, protected rollback unused. Exact candidate/version,
+configuration, final proof and launch restrictions are recorded in
+[the shared UI acceptance](ui-shared-code-live.md). No M3 permissions/infrastructure,
+original artifacts or historical ledgers changed. The original-v12 restoration below
+is historical M5 evidence, not the current UI steady state; do not redeploy M4/M5
+or spend their closed budgets.
+
 Operational note (November 10, 2026): the approved M5 recovery passed its Q18 probe/warm-up, **36/36 frozen suite requests**, reporting gates and original-restoration smoke. Candidate **v11** was evaluated; the recorded original Runtime/DEFAULT restoration checkpoint is **READY v12**, runtime stack **UPDATE_COMPLETE**, exact original artifact/version/configuration/policies/seven-day retention. Recovery is closed **38/38**, aggregate repair **40/40**. Historical M5 38/40, both failed repair histories and M4's version-4 acceptance/28/40 ledger remain unchanged. Milestones 1–5 are complete for the agreed development proof of concept. [PR #6](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/6) merged completion `7905d13` on November 10, 2026, at [`c0d2c5a`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/c0d2c5a569e2d242bf840a715c31050888b579ab), with successful [main CI 42872516193](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42872516193). This is recorded deployment evidence, not a fresh AWS check in the documentation closeout. Further development requires a separately defined scope; production readiness remains unverified. No calls remain or new deployment is authorized. See [progress](progress.md) and [recovery results](milestone-5-q18-recovery-proposal.md). Do not repeat M4 deployment or consume its ledger.
 
 ## Completed development deployment — 2026-11-08

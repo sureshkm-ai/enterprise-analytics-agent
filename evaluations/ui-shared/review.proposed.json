@@ -1,0 +1,35 @@
+{
+  "schema_version": "ui-shared-live-v1",
+  "campaign_id": "ui-shared-retail-v1-01",
+  "maximum_calls": 20,
+  "expires_at": "2026-11-11T23:59:00Z",
+  "target": {
+    "profile": "analytics-dev",
+    "account": "453711491609",
+    "region": "us-west-2",
+    "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_dev_agent-HlWywlG60h",
+    "qualifier": "DEFAULT",
+    "model_id": "us.amazon.nova-lite-v1:0",
+    "dataset_version": "retail-v1",
+    "reference_date": "2025-04-01"
+  },
+  "tenant_id": "retail_demo",
+  "allowed_regions": [
+    "North",
+    "South"
+  ],
+  "agent_config": {
+    "model_id": "us.amazon.nova-lite-v1:0",
+    "reference_date": "2025-04-01",
+    "max_iterations": 6,
+    "max_tool_calls": 16,
+    "max_output_tokens": 1024,
+    "max_total_tokens": 12000,
+    "timeout_seconds": 90.0
+  },
+  "archive_sha256": "398124e89d2be1e9ce00f5b57c263fe2cdde0654527b27f949b9f3abb58029f1",
+  "artifact_version_id": "V5Q8e8e6w2tkkVghXn.BrFs1mqQU.Ncu",
+  "runtime_template_sha256": "faca6d23b85038d5c8ad16b1fe73c95b910d9d05c6a4fccf3be8ca82cd9eb368",
+  "source_sha256": "aefa4ffa38d1d52ad152e98e0293356221bc964be86e3022c12c6871545830be",
+  "canonical_manifest_sha256": "99e9115edc990decf5b15e5de1ad693772e3bd03ec6767b880ebbdd4135b8797"
+}

@@ -1,0 +1,379 @@
+{
+  "schema_version": "ui-shared-acceptance-v1",
+  "recorded_on": "2026-11-11",
+  "approved_commit": "a1132205b54b31dcec712425a8a0861f650fdcfa",
+  "approved_push_ci": "https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43060085091",
+  "review_sha256": "168abce7775cf9620992c545037643193c41b6756e61179f093c5a8a5653283d",
+  "accepted": true,
+  "scope": "Nine frozen questions in the actual local Bedrock/DuckDB and AgentCore/Athena UI modes, plus protected Q18 verification; development scope only.",
+  "target": {
+    "profile": "analytics-dev",
+    "account": "453711491609",
+    "region": "us-west-2"
+  },
+  "final_record": {
+    "schema_version": "ui-shared-release-v1",
+    "kind": "candidate",
+    "observed_at": "2026-11-11T16:58:11.295248Z",
+    "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_dev_agent-HlWywlG60h",
+    "runtime_version": "13",
+    "review_sha256": "168abce7775cf9620992c545037643193c41b6756e61179f093c5a8a5653283d",
+    "source_sha256": "aefa4ffa38d1d52ad152e98e0293356221bc964be86e3022c12c6871545830be",
+    "archive_sha256": "398124e89d2be1e9ce00f5b57c263fe2cdde0654527b27f949b9f3abb58029f1",
+    "artifact_version_id": "V5Q8e8e6w2tkkVghXn.BrFs1mqQU.Ncu",
+    "configuration_sha256": "6f480b57d00cb5386556ec4c2d3ff5618dc6e0e51a9147577fbd730c8d764c4e",
+    "template_sha256": "faca6d23b85038d5c8ad16b1fe73c95b910d9d05c6a4fccf3be8ca82cd9eb368",
+    "dataset_version": "retail-v1",
+    "canonical_manifest_sha256": "99e9115edc990decf5b15e5de1ad693772e3bd03ec6767b880ebbdd4135b8797"
+  },
+  "runtime_status": "READY",
+  "endpoint_status": "READY",
+  "runtime_stack_status": "UPDATE_COMPLETE",
+  "steady_state": "candidate-retail",
+  "restoration_needed": false,
+  "q18_verification": {
+    "passed": true,
+    "expected_start": "2025-03-31",
+    "expected_end_exclusive": "2025-04-01",
+    "expected_value": "110.25",
+    "currency": "USD",
+    "observed_results": [
+      {
+        "api_version": "v2",
+        "metric_id": "net_revenue",
+        "definition_version": "1.0.0",
+        "time_range": {
+          "api_version": "v2",
+          "start": "2025-03-31",
+          "end": "2025-04-01"
+        },
+        "group_by": [],
+        "unit": "currency",
+        "currency": "USD",
+        "rows": [
+          {
+            "api_version": "v2",
+            "dimensions": {},
+            "value": "110.25"
+          }
+        ]
+      }
+    ]
+  },
+  "paired_summary": {
+    "required_pairs": 9,
+    "required_regular_attempts": 18,
+    "passed": 18,
+    "failed": 0,
+    "unexpected_request_ids": [],
+    "verification_passed": true,
+    "paired_gates_passed": true,
+    "deployment_readiness_claimed": false
+  },
+  "by_mode": {
+    "local_agent": {
+      "passed": 9,
+      "failed": 0,
+      "client_latency": {
+        "sample_count": 9,
+        "median_ms": 2868,
+        "p95_ms": 4186,
+        "max_ms": 4186,
+        "percentile_convention": "nearest rank: sorted[ceil(0.95*n)-1]"
+      },
+      "server_latency": {
+        "sample_count": 9,
+        "median_ms": 2841,
+        "p95_ms": 4159,
+        "max_ms": 4159,
+        "percentile_convention": "nearest rank: sorted[ceil(0.95*n)-1]"
+      },
+      "model_calls": {
+        "reported_total": 16,
+        "reported_samples": 9,
+        "missing_samples": 0
+      },
+      "input_tokens": {
+        "reported_total": 23283,
+        "reported_samples": 9,
+        "missing_samples": 0
+      },
+      "output_tokens": {
+        "reported_total": 1750,
+        "reported_samples": 9,
+        "missing_samples": 0
+      },
+      "athena_bytes_scanned": null,
+      "athena_queries_missing_scans": 0
+    },
+    "live": {
+      "passed": 9,
+      "failed": 0,
+      "client_latency": {
+        "sample_count": 9,
+        "median_ms": 7044,
+        "p95_ms": 8926,
+        "max_ms": 8926,
+        "percentile_convention": "nearest rank: sorted[ceil(0.95*n)-1]"
+      },
+      "server_latency": {
+        "sample_count": 9,
+        "median_ms": 3342,
+        "p95_ms": 5281,
+        "max_ms": 5281,
+        "percentile_convention": "nearest rank: sorted[ceil(0.95*n)-1]"
+      },
+      "model_calls": {
+        "reported_total": 17,
+        "reported_samples": 9,
+        "missing_samples": 0
+      },
+      "input_tokens": {
+        "reported_total": 25149,
+        "reported_samples": 9,
+        "missing_samples": 0
+      },
+      "output_tokens": {
+        "reported_total": 1819,
+        "reported_samples": 9,
+        "missing_samples": 0
+      },
+      "athena_bytes_scanned": 41157,
+      "athena_queries_missing_scans": 0
+    }
+  },
+  "case_statuses": [
+    {
+      "case_id": "Q01",
+      "mode": "local_agent",
+      "status": "passed",
+      "diagnostic_missing": []
+    },
+    {
+      "case_id": "Q01",
+      "mode": "live",
+      "status": "passed",
+      "diagnostic_missing": []
+    },
+    {
+      "case_id": "Q02",
+      "mode": "local_agent",
+      "status": "passed",
+      "diagnostic_missing": []
+    },
+    {
+      "case_id": "Q02",
+      "mode": "live",
+      "status": "passed",
+      "diagnostic_missing": []
+    },
+    {
+      "case_id": "Q03",
+      "mode": "local_agent",
+      "status": "passed",
+      "diagnostic_missing": []
+    },
+    {
+      "case_id": "Q03",
+      "mode": "live",
+      "status": "passed",
+      "diagnostic_missing": []
+    },
+    {
+      "case_id": "Q04",
+      "mode": "local_agent",
+      "status": "passed",
+      "diagnostic_missing": []
+    },
+    {
+      "case_id": "Q04",
+      "mode": "live",
+      "status": "passed",
+      "diagnostic_missing": []
+    },
+    {
+      "case_id": "Q05",
+      "mode": "local_agent",
+      "status": "passed",
+      "diagnostic_missing": []
+    },
+    {
+      "case_id": "Q05",
+      "mode": "live",
+      "status": "passed",
+      "diagnostic_missing": []
+    },
+    {
+      "case_id": "Q13",
+      "mode": "local_agent",
+      "status": "passed",
+      "diagnostic_missing": []
+    },
+    {
+      "case_id": "Q13",
+      "mode": "live",
+      "status": "passed",
+      "diagnostic_missing": []
+    },
+    {
+      "case_id": "Q18",
+      "mode": "local_agent",
+      "status": "passed",
+      "diagnostic_missing": []
+    },
+    {
+      "case_id": "Q18",
+      "mode": "live",
+      "status": "passed",
+      "diagnostic_missing": []
+    },
+    {
+      "case_id": "Q29",
+      "mode": "local_agent",
+      "status": "passed",
+      "diagnostic_missing": []
+    },
+    {
+      "case_id": "Q29",
+      "mode": "live",
+      "status": "passed",
+      "diagnostic_missing": []
+    },
+    {
+      "case_id": "Q30",
+      "mode": "local_agent",
+      "status": "passed",
+      "diagnostic_missing": []
+    },
+    {
+      "case_id": "Q30",
+      "mode": "live",
+      "status": "passed",
+      "diagnostic_missing": []
+    }
+  ],
+  "campaign": {
+    "campaign_id": "ui-shared-retail-v1-01",
+    "used": 19,
+    "maximum": 20,
+    "remaining": 1,
+    "blocked": true,
+    "incomplete": false,
+    "failed": false,
+    "expired": false,
+    "regular_remaining": 0,
+    "verification_remaining": 0,
+    "rollback_remaining": 1,
+    "purposes": {
+      "question": 18,
+      "verification": 1,
+      "rollback_smoke": 0
+    },
+    "sdk_attempts": {
+      "local_converse_attempts": 16,
+      "agentcore_invocations": 10,
+      "failed_sdk_attempts": 0,
+      "incomplete_sdk_attempts": 0
+    },
+    "modes": {
+      "local_agent": 9,
+      "live": 10
+    }
+  },
+  "execution_attribution": {
+    "operator_automated_protected_verification": 1,
+    "user_confirmed_actual_ui_Q02": [
+      "local_agent",
+      "live"
+    ],
+    "operator_automated_actual_ui_regular_attempts": 16,
+    "overlap_handling": "Operator read lock refusal occurred before automation dispatch; paused UI, independently judged existing Q02 pair, obtained user confirmation, skipped repeats and resumed remaining cases."
+  },
+  "permission_evidence": {
+    "administrator_supplied_policy_contents": "evaluations/ui-shared/admin-policy-evidence.json",
+    "denied_iam_inspection_repeated": false,
+    "new_grant_or_iam_change": false,
+    "successful_direct_bedrock_calls_in_window": 16,
+    "candidate_runtime_calls_in_window": 10,
+    "policy_attachment_independently_queried": false
+  },
+  "preservation": {
+    "present_protected_files_unchanged": 121,
+    "session_snapshots_unchanged": 25,
+    "preexisting_absent_patch": [
+      "milestone-5-q18-fix.patch"
+    ],
+    "historical_ledgers_unchanged": true,
+    "artifact_rebuilds": 0,
+    "uploads": 0,
+    "dataset_changes": 0,
+    "permission_changes": 0
+  },
+  "evidence": {
+    "artifacts/ui-shared/original-preflight.json": {
+      "sha256": "695562ae9dd4a35c1474a2c962456110ead5315fb69749f47e28b7c13a907d43",
+      "size_bytes": 30495
+    },
+    "artifacts/ui-shared/operations/approved-deploy/deployment-result.json": {
+      "sha256": "91bbedae7f0061691a8de2987ce6370afb69f0dff301fd59f24f90435bfe8be1",
+      "size_bytes": 377
+    },
+    "artifacts/ui-shared/operations/approved-deploy/candidate.controller.json": {
+      "sha256": "d4a7e1a51e839195e9aeb145a26f7975bf685b2c470afe649f95563df83aed39",
+      "size_bytes": 2437
+    },
+    "artifacts/ui-shared/operations/approved-deploy/release-record.json": {
+      "sha256": "d15893cd58a7da6223a80145880e18f014a6a26b36d204e8cf6ccee35ecf122e",
+      "size_bytes": 903
+    },
+    "artifacts/ui-shared/verification.json": {
+      "sha256": "174a545971a26da199c7efaf45dea073dace1373736e22a27afcb582422ca102",
+      "size_bytes": 3205
+    },
+    "artifacts/ui-shared/paired-report.json": {
+      "sha256": "5b9db8c3b90d44d5fc63f42367dd36fd7cb158e1ab340bb5c4dc6910cdec613d",
+      "size_bytes": 95935
+    },
+    "artifacts/ui-shared/final-preflight.json": {
+      "sha256": "0f4b438fb5264b6d3ec5f28df160dca854765a76a87ed7384c5a6f3ea9159324",
+      "size_bytes": 31006
+    },
+    "artifacts/ui-shared/ui-shared-retail-v1-01/question-attempts.jsonl": {
+      "sha256": "7d0656629588fbc58f5d4359d41b20268612b889ef8610d632ba0dbeee9b6d54",
+      "size_bytes": 39802
+    },
+    "artifacts/ui-shared/ui-shared-retail-v1-01/sdk-attempts.jsonl": {
+      "sha256": "b13279e9c645dc23bf12982d844f4646c0afff05e1cbf1956e5132d41b6ce806",
+      "size_bytes": 17966
+    },
+    "artifacts/ui-shared/replay-local-agent.json": {
+      "sha256": "a4d6e2e53b13f5a8ceabc69b245746655efe14ef031742ffa2a9f7ec0542156b",
+      "size_bytes": 36918
+    },
+    "artifacts/ui-shared/replay-aws-agentcore.json": {
+      "sha256": "599cca253b841228036658230b655461b662579a031a0efa0410ba3341d67b32",
+      "size_bytes": 51201
+    },
+    "artifacts/ui-shared/browser-acceptance/observed-q02-pair.json": {
+      "sha256": "1cbb93f3536d6e446d722a1fb682cb9c5209dac8fce49996efc8e420252470dc",
+      "size_bytes": 17288
+    },
+    "artifacts/ui-shared/browser-acceptance/user-q02-confirmation.json": {
+      "sha256": "e07ccb7f1c19bcb27c5ac1d114ea70a776c412860affa370519eb2b4698812be",
+      "size_bytes": 528
+    }
+  },
+  "evidence_inventory": {
+    "path": "artifacts/ui-shared/acceptance-evidence-inventory.json",
+    "sha256": "b03ce3ae161494489daebb3bd980b00a83da579e35b269443d3a80861a197349",
+    "file_count": 218
+  },
+  "limitations": [
+    "Evidence records the November 11 acceptance window, not perpetually fresh cloud state.",
+    "The 18 regular slots are exhausted; protected rollback allowance is not available for additional demonstrations.",
+    "Local macOS and hosted Linux ARM64 libraries have matching versions but are different platforms.",
+    "Recorded policy contents/role associations plus successful calls do not enumerate every policy attachment or effective permission.",
+    "Model prose/call counts may differ; complete structured metric plans/results and independent expected values were judged.",
+    "Final documentation-commit CI is reported separately in the PR handoff; the linked approved CI covers a113220 only."
+  ]
+}

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Analytics Workbench</title>
+  <link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="/" aria-label="Analytics Workbench home"><span class="brand-mark"><i></i><i></i><i></i></span><span>Analytics<span class="brand-sub">WORKBENCH</span></span></a>
+    <div class="nav-label">WORKSPACE</div>
+    <nav aria-label="Main navigation">
+      <button class="nav-item active" data-view="playground"><span aria-hidden="true">◫</span>Question playground</button>
+      <button class="nav-item" data-view="replay"><span aria-hidden="true">▤</span>Saved runs</button>
+      <button class="nav-item" data-view="catalog"><span aria-hidden="true">◇</span>Metric catalog</button>
+      <button class="nav-item" data-view="guide"><span aria-hidden="true">⌘</span>How it works</button>
+    </nav>
+    <div class="sidebar-note"><span class="status-dot"></span>Local browser application<p>Governed metrics.<br>Traceable answers.</p><span class="small">Development workspace</span></div>
+  </aside>
+  <div class="shell">
+    <header class="topbar"><div><span class="muted">Workspace</span><span class="slash">/</span><span id="breadcrumb">Question playground</span></div><span class="top-tag">Enterprise analytics</span></header>
+    <main>
+      <div id="message" class="message" role="alert" hidden></div>
+      <section id="view-playground" class="view">
+        <div class="page-heading"><div><div class="eyebrow">EXPLORE &amp; VERIFY</div><h1>Ask your data.</h1><p class="subtitle">Explore governed metrics and see exactly how each answer was produced.</p></div><span class="scope-pill">North + South</span></div>
+        <div class="connection-bar"><div><div class="label">EXECUTION SOURCE</div><div class="source-description" id="source-description">Fresh calculations on local sample data</div></div>
+          <div class="toggle" role="group" aria-label="Execution source"><button id="mode-local" class="selected" aria-pressed="true">Offline playground<span>DuckDB · no model calls</span></button><button id="mode-local_agent" aria-pressed="false">Local agent<span>Bedrock + DuckDB · billable</span></button><button id="mode-live" aria-pressed="false">AWS AgentCore<span>Bedrock + Athena · billable</span></button></div>
+        </div>
+        <div class="context-grid"><div><span class="label">DATASET</span><strong id="dataset">Loading…</strong></div><div><span class="label">REFERENCE DATE</span><strong id="reference-date">—</strong></div><div><span class="label" id="usage-label">MODEL CALLS</span><strong id="usage">0 · deterministic planner</strong></div></div>
+        <p id="cost-notice" class="cost-notice">Offline planner: no model or AWS calls.</p>
+        <div id="live-notice" class="notice" hidden><strong>Agent modes need a reviewed release and a new allowance.</strong><p>Local agent execution makes billable Bedrock calls; AWS uses AgentCore and Athena. Both require explicit approval and share one counted question budget. Completed evaluation campaigns are closed. Read docs/ui-shared-code-live.md before enabling either mode.</p><a href="#guide" id="setup-guide">View setup details →</a></div>
+        <div class="workspace-card">
+          <div class="card-top"><span class="status-dot"></span><span id="execution-state">Ready for a question</span><span class="small">Each request is independent</span></div>
+          <div id="welcome" class="welcome"><div class="welcome-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 18V6m0 12h16M8 14l4-4 4 2 4-7"/></svg></div><h2>Start with a business question</h2><p>Choose a suggestion, or ask about a metric, period and dimension.</p><div id="suggestions" class="suggestion-grid"></div></div>
+          <div id="answer" hidden></div>
+          <form id="ask-form" class="composer"><label class="sr-only" for="question">Your analytics question</label><textarea id="question" rows="2" maxlength="4000" placeholder="Show net_revenue for January 2025 by region."></textarea><div class="composer-bottom"><span id="composer-hint">Local sample data · no model or AWS calls</span><button id="ask-button" class="primary" type="submit" disabled>Run question</button></div></form>
+        </div>
+        <div class="below-card"><span>Five governed metrics · Exact values · Visible execution details</span><button id="clear" class="text-button">Clear workspace</button></div>
+        <div id="history" class="history" aria-label="Recent answers"></div>
+      </section>
+      <section id="view-replay" class="view" hidden><div class="eyebrow">REVIEW EVIDENCE</div><h1>Saved runs.</h1><p class="subtitle">Inspect an actual saved response or evaluation report. Viewing a report makes no AWS calls.</p><div class="upload-card"><div><h3>Open a response or suite report</h3><p>Choose an AgentResponse JSON or the successful campaign’s <code>report.json</code>.</p></div><label class="upload-button">Choose JSON file<input id="report-file" type="file" accept=".json,application/json"></label></div><div id="replay-empty" class="empty-panel">Your retained reports stay on your computer. Nothing is uploaded to an external service.</div><div id="replay-content" hidden><div class="report-heading"><strong id="report-label"></strong><input id="case-search" type="search" placeholder="Find a question or case…" aria-label="Find a saved case"></div><div class="replay-grid"><div id="case-list" class="case-list"></div><div id="saved-answer" class="workspace-card saved-answer"></div></div></div></section>
+      <section id="view-catalog" class="view" hidden><div class="eyebrow">SEMANTIC FOUNDATION</div><h1>One definition. Every answer.</h1><p class="subtitle">Business rules are owned by the metric catalog and shared across execution backends.</p><div id="catalog" class="catalog-grid"></div><div class="notice"><strong>Time and authorization</strong><p>Periods include the start date and exclude the end date. Approved refunds restate the original order period. Browser questions cannot change the trusted tenant or region scope.</p></div></section>
+      <section id="view-guide" class="view" hidden><div class="eyebrow">FOLLOW THE REQUEST</div><h1>Understand the application.</h1><p class="subtitle">The interface separates offline calculations, two shared-agent backends and saved evidence.</p><div class="guide-modes"><article><span class="badge local">OFFLINE</span><h3>Fresh semantic calculations</h3><p>The existing question guard translates supported language into typed requests. DuckDB calculates results from generated sample Parquet. No LLM is called.</p></article><article><span class="badge local_agent">LOCAL AGENT</span><h3>DuckDB + Bedrock</h3><p>The same BedrockAnalyticsAgent plans questions against verified canonical local data. Model calls are billable, explicit and separately recorded.</p></article><article><span class="badge live">AWS</span><h3>Real agent execution</h3><p>An explicitly approved request invokes AgentCore and Bedrock against the verified AWS scope. Every dispatch is durably counted before it is sent.</p></article><article><span class="badge replay">SAVED</span><h3>Recorded evidence</h3><p>Uploaded reports show recorded responses and timings. They do not execute new questions or establish fresh live acceptance.</p></article></div><div id="code-map" class="code-map"></div><div class="notice"><strong>AWS setup</strong><p>Read <code>docs/ui-shared-code-live.md</code> for release alignment, the separate 20-question proposal, expiry and rollback. The selected profile is analytics-dev. A toggle or launch flag is not execution approval; it cannot reopen historical budgets. The old original-v12 review is a separate legacy scope.</p></div></section>
+    </main>
+    <footer><span>Analytics Workbench</span><span>Development proof of concept · Independent requests</span></footer>
+  </div>
+</body></html>

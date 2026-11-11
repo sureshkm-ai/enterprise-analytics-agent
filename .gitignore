@@ -44,3 +44,7 @@ poetry.toml
 cdk.out/
 cdk.context.json
 node_modules/
+
+# Local browser verification artifacts
+.playwright-cli/
+output/playwright/

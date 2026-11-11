@@ -1,5 +1,65 @@
 # Architecture
 
+## Local testing UI
+
+The separately requested Analytics Workbench serves local assets on loopback without
+additional dependencies. It has three modes: the default offline deterministic
+playground, an explicit billable local Bedrock agent with canonical DuckDB data, and
+an explicit billable AWS AgentCore agent with Athena. Both live runners use the
+existing `BedrockAnalyticsAgent`, catalog, v2 contracts, question guard and semantic
+tools. The generated offline sample is labeled separately. See [setup](local-ui.md)
+and the [release evidence/proposal](ui-shared-code-live.md).
+
+```mermaid
+flowchart TD
+    Browser[Local browser] --> Boundary[Validated question boundary]
+    Boundary --> Offline[Offline deterministic planner]
+    Boundary --> Local[BedrockAnalyticsAgent locally]
+    Boundary --> Remote[Same agent in AgentCore]
+    Offline --> Sample[DuckDB temporary sample]
+    Local --> Canonical[DuckDB canonical retail]
+    Remote --> Athena[Athena canonical retail]
+```
+
+Trusted Python configuration supplies authorization; browser payloads cannot set
+scope, history, model or quota purpose. The AWS payload contains only the question.
+Provider clients and fresh artifact/configuration/publication checks belong in
+`adapters/ui_shared.py`, `ui_release.py` and `ui_local_agent.py`. Deployment is a
+separate operator command in `infrastructure/agentcore/ui_workflow.py`; HTTP has no
+mutation route. Its bounded controller reconciles full templates, parameters,
+artifact/configuration and Runtime/DEFAULT proofs; READY alone is insufficient.
+
+`ui/shared.py` maintains one separate allowance for both billable modes. Exclusive,
+fsynced question and SDK receipts precede dispatch, with journal reconciliation,
+mode/purpose/request binding, no SDK retries and expiry enforcement. Eighteen regular
+questions plus protected verification/rollback slots fit within 20. Failure/unknown
+outcomes stop normal dispatch; a valid rollback slot remains protected. Existing
+operator/deployment leases prevent overlap without rewriting historical evidence.
+Source audit proves the accepted candidate's 25-file common closure matches. The
+approved November 11, 2026, execution deployed that frozen candidate and trusted
+retail configuration; final exact preflight verified Runtime/DEFAULT **READY v13**
+and runtime stack **UPDATE_COMPLETE**. Q18 verification and all eighteen actual-UI
+paired outcomes passed independent expected requests/results, including all five
+metrics, filtering, relative dates, clarification and authorization boundaries.
+This proves the tested scope rather than identical model output or production
+equivalence. The matching candidate remains deployed; original rollback was not needed.
+
+The separate campaign consumed nineteen attempts: verification one and regular
+questions eighteen. Its protected original-restoration smoke remains unused; it is
+not an extra ordinary question. The regular cap blocks both agent modes and the
+billable CLI startup path. Further live questions require another explicit reviewed
+allowance; no historical counter or current receipt is reset. Saved-mode viewer
+reports derived from the authoritative paired report create no AWS session and
+retain their replay label. A default/offline launch remains available after the
+live cap is reached. The independent original rollback artifact/configuration,
+historical acceptance evidence and all earlier ledgers remain preserved.
+
+Saved responses and suite reports are validated data, displayed with recorded verdicts
+and explicit replay labels. No saved answer is presented as a fresh local or live query.
+Exact values are rendered directly from typed semantic results. Questions and reports
+are inserted as text, never HTML. The HTTP boundary restricts Host/Origin, requires a
+per-process POST token, serves only known assets and keeps credentials server-side.
+
 ## Boundaries
 
 ```mermaid

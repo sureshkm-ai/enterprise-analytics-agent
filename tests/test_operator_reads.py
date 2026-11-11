@@ -52,7 +52,17 @@ def test_regression_checkpoint_recovers_single_connect_timeout(
     assert result["Account"] == "453711491609" and sdk.calls == 2
 
 
-@pytest.mark.parametrize("service,operation", [(s, op) for s, ops in READS.items() for op in ops])
+@pytest.mark.parametrize(
+    "service,operation",
+    [
+        (service, operation)
+        for service, operations in READS.items()
+        for operation in operations
+        # Publication checks have a separate inventory/schema boundary. The
+        # Runtime-only checkpoint never issues these two operations.
+        if (service, operation) not in {("s3", "list_objects_v2"), ("glue", "get_table")}
+    ],
+)
 def test_every_checkpoint_read_recovers_and_retains_complete_strict_validation(
     reviewed_fixture: ReviewedFixture,
     tmp_path: Path,
@@ -92,6 +102,31 @@ def test_every_checkpoint_read_recovers_and_retains_complete_strict_validation(
     ]
     assert "NEVER_LOG_THIS" not in journal.read_text()
     assert "secret" not in journal.read_text()
+
+
+@pytest.mark.parametrize(
+    "service,operation,parameters",
+    [
+        ("s3", "list_objects_v2", {"Bucket": "source", "Prefix": "reviewed/", "MaxKeys": 2}),
+        ("glue", "get_table", {"CatalogId": "453711491609", "DatabaseName": "ea", "Name": "t"}),
+    ],
+)
+def test_publication_reads_recover_with_bounded_operation_diagnostics(
+    tmp_path: Path, service: str, operation: str, parameters: dict[str, Any]
+) -> None:
+    sdk = Session([timeout(), timeout()])
+    journal = tmp_path / "publication.jsonl"
+    pool = ReadPool(sdk, journal, monotonic=lambda: 0, sleep=lambda delay: None)
+    getattr(pool.view(120, "canonical-publication").client(service), operation)(**parameters)
+    assert sdk.calls == 3
+    events = [json.loads(line) for line in journal.read_text().splitlines()]
+    failed = [event for event in events if event["event"] == "failed"]
+    assert [(event["service"], event["operation"], event["attempt"]) for event in failed] == [
+        (service, operation, 1),
+        (service, operation, 2),
+    ]
+    assert failed[0]["target"] == {k: v for k, v in parameters.items() if k != "MaxKeys"}
+    assert "NEVER_LOG_THIS" not in journal.read_text()
 
 
 @pytest.mark.parametrize(

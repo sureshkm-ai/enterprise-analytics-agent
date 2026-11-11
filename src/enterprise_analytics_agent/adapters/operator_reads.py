@@ -22,7 +22,8 @@ from botocore.exceptions import (
 READ_CONFIG = Config(connect_timeout=5, read_timeout=10, retries={"total_max_attempts": 1})
 READS = {
     "sts": {"get_caller_identity"},
-    "s3": {"head_object"},
+    "s3": {"head_object", "list_objects_v2"},
+    "glue": {"get_table"},
     "cloudformation": {"describe_stacks", "get_template"},
     "bedrock-agentcore-control": {
         "get_agent_runtime",
@@ -50,6 +51,10 @@ TRANSIENT_CODES = {
 }
 TARGET_FIELDS = {
     "StackName",
+    "CatalogId",
+    "DatabaseName",
+    "Name",
+    "Prefix",
     "agentRuntimeId",
     "endpointName",
     "resourceArn",

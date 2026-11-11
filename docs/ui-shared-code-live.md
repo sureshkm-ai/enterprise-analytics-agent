@@ -2,9 +2,22 @@
 
 ## Status
 
-Implemented and accepted in the original `feat/local-testing-ui` checkout. The
-separately approved shared UI execution completed successfully; Milestones 1–5 remain
-complete and their evidence is unchanged. This remains a development-only scope.
+Implemented, accepted and merged through [PR #8](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/8)
+at `e22287538e22e1917eb2a21efbeadc4cec5c6d75` on November 11, 2026. The subsequent
+full-validation [PR #9](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/9)
+merged at `1dfd788a9b773fbf8abd39a554033cccd683c4ee`, with successful
+[main CI 43100659276](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43100659276).
+The separately approved shared UI execution and Milestones 1–5 remain complete;
+their evidence is unchanged. This remains a development-only scope.
+
+The [next interactive session](ui-interactive-session-02.md) is prepared with a
+distinct review/counter and fresh read-only **READY v15** proof at 21:26:03Z on
+November 11, 2026. The proposed 19 usable attempts are one required AWS Q18 plus 18
+regular questions across both modes; explicit approval is pending. Its 20-slot schema
+keeps the original-rollback slot unavailable in this no-deployment session. No old
+allowance is reopened, no new question ledger is created and neither billable mode
+is enabled by preparation. Exact expiry, pins, stop procedure and launch commands
+are in that new plan; the completed scope/commands below remain historical.
 
 The later full-validation campaign passed all 85 live items and restored the same
 candidate/retail release on **Runtime/DEFAULT READY v15**, stack UPDATE_COMPLETE,

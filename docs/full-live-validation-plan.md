@@ -16,6 +16,8 @@ Parity v14 was verified and retail/smoke/final read-only verification passed on
 57/57; no allowance remains. [Final acceptance](../evaluations/full-live/acceptance-2026-11-11.json)
 binds actual results, diagnostics and evidence. No code ZIP, IAM or dataset changed.
 
+The completion commit `39d7edb644d4c6d6229d7864d639f9f19410bf18` is pushed and merged through [PR #9](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/9) on November 11, 2026, at `1dfd788a9b773fbf8abd39a554033cccd683c4ee`. [PR CI 43099154919](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43099154919) passed for the completion head; [main CI 43100659276](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43100659276) passed for the merge. Hosted CI ran 1,570 offline tests with zero skips and all required checks; it did not rerun the 85 live items. Later proposed interactive usage is a separate scope in [the new session plan](ui-interactive-session-02.md).
+
 **Do not rerun this original campaign or alter its review/assemblies.** Its historical
 preparation missed the asset-URL/file-asset references even though template bytes
 were pinned. The [corrected continuation](full-live-continuation-proposal.md) completed
@@ -33,7 +35,7 @@ The accepted starting checkpoint is the separately approved candidate/retail rel
 Runtime and DEFAULT **READY v13**, runtime stack **UPDATE_COMPLETE**, last observed
 November 11, 2026, at 16:58:11Z. A fresh exact check is required before later execution;
 the historical observation alone is insufficient. Preserve [the completed UI evidence](../evaluations/ui-shared/acceptance-2026-11-11.json)
-and PR #8. This proposal neither merges that PR nor reopens its regular allowance.
+and [PR #8](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/8)'s merged history (`e22287538e22e1917eb2a21efbeadc4cec5c6d75`, November 11, 2026). This historical validation approval did not reopen the UI allowance; neither its merged state nor its unused protected slot authorizes another question.
 
 ## What must actually execute
 

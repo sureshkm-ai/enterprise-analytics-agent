@@ -6,6 +6,8 @@ The repository provides five governed metrics, unchanged v1/v2 contracts, determ
 
 Milestone 3 merged in [PR #2](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/2) at `ae378e4`, with [successful hosted CI](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42166641840); the merge-status documentation followed in PR #3 at `6bf1220`. Milestone 4 subsequently merged through PR #4; its merge and CI evidence are recorded below. Cube, a UI, and additional AgentCore services remain outside milestone 4.
 
+The separately approved shared UI merged through [PR #8](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/8) on November 11, 2026, at `e22287538e22e1917eb2a21efbeadc4cec5c6d75`. Full-live validation merged through [PR #9](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/9) at `1dfd788a9b773fbf8abd39a554033cccd683c4ee` that day. [Main CI 43100659276](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43100659276) passed for that merge: 1,570 offline tests, zero skips, plus lockfile, lint, formatting, types and offline synthesis. The 85 live items were verified separately during approved execution.
+
 ## Run locally
 
 For the new **Analytics Workbench** browser UI, run this from the repository root
@@ -24,8 +26,9 @@ billable Bedrock calls. **AWS AgentCore** uses the same agent with Athena. Both
 billable modes require a separately approved release/allowance and show cost notices
 before submission. Approved live acceptance on November 11, 2026, passed Q18
 (**110.25 USD** for March 31 inclusive to April 1 exclusive) and **all 18 paired UI
-outcomes** against independent goldens. The frozen candidate/retail release remains
-deployed on Runtime/DEFAULT **READY v13**, with runtime stack **UPDATE_COMPLETE**.
+outcomes** against independent goldens. That UI acceptance window verified the frozen
+candidate/retail release on Runtime/DEFAULT **READY v13**, stack **UPDATE_COMPLETE**.
+Later full-live validation restored the same candidate/retail configuration on v15.
 This establishes the tested behavior for the nine reviewed questions, not identical
 model prose or general production equivalence. See [UI setup](docs/local-ui.md)
 and [shared-code acceptance evidence](docs/ui-shared-code-live.md).
@@ -34,8 +37,7 @@ This follow-on UI scope does not change completed M1–M5 acceptance or their le
 The separate UI campaign used **19/20 attempts**: Q18 verification 1 and all 18
 regular slots; the protected rollback smoke was unused. No regular live allowance
 remains, and the completed review cannot restart billable mode. Additional billable
-questions require a separately approved allowance. Inspect the saved AWS acceptance
-responses offline without spending another call:
+questions require a separately approved allowance. The [next interactive session](docs/ui-interactive-session-02.md) is prepared with a fresh read-only v15 release proof: one required Q18 verification plus 18 interactive questions, pending explicit approval. Its protected original-rollback slot is unavailable; no deployment, IAM change or code upload is proposed. Inspect the saved AWS acceptance responses offline without spending another call:
 
 ```sh
 conda activate enterprise-analytics
@@ -87,8 +89,9 @@ retail requests and protected restoration smoke passed too. Accepted candidate-r
 Runtime/DEFAULT were restored and finally verified **READY v15**, stack UPDATE_COMPLETE.
 Usage is **20/20 continuation, 57/57 aggregate Runtime calls**; no allowance remains.
 See the [acceptance evidence](evaluations/full-live/acceptance-2026-11-11.json).
-The earlier UI acceptance and every historical ledger remain unchanged; these local
-live results are separate from hosted CI.
+The earlier UI acceptance and every historical ledger remain unchanged. This implementation
+and its evidence are merged through PR #9 with successful main CI, while the live
+results remain separate from the AWS-free hosted checks.
 
 The CLI is a trusted local application and fixes its own demo tenant and authorized regions. Semantic requests cannot supply a principal, tenant, or authorization scope. This is an enforcement boundary demonstration, not a production authentication system.
 

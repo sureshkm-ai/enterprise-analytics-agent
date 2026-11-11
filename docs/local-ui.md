@@ -9,6 +9,24 @@ The catalog, v2 contracts, question guard and semantic tools remain shared.
 
 ![Analytics Workbench with three explicit execution modes](images/analytics-workbench-shared-ui.png)
 
+## Merged application and next interactive session
+
+The Workbench merged through [PR #8](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/8)
+at `e222875` on November 11, 2026. Full validation merged through
+[PR #9](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/9) at `1dfd788`;
+[main CI](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43100659276)
+passed for that merge. The implementation and completed live acceptance are preserved.
+
+[Interactive session 02](ui-interactive-session-02.md) is prepared with a new review
+and fresh read-only release proof: Runtime/DEFAULT **READY v15**, verified
+November 11, 2026 at **21:26:03Z**, with matching source/artifact/configuration and
+canonical data. Its proposed allowance is one AWS Q18 verification plus **18 user
+questions total across Local agent/AWS**, pending explicit approval through
+**November 13, 5:59 p.m. CST**. The protected original-rollback slot is unavailable.
+No new question ledger, billable call or deployment was created during preparation.
+Use that session's activation commands after approval; keep the historical commands
+and reviews below unchanged. Offline playground/Saved runs work immediately.
+
 ## Approved live acceptance completed
 
 On November 11, 2026, Q18 and **18/18 paired UI outcomes** passed against independent
@@ -21,10 +39,12 @@ A later separately approved full-test campaign restored and finally verified the
 same candidate/retail artifact/configuration on **READY v15** at 19:59:56Z on
 November 11, 2026. All 85 live tests passed; see [the evidence](../evaluations/full-live/acceptance-2026-11-11.json).
 This did not refresh the completed UI allowance or its historical v13 release record.
-The instructions below remain offline/replay-only without a new reviewed live scope.
+The completed review remains offline/replay-only; the new session above is prepared
+and awaits explicit billable approval.
 
-All regular live slots are spent, so the completed review cannot restart billable
-mode. Further live questions need a separately approved allowance. Inspect the actual
+All regular live slots in the historical session are spent, so its completed review
+cannot restart billable mode. The new session has zero usage and needs its own
+approval. Inspect the actual
 nine AWS responses without another call:
 
 ```sh

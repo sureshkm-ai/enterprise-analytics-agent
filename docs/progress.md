@@ -2,7 +2,106 @@
 
 Updated: 2026-11-11 (America/Chicago).
 
-## Current task: full-live validation — complete, zero skipped tests
+## Current task: merge-status closeout complete; interactive session 02 ready for approval
+
+Inspected instructions/plan/progress, clean Git status and recent history; fetched
+origin without resetting work. Local main and origin/main both matched
+**1dfd788a9b773fbf8abd39a554033cccd683c4ee**. Created local branch
+**docs/ui-interactive-session-02**. Reused enterprise-analytics Conda Python 3.12.16,
+Poetry 2.3.1 and its committed lockfile. No application/infrastructure/dependency change.
+
+### Verified GitHub closeout
+
+- [PR #8](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/8) merged at
+  **2026-11-11T17:14:04Z**, merge **e22287538e22e1917eb2a21efbeadc4cec5c6d75**.
+- [PR #9](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/9) merged at
+  **2026-11-11T21:09:33Z**, merge **1dfd788a9b773fbf8abd39a554033cccd683c4ee**,
+  completion head **39d7edb644d4c6d6229d7864d639f9f19410bf18**.
+- [PR CI 43099154919](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43099154919)
+  passed for that completion head. [Main CI 43100659276](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43100659276)
+  passed for the merge: **1,570 offline passed, 85 deselected, zero skipped in 137.85s**,
+  plus lockfile/lint/format/types/two offline syntheses. These hosted runs cover
+  their named earlier commits, not this new local documentation/review preparation.
+
+Replaced stale current local/unpushed/pending-merge/PR #8-unmerged handoffs across
+current project instructions/docs. Preserved dated failures, approvals, historical
+verification and all immutable acceptance records. M1–M5, shared UI and all 85 live
+items remain complete and merged; no production-readiness or new milestone is implied.
+
+### Fresh interactive readiness, without a billable call
+
+The user requested a fresh allowance/release verification. Prepared separate review
+[evaluations/ui-shared/interactive-02.proposed.json](../evaluations/ui-shared/interactive-02.proposed.json)
+and [concrete session plan](ui-interactive-session-02.md). Campaign
+**ui-shared-retail-v1-02**, review SHA
+**385f936a719ca17ee09fe4c62af7d7153d04e8cc9d6ee3e2aaf7bd7defa8bbc8**.
+Propose **19 usable attempts**: one required AWS Q18 probe + 18 interactive questions
+shared across Local Bedrock/AWS. Existing schema ceiling 20 retains one original-parity
+rollback slot that is **unavailable/unapproved** in this no-deployment session. It
+cannot be relabeled as a retail smoke or ordinary retry. Expiry **2026-11-13T23:59Z**
+(November 13, 5:59 p.m. CST). The explicit billable scope/quantity/expiry decision remains
+pending; preparation/read-only verification is not approval to consume it.
+
+Fresh read-only command, using only analytics-dev/account 453711491609/us-west-2:
+
+```sh
+poetry run python -m infrastructure.agentcore.ui_workflow preflight \
+  --kind candidate \
+  --review evaluations/ui-shared/interactive-02.proposed.json \
+  --output artifacts/ui-shared/interactive-02-preparation/preflight.json
+```
+
+Passed at **2026-11-11T21:26:03.819419Z**: selected identity, Runtime/DEFAULT
+**READY v15**, stack UPDATE_COMPLETE, full template/parameters, fixed retail tenant/
+region/model/reference-date configuration, both policies, seven-day retention,
+25-file source/dependency closure, exact ZIP/S3 VersionId and canonical S3/Glue bindings.
+Extracted the validated new-review release record unchanged from that fresh proof;
+never edited the historical v13 record. New record SHA
+**3908c11e5de25907451e0cc382afe54260b2a1d41a517438003e719449630ebe**;
+preflight SHA **59d83c0c8f863df5800440b92c6b74975b9c23209cfecf969ba5aed32b98bfa8**.
+Retained preparation is `artifacts/ui-shared/interactive-02-preparation/`.
+The saved proof is an observation; each future question must verify fresh state.
+
+No deployment, IAM change, code upload/rebuild, dataset publication, Athena execution
+or model/Runtime call occurred. New question ledger/claim is **not created**, new usage
+**0/20**, regular 18 remaining. Offline construction/status with boto3.Session patched
+to fail proved no AWS session creation and both billable modes disabled before Q18.
+Historical counters/claims and records remain unchanged; no reserved old quota is reused.
+If an interactive attempt fails, stop dispatch and preserve retail v15 and diagnostics;
+this new scope does not authorize original restoration or any deployment/rollback.
+
+### Actual local checks
+
+| Command/check | Actual result |
+| --- | --- |
+| `poetry check --lock` | Passed: All set. |
+| `poetry run pytest` | **1,570 passed, 85 deselected in 55.45s, zero skipped**. Offline only; prior 85 live acceptance was not rerun. |
+| `poetry run ruff check .` | Passed. |
+| `poetry run ruff format --check .` | Passed: 161 files formatted. |
+| `poetry run mypy src tests` | Passed: 127 source files. |
+| New review/record/config assertions | Passed: only campaign/expiry differ, new review hash distinct, v15 record bound, zero ledger creation, pre-Q18 modes disabled, no startup/status AWS session. |
+| Preservation | All 203 captured historical question/SDK/receipt/claim/review/evidence files unchanged; broader frozen assets/source/goldens verified in preflight. |
+
+No new test or calculation was added: existing later-version, drift, quota, expiry,
+SDK-limit, protected-slot and complete-Q18 regression coverage applies unchanged.
+Infrastructure is unchanged; its successful main-CI offline synthesis evidence was
+not relabeled as a fresh local synthesis. Documentation/link/diff and final
+preservation checks passed: **10 Markdown files, 98 local links, 33 shell blocks**
+parsed without execution, JSON/review/record/evidence pins and `git diff --check`.
+All 203 captured campaign files, 121 historical protected files and the full-live
+parent/completion inventories remain unchanged. No app/infra/test/dependency file
+changed and no new live ledger exists. Keep this new commit local.
+
+### Exact next task
+
+Approve or decline the exact [interactive session 02](ui-interactive-session-02.md):
+**one Q18 verification + 18 interactive questions across both modes**, expiring
+November 13 at 5:59 p.m. CST. Then run only the counted probe; if its full independent
+request/result gate passes, launch the UI with the new review and prepared v15
+record. The user owns regular submissions. Do not replay old reviews, consume the
+protected original-rollback slot, change resources/permissions or reset counters.
+
+## Completed full-live validation — merged through PR #9, zero skipped tests
 
 The user approved the corrected continuation at **09ef680** and review SHA
 **70161d5cb64bdc44f72a1cd61a3df614c53bdd879bb102e21a6c28dc07f0bc8a**,
@@ -94,20 +193,21 @@ The lockfile, Ruff lint/format, mypy and offline data/foundation synthesis resul
 recorded for 09ef680 below cover this unchanged implementation. They were not rerun
 for this documentation-only outcome. The supervised run did freshly execute the
 full offline pytest suite. Documentation/link/preservation and diff checks cover
-this final documentation change; hosted CI is not claimed for the local commit.
+that final documentation change. Hosted CI was not claimed at the local completion
+handoff; PR/main CI subsequently passed as recorded above.
 Final documentation verification passed: **9 Markdown files, 85 local links, 30 shell
 blocks parsed without execution**, acceptance JSON/evidence hashes and
 `git diff --check`. All 50 completion-inventory files are unchanged. A scoped Git
 check confirms only documentation and the new acceptance summary changed; application,
 infrastructure, frozen inputs, counters and claims were preserved.
 
-### Exact next task
+### Completed handoff
 
-Review the local completion commit and decide separately whether to push it. Keep
-PR #8 unmerged/unchanged. The requested full-live validation and agreed M1–M5/UI
-acceptance are complete for the development scope. All new Runtime allowance is
-spent. No further invocation, deployment, counter reset or milestone is implied;
-new live/development work needs a separately defined scope and authorization.
+Completion commit 39d7edb was pushed, passed PR CI and merged through PR#9 at 1dfd788;
+PR#8 is also merged. The merge facts and current interactive-session decision are
+recorded above. The original completion handoff had not yet claimed hosted CI;
+its local/live checks remain historical evidence. M1–M5/UI/full validation remain
+complete for the development scope, and their exhausted allowances stay closed.
 
 ## Historical full-live-v1 attempt and continuation preparation at 09ef680
 

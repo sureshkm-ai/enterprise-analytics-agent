@@ -1,0 +1,84 @@
+{
+  "schema_version": "ui-interactive-readiness-v1",
+  "recorded_at": "2026-11-11T21:35:38.180080+00:00",
+  "repository_baseline": "1dfd788a9b773fbf8abd39a554033cccd683c4ee",
+  "preparation_verified": true,
+  "billable_execution_approved": false,
+  "q18_status": "not_run_approval_required",
+  "campaign_id": "ui-shared-retail-v1-02",
+  "review_sha256": "385f936a719ca17ee09fe4c62af7d7153d04e8cc9d6ee3e2aaf7bd7defa8bbc8",
+  "review_path": "evaluations/ui-shared/interactive-02.proposed.json",
+  "target": {
+    "profile": "analytics-dev",
+    "account": "453711491609",
+    "region": "us-west-2",
+    "runtime_version": "15",
+    "dataset_version": "retail-v1",
+    "reference_date": "2025-04-01"
+  },
+  "proposed_allowance": {
+    "maximum_schema_slots": 20,
+    "usable_attempts": 19,
+    "required_aws_q18": 1,
+    "interactive_shared_questions": 18,
+    "original_rollback_slot_unavailable": true,
+    "expires_at": "2026-11-13T23:59:00Z"
+  },
+  "usage": {
+    "question_attempts": 0,
+    "runtime_calls": 0,
+    "converse_calls": 0,
+    "new_question_ledger_created": false
+  },
+  "source_sha256": "aefa4ffa38d1d52ad152e98e0293356221bc964be86e3022c12c6871545830be",
+  "archive_sha256": "398124e89d2be1e9ce00f5b57c263fe2cdde0654527b27f949b9f3abb58029f1",
+  "artifact_version_id": "V5Q8e8e6w2tkkVghXn.BrFs1mqQU.Ncu",
+  "configuration_sha256": "6f480b57d00cb5386556ec4c2d3ff5618dc6e0e51a9147577fbd730c8d764c4e",
+  "observed_at": "2026-11-11T21:26:03.819419+00:00",
+  "evidence": {
+    "artifacts/ui-shared/interactive-02-preparation/preflight.json": {
+      "sha256": "59d83c0c8f863df5800440b92c6b74975b9c23209cfecf969ba5aed32b98bfa8",
+      "size_bytes": 31006
+    },
+    "artifacts/ui-shared/interactive-02-preparation/preflight.json.reads.jsonl": {
+      "sha256": "92c599bc5e1eefa9c806f5c3a14c9d6b80be6d243e81250585ab302947fbd9d1",
+      "size_bytes": 30855
+    },
+    "artifacts/ui-shared/interactive-02-preparation/release-record.json": {
+      "sha256": "3908c11e5de25907451e0cc382afe54260b2a1d41a517438003e719449630ebe",
+      "size_bytes": 903
+    },
+    "artifacts/ui-shared/interactive-02-preparation/readiness.json": {
+      "sha256": "7c6ace2a026b0cb1736682a70eb52d12443332a3379575567e9b986a8cd87dea",
+      "size_bytes": 1681
+    },
+    "artifacts/ui-shared/interactive-02-preparation/offline-readiness.json": {
+      "sha256": "ec309b9bc1b8707e6dcd933ee52c719505b37ac9559ddbd564b12852abf2cdbe",
+      "size_bytes": 13054
+    },
+    "artifacts/ui-shared/interactive-02-preparation/preservation-before.json": {
+      "sha256": "13d57522a2349a1e23becc8914332b17e2be3fc65797bf6ed52bb78104a65bd4",
+      "size_bytes": 37932
+    }
+  },
+  "verification": {
+    "pytest_offline_passed": 1570,
+    "pytest_live_deselected": 85,
+    "pytest_skipped": 0,
+    "elapsed_seconds": 55.45,
+    "poetry_lock": "passed",
+    "ruff_check": "passed",
+    "ruff_format_files": 161,
+    "mypy_source_files": 127,
+    "offline_constructor_aws_sessions": 0,
+    "billable_modes_disabled_before_q18": true,
+    "captured_historical_files_unchanged": 203
+  },
+  "limitations": [
+    "Proposal is not execution approval.",
+    "Source/dependencies/canonical data and actual v15 release were verified; future questions must freshly verify them.",
+    "Administrator policy contents are recorded; current role attachments/effective-access boundaries are not exhaustively enumerated.",
+    "No deployment, IAM/upload/dataset mutation or billable invocation is authorized by readiness alone.",
+    "Hosted CI 43100659276 covers merged commit 1dfd788, not this new local readiness commit."
+  ]
+}

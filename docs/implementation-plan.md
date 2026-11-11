@@ -24,10 +24,7 @@ required actions; actual calls succeeded, without independently enumerating poli
 attachments or broadening IAM. See [acceptance/results](ui-shared-code-live.md) and
 [progress](progress.md).
 
-The UI session handoff supplies the pushed outcome/docs checkpoint, UI PR and verified
-exact-commit CI. Next task: user review and merge decision. Default/offline saved-report viewing
-remains available with no further invocation. No next milestone or production-readiness
-claim is implied.
+The UI outcome is pushed and merged through [PR #8](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/8) on November 11, 2026, at `e22287538e22e1917eb2a21efbeadc4cec5c6d75`. Its historical acceptance and CI retain their original attribution. Default/offline saved-report viewing remains available without a new invocation. No next milestone or production-readiness claim is implied.
 
 ## Follow-on validation: execute every test — complete, zero skipped tests
 
@@ -51,9 +48,18 @@ both commits/results, budgets, exact artifact/version/configuration and diagnost
 Frozen archives/S3 VersionIds, source closure, independent goldens/publication,
 permissions, M3/foundation infrastructure and every historical ledger/claim remain
 unchanged. No code upload, rebuild, dataset change or IAM expansion occurred. The
-current completion commit remains local, separately from earlier UI hosted CI.
-Exact next task: review that commit and decide separately whether to push. Keep
-PR #8 unmerged. No next milestone, live replay or production-readiness claim is implied.
+completion commit `39d7edb644d4c6d6229d7864d639f9f19410bf18` is pushed and merged through [PR #9](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/9) on November 11, 2026, at `1dfd788a9b773fbf8abd39a554033cccd683c4ee`. [PR CI 43099154919](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43099154919) passed for the completion head; [main CI 43100659276](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43100659276) passed for the merge: **1,570 offline passed, 85 deselected, zero skipped in 137.85s**, with lockfile, lint, formatting, types and both offline syntheses passing. The live results remain separately attributed to their approved executions. These CI runs do not cover later local documentation or proposed review files.
+
+The [next interactive session](ui-interactive-session-02.md) is prepared using the
+existing candidate-retail v15 release; fresh read-only verification passed at
+21:26:03Z on November 11, 2026. No application, archive, deployment or permission
+change is required. Its new review proposes one AWS Q18 verification plus 18 regular
+Local Bedrock/AWS questions, within a 20-slot schema; the protected original-rollback
+slot is unavailable. The 19 usable attempts require explicit approval and expire
+2026-11-13T23:59Z. Existing counters remain unchanged and no new question ledger is
+created during preparation. Exact next task: obtain that scoped approval before
+Q18 verification or interactive billable dispatch. No next milestone or production-readiness
+claim is implied.
 
 ## Milestone 1: local semantic execution — complete (`64cbea4`)
 
@@ -140,6 +146,6 @@ The approved [plan](milestone-5-plan.md) is implemented for local review on `fea
 
 11. Approved `q18-recovery-v1` executed once from fresh original v10: deployed pinned candidate READY v11, Q18 **110.25 USD [2025-03-31,2025-04-01)** and all **36/36** cases passed; client p95 **13.381s**, complete diagnostics. Mandatory original restore/smoke and separate read-only final verification passed on READY v12. Recovery **38/38**, aggregate **40/40**, no retries/failures/incomplete calls. All 122 protected files and historical ledgers/claims unchanged. No code/upload/IAM/dataset changes during execution.
 
-Exact next task: review the local full-validation completion commit; keep PR #8 unmerged and pushing separate. M1–M5, the shared UI acceptance and the separately approved all-tests validation are complete for the development scope. Preserve the observed candidate-retail v15 checkpoint, both exhausted full-live counters and all historical evidence. Further development/live work needs a separately defined scope and authorization; no production-readiness claim is implied.
+Exact next task: review and explicitly approve the prepared [interactive-session scope](ui-interactive-session-02.md) before any Q18 or ordinary billable call. M1–M5, the shared UI acceptance and the all-tests validation are complete and merged for the development scope; main CI 43100659276 passed for the latest merge. Preserve the verified candidate-retail v15 release, all exhausted counters and historical evidence. No new milestone, deployment or production-readiness claim is implied.
 
 Cube remains a later adapter extension outside milestones 2–5 unless separately requested.

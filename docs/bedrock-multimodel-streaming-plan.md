@@ -1,11 +1,25 @@
 # Bedrock model selection and provider word streaming
 
-The current [completion replacement](bedrock-streaming-completion-plan.md) is
-implemented and prepared offline. The original campaign below is closed **3/40**;
-its deployed v1 targets remain unaccepted. The proposed continuation is **0/37**,
-aggregate **3/40**, with an unavailable reserve. New source/package and the exact
-remaining allocation need approval before any further live execution. The earlier
-approval and recovery history below must not be replayed.
+The exact [completion replacement](bedrock-streaming-completion-plan.md) was
+approved at **f591498** and uploaded once as VersionId
+**PQbNv3gkC1HwVYNNiAe95r1XuQDkfKvb**. All ten existing stacks and Runtime/DEFAULT
+passed strict **UPDATE_COMPLETE / READY v2** proofs. Nova Q18 and the all-five
+regional question passed exact independent requests/results and real provider
+streaming. Sonnet Q18 failed its first Converse call with
+**AccessDeniedException / model_error**, without semantic queries. Ordinary
+dispatch stopped after three acceptance attempts; no other model ran and no
+accepted UI binding exists. Mandatory original restoration passed: all ten
+original streaming code/configuration bindings verified **UPDATE_COMPLETE /
+Runtime and DEFAULT READY v3**. Protected legacy-v15 Q18 smoke passed
+**110.25 USD** at approximately **22:29:52Z**.
+
+All new choices remain disabled. Parent **3/40** stays closed; the child is
+closed/blocked **4/37** (ordinary 3 + cleanup 1), aggregate **7/40**, with no
+incomplete attempt. Its remaining ordinary quota is unusable; the reserve is
+unavailable. No retry, reopened campaign or broader IAM permission is implied. Preserve sealed preparation/review/
+readiness, original artifacts and all historical evidence below.
+
+The implementation commit **f591498** is pushed; [push CI 43316129337](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43316129337) and [PR CI 43316722939](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43316722939) passed for that commit. Those checks do not cover later outcome documentation.
 
 ## Historical original scope and execution
 
@@ -459,15 +473,16 @@ links each exact official model card. API/protocol and permission references use
   and [CDK global role/profile options](https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd.html).
 - [Conditional PutObject and explicit SHA-256 checksum options](https://docs.aws.amazon.com/cli/latest/reference/s3api/put-object.html).
 
-Offline checks establish implementation readiness only. Execution approval is now
-recorded; retain the frozen checksums and real-version binding procedure. The directory
-application/readback and allowed simulation have passed. Review the separate
-recovery plan for the approved corrected templates, workload logging grant and
-scoped recreation. Fresh preflight and all ten reviewed deployments passed exact
-verification, with Runtime/DEFAULT READY v1 and seven-day retention. Administrator
-trust readback and release binding passed; live acceptance failed safely on Nova's
-second question and protected legacy-v15 cleanup passed. Campaign **3/40** is
-closed and the controlled reserve remains unusable. Prepare only the focused
-offline source correction/regressions and new candidate/review next. No new live
-scope follows from remaining quota. Full streaming acceptance and production
-readiness remain unverified.
+The original recovery and its failed three-call campaign above are historical.
+The approved completion operation deployed the replacement and passed both Nova
+gates, then stopped on Sonnet's first Converse denial. Original restoration and
+protected cleanup passed; the child is closed 4/37, aggregate 7/40. Keep new
+bindings disabled. Next obtain administrator-side read-only evidence of the
+configured Sonnet role's effective InvokeModel permissions, active policies,
+boundary and applicable context, including the actual denied session, principal,
+resource, message and conditions. Developer/model availability does not establish
+that access. The bounded 444-event CloudTrail collection through 22:29:52Z had no
+AccessDenied event; unrelated log ResourceAlreadyExists/OperationAborted events
+are not an established cause. Do not repeat execution, retry questions, use
+remaining quota/reserve, create another campaign or add speculative IAM.
+Full multi-model acceptance and production readiness remain unverified.

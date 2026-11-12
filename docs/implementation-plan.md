@@ -67,13 +67,29 @@ and only 3,215 reported tokens. Offline replay identified conservative conversat
 byte reservation before an unnecessary planner turn. Acceptance stopped; no other
 model ran and no new choices were enabled. Protected legacy v15 cleanup smoke
 passed; the campaign is closed **3/40** (two ordinary, one cleanup), reserve
-untouched. Frozen ZIP/source/S3 version remain unchanged. A focused offline
-source correction, regression coverage and new candidate/review are the next
-scope; no live retry or new allowance is implied. The [concrete plan](bedrock-multimodel-streaming-plan.md)
-proposes nine additional Bedrock choices and a new streaming Nova baseline, each
-with a separate fixed-model role/Runtime and a new artifact. Google is **Gemma via
-Bedrock Mantle**; native OpenAI GPT choices remain inside Bedrock. Optional catalog
-metadata is not a deployment or effective-access assertion.
+untouched. Those are historical results of the closed original campaign.
+
+The [completion replacement](bedrock-streaming-completion-plan.md) was then
+explicitly approved at **f591498**. Its one-time upload returned S3 VersionId
+**PQbNv3gkC1HwVYNNiAe95r1XuQDkfKvb**; all ten existing stacks and Runtime/DEFAULT
+verified **UPDATE_COMPLETE / READY v2**. Nova Q18 and the all-five regional question
+passed exact result and provider-streaming gates. Sonnet Q18 failed its first
+Converse call with **AccessDeniedException / model_error**, without a semantic
+query. Execution stopped after three acceptance attempts, with no accepted UI
+binding. Mandatory original restoration passed with all ten original code/config
+bindings **UPDATE_COMPLETE / Runtime and DEFAULT READY v3**. Protected legacy-v15
+Q18 smoke passed **110.25 USD** at approximately **22:29:52Z**. All new choices
+remain disabled. Parent **3/40** stays closed; child **4/37** is closed/blocked
+(three ordinary attempts and cleanup), aggregate **7/40**, with no incomplete
+attempt. Remaining ordinary quota is unusable. No retry, reserve use, new campaign
+or additional permission follows from that quota.
+
+The implementation commit **f591498** is pushed; [push CI 43316129337](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43316129337) and [PR CI 43316722939](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43316722939) passed for that commit. Those checks do not cover later outcome documentation.
+
+The original model scope covered nine additional Bedrock choices and a streaming
+Nova baseline, each with a separate fixed-model role/Runtime. Google is Gemma
+through Bedrock Mantle; native OpenAI GPT choices remain inside Bedrock. Optional
+catalog metadata is not a deployment or effective-access assertion.
 
 1. Reuse the unchanged `BedrockAnalyticsAgent` tool loop and semantic contracts,
    with local canonical DuckDB and hosted Athena execution. Keep SQL/calculations
@@ -93,12 +109,14 @@ metadata is not a deployment or effective-access assertion.
    changes and new budget before AWS execution. Require two independent AWS
    checks per model—Q18 and all five regional metrics—before enabling new models.
 
-The separate proposed outer budget is 40 attempts: 20 mandatory checks + 18 user
-questions + one protected retained-v15 cleanup smoke + one unapproved reserve,
-expiring `2026-11-15T23:59Z`. User approval now covers the unchanged plan, subject
-to its preflight gates; the reserve remains unavailable. Preserve the
-accepted Nova v15 release, session 02's last observed 17 regular questions,
-historical ledgers/goldens and frozen artifacts; no production-readiness claim follows.
+The original allocation was 20 acceptance + 18 user + protected cleanup + one
+unapproved reserve. Its closed three-call history is preserved. The separately
+approved completion child allocates 20 acceptance + 15 user + protected cleanup +
+one unavailable reserve within the remaining **37**, aggregate ceiling **40**.
+Expiry remains `2026-11-15T23:59Z`. Ordinary dispatch is stopped after the Sonnet
+failure and verified original restoration. Administrator-side read-only denial
+verification is the current task. Historical
+assets, goldens, original reviews and M1–M5 completion remain unchanged.
 
 ## Follow-on validation: execute every test — complete, zero skipped tests
 
@@ -226,6 +244,6 @@ The approved [plan](milestone-5-plan.md) is implemented for local review on `fea
 
 11. Approved `q18-recovery-v1` executed once from fresh original v10: deployed pinned candidate READY v11, Q18 **110.25 USD [2025-03-31,2025-04-01)** and all **36/36** cases passed; client p95 **13.381s**, complete diagnostics. Mandatory original restore/smoke and separate read-only final verification passed on READY v12. Recovery **38/38**, aggregate **40/40**, no retries/failures/incomplete calls. All 122 protected files and historical ledgers/claims unchanged. No code/upload/IAM/dataset changes during execution.
 
-Exact next task: review the [implemented completion replacement](bedrock-streaming-completion-plan.md), sealed package/templates, parent-bound **0/37** continuation and remaining allocation, then approve the exact execution scope before upload/deployment or live calls. The closed parent is **3/40**, retained legacy v15 remains accepted, and all ten streaming v1 targets are deployed but unaccepted. The guarded operator must pass all twenty unchanged cases, including provider streaming, before UI activation; failure requires original restoration and the protected smoke. No counter reset, speculative IAM addition or new milestone is authorized.
+Exact next task: obtain administrator-side read-only evidence for the configured Sonnet workload role's actual InvokeModel permissions, active policies/boundary and applicable request context, together with the full denied principal/session/resource/message/conditions. The bounded CloudTrail collection did not contain an AccessDenied event, and unrelated log errors are not an established cause. Profile/developer availability does not prove workload-role effective access. Nova's two gates passed, but multi-model acceptance remains incomplete; original restoration and protected smoke passed, with the child closed 4/37 and aggregate 7/40. Preserve all claims, sealed inputs, restored v3 bindings and legacy v15. No new grant, campaign, retry, reserve use or model call is authorized.
 
 Cube remains a later adapter extension outside milestones 2–5 unless separately requested.

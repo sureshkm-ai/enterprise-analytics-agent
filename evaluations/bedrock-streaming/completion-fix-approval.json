@@ -1,0 +1,9 @@
+{
+  "approved": true,
+  "review_sha256": "67f3f3aab2a086ad16633e6cdc2195edbe02543065a4b5934c7b1177345ea58c",
+  "preparation_sha256": "e9fc7e4711290b058f849b15bbfb4c0786ca083caf1819bfb1b92d8468597e79",
+  "maximum_attempts": 37,
+  "expires_at": "2026-11-15T23:59:00+00:00",
+  "approved_at": "2026-11-12T22:08:14.677061+00:00",
+  "approval_context": "User selected \u201cApprove the exact continuation\u201d in response to the explicit approval question for commit f591498, review 67f3f3aab2a086ad16633e6cdc2195edbe02543065a4b5934c7b1177345ea58c, preparation e9fc7e4711290b058f849b15bbfb4c0786ca083caf1819bfb1b92d8468597e79, new ZIP 8cfe8d9bd667c29c871342844898061f986107d94f309f1eef471f09582a4ae8, ten Runtime updates, twenty checks and mandatory failure restoration; fifteen later user questions; unavailable reserve; unchanged aggregate 40 and expiry."
+}

@@ -83,16 +83,30 @@ on the input reservation guard; protected legacy-v15 cleanup passed and that
 campaign is closed **3/40**. Earlier policy/logging failures and their corrected
 recovery remain [historical evidence](bedrock-streaming-recovery-plan.md).
 
-The [completion replacement](bedrock-streaming-completion-plan.md) is implemented
-and prepared separately. Its versioned continuation review pins the complete
-closed-parent inventory and permits one exclusive continuation claim. Proposed
-child limits are **37 total / 35 ordinary**, one protected cleanup, one unavailable
-reserve; prior usage3 plus the child ceiling retains aggregate40. No parent is
-reopened and offline verification creates no claim. Exact archive/source/template
-proofs and actual returned S3/Runtime versions precede live acceptance. The new
-local source is not asserted equal to historical v15. All twenty authored checks
-must pass before the new UI model bindings can activate. Current local evidence
-and pending approval are recorded in [progress](progress.md).
+The [completion replacement](bedrock-streaming-completion-plan.md) was explicitly
+approved at **f591498**. Its exclusive parent-bound continuation preserves the
+closed **3/40** history. The one-time upload returned VersionId
+**PQbNv3gkC1HwVYNNiAe95r1XuQDkfKvb**, and all ten existing stacks and Runtime/DEFAULT
+passed exact **UPDATE_COMPLETE / READY v2** proofs. Nova Q18 and all-five regional
+queries passed independent request/result and provider-streaming gates. Sonnet
+Q18 failed the first Converse call with **AccessDeniedException / model_error**;
+no semantic query ran. Ordinary dispatch stopped after three acceptance attempts,
+with no other model invoked and no new accepted UI binding.
+
+Mandatory restoration passed: all ten original streaming code/configuration
+bindings verified **UPDATE_COMPLETE / Runtime and DEFAULT READY v3**. Protected
+legacy-v15 Q18 smoke passed **110.25 USD** at approximately **22:29:52Z**. The
+child is closed/blocked **4/37**, aggregate **7/40**, with no incomplete attempt.
+All new choices remain disabled; remaining ordinary quota is unusable.
+Administrator-side read-only Sonnet workload-role policy/boundary/context and
+actual denial evidence are required next. Profile ACTIVE and developer
+AVAILABLE/AUTHORIZED checks do not prove workload-role effective access. The
+bounded CloudTrail collection found no AccessDenied event; unrelated log errors
+are not an established cause. No retry or broader permission is implied. The
+sealed reviews and source/artifact proofs remain immutable. New local source is
+not asserted equal to historical v15. Actual outcome and denial evidence are
+recorded in [progress](progress.md); successful CI for pushed **f591498** covers
+that implementation commit, not later outcome documentation.
 
 `ui/shared.py` maintains one separate allowance for both billable modes. Exclusive,
 fsynced question and SDK receipts precede dispatch, with journal reconciliation,

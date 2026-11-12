@@ -2,7 +2,100 @@
 
 Updated: 2026-11-12 (America/Chicago).
 
-## Current checkpoint: completion fix verified locally; replacement ready for approval
+## Current checkpoint: completion fix passed Nova; Sonnet denied; restoration verified
+
+The owner approved the exact replacement at **f591498**: review
+**67f3f3aab2a086ad16633e6cdc2195edbe02543065a4b5934c7b1177345ea58c**,
+preparation **e9fc7e4711290b058f849b15bbfb4c0786ca083caf1819bfb1b92d8468597e79**.
+[Approval](../evaluations/bedrock-streaming/completion-fix-approval.json) and
+[outcome](../evaluations/bedrock-streaming/completion-fix-outcome-2026-11-12.json)
+are committed summaries; full raw evidence remains in
+`artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/`.
+The branch is **feat/bedrock-streaming-activation**. Commit **f591498** is pushed;
+[push CI 43316129337](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43316129337)
+and [PR CI 43316722939](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43316722939)
+passed for that exact implementation: **2055 passed, 85 deselected, zero skipped**,
+lockfile/lint/format/types and all three synthesis checks successful. These runs
+predate this outcome-documentation commit. [PR #13](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/13)
+is open as a draft; no merge was performed.
+
+The guarded execution ran **once** with only **analytics-dev / 453711491609 /
+us-west-2**. Fresh identity, legacy-v15, all-ten-v1, source/archive, canonical S3/Glue,
+process and immutable-parent preflight passed. ZIP **8cfe8d9bd667c29c871342844898061f986107d94f309f1eef471f09582a4ae8**
+was conditionally uploaded once as actual S3 VersionId **PQbNv3gkC1HwVYNNiAe95r1XuQDkfKvb**;
+version-specific and latest-pointer checksum/size proofs passed. All ten existing
+stacks reached **UPDATE_COMPLETE**, Runtime/DEFAULT **READY v2**, with exact
+approved template/parameter/artifact/configuration/policy proofs and seven-day
+retention. No additional administrator grant, query trust change, profile, dataset
+publication or retained-data-layer deployment occurred.
+
+Live acceptance: **Nova Q18 passed 110.25 USD [2025-03-31, 2025-04-01)**, and
+**Nova all-five regional metrics passed** every independent request/result and
+provider-word gate. This verifies the focused completion correction on the live
+reproduction. Sonnet Q18 then returned **model_error**: its first Converse failed
+with **AccessDeniedException**, no metric query and no presentation. The evaluator
+stopped immediately: **2 passed, 1 failed, 17 not run**. No retries or other model
+questions occurred. No twenty-question acceptance record or new UI binding exists.
+
+Mandatory restoration completed: all ten exact original **c136a393… / GSY36sTbDpCNZGogULTe3cBL__bujiQK**
+artifact/configuration bindings verify **UPDATE_COMPLETE**, Runtime/DEFAULT **READY
+v3**. The protected retained-legacy-v15 smoke passed the full Q18 request and
+**110.25 USD**, completed **2026-11-12T22:29:52Z**; legacy v15 was never redeployed.
+The operator exited **1** for the original acceptance failure, with final status
+**failed-restored**, not successful feature completion. Child usage is **4/37**:
+three ordinary attempts plus one protected cleanup, **4 Runtime SDK attempts**, no
+automatic billable retries, no incomplete receipt. Parent stays **3/40**, aggregate
+**7/40**. The child is **failed/blocked**, cleanup spent, reserve unavailable; its
+numerical 32 remaining ordinary slots cannot be used to replay this campaign.
+
+Read-only diagnosis preserved exact Sonnet Runtime log events and bounded CloudTrail
+samples, plus the operator's **444-event** failure capture. None exposes the
+underlying Sonnet invocation denial message. The application retained only the
+exception class, losing SDK Error.Message/RequestId; actual denied session,
+resource and conditions remain unknown. Captured log-resource duplicate/conflict
+events do not establish the cause of the Bedrock denial. Read-only Sonnet model
+availability reports agreement/entitlement/region available and developer
+authorization authorized; active profile routing matches all three reviewed US
+model ARNs. This is **not Runtime-role effective-access proof**. No specific
+missing permission or policy broadening is supported. See the bounded
+[read-only administrator handoff](bedrock-streaming-completion-plan.md#read-only-sonnet-authorization-handoff).
+
+All **352** protected historical files remain byte-for-byte unchanged; sealed
+preparation/review/readiness, frozen ZIPs, actual S3 versions, original assemblies,
+goldens, prior ledgers/claims and M3 permissions are preserved. New approval,
+release/restoration records and receipt hashes are retained separately. Existing
+M1–M5 completion is unaffected; multi-model UI acceptance remains incomplete.
+
+Commands actually run after approval:
+
+- `poetry run python -m infrastructure.agentcore.streaming_completion --plan evaluations/bedrock-streaming/completion-fix.preparation.json verify-offline`:
+  passed **0/37 + prior 3 = 3/40**, before any new claim or AWS execution.
+- Same operator `execute --execute-approved --approval artifacts/bedrock-streaming/completion-fix/approval.json --output artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z`:
+  fresh preflight, upload, ten updates, three acceptance attempts, ten restorations
+  and protected smoke executed; **exit 1 / failed-restored** as above.
+- Read-only CloudWatch/CloudTrail and Bedrock `get_inference_profile` /
+  `get_foundation_model_availability`: evidence preserved, no inference retries.
+- Git normal push and draft PR creation: **f591498 / PR #13**; both exact-commit CI
+  runs independently verified, including **2055** tests, **195** formatted files,
+  mypy **153** files and replacement synthesis. Earlier local results below were
+  not rerun merely for outcome documentation.
+
+Final outcome-documentation verification: **9** Markdown files, **154** local
+links, **34** documentation shell blocks and **2** CI shell blocks passed local
+syntax/existence checks. Both new evidence JSON documents parse; their summaries
+match all ten actual deployment/restoration proofs, four durable SDK receipts,
+three case reports, the protected smoke and all raw hashes. `git diff --check`
+passed. No application/source/infrastructure code changed after f591498; its
+completed required local/hosted checks were not repeated merely for documentation.
+
+**Exact next task:** obtain administrator **read-only** effective-policy/context
+and simulation evidence for the actual Sonnet Runtime role; do not add speculative
+grants. Preserve the failed campaign and verified restored checkpoint. Any later
+replacement/retry needs its own concrete reviewed artifact/checkpoint/allocation
+and approval, including a new cleanup allowance; no such execution is authorized
+by the unused quota. Keep PR #13 unmerged and all new choices disabled.
+
+## Historical preparation checkpoint — f591498 (before execution approval)
 
 Continued on **feat/bedrock-streaming-activation** from clean **ceb01c5** using
 **enterprise-analytics** Conda Python **3.12.16** and Poetry **2.3.1**. The production
@@ -2680,11 +2773,11 @@ Milestone 2 introduced no AWS credentials, calls, deployment, Athena adapter, or
 
 ## Exact next task
 
-The focused completion correction, parent-bound remaining counter, package,
-assemblies and recovery operator are prepared and offline-verified. Review
-[the concrete replacement plan](bedrock-streaming-completion-plan.md) and its
-sealed review/preparation hashes before deployment. Fresh read-only preflight
-passed; candidate upload, live acceptance and new-model UI activation remain
-pending exact execution approval. Parent **3/40** and proposed child **0/37** are
-unchanged. Do not reopen/reset any campaign or spend the unavailable reserve.
-No new milestone or production-readiness claim follows.
+The completion correction passed both live Nova gates, but Sonnet denied its
+first model call. All ten original streaming configurations are restored on
+**READY v3**, and retained-v15 Q18 smoke passed. Child **4/37**, aggregate **7/40**,
+is failed/blocked; no replay, reserve use or implicit cleanup budget remains.
+Obtain the read-only Sonnet-role evidence described in the
+[completed execution handoff](bedrock-streaming-completion-plan.md#read-only-sonnet-authorization-handoff)
+before proposing a correction or separately approved retry. Keep new UI choices
+disabled and PR #13 unmerged. M1–M5 remain complete for the development scope.

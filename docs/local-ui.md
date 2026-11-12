@@ -120,16 +120,26 @@ Acceptance stopped with no other model invoked or accepted UI binding. Protected
 legacy **v15** cleanup smoke passed. Campaign **3/40** is closed (two ordinary,
 one cleanup), with reserve untouched; all new choices stay disabled. The source,
 frozen ZIP/version and existing permissions remain preserved. The
-[completion replacement](bedrock-streaming-completion-plan.md) is now implemented
-and prepared offline, including sequential-tool fallback, strict final evidence
-validation, a parent-bound continuation and candidate-independent restoration.
-It is not uploaded/deployed or accepted. New local source differs from historical
-v15: use the offline playground/saved reports until the matching replacement is
-accepted; do not bypass historical review/source checks to enable billable modes.
-Do not replay the closed campaign.
+[completion replacement](bedrock-streaming-completion-plan.md) was explicitly
+approved at **f591498**. One upload returned actual VersionId
+**PQbNv3gkC1HwVYNNiAe95r1XuQDkfKvb**; all ten existing stacks and Runtime/DEFAULT
+passed exact **UPDATE_COMPLETE / READY v2** proofs. Nova Q18 (**110.25 USD**) and
+all-five regional acceptance passed with exact independent results and provider
+streaming. Sonnet Q18 then failed the first Converse call with
+**AccessDeniedException / model_error**, without semantic queries. Ordinary
+dispatch stopped after three attempts, no other model was invoked and no accepted
+UI binding exists. Mandatory original restoration passed: all ten original
+streaming code/configuration bindings verified **UPDATE_COMPLETE / Runtime and
+DEFAULT READY v3**. The protected legacy-v15 Q18 smoke passed **110.25 USD** at
+approximately **22:29:52Z**. All new choices stay disabled. Use the offline playground/saved reports until a matching release passes
+all acceptance gates; do not bypass review/source checks or replay this operation.
 
-Local Bedrock and AWS modes reuse the unchanged `BedrockAnalyticsAgent` semantic
-tool loop. At most five planning calls precede one tool-free presentation call,
+The implementation commit **f591498** is pushed; [push CI 43316129337](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43316129337) and [PR CI 43316722939](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43316722939) passed for that commit. Those checks do not cover later outcome documentation.
+
+Local Bedrock and AWS modes share `BedrockAnalyticsAgent` semantic contracts and
+tools, preserving base-agent defaults. Streaming-only trusted completion resolves
+missing exact queries at capacity boundaries. At most five planning calls precede
+one tool-free presentation call,
 within six model calls and 12,000 tokens total. At a planning-capacity boundary, only missing queries from the exact resolved
 question may execute through the governed adapter; all requested successful
 results must exist before an answer. Invalid/error plans remain failures, and
@@ -143,23 +153,24 @@ Private reasoning is not displayed. A malformed, changed or interrupted provider
 stream is labeled, with the validated answer retained when available. It triggers
 no retry, replacement model or typing animation.
 
-The new review, artifact/version, deployment assemblies, SDK receipts and campaign
-are separate. The proposed outer maximum is **40 attempts**: twenty mandatory AWS
-checks (Q18 and all five regional metrics per model), eighteen user questions,
-one protected retained-v15 cleanup smoke and one **unapproved reserve**. Expiry is
-`2026-11-15T23:59Z`; execution is approved subject to preflight, while the reserve
-remains unavailable. New UI models
-stay disabled until every authored check passes. Deployment/binding/evaluation and
-the eventual explicit launch command are in the plan; that command requires an
-approved review and real post-deployment release records, not placeholder files.
+The completion review, uploaded version, assemblies, SDK receipts and campaign are
+separate. The parent remains closed **3/40**. The approved child has **37** total
+slots: 20 acceptance, 15 user questions, one protected cleanup and one unavailable
+reserve; expiry remains `2026-11-15T23:59Z`. The child is closed/blocked **4/37**
+(ordinary 3 + cleanup 1), aggregate **7/40**, with no incomplete attempt. The
+numeric remaining ordinary quota is unusable. New UI choices stay disabled.
+Next obtain administrator-side read-only Sonnet role/policy/boundary/context and
+full denial evidence; profile/developer availability is insufficient. No retry,
+new campaign, permission change or reserve use follows from the remaining quota.
 
-The legacy session 02 restart command above still selects only Nova and its
-accepted v15 release. Its last local counter observation remains **2/20 used,
-17 regular questions remaining**, subject to subsequent usage and expiry. This
-implementation spends none of them and leaves historical permissions, artifacts,
-goldens and ledgers unchanged. Earlier hosted/live results do not cover this new
-local implementation. Offline playground and Saved runs remain available with
-the ordinary no-argument launch.
+The legacy session 02 command is a historical Nova-only launch for its accepted
+v15 source/release. Current local source differs from that frozen closure; do not
+bypass its source check to enable billable modes. Its last observed counter remains
+**2/20 used, 17 regular remaining**, subject to later usage and expiry; this
+completion campaign spent none of those slots. Historical shared-UI live results
+do not cover this streaming release. Exact f591498 CI and the two passed Nova
+streaming gates are recorded above. Offline playground and Saved runs remain
+available with the ordinary no-argument launch.
 
 ## Approved live acceptance completed
 
@@ -436,9 +447,9 @@ Historical screenshot from the initial deterministic/legacy UI implementation:
 | `ui/shared.py`, `adapters/ui_shared.py`, `adapters/ui_release.py` | Shared budget, SDK attempts, release/data proof and protected gates |
 | `ui/live.py`, `adapters/ui_live.py` | Historical original-v12 review/ledger path |
 | `hosting/application.py` | Existing workload-credential runtime using the shared agent |
-| `adapters/bedrock_model_catalog.py`, `streaming_agent.py`, `bedrock_word_stream.py`, `bedrock_mantle.py` | New catalog, unchanged semantic loop wrapper and canonical provider-word transports |
+| `adapters/bedrock_model_catalog.py`, `streaming_agent.py`, `bedrock_word_stream.py`, `bedrock_mantle.py` | New catalog, bounded shared semantic loop wrapper and canonical provider-word transports |
 | `ui/model_streams.py`, `adapters/model_stream_ui.py`, `model_stream_cli.py` | Separate proposed review/ledger, release proof, authored acceptance and protected cleanup |
-| `hosting/streaming_server.py`, `infrastructure/cdk/streaming_app.py` | SSE hosting and isolated stacks; ten targets deployed/verified; trust passed; acceptance stopped on Nova input-reservation guard, campaign closed 3/40, legacy v15 cleanup passed |
+| `hosting/streaming_server.py`, `infrastructure/cdk/streaming_app.py` | SSE hosting and isolated stacks; completion updated ten targets to v2; Nova gates passed, Sonnet denied; original code/config restored on v3 and legacy-v15 smoke passed; child closed 4/37, new choices disabled |
 | `infrastructure/agentcore/ui_workflow.py`, `source_audit.py` | Offline assembly/source review and guarded release operator |
 
 Package paths are relative to `src/enterprise_analytics_agent/`, except infrastructure.

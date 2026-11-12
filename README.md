@@ -36,7 +36,7 @@ This follow-on UI scope does not change completed M1–M5 acceptance or their le
 
 Submitting a question clears the text box immediately. The accepted Nova release
 streams truthful progress and returns its validated final answer; its frozen AWS
-runtime remains JSON-based. The separate **local implementation** now adds actual
+runtime remains JSON-based. The separate streaming implementation adds actual
 provider word streaming and a Bedrock-only model catalog: Anthropic Claude, OpenAI
 GPT through Bedrock, Google **Gemma through Bedrock Mantle**, Meta Llama, DeepSeek,
 Qwen and Mistral, plus Nova. Additional choices stay disabled until the separate
@@ -51,13 +51,30 @@ application/readback and actual release binding passed. Nova Q18 passed with
 provider streaming, but the all-five question failed an input-reservation guard
 after producing the correct requests/results. Acceptance stopped; new choices
 remain disabled. Protected legacy v15 cleanup passed, and the campaign is closed
-**3/40**. The [focused completion correction and replacement](docs/bedrock-streaming-completion-plan.md)
-are now implemented and offline-verified, with fresh read-only preflight passed.
-The replacement is not uploaded/deployed or live-accepted. Parent **3/40** is
-closed; the separate proposed child is **0/37**, aggregate **3/40**. Execution
-approval is required before the new package or model choices are enabled.
+**3/40**.
 
-The new streaming runner reuses the unchanged semantic agent loop with at most
+The exact [completion replacement](docs/bedrock-streaming-completion-plan.md)
+was approved at **f591498**. ZIP **8cfe8d9b…** was uploaded once as actual S3
+VersionId **PQbNv3gkC1HwVYNNiAe95r1XuQDkfKvb**. All ten existing stacks reached
+**UPDATE_COMPLETE**, with Runtime/DEFAULT **READY v2** and strict proofs. Nova Q18
+passed **110.25 USD** with provider streaming, and its all-five regional question
+passed every independent request/result and streaming gate. Claude Sonnet Q18
+then failed its first Converse call with **AccessDeniedException / model_error**;
+no semantic query ran for that question. Ordinary dispatch stopped after three
+acceptance attempts; no other model was invoked and no accepted UI binding exists.
+Mandatory original restoration passed: all ten original streaming configurations
+and **c136a393… / GSY36sTbDpCNZGogULTe3cBL__bujiQK** code bindings verified
+**UPDATE_COMPLETE / Runtime and DEFAULT READY v3**. The protected legacy-v15
+Q18 smoke passed **110.25 USD** at approximately **22:29:52Z**. All new choices
+remain disabled. The parent remains closed **3/40**; the child is closed/blocked
+**4/37** (three ordinary attempts plus cleanup), aggregate **7/40**, with no
+incomplete attempt. Its numeric remaining quota is unusable; no retry, reserve
+use or another campaign is authorized.
+
+The implementation commit **f591498** is pushed; [push CI 43316129337](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43316129337) and [PR CI 43316722939](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43316722939) passed for that commit. Those checks do not cover later outcome documentation.
+
+The streaming runner preserves base-agent defaults and semantic contracts, with
+trusted missing-query completion at planning capacity boundaries. It allows at most
 five planning calls and one tool-free presentation call. It releases actual
 provider words only while they exactly match the canonical answer from validated
 semantic results, keeping amounts, units, dates and private reasoning safe. A
@@ -67,9 +84,12 @@ covers ten new isolated runtimes/roles, a new artifact and a separate approved
 40-attempt outer ceiling, including an unavailable reserve. The
 [administrator steps](docs/bedrock-streaming-administrator-steps.md) record completed
 policy evidence and completed query-trust handoff. New model acceptance is
-**incomplete**; the retained legacy **v15** passed cleanup verification and remains
-the accepted release. Do not replay the closed campaign or reuse its remaining
-quota/reserve.
+**incomplete**. The retained legacy **v15** remains the accepted release; its
+new protected smoke passed, separately from the earlier cleanup. Read-only
+administrator verification of the configured Sonnet role and denied request
+context is next; developer/model availability does not prove workload-role access.
+The actual denied session, resource, message and conditions remain unknown. Do not
+replay either closed campaign or broaden IAM without evidence.
 
 The separate UI campaign used **19/20 attempts**: Q18 verification 1 and all 18
 regular slots; the protected rollback smoke was unused. No regular live allowance

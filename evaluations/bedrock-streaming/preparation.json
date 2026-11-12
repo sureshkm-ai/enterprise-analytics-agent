@@ -1,0 +1,105 @@
+{
+  "prepared_at": "2026-11-12T00:33:39.810420+00:00",
+  "review_sha256": "cf222d7e870e0d033a5b65d4f74876a581b83f237f651c0eaa6033745b86c76d",
+  "review_file_sha256": "47c196151a77eb8a2f290a99d804bb6afa0ad09d92d06d6a9125b7b87b1be26a",
+  "source_sha256": "c2311efc915339f0e7b7d7d86da660d037fb84be700332e45006299b3b70b687",
+  "artifact_sha256": "c136a3931e2af31d6453c54910ddc9e839ef03e69a6f2ddebb35b3eb7cfdc306",
+  "artifact_bytes": 39298651,
+  "artifact_s3_key": "releases/c136a3931e2af31d6453c54910ddc9e839ef03e69a6f2ddebb35b3eb7cfdc306/agent.zip",
+  "artifact_version_id": null,
+  "canonical_manifest_sha256": "99e9115edc990decf5b15e5de1ad693772e3bd03ec6767b880ebbdd4135b8797",
+  "deployment_config_sha256": "ab4019e79cf0e7b57978869873550ed6dfcc26b14c7f6f84cdf9a024675f2258",
+  "deployment_policy_sha256": "9be307f2bf73232c6146a7cfda8eb90e31d4952af2eb0de5ce8eb79e51a8723f",
+  "template_checksums": {
+    "nova-lite": {
+      "template_sha256": "a5d6be87e3ecec5977bdb9bbf8f1faf6b05be38a055de495d57d3011536325b7",
+      "file_sha256": "73a01193b9478e9c8fc96c5cf79aab1ee54b99c5e233efdf10635f7237046384"
+    },
+    "claude-sonnet-5-5": {
+      "template_sha256": "c5296cbf5acb0ca4e8239b1eb6e2427e0559efb89df002d94601d9d4912baa8e",
+      "file_sha256": "c4d660f5158d51454c9867a036ba28c5fb0b4ef179db5af7622af79b7ed9b25c"
+    },
+    "claude-opus-5-5": {
+      "template_sha256": "41af4154b2853a61c8eeaa69320ae68fefad74bb5d50306c1df16eee9f1a9111",
+      "file_sha256": "321830657fd4c8dc8feaacca33d7e31795617e4cd1c282aa67beec0a748e1ae5"
+    },
+    "gpt-6-astra": {
+      "template_sha256": "308912692c261e4d9588b6dff74fe19cdaf5d6abe3179f2a7f48fa5904ceb6dd",
+      "file_sha256": "79ffcd1025e6ca83948e4d81fcc0bc48aba809159f9edbf7f87ca9ca0a08d602"
+    },
+    "gpt-6-1-sol": {
+      "template_sha256": "b5a7636b718e50ee79eecf0d6a9ef4e79f5d1bc5f34a1feaa23244b19b01d56d",
+      "file_sha256": "4104a70f768f7ccda626775744f9a19a950a82e7fa98f28114b756bce31fc3d8"
+    },
+    "gemma-4-31b": {
+      "template_sha256": "4392e07638fa980f7b0af20779a384562c017ab87855b950643ea52f22e58de8",
+      "file_sha256": "b4226e59f7f4d470446394b966271d6694343bfc395d558c6369d714693d1d20"
+    },
+    "llama-4-maverick": {
+      "template_sha256": "2d7d6575a717d33d00613bb2efefb2707e6c01af6f71b7f22159b3213ee1e8d9",
+      "file_sha256": "91007a2b80df569a1149ebd3178b1a39282409154d94d00a6276caba38d061be"
+    },
+    "deepseek-v3-2": {
+      "template_sha256": "2385ac2a982702ec5f66c19777264a05b29f1aaf08f00bb161e5fff2ce949bba",
+      "file_sha256": "4ddc0f9a1ae0341ec858ed89ddcb3a6ab5cc6b5bb74aee7f7518bda2aa68acd1"
+    },
+    "qwen3-235b": {
+      "template_sha256": "2392e3e7375f2edd05b963b8deda1135f9fbf3f23c81217672fb8538de24bb7c",
+      "file_sha256": "1e6459e807bb116529bba1bd954bf9998f964f082a8e1e0a2b64876abd2a27f6"
+    },
+    "mistral-large-3": {
+      "template_sha256": "3d3a3b2824a4feb86eb72fc6e83dc0394c1f32384408391332263718af5be1fa",
+      "file_sha256": "417df7ea58c8ec88ef9041659c2b329152828dd890d3f3f4eed5e80843775fb0"
+    }
+  },
+  "assembly_files": {
+    "cdk.out": "3b2d27f00c6d3d531050c84e658962dbf4daacb555c46eb4940c71c669716dbe",
+    "enterprise-analytics-stream-claude-opus-5-5.assets.json": "bdf7b9e0be8ba3a80f6a9168d54a68fe23c7467d93e8407aa13fbaf2a46af0bc",
+    "enterprise-analytics-stream-claude-opus-5-5.metadata.json": "678905b590438f5878bd282509fac1211d076f1d4424d79ec7d06589948f35ec",
+    "enterprise-analytics-stream-claude-opus-5-5.template.json": "321830657fd4c8dc8feaacca33d7e31795617e4cd1c282aa67beec0a748e1ae5",
+    "enterprise-analytics-stream-claude-sonnet-5-5.assets.json": "11266655ddb491558ad8768861067e753e952777512dfb19f52ee904a7893b5b",
+    "enterprise-analytics-stream-claude-sonnet-5-5.metadata.json": "69d842261a172eb467a371f090c4e0b7155717960b96054daa7cbb1f75d82b96",
+    "enterprise-analytics-stream-claude-sonnet-5-5.template.json": "c4d660f5158d51454c9867a036ba28c5fb0b4ef179db5af7622af79b7ed9b25c",
+    "enterprise-analytics-stream-deepseek-v3-2.assets.json": "9e231e8f5e294363c4cb4e3ef5ad30d634827e593982d348719c3357411f215a",
+    "enterprise-analytics-stream-deepseek-v3-2.metadata.json": "170f8c7aaaf42774c2fc5113df2b942d7663b5821d1e8802e6eb993b170d45e2",
+    "enterprise-analytics-stream-deepseek-v3-2.template.json": "4ddc0f9a1ae0341ec858ed89ddcb3a6ab5cc6b5bb74aee7f7518bda2aa68acd1",
+    "enterprise-analytics-stream-gemma-4-31b.assets.json": "989c5e0d83ce7533d25970de729a61b766567182e357fc7d00662a38accbc4be",
+    "enterprise-analytics-stream-gemma-4-31b.metadata.json": "507e427120c70b5bc21f7e7ad8b315e21ae896e7a9e37008f0c572b09852ec99",
+    "enterprise-analytics-stream-gemma-4-31b.template.json": "b4226e59f7f4d470446394b966271d6694343bfc395d558c6369d714693d1d20",
+    "enterprise-analytics-stream-gpt-6-1-sol.assets.json": "5fdda056ab783639b0f8ee980c9a32c59521333391bba881d829a1c49893edad",
+    "enterprise-analytics-stream-gpt-6-1-sol.metadata.json": "b22f60997e7f4864e480c5c2e24c0c0146d9e1b940b3f8b7748e1f0ecd0a0b3c",
+    "enterprise-analytics-stream-gpt-6-1-sol.template.json": "4104a70f768f7ccda626775744f9a19a950a82e7fa98f28114b756bce31fc3d8",
+    "enterprise-analytics-stream-gpt-6-astra.assets.json": "8fcc97aaef15ddea58005e558de1f89eb437fb35be35c93d5815a70c6c495a44",
+    "enterprise-analytics-stream-gpt-6-astra.metadata.json": "ff2d0910c1e19e1478d1c98098a6c3cd7991f5b264e7910156e3541d179cf21e",
+    "enterprise-analytics-stream-gpt-6-astra.template.json": "79ffcd1025e6ca83948e4d81fcc0bc48aba809159f9edbf7f87ca9ca0a08d602",
+    "enterprise-analytics-stream-llama-4-maverick.assets.json": "6011cf64ed488e208d9ca5b4a922d05208f314a408254cc0897ea05b1d9d081e",
+    "enterprise-analytics-stream-llama-4-maverick.metadata.json": "98c332a8dd47eddd2b3c826a0c7a30674a703d444f6e97e9116a18d80dd69275",
+    "enterprise-analytics-stream-llama-4-maverick.template.json": "91007a2b80df569a1149ebd3178b1a39282409154d94d00a6276caba38d061be",
+    "enterprise-analytics-stream-mistral-large-3.assets.json": "fe3f67714819c6918325a062e7b65769763cf003e14e4ae73bbefbb79e71e151",
+    "enterprise-analytics-stream-mistral-large-3.metadata.json": "9eb0cf5cdc3a7eabd02ad2b1c4d0d19cb8689ffcfe2ef7aa8d5bd372fe6ad135",
+    "enterprise-analytics-stream-mistral-large-3.template.json": "417df7ea58c8ec88ef9041659c2b329152828dd890d3f3f4eed5e80843775fb0",
+    "enterprise-analytics-stream-nova-lite.assets.json": "9c5a6ee92762b114855893d9121ba445b99bfe573cb9d25ab1ebf9e8fc60f1e5",
+    "enterprise-analytics-stream-nova-lite.metadata.json": "1b960b015a75bbe0beb828bccff795e68a44ba0c46bc62293dc3551eded6e81a",
+    "enterprise-analytics-stream-nova-lite.template.json": "73a01193b9478e9c8fc96c5cf79aab1ee54b99c5e233efdf10635f7237046384",
+    "enterprise-analytics-stream-qwen3-235b.assets.json": "5c13e717e2de7cb7b2388d7cf4e6650c7a687cafab2d9960e0c2c726a91e0f1c",
+    "enterprise-analytics-stream-qwen3-235b.metadata.json": "4503976b3cacfec87780ae053dd4b050db7ef58c764eb2fceec17e0456236608",
+    "enterprise-analytics-stream-qwen3-235b.template.json": "1e6459e807bb116529bba1bd954bf9998f964f082a8e1e0a2b64876abd2a27f6",
+    "manifest.json": "cd329256f53cdc0635b1cbb0fbe62a0e29b57c01eb673ca6e34bfc8be91e7c06",
+    "tree.json": "ae32baaad169dc9d34e05dc8c77a6d78329015d68dbae2f3023c6ea7225102f5",
+    "validation-report.json": "cbebe50f044ceaab25443e7d742800baae183e829634ddcc7a60a0a47e9a2301"
+  },
+  "budget": {
+    "used": 0,
+    "maximum": 40,
+    "ordinary_used": 0,
+    "regular_remaining": 38,
+    "protected_cleanup": 1,
+    "unapproved_reserve": 1,
+    "failed": false,
+    "incomplete": false,
+    "expired": false,
+    "blocked": false
+  },
+  "aws_calls": 0,
+  "live_acceptance": "not run; explicit approval required"
+}

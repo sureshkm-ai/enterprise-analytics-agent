@@ -11,6 +11,7 @@ from enterprise_analytics_agent.agent.contracts import AgentRequest, AgentRespon
 class AskRequest(AgentRequest):
     mode: Literal["local", "local_agent", "live"] = "local"
     request_id: UUID
+    model_key: Annotated[str, Field(pattern=r"^[a-z][a-z0-9_-]{0,63}$")] | None = None
 
 
 class UiResult(BaseModel):
@@ -21,6 +22,7 @@ class UiResult(BaseModel):
     elapsed_ms: Annotated[int, Field(ge=0)] | None = None
     metadata: list[dict[str, object]] = Field(default_factory=list)
     unreported_diagnostics: tuple[str, ...] = ()
+    presentation_status: Literal["streamed", "fallback", "not_needed"] | None = None
 
 
 def unreported_diagnostics(response: AgentResponse) -> tuple[str, ...]:

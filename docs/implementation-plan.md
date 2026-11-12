@@ -26,6 +26,57 @@ attachments or broadening IAM. See [acceptance/results](ui-shared-code-live.md) 
 
 The UI outcome is pushed and merged through [PR #8](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/8) on November 11, 2026, at `e22287538e22e1917eb2a21efbeadc4cec5c6d75`. Its historical acceptance and CI retain their original attribution. Default/offline saved-report viewing remains available without a new invocation. No next milestone or production-readiness claim is implied.
 
+## Follow-on UI interaction: composer, progress and model selection
+
+The user requested immediate input clearing, streaming output and model choices.
+Local implementation clears the composer on submission, streams truthful execution
+progress followed by validated results, and routes opaque model selections through
+trusted server-configured backend bindings. The existing JSON endpoint, question-only
+agent request, shared semantic rules and accepted runtime/source/artifact remain
+unchanged. A disconnected browser does not retry or abandon durable accounting.
+
+The current accepted live configuration exposes **Nova Lite only**. Its existing
+JSON runtime and progress stream remain separate from the newly requested word
+streaming release below. The initial interaction-only change performed no AWS
+operation, rebuild, upload, deployment, IAM change or billable test, and did not
+expand any allowance.
+Local inspection found session 02 at **2/20 used / 17 regular remaining** before UI
+reload; counters and historical evidence are preserved. Exact verification results
+and the local feature commit are handed off through [progress](progress.md).
+
+## Follow-on scope: Bedrock-only models and provider word streaming
+
+The separately requested implementation is prepared locally; deployment and live
+evaluation remain unapproved. The [concrete plan](bedrock-multimodel-streaming-plan.md)
+proposes nine additional Bedrock choices and a new streaming Nova baseline, each
+with a separate fixed-model role/Runtime and a new artifact. Google is **Gemma via
+Bedrock Mantle**; native OpenAI GPT choices remain inside Bedrock. Optional catalog
+metadata is not a deployment or effective-access assertion.
+
+1. Reuse the unchanged `BedrockAnalyticsAgent` tool loop and semantic contracts,
+   with local canonical DuckDB and hosted Athena execution. Keep SQL/calculations
+   inside the governed adapters and authorization outside model payloads.
+2. Bound execution to five planning calls plus one tool-free presentation call,
+   six model calls/12,000 tokens total. Complete a fifth sequential tool round
+   only when the exact full governed plan already succeeded; never drop requested
+   metrics or add a sixth planning call.
+3. Release actual provider words only when they match the canonical validated
+   answer prefix. Preserve exact numbers, units, dates, private reasoning and
+   final protocol/usage checks. Label rejected streams and never retry billable calls.
+4. Verify local source/artifact/canonical pins, strict isolated infrastructure,
+   transport/errors/authorization, quota receipts, disconnect ownership and
+   failure cleanup offline. Record this checkout's results independently of
+   earlier hosted CI and historical live tests.
+5. Obtain review of the concrete artifact/templates, exact additive IAM/trust
+   changes and new budget before AWS execution. Require two independent AWS
+   checks per model—Q18 and all five regional metrics—before enabling new models.
+
+The separate proposed outer budget is 40 attempts: 20 mandatory checks + 18 user
+questions + one protected retained-v15 cleanup smoke + one unapproved reserve,
+expiring `2026-11-15T23:59Z`. No call is authorized by this proposal. Preserve the
+accepted Nova v15 release, session 02's last observed 17 regular questions,
+historical ledgers/goldens and frozen artifacts; no production-readiness claim follows.
+
 ## Follow-on validation: execute every test — complete, zero skipped tests
 
 The requested all-tests development validation passed on November 11, 2026:
@@ -152,6 +203,6 @@ The approved [plan](milestone-5-plan.md) is implemented for local review on `fea
 
 11. Approved `q18-recovery-v1` executed once from fresh original v10: deployed pinned candidate READY v11, Q18 **110.25 USD [2025-03-31,2025-04-01)** and all **36/36** cases passed; client p95 **13.381s**, complete diagnostics. Mandatory original restore/smoke and separate read-only final verification passed on READY v12. Recovery **38/38**, aggregate **40/40**, no retries/failures/incomplete calls. All 122 protected files and historical ledgers/claims unchanged. No code/upload/IAM/dataset changes during execution.
 
-Exact next task: the user may submit up to 18 remaining questions through the approved [active interactive session](ui-interactive-session-02.md); preserve its counter and stop on expiry, failure or exhaustion. The activation handoff reports its separately verified commit/PR/CI evidence; do not attribute earlier CI to it. M1–M5, shared UI acceptance and full validation remain complete and merged; preserve candidate-retail v15 and all historical evidence. No new milestone, deployment or production-readiness claim is implied.
+Exact next task: review the [Bedrock model/streaming deployment proposal](bedrock-multimodel-streaming-plan.md), actual new artifact/template/review pins and administrator access/trust prerequisites before deciding on its separate execution approval. The existing Nova [interactive session 02](ui-interactive-session-02.md) remains independent; its last local inspection found 17 regular questions remaining, subject to its own counter/expiry. Do not spend those questions testing this release or attribute earlier CI/live results to new local changes. M1–M5, shared UI acceptance and full validation remain complete and merged; preserve candidate-retail v15 and all historical evidence. No new milestone, deployment or production-readiness claim is implied.
 
 Cube remains a later adapter extension outside milestones 2–5 unless separately requested.

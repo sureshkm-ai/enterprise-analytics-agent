@@ -2,7 +2,251 @@
 
 Updated: 2026-11-11 (America/Chicago).
 
-## Current task: approved interactive session 02 activated; push/PR handoff
+## Current task: fix three clean-checkout CI failures
+
+Verified [PR #11](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/11)
+is open on **feat/ui-streaming-model-selection** with pushed head
+**4616777f40a236cc37a034da65db306b3c06afba**. Its
+[PR CI 43137963697](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43137963697)
+failed with **3 failed, 1,891 passed, 85 deselected in 186.31s**. Read the actual
+job log through the GitHub connector after CLI authentication/network inspection
+was unavailable. The failure was the cleanup test fixture reading an ignored
+local release record, not a runtime/AWS, lint or type failure. Later hosted steps
+were not reached. Earlier local results below retain their historical attribution.
+
+The three cleanup scenarios now construct a typed, explicitly test-only legacy
+v15 `ReleaseRecord` from the tracked shared review and validate its pins offline.
+They write it only beneath pytest's temporary directory. The module also rejects
+reads from the checkout's generated `artifacts/` tree, so locally retained files
+cannot mask this regression again. Existing success, drift, protected-slot,
+original-exception and failure-report assertions remain intact.
+
+### Actual verification
+
+Used Python **3.12.16** and Poetry **2.3.1** in the existing
+**enterprise-analytics** Conda environment. Exported only tracked files with
+`git archive HEAD`, forced imports from that export's `src`/root and asserted the
+imported module location. No original generated artifacts were copied or removed.
+
+| Command/check | Result |
+| --- | --- |
+| Original three cleanup scenarios in the tracked-only export | Reproduced all **3 failures** in **0.16s**, each missing the generated release record. |
+| `poetry run pytest tests/test_model_stream_cli.py -q` after the fix | **21 passed in 0.81s** in this checkout; **21 passed in 1.55s** in the tracked-only export. |
+| `poetry check --lock` | Passed in the export. |
+| `poetry run pytest` in the export with only the fixed test overlaid | **1,894 passed, 85 deselected in 68.39s, zero skipped**. The 85 live items were not executed. |
+| `poetry run ruff check .` | Passed in the export. |
+| `poetry run ruff format --check .` | Passed: **185** files formatted. |
+| `poetry run mypy src tests` | Passed: **147** source files. |
+| CI data-layer synthesis | `poetry run python -m infrastructure.cdk.app --config infrastructure/cdk/config.example.json --outdir artifacts/ci-fixture-fix/cdk.data.out` passed offline in the export. |
+| CI AgentCore foundation synthesis | `poetry run python -m infrastructure.cdk.agentcore_app --config infrastructure/cdk/agentcore.config.example.json --phase foundation --outdir artifacts/ci-fixture-fix/cdk.foundation.out` passed offline in the export. |
+
+Both synthesis commands emitted the existing JSII notice about local Node 26;
+they exited successfully. A separate read-only audit found no other generated
+repository-artifact reads across the thirteen streaming test modules and no
+remaining actionable issue in this fix. Documentation/link and diff checks passed.
+The clean-export location is recorded in `artifacts/ci-fixture-fix/clean-export.json`.
+
+### Exact next task and boundaries
+
+Push this local correction to the existing PR #11 branch and verify hosted CI
+for that exact new commit. No push, merge, AWS operation or live invocation was
+performed for this correction; the failed hosted run covers **4616777**, not this
+fix. Application/infrastructure code, the prepared ZIP/review/template pins,
+canonical data, goldens, historical evidence and all real invocation ledgers are
+unchanged. No package rebuild or deployment is required for this test-only fix.
+The separate multi-model deployment/live-evaluation proposal still needs its
+existing review/approval prerequisites; completed M1–M5 evidence remains preserved.
+
+## Bedrock-only streaming preparation at 4616777 — historical
+
+Implemented the user-requested Bedrock-only follow-on locally on
+**feat/ui-streaming-model-selection**, preserving local **a94a1ff** and its earlier
+UI work. No direct provider API integration, new profile or dependency change.
+Python **3.12.16**, Poetry **2.3.1**, existing `enterprise-analytics` Conda environment
+and lockfile were used throughout. Earlier push/PR CI at **2488e28**, linked in the
+historical entry below, does **not** cover this feature; no new hosted/live result
+is claimed. M1–M5 and previously accepted UI/full-live evidence remain preserved.
+
+### Implemented and prepared
+
+- An official-document-backed Bedrock catalog: Nova baseline; Claude Sonnet/Opus;
+  native OpenAI GPT; Google **Gemma through Bedrock Mantle**, Meta Llama, DeepSeek,
+  Qwen and Mistral. GPT-OSS is optional catalog metadata outside the ten-runtime
+  proposal. These are documented options, not assertions of account access or
+  universal model rankings. Gemini/direct OpenAI/Google APIs are outside scope.
+- One unchanged `BedrockAnalyticsAgent` semantic tool loop, with canonical DuckDB
+  locally and Athena in fixed-model AgentCore targets. Native Converse planning
+  and tool-free ConverseStream presentation preserve Meta compatibility. Gemma
+  uses AWS-signed Mantle chat, with one tool at a time and fresh workload/profile
+  credentials. Private provider reasoning is replayed internally when required,
+  never displayed. Every billable SDK path disables automatic retries.
+- Genuine provider words are published only while their exact prefix matches the
+  answer rendered from validated semantic results. Final word/stop/usage checks
+  precede completion. Wrong amounts, dates, additions and truncated streams are
+  rejected; a labeled canonical fallback never retries or fabricates typing.
+  Browser input still clears immediately. Bounded queues retain worker ownership
+  through accounting even after disconnects.
+- Five planning calls plus one presentation, at most six model calls/12,000 combined
+  tokens under the shared deadline. A fifth sequential tool turn can complete an
+  **exact full successful** governed plan without another planner call. Tests
+  reject incomplete, duplicate, failed, changed-scope, time/token-limit evidence.
+  Legacy agent sources, metrics and public v1/v2 schemas remain unchanged.
+- Ten separate fixed-model roles/Runtimes, exact inbound Runtime/DEFAULT policies,
+  new code-key grants and additive query-role trust proposals. No current stack,
+  trust or policy was changed. A distinct version-pinned release set, approval,
+  one-shot acceptance claim, durable per-question/SDK receipts and expiry are
+  required; new UI bindings remain disabled until all authored acceptance passes.
+- The concrete [deployment and evaluation plan](bedrock-multimodel-streaming-plan.md)
+  and [prepared pins](../evaluations/bedrock-streaming/preparation.json) cover the
+  actual local ARM64 ZIP, source, templates, additive policy and commands. ZIP
+  **c136a3931e2af31d6453c54910ddc9e839ef03e69a6f2ddebb35b3eb7cfdc306**,
+  **39,298,651 bytes**; review
+  **cf222d7e870e0d033a5b65d4f74876a581b83f237f651c0eaa6033745b86c76d**.
+  Actual S3 VersionId is deliberately **unbound**: no upload occurred.
+
+### Actual verification in this checkout
+
+| Command/check | Result |
+| --- | --- |
+| `poetry check --lock` | Passed: All set. |
+| `poetry run pytest` | Final **1,894 passed, 85 deselected in 68.58s, zero skipped**. The earlier 1,852-pass run exposed two startup-test expectations; updated those assertions to include catalog metadata while preserving the no-AWS/no-ledger check. Live items were not run for this new release. |
+| `poetry run ruff check .` | Passed. |
+| `poetry run ruff format --check .` | Passed: **185** files formatted. |
+| `poetry run mypy src tests` | Passed: **147** source files. |
+| `node --check src/enterprise_analytics_agent/ui/assets/app.js` | Passed. |
+| Scoped streaming/operator suites | Included in the final suite: catalog 12, Mantle 34, word gate/protocol 41, agent 34, exact fifth-round completion 16, hosting 18, review/ledger 25, transport/preflight 58, CLI 21, infrastructure 22, UI word delivery 14. Complete mocked operator acceptance judged all 20 requests for ten models against frozen independent expectations, with failure/interrupt/duplicate-run/cleanup regressions. |
+| ARM64 packaging | `poetry run python -m infrastructure.agentcore.package --config infrastructure/agentcore/runtime.streaming.nova-lite.json --entrypoint infrastructure/agentcore/streaming_entry.py --output artifacts/bedrock-streaming/candidate/agent.zip --wheel-dir artifacts/agentcore/wheels --offline` passed using all 13 existing checksum-locked wheels. All **76** packaged source/assets files, entry point and default config matched actual bytes. Initial task-owned build retained separately after corrections. |
+| Offline infrastructure | `poetry run python -m infrastructure.cdk.streaming_app --config infrastructure/cdk/streaming.proposed.json --outdir artifacts/bedrock-streaming/cdk.reviewed.out --allow-unbound-artifact` passed. Repeated in `cdk.verification.out`: all **ten templates byte-identical**. Required actual-version parameter has no default. |
+| Offline proposal command | `poetry run python -m enterprise_analytics_agent.adapters.model_stream_cli --review evaluations/bedrock-streaming/review.proposed.json verify-offline` passed: **0/40**, two authored checks/model, **zero AWS calls**, no campaign/ledger created. |
+| Actual Playwright browser | **13 checks passed**, two fake question POSTs with `CanonicalWordGate`, zero AWS clients/calls: early provider-word callbacks, immediate empty composer, disabled unconfigured choices, exact 110.25, no wrong 999.99, explicit mismatch fallback/no retry, busy controls and offline separation. Test browser/server closed. Screenshots: `output/playwright/bedrock-words-early.png` and `bedrock-words-complete.png`. |
+| Preservation | Existing 25-file shared closure, 13 installed dependency versions, frozen candidate/lock/goldens/canonical publication bytes verified with AWS session creation blocked. **203 protected historical files** and **10 session-02 files** remained byte-identical. No historical artifact, assembly, S3 version, permission, dataset, claim or ledger changed. |
+
+The temporary preservation helper initially needed `PYTHONPATH=.` to import the
+repository's infrastructure package; rerunning with that setting passed. A local
+packaging attempt before its new config existed stopped before ZIP creation; the
+complete command then passed. An un-escalated focused HTTP run was blocked by
+loopback sandbox permissions; the final complete suite ran with loopback/cache
+access and passed. These are local preparation observations, not AWS failures.
+Evidence is retained under `artifacts/bedrock-streaming/preparation/`; generated
+ZIPs, CDK output and journals remain ignored by Git.
+Documentation checks passed for **7 Markdown files, 94 local links and 31 shell
+blocks including nested examples** (syntax parsed only), plus `git diff --check`.
+
+### Existing UI and allowances preserved
+
+Gracefully reloaded only the verified idle task-owned Workbench, PID **51167** to
+**60765**, with exactly the same session-02 launch arguments. It is listening at
+**http://127.0.0.1:8501**; refresh the browser for the catalog controls. Startup and
+readiness inspection sent no question and created no AWS session. Nova remains the
+only enabled live binding; additional catalog choices are disabled pending the new
+release. This current Nova release still has progress/final JSON, rather than the
+new provider-word stream.
+
+The current local counter is unchanged at **2/20**, with **17 user-owned regular
+questions** remaining through `2026-11-13T23:59Z`; protected original rollback is
+unapproved/unavailable. No automated question used that allowance. All historical
+M4/M5/repair/full-live/UI01 counters remain closed/preserved. Recorded Runtime v15
+readiness remains the November 11, 21:52:13Z AWS proof, not a fresh AWS assertion here.
+
+### Exact next task and limitations
+
+Review the pinned ten-model plan and administrator prerequisites, then explicitly
+authorize the new upload, resources, additive IAM/trust changes and billable tests
+before execution. Proposed separate campaign **bedrock-stream-models-v1-01** expires
+`2026-11-15T23:59:00Z`: outer maximum **40**, with **20** AWS acceptance questions,
+**18** user questions, **one protected legacy-v15 cleanup smoke** and **one unapproved,
+unusable reserve**. It has consumed zero calls and has no ledger/approval record.
+The existing Nova review cannot fund these checks. Effective model access,
+subscriptions/quotas, Mantle default-project availability and shared workload-directory
+creation/tag behavior need fresh administrator/read-only evidence; denied IAM
+inspection is not evidence of missing permissions and no duplicate grants were added.
+
+This is a local implementation/verification commit with deployment/live acceptance
+pending. No AWS operation, IAM change, deployment, upload, new billable call, push
+or merge was performed. Old Nova remains usable within its original allowance;
+new models/word streaming are not claimed deployed or production-ready.
+
+## Previous local UI interaction checkpoint at a94a1ff — historical
+
+Implemented the requested local UI changes on **feat/ui-streaming-model-selection**,
+branched from pushed **2488e284395b3038f781f14f1e8a0d5dd621506c** with a clean working
+tree. Preserved the enterprise-analytics Conda environment: Python **3.12.16**,
+Poetry **2.3.1**, existing lockfile. The earlier activation handoff is
+[PR #10](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/10), with
+successful [push CI 43108364020](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43108364020)
+and [PR CI 43108417902](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43108417902)
+for **2488e28**. Those hosted results predate this feature and do not cover it.
+
+### Completed behavior and boundaries
+
+- Clicking Run captures the question, immediately clears the text box and leaves
+  it empty on success/failure. A neutral placeholder avoids displaying the example
+  question in the cleared composer. The submitted question remains in its result card.
+- `/api/ask/stream` sends actual NDJSON accepted/running/elapsed progress while one
+  worker executes, then the validated result or a safe terminal error. Deep dump and
+  revalidation reject invalid nested Pydantic instances before either JSON or stream
+  publication, including model_copy bypasses found during review. The existing
+  JSON API remains compatible. This is **live progress with validated final output**,
+  not raw Bedrock-token streaming or invented tool-stage/typewriter output.
+- A model selector uses trusted `AgentModel` backend bindings and an opaque
+  `model_key`; the key is stripped before backend dispatch and the SDK payload
+  remains question-only. Unknown/mode-incompatible choices fail before execution;
+  returned model/mode diagnostics must match. Multiple choices were exercised with
+  offline fake backends. The actual approved shared release still exposes only
+  **Amazon Nova Lite**; review pins/model configuration were not loosened.
+- A disconnected browser cannot retry the operation or release the execution lock
+  before its worker finishes backend accounting. Interrupted/invalid streams display
+  an error without a second POST. Existing authorization, counters and expiry apply.
+- Stopped only the verified idle task-owned old UI (PID 44994), after confirming no
+  incomplete attempt. Reloaded the same approved session/release on
+  **http://127.0.0.1:8501**, task-owned PID **51167**. Both agent modes are enabled;
+  refresh the browser to load the new assets/token. Startup/status made no AWS call.
+
+Local ledger inspection before reload found the user had completed one AWS question
+after Q18: **2/20 used**, **17 regular questions remaining**, two Runtime SDK attempts
+total, no failures/incomplete work. All **10** existing session files remained
+byte-for-byte unchanged through implementation/tests/reload. Expiry stays
+**2026-11-13T23:59Z**; the protected original-rollback slot remains unavailable.
+No automated billable question, AWS operation, deployment, IAM change, upload,
+rebuild, publication, dataset change or ledger reset was performed for this feature.
+
+### Actual verification
+
+| Command/check | Result |
+| --- | --- |
+| `poetry check --lock` | Passed: All set. |
+| `poetry run pytest` | Final **1,599 passed, 85 deselected in 65.16s, zero skipped**, including the deep nested-validation correction. Earlier 1,594 / 1,597 runs passed before the final authorization/publication regressions. Live suites were not run. |
+| `poetry run pytest tests/test_ui_streaming.py -q` | Final **29 passed in 10.40s** (earlier 27 passed in 8.75s): real HTTP early progress/heartbeat, exact Decimal/Unicode, trusted routing, errors, disconnect ownership, no retries, authorization and legacy JSON. |
+| `poetry run ruff check .` | Passed. |
+| `poetry run ruff format --check .` | Passed: **163** files formatted. |
+| `poetry run mypy src tests` | Passed: **128** source files. |
+| `node --check src/enterprise_analytics_agent/ui/assets/app.js` | Passed. |
+| Actual Playwright browser checks | **18 passed**, only fake model backends/deterministic offline data: immediate empty composer/neutral prompt, early progress, selected-model routing, exact result/Unicode, safe errors, truncated-stream no retry, busy controls and offline mode. Final browser run: four test POSTs; zero AWS clients/calls and no real allowance spent. |
+| Offline source/artifact/canonical verification | `verify_local_release` passed with AWS session creation blocked: unchanged 25-file common source, dependencies, accepted ZIP and canonical publication bytes. **203** protected historical files and the 10 current-session files unchanged. |
+
+Initial HTTP tests required loopback sandbox escalation; their socket-bind
+PermissionErrors were environment restrictions, not application failures. The
+focused and final suites then passed. Documentation checks passed across **7 Markdown
+files / 87 local links / 27 shell blocks parsed without execution**, along with
+`git diff --check`. Infrastructure and frozen runtime
+are unchanged; no deployment/synthesis/live-acceptance result is inferred from UI tests.
+Retained local evidence: `artifacts/ui-shared/ui-streaming-preparation/`; browser
+screenshots at `output/playwright/streaming-in-progress.png` and
+`output/playwright/streaming-complete.png`. The offline test browser/server were closed.
+
+### Exact next task and limitations
+
+Refresh **http://127.0.0.1:8501** and use the new composer/progress/model controls
+within the existing user-owned allowance. The current model remains Nova Lite.
+Adding real models or upstream model-token streaming needs a separately reviewed
+server/runtime configuration, applicable access verification and deployment scope;
+this feature neither creates those resources nor expands the live budget. Official
+AWS references and the unchanged launch command are in [the UI runbook](local-ui.md).
+This feature is a local implementation/verification checkpoint; it has no new hosted
+CI claim. M1–M5, frozen assets, existing releases and all historical acceptance remain
+complete/preserved; no new milestone or production-readiness claim is implied.
+
+## Completed session 02 activation and push/PR handoff at 2488e28 — historical
 
 The user approved the exact session scope at **319a872aaf5de89075d59f78221122efa1d43e30**
 and explicitly requested a push and PR. Preserved the clean checkout on

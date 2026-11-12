@@ -22,12 +22,62 @@ flowchart TD
 ```
 
 Trusted Python configuration supplies authorization; browser payloads cannot set
-scope, history, model or quota purpose. The AWS payload contains only the question.
+scope, history, an arbitrary model configuration or quota purpose. The optional
+UI-only `model_key` is an opaque lookup into trusted `AgentModel` backend bindings.
+Python removes that routing key before dispatch; the AWS payload contains only the
+question. Configured choices declare their model identifier and supported backend
+modes; unknown choices fail before execution and returned model diagnostics must
+match the selected binding. Multiple configured choices are supported, while the
+actual accepted release remains Nova Lite only. Adding a selector does not approve
+another model, release, deployment or allowance.
 Provider clients and fresh artifact/configuration/publication checks belong in
 `adapters/ui_shared.py`, `ui_release.py` and `ui_local_agent.py`. Deployment is a
 separate operator command in `infrastructure/agentcore/ui_workflow.py`; HTTP has no
 mutation route. Its bounded controller reconciles full templates, parameters,
 artifact/configuration and Runtime/DEFAULT proofs; READY alone is insufficient.
+
+The composer clears immediately after capturing a valid submission, including when
+the subsequent request fails. The operator UI's `/api/ask/stream` returns NDJSON:
+truthful accepted/running progress and elapsed time while the backend executes,
+followed by the validated `UiResult` or an authored error for the accepted Nova
+release. That legacy progress path does not claim upstream token streaming or
+change public semantic contracts. One backend worker owns the execution
+lock through completion and finishes existing durable accounting if the browser
+disconnects; streaming creates no automatic invocation retry.
+
+The frozen AgentCore application continues to return complete JSON. The new local
+implementation adds a separate provider word-streaming release with an
+application-level SSE Runtime response; it does not update that frozen application.
+Native planning uses Converse and presentation uses ConverseStream, requiring
+`bedrock:InvokeModelWithResponseStream`. Google Gemma uses signed Bedrock Mantle
+chat requests with sequential tools; OpenAI GPT choices use Bedrock, not a direct
+OpenAI API. Model availability, routing, permissions and acceptance remain deployment
+prerequisites. See the [concrete proposal](bedrock-multimodel-streaming-plan.md).
+[AgentCore HTTP contract](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-http-protocol-contract.html),
+[ConverseStream](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html),
+[tool-use compatibility](https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use-client-side.html).
+
+`adapters/streaming_agent.py` wraps the unchanged `BedrockAnalyticsAgent` semantic
+loop, with at most five planning calls and one tool-free presentation call, sharing
+a six-call/12,000-token/90-second bound. The sole completion guard handles a fully
+successful exact governed plan after a fifth sequential tool round: it verifies
+the complete expected requests/results before rendering, without a sixth planner
+call or guessed missing work. All four tools and adapter calculations remain shared.
+`bedrock_word_stream.py` validates the stream protocol and releases only actual
+provider characters matching the canonical answer prefix at complete word
+boundaries; the final word waits for a valid terminal event and usage. Private
+reasoning never enters the public stream. Invalid streams receive no automatic
+retry; a validated answer can remain available with an explicit stream-failure label.
+
+The new Bedrock catalog is metadata, not authorization. Ten proposed fixed-model
+roles/Runtimes bind opaque selections to reviewed configurations; disabled entries
+cannot dispatch. `ui/model_streams.py` provides a new review-bound ledger and SDK
+receipts, separate from every existing campaign. Twenty authored AWS checks must
+pass before UI activation. Its proposed outer 40 attempts comprise those checks,
+18 user questions, one protected retained-v15 smoke and one unapproved reserve.
+No AWS operation, deployment, new live acceptance or hosted CI coverage is claimed
+for this local implementation. Existing Nova v15 and session 02's last locally
+observed 17 remaining questions are unchanged.
 
 `ui/shared.py` maintains one separate allowance for both billable modes. Exclusive,
 fsynced question and SDK receipts precede dispatch, with journal reconciliation,
@@ -56,14 +106,19 @@ historical acceptance evidence and all earlier ledgers remain preserved.
 
 The UI implementation merged through [PR #8](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/8) on November 11, 2026, at `e22287538e22e1917eb2a21efbeadc4cec5c6d75`. The full-live follow-up merged through [PR #9](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/9) at `1dfd788a9b773fbf8abd39a554033cccd683c4ee`; [main CI 43100659276](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43100659276) passed for that merge. Historical v13 UI and v15 full-validation proofs remain distinct.
 
-The [next interactive review](ui-interactive-session-02.md) reuses the accepted
-candidate-retail artifact/configuration without changing application code or deploying.
-A fresh read-only proof at 21:26:03Z on November 11, 2026, verified READY v15. A new
-review and actual-version record bind the new campaign; previous records/ledgers stay
-immutable. Its one Q18 verification plus 18 regular questions require explicit
-approval. The existing schema's original-rollback slot remains unavailable in this
-no-deployment scope; failures stop dispatch and preserve retail v15. Preparation
-creates no new question ledger and does not enable billable modes.
+The user approved [interactive session 02](ui-interactive-session-02.md) at `319a872`.
+Its counted Q18 passed the full independent request/result gate:
+**110.25 USD [2025-03-31,2025-04-01)**. The pre-dispatch proof at **21:52:13Z** on
+November 11, 2026 observed the exact candidate-retail Runtime/DEFAULT **READY v15**,
+stack UPDATE_COMPLETE. These remain historical AWS observations; this local UI
+change performs no fresh AWS operation, deployment or invocation. The new session's
+review and actual-version record stay unchanged, as do all previous campaigns and
+frozen artifacts, common 25-file source closure, semantic contracts and model rules.
+Its activation used one verification, leaving 18 regular questions. Local inspection
+before this UI reload found one later completed user question: **2/20 used, 17 regular
+remaining**. Read the persistent counter for future usage. Expiry is unchanged at
+**2026-11-13T23:59Z**; the schema's protected original-rollback slot remains unavailable
+in this no-deployment session. Failures stop dispatch and preserve retail v15.
 
 Saved responses and suite reports are validated data, displayed with recorded verdicts
 and explicit replay labels. No saved answer is presented as a fresh local or live query.

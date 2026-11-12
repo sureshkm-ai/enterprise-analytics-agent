@@ -236,9 +236,21 @@ def main() -> None:
     parser.add_argument("--wheel-dir", type=Path, default=Path("artifacts/agentcore/wheels"))
     parser.add_argument("--project-wheel", type=Path)
     parser.add_argument(
+        "--entrypoint",
+        type=Path,
+        default=Path("infrastructure/agentcore/runtime_entry.py"),
+        help="Explicit release entry point; the default preserves the accepted legacy runtime",
+    )
+    parser.add_argument(
         "--offline", action="store_true", help="Use already downloaded locked wheels"
     )
     args = parser.parse_args()
+    legacy_entrypoint = Path("infrastructure/agentcore/runtime_entry.py")
+    if args.entrypoint.resolve() != legacy_entrypoint.resolve() and (
+        args.output.resolve() == Path("artifacts/agentcore/agent.zip").resolve()
+        or args.output.exists()
+    ):
+        raise ValueError("A new entry point requires a separate, non-existing candidate ZIP path")
     requirements = args.output.parent / "requirements-linux-arm64.txt"
     write_requirements(Path("poetry.lock"), requirements)
     if not args.offline:
@@ -256,7 +268,7 @@ def main() -> None:
         wheel_dir=args.wheel_dir,
         project_wheel=project_wheel,
         runtime_config=args.config,
-        entrypoint=Path("infrastructure/agentcore/runtime_entry.py"),
+        entrypoint=args.entrypoint,
         output=args.output,
     )
     print(json.dumps(result, indent=2))

@@ -34,10 +34,27 @@ model prose or general production equivalence. See [UI setup](docs/local-ui.md)
 and [shared-code acceptance evidence](docs/ui-shared-code-live.md).
 This follow-on UI scope does not change completed M1–M5 acceptance or their ledgers.
 
+Submitting a question clears the text box immediately. The accepted Nova release
+streams truthful progress and returns its validated final answer; its frozen AWS
+runtime remains JSON-based. The separate **local implementation** now adds actual
+provider word streaming and a Bedrock-only model catalog: Anthropic Claude, OpenAI
+GPT through Bedrock, Google **Gemma through Bedrock Mantle**, Meta Llama, DeepSeek,
+Qwen and Mistral, plus Nova. Additional choices stay disabled until the separate
+release is approved, deployed and accepted; catalog inclusion does not prove access.
+
+The new streaming runner reuses the unchanged semantic agent loop with at most
+five planning calls and one tool-free presentation call. It releases actual
+provider words only while they exactly match the canonical answer from validated
+semantic results, keeping amounts, units, dates and private reasoning safe. A
+rejected stream is labeled and is never retried or replaced with a typing animation.
+The [deployment and live-evaluation proposal](docs/bedrock-multimodel-streaming-plan.md)
+covers ten new isolated runtimes/roles, a new artifact and a separate proposed
+40-attempt outer budget. No new deployment or live acceptance is claimed.
+
 The separate UI campaign used **19/20 attempts**: Q18 verification 1 and all 18
 regular slots; the protected rollback smoke was unused. No regular live allowance
 remains, and the completed review cannot restart billable mode. Additional billable
-questions cannot reuse that completed review. The user approved [interactive session 02](docs/ui-interactive-session-02.md) at `319a872`; it is now active at **http://127.0.0.1:8501** with both Local agent and AWS AgentCore enabled. Its counted Q18 verification passed **110.25 USD [2025-03-31,2025-04-01)** after a fresh **READY v15** proof at **21:52:13Z** on November 11, 2026. At activation, usage was **1 verification / 1 Runtime invocation / 0 ordinary questions / 0 direct local Converse calls**, leaving **18 user-owned questions across both modes** until **2026-11-13T23:59Z**. The protected original-rollback slot stays unavailable. No deployment, IAM change, upload or rebuild occurred. See the session plan for the exact restart command; restarting does not reset its counter. Inspect the saved historical AWS acceptance responses offline without spending another call:
+questions cannot reuse that completed review. The user approved [interactive session 02](docs/ui-interactive-session-02.md) at `319a872`; its launch enables Local agent and AWS AgentCore with Nova Lite at **http://127.0.0.1:8501**. Its counted Q18 verification passed **110.25 USD [2025-03-31,2025-04-01)** after a fresh **READY v15** proof at **21:52:13Z** on November 11, 2026. At activation, usage was **1 verification / 1 Runtime invocation / 0 ordinary questions / 0 direct local Converse calls**, leaving **18 user-owned questions across both modes** until **2026-11-13T23:59Z**. A later local ledger inspection found **2/20 used and 17 regular questions remaining**; read that persistent counter for subsequent usage. The protected original-rollback slot stays unavailable. This streaming preparation does not spend or expand that Nova allowance, update v15 or alter its historical artifacts. See the session plan for the exact restart command; restarting does not reset its counter. Inspect the saved historical AWS acceptance responses offline without spending another call:
 
 ```sh
 conda activate enterprise-analytics

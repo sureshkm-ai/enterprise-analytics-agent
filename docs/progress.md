@@ -2,7 +2,117 @@
 
 Updated: 2026-11-11 (America/Chicago).
 
-## Current task: fix three clean-checkout CI failures
+## Current task: approved Bedrock streaming activation — preflight checkpoint
+
+The user approved the unchanged [deployment/evaluation plan](bedrock-multimodel-streaming-plan.md)
+on November 11, 2026: **analytics-dev / 453711491609 / us-west-2**, review
+**cf222d7e870e0d033a5b65d4f74876a581b83f237f651c0eaa6033745b86c76d**,
+ten new fixed-model targets and separate 40-attempt ceiling. This approval persists;
+do not request it again for the same scope. The reserve remains unavailable.
+Approval is recorded locally in `artifacts/bedrock-streaming/approval.json`.
+
+Verified clean local `main` at **01aabc1196311068fd5fb05a418cb72640af633c** and
+[PR #11's merged state](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/11)
+through GitHub. Merge time **November 11, 2026, 9:45 p.m. CST**
+(`2026-11-12T03:45:04Z`). Correction **fb8456f** is pushed/merged and its
+[PR CI 43149699148](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43149699148)
+passed; earlier failed run 43137963697 remains historical. This hosted result covers
+that correction, not the later activation checkpoint. Created isolated branch
+**feat/bedrock-streaming-activation** without discarding work.
+
+### Actual local and read-only AWS results
+
+- Existing Conda **enterprise-analytics**, Python **3.12.16**, Poetry **2.3.1**.
+  Initial STS attempt found expired SSO; after the user completed login, STS
+  verified the expected account and existing PowerUser SSO principal. No new profile.
+- New ZIP **c136a3931e2af31d6453c54910ddc9e839ef03e69a6f2ddebb35b3eb7cfdc306**,
+  **39,298,651 bytes**, source/review/config/policy pins, all **76** packaged files,
+  **13** locked wheels/installed dependencies, **34** assembly files and **10**
+  template pins match. Independently synthesized templates match. The actual new
+  S3 VersionId remains unbound: read-only HEAD confirms the new code key is absent.
+- Original/candidate ZIP/version/template pins, canonical source/golden files,
+  **203** protected historical files, **10** Nova-session files and historical
+  closed ledgers/claims match. Full-live parent/completion inventories match.
+  One broader inventory differs only for ignored Finder `.DS_Store` metadata;
+  governed evidence is unchanged. Offline verification blocked AWS/client/socket
+  creation; zero attempts were observed.
+- Fresh bounded read-only proof at **November 11, 10:04 p.m. CST** verifies retained
+  candidate-retail Runtime/DEFAULT **READY v15**, stack **UPDATE_COMPLETE**, exact
+  artifact/version/configuration/parameters, both policies, execution role and
+  seven-day retention. Process/deployment leases passed. S3 latest identities,
+  source-prefix contents and all seven Glue bindings match canonical retail-v1.
+- All nine native models report authorization/entitlement/region availability;
+  US routing matches the exact reviewed model-resource ARNs. Mantle's default
+  project is active. No matching new streaming Runtime exists. Directory tags
+  currently return `{}`. These reads do not establish new-role effective access.
+- Additional agreement assessment found **NOT_AVAILABLE** for **Claude Opus 5.5,
+  GPT-6 Astra and GPT-6.1 Sol**. Each has one public offer; only offer metadata was
+  read. The initial authorization/region/routing summary did not include this
+  separate agreement gate. The [activation record](../evaluations/bedrock-streaming/activation-preflight-2026-11-11.json)
+  explicitly marks overall preflight **not passed**. No agreement/subscription
+  was created and no provider form was invented or submitted.
+
+Raw read-only proof and the separate agreement assessment are preserved at
+`artifacts/bedrock-streaming/operations/20261112T040400Z/`.
+**AWS mutations 0; uploads 0; Athena queries 0; Runtime/model invocations 0.**
+New campaign remains **0/40**, without a ledger/claim. Nova session 02 remains
+**2/20 used / 17 regular remaining**; all historical allowances stay intact.
+No rollback is needed because no new deployment has been attempted.
+
+### Administrator handoff and remaining gates
+
+Prepared [console/CloudShell steps](bedrock-streaming-administrator-steps.md) and
+[ten exact query-role trust additions](../infrastructure/cdk/streaming-query-trust-additions.proposed.json)
+extracted from the reviewed templates and consolidated into one ten-principal
+statement (892 compact characters). The user asked how to perform the admin
+step; the guide identifies the exact policy, execution role and read-only reports.
+New policy file remains unchanged at SHA
+**9be307f2bf73232c6146a7cfda8eb90e31d4952af2eb0de5ce8eb79e51a8723f**.
+
+The aggregate policy was found to exceed IAM's managed-policy character limit
+(8,147 versus 6,144). Prepared two **permission-equivalent** managed-policy files
+(roles/code 2,294; AgentCore 5,891); the original reviewed file/hash is unchanged.
+[Packaging evidence](../evaluations/bedrock-streaming/policy-packaging.json) and
+regressions prove the exact full statement union, including every condition.
+The administrator must additively attach both parts, preserve M3/M4 permissions,
+and return active document/version/attachment/boundary evidence plus simulation
+of directory `TagResource` for Project **enterprise-analytics-stream**. Historical
+M4 permission only names Project **enterprise-analytics-dev**; the new reviewed
+policy deliberately omits a directory grant. Current empty tags do not establish
+permission. No denied developer IAM inspection was repeated and no speculative
+permission was added. Query trust additions are applied only after the new roles
+exist; preserve developer and legacy Runtime principals.
+
+### Verification and exact next task
+
+`poetry check --lock`, `poetry run ruff check .`, `poetry run ruff format --check .`
+(**187 files**) and `poetry run mypy src tests` (**148 files**) passed.
+`poetry run pytest` passed **1,900 tests, 85 deselected in 93.67s, zero skipped**,
+including six new policy-packaging regressions. The complete required offline
+suite was rerun after the configuration-size correction; no live tests ran.
+The focused six-test run passed using a fresh JSII cache after a previously
+corrupt cache prevented initial collection. Final full verification used the
+known-good cache and passed. Tests also synthesize the ten targets offline and
+compare consolidated trust to their actual outputs.
+
+The offline review command and artifact/canonical/preservation checks passed.
+Parsed all added JSON; ten trust principals/actions exactly match reviewed
+outputs; approval binding/expiry valid; new ledger absent. Read-only AWS Access
+Analyzer validation returned **zero findings** for both attachable policy parts;
+this is document validation, not evidence of attachment or effective role access.
+Documentation/local-link/shell/Python/embedded-JSON syntax and `git diff --check`
+passed. Existing application/infrastructure templates and frozen assets are
+unchanged; no package rebuild was needed.
+
+Receive the administrator evidence and resolve the three model agreements, then
+repeat fresh preflight and continue the already approved conditional upload,
+sequential deployment, exact version binding, twenty AWS checks and UI activation.
+Do not spend old Nova questions, submit playground probes, deploy through missing
+evidence, silently omit a model, broaden IAM or use the reserve. Keep all new
+attempts durably counted and preserve cleanup allowance. M1–M5 remain complete;
+the new streaming release is approved but **not deployed or live accepted**.
+
+## CI fixture correction at fb8456f — historical
 
 Verified [PR #11](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/11)
 is open on **feat/ui-streaming-model-selection** with pushed head

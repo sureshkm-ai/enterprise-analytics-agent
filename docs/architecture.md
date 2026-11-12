@@ -75,9 +75,12 @@ cannot dispatch. `ui/model_streams.py` provides a new review-bound ledger and SD
 receipts, separate from every existing campaign. Twenty authored AWS checks must
 pass before UI activation. Its proposed outer 40 attempts comprise those checks,
 18 user questions, one protected retained-v15 smoke and one unapproved reserve.
-No AWS operation, deployment, new live acceptance or hosted CI coverage is claimed
-for this local implementation. Existing Nova v15 and session 02's last locally
-observed 17 remaining questions are unchanged.
+The implementation merged through PR #11; the user approved the unchanged
+execution plan on November 11, 2026. Fresh read-only preflight verifies the retained
+v15 release/publication and profile routing, while administrator evidence and
+three model agreements remain prerequisites. No resource mutation, upload or new
+live acceptance has occurred. Existing Nova v15 and session 02's 17 remaining
+questions are unchanged. See the [activation record](../evaluations/bedrock-streaming/activation-preflight-2026-11-11.json).
 
 `ui/shared.py` maintains one separate allowance for both billable modes. Exclusive,
 fsynced question and SDK receipts precede dispatch, with journal reconciliation,

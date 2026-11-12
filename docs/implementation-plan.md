@@ -46,8 +46,9 @@ and the local feature commit are handed off through [progress](progress.md).
 
 ## Follow-on scope: Bedrock-only models and provider word streaming
 
-The separately requested implementation is prepared locally; deployment and live
-evaluation remain unapproved. The [concrete plan](bedrock-multimodel-streaming-plan.md)
+The separately requested implementation merged through PR #11 at `01aabc1`. The
+user approved deployment/live evaluation on November 11, 2026; current preflight
+is waiting on administrator evidence and three model agreements before mutation. The [concrete plan](bedrock-multimodel-streaming-plan.md)
 proposes nine additional Bedrock choices and a new streaming Nova baseline, each
 with a separate fixed-model role/Runtime and a new artifact. Google is **Gemma via
 Bedrock Mantle**; native OpenAI GPT choices remain inside Bedrock. Optional catalog
@@ -73,7 +74,8 @@ metadata is not a deployment or effective-access assertion.
 
 The separate proposed outer budget is 40 attempts: 20 mandatory checks + 18 user
 questions + one protected retained-v15 cleanup smoke + one unapproved reserve,
-expiring `2026-11-15T23:59Z`. No call is authorized by this proposal. Preserve the
+expiring `2026-11-15T23:59Z`. User approval now covers the unchanged plan, subject
+to its preflight gates; the reserve remains unavailable. Preserve the
 accepted Nova v15 release, session 02's last observed 17 regular questions,
 historical ledgers/goldens and frozen artifacts; no production-readiness claim follows.
 
@@ -203,6 +205,6 @@ The approved [plan](milestone-5-plan.md) is implemented for local review on `fea
 
 11. Approved `q18-recovery-v1` executed once from fresh original v10: deployed pinned candidate READY v11, Q18 **110.25 USD [2025-03-31,2025-04-01)** and all **36/36** cases passed; client p95 **13.381s**, complete diagnostics. Mandatory original restore/smoke and separate read-only final verification passed on READY v12. Recovery **38/38**, aggregate **40/40**, no retries/failures/incomplete calls. All 122 protected files and historical ledgers/claims unchanged. No code/upload/IAM/dataset changes during execution.
 
-Exact next task: review the [Bedrock model/streaming deployment proposal](bedrock-multimodel-streaming-plan.md), actual new artifact/template/review pins and administrator access/trust prerequisites before deciding on its separate execution approval. The existing Nova [interactive session 02](ui-interactive-session-02.md) remains independent; its last local inspection found 17 regular questions remaining, subject to its own counter/expiry. Do not spend those questions testing this release or attribute earlier CI/live results to new local changes. M1–M5, shared UI acceptance and full validation remain complete and merged; preserve candidate-retail v15 and all historical evidence. No new milestone, deployment or production-readiness claim is implied.
+Exact next task: complete the [administrator steps](bedrock-streaming-administrator-steps.md), resolve Opus 5.5/GPT-6 Astra/GPT-6.1 Sol agreement status, then repeat fresh preflight and execute the already approved [Bedrock streaming plan](bedrock-multimodel-streaming-plan.md). Approval is recorded; no second approval is needed for unchanged scope. No upload, resource/IAM mutation or billable call has started; the new campaign remains 0/40. The existing Nova [interactive session 02](ui-interactive-session-02.md) remains independent; its last local inspection found 17 regular questions remaining, subject to its own counter/expiry. Do not spend those questions testing this release or attribute earlier CI/live results to new local changes. M1–M5, shared UI acceptance and full validation remain complete and merged; preserve candidate-retail v15 and all historical evidence. No new milestone, deployment or production-readiness claim is implied.
 
 Cube remains a later adapter extension outside milestones 2–5 unless separately requested.

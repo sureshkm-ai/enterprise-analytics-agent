@@ -1,0 +1,97 @@
+{
+  "schema_version": "bedrock-streaming-activation-preflight-v1",
+  "recorded_on": "2026-11-11",
+  "time_zone": "America/Chicago",
+  "observed_at_utc": "2026-11-12T04:04:10.132088+00:00",
+  "repository_commit": "01aabc1196311068fd5fb05a418cb72640af633c",
+  "review_sha256": "cf222d7e870e0d033a5b65d4f74876a581b83f237f651c0eaa6033745b86c76d",
+  "approval": "User explicitly approved the existing plan in this conversation; not awaiting repeated approval.",
+  "profile": "analytics-dev",
+  "account": "453711491609",
+  "region": "us-west-2",
+  "deployment_preflight_passed": false,
+  "deployment_started": false,
+  "retained_runtime_version": "15",
+  "retained_default_ready": true,
+  "retained_stack_state": "UPDATE_COMPLETE",
+  "retained_code_preserved": true,
+  "canonical_publication_verified": true,
+  "matching_streaming_runtimes": [],
+  "new_code_key_exists": false,
+  "mantle_default_project_active": true,
+  "native_authorization_entitlement_region_gates_passed": 9,
+  "native_agreement_gates_blocked": [
+    {
+      "model_key": "claude-opus-5-5",
+      "model_id": "anthropic.claude-opus-5-5",
+      "agreement_status": "NOT_AVAILABLE",
+      "access_ready": false,
+      "public_offer_count": 1,
+      "offer_read_error": null
+    },
+    {
+      "model_key": "gpt-6-astra",
+      "model_id": "openai.gpt-6-astra",
+      "agreement_status": "NOT_AVAILABLE",
+      "access_ready": false,
+      "public_offer_count": 1,
+      "offer_read_error": null
+    },
+    {
+      "model_key": "gpt-6-1-sol",
+      "model_id": "openai.gpt-6.1-sol",
+      "agreement_status": "NOT_AVAILABLE",
+      "access_ready": false,
+      "public_offer_count": 1,
+      "offer_read_error": null
+    }
+  ],
+  "workload_directory_tags": {},
+  "administrator_new_policy_evidence_verified": false,
+  "workload_directory_project_authorization_verified": false,
+  "trust_additions_path": "infrastructure/cdk/streaming-query-trust-additions.proposed.json",
+  "trust_additions_sha256": "292b6b2611e3d3c04c2321e6fcb19c85eb775b4540aab35130381278de60c00b",
+  "policy_file_sha256": "9be307f2bf73232c6146a7cfda8eb90e31d4952af2eb0de5ce8eb79e51a8723f",
+  "new_budget": {
+    "used": 0,
+    "maximum": 40,
+    "ordinary_used": 0,
+    "regular_remaining": 38,
+    "protected_cleanup": 1,
+    "unapproved_reserve": 1,
+    "failed": false,
+    "incomplete": false,
+    "expired": false,
+    "blocked": false
+  },
+  "aws_mutations": 0,
+  "runtime_invocations": 0,
+  "model_calls": 0,
+  "athena_queries": 0,
+  "evidence_directory": "artifacts/bedrock-streaming/operations/20261112T040400Z",
+  "local_preservation": {
+    "source_assets_matched_in_archive": 76,
+    "locked_dependencies": 13,
+    "assembly_files_match": 34,
+    "template_pins_match": 10,
+    "protected_historical_files_match": 203,
+    "nova_session_files_match": 10,
+    "legacy_nova_campaign_used": 2,
+    "legacy_nova_regular_remaining": 17,
+    "historical_repair_aggregate": 40
+  },
+  "limitations": [
+    "This report is not deployed acceptance or proof of future-role effective access.",
+    "Three native model agreements are NOT_AVAILABLE despite authorization/entitlement/region availability.",
+    "Historical administrator reports do not establish the new streaming-policy attachment or directory-tag authorization."
+  ],
+  "attachable_policy_packaging": "evaluations/bedrock-streaming/policy-packaging.json",
+  "aggregate_policy_exceeds_managed_limit": true,
+  "policy_document_validation": {
+    "service": "access-analyzer",
+    "operation": "ValidatePolicy",
+    "roles_findings": 0,
+    "agentcore_findings": 0,
+    "establishes_policy_attachment_or_effective_access": false
+  }
+}

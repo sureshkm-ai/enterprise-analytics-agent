@@ -1,0 +1,45 @@
+{
+  "schema_version": "bedrock-streaming-policy-packaging-v1",
+  "approved_aggregate_path": "infrastructure/cdk/streaming-deployment-policy.proposed.json",
+  "approved_aggregate_sha256": "9be307f2bf73232c6146a7cfda8eb90e31d4952af2eb0de5ce8eb79e51a8723f",
+  "aggregate_iam_characters": 8147,
+  "managed_policy_character_limit": 6144,
+  "target_execution_role_arn": "arn:aws:iam::453711491609:role/cdk-hnb659fds-cfn-exec-role-453711491609-us-west-2",
+  "same_permissions": true,
+  "aws_policy_changes_applied": false,
+  "parts": [
+    {
+      "path": "infrastructure/cdk/streaming-deployment-policy.roles.proposed.json",
+      "policy_name": "enterprise-analytics-stream-cdk-roles",
+      "policy_arn": "arn:aws:iam::453711491609:policy/enterprise-analytics-stream-cdk-roles",
+      "file_sha256": "7bcc0a3db562a7c1e9cd4729025d5c57d0191b7c83f79c07ae9721728c737d90",
+      "iam_characters": 2294,
+      "statement_ids": [
+        "ReadOnlyReviewedStreamingCode",
+        "TenStreamingRuntimeRoles",
+        "PassOnlyTenStreamingRuntimeRoles"
+      ]
+    },
+    {
+      "path": "infrastructure/cdk/streaming-deployment-policy.agentcore.proposed.json",
+      "policy_name": "enterprise-analytics-stream-cdk-agentcore",
+      "policy_arn": "arn:aws:iam::453711491609:policy/enterprise-analytics-stream-cdk-agentcore",
+      "file_sha256": "85df303f45130d18466d4b319e8db16c29d89763d17452bba1f100e7341eb20f",
+      "iam_characters": 5891,
+      "statement_ids": [
+        "CreateTaggedStreamingRuntime",
+        "NamedStreamingRuntimeLifecycle",
+        "CreateTaggedAutomaticDefaultEndpoint",
+        "AutomaticStreamingWorkloadIdentities",
+        "TagAutomaticStreamingWorkloadIdentities"
+      ]
+    }
+  ],
+  "preserve_attached_policies": [
+    "enterprise-analytics-dev-cdk-execution",
+    "enterprise-analytics-dev-agentcore-cdk-execution"
+  ],
+  "scope_note": "Packaging-only split of every approved statement; no resources/actions/conditions added or removed.",
+  "prepared_at": "2026-11-12T04:23:46.701529+00:00",
+  "record_kind": "offline-policy-equivalence-proof"
+}

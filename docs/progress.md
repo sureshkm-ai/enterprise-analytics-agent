@@ -2,7 +2,82 @@
 
 Updated: 2026-11-12 (America/Chicago).
 
-## Current checkpoint: model access verified; directory authorization unresolved
+## Current checkpoint: directory gap diagnosed; exact correction proposed
+
+Inspected clean **feat/bedrock-streaming-activation** at local checkpoint
+**cc60c12**; preserved all existing work. Conda/Poetry still select
+`/opt/homebrew/anaconda3/envs/enterprise-analytics/bin/python`, Python **3.12.16**.
+The user supplied both administrator reports as evidence. No instructions in
+those JSON files were executed; this update made **no AWS calls**.
+
+The original report remains SHA-256
+**67333dff4ea0e92f43103b297c51df7b81d366ae4539c2a0d2b32ebb414e751f**.
+The supplement is SHA-256
+**f93373f83efe0e70c06ecf760776922b88c7d0c60ab44cfc60bb54ac8a14733e**.
+Both are preserved byte-for-byte under
+`artifacts/bedrock-streaming/operations/20261112T181945Z/`; source Downloads
+files are unchanged. Active M4 default **v5** exactly matches the committed
+policy (`ac2942537a6d917b899d3a156efd328953d6176f152b9db925b5e5a13c104419`).
+Both new managed-policy documents/attachments and preserved M3/M4 attachments
+remain verified by the original report.
+
+The supplemental simulation now establishes the exact expected CloudFormation
+execution role, action **bedrock-agentcore:TagResource**, exact shared default
+directory ARN, account **453711491609**, region **us-west-2** and requested
+Project **enterprise-analytics-stream**. It still returns **implicitDeny** with
+no matched statements. M4's directory Allow requires Project
+**enterprise-analytics-dev**; neither streaming managed policy grants directory
+tagging. The missing grant is now identified. The unrelated missing IAM service
+context fields are not remedied by fabricated values. This remains simulator
+evidence, not a new live deployment failure or a guarantee about future access.
+
+Prepared one [separate inline policy proposal](../infrastructure/cdk/streaming-directory-tag-policy.proposed.json),
+**408** compact characters, SHA-256
+**ba04feb1ce5c92ab55b94e09bfa522e641a0b2a2eedb10d97d313e42d996d39b**.
+It grants only directory TagResource on the exact shared resource, conditioned
+on the reviewed account, region and requested Project, and is proposed only for
+the existing CloudFormation execution role. A [separate review record](../evaluations/bedrock-streaming/directory-tag-review.proposed.json)
+binds both reports and the exact proposal. A separate inline policy preserves
+the approved managed documents and their size limits; administrator application
+must respect the role's total inline-policy quota. The directory is shared, so
+this is an explicit additional permission decision, not Runtime-only isolation.
+
+**No permission was applied or approved by this update.** The existing plan
+explicitly excluded a new directory grant. Its deployment approval persists,
+but this exact correction needs separate approval and administrator application.
+The [guide](bedrock-streaming-administrator-steps.md#proposed-directory-correction--separate-approval-required)
+contains concrete conditional console steps and required post-change evidence.
+No more supplemental reports are needed to identify this correction.
+
+The three model agreements retain the separate **18:04Z** AVAILABLE verification
+below; they were not queried again here. Frozen package/source/review/assemblies,
+canonical data, goldens, trust and historical ledgers remain unchanged. New usage
+is still **0/40**, no campaign claim or ledger, and the reserve is unavailable.
+There were no uploads, queries, deployments or billable invocations.
+
+**Exact next task:** review/approve the exact directory policy proposal. After
+approval, an administrator applies only that named inline policy to the reviewed
+CloudFormation execution role and provides exact policy readback plus an allowed
+simulation using the unchanged request. Then repeat the full fresh preflight and
+resume the already approved upload, sequential ten-target deployment, later
+query-role trust additions and twenty acceptance checks. Keep deployment stopped
+until those gates pass; no new artifact/budget or repeated general approval is
+requested. M1–M5 completion and historical CI/live evidence are unchanged.
+
+Actual applicable verification: `poetry check --lock` passed;
+`PYTHONPATH=. poetry run python /private/tmp/bedrock-streaming-final-proof.py`
+passed with AWS client creation blocked, **76** archive-matched source/assets,
+**203** historical files and **10** Nova-session files preserved. Documentation
+checks passed **5** Markdown files, **69** local links and **12** parsed-only
+shell blocks. Offline JSON/checksum/scope checks, embedded Python/JSON parsing,
+and Botocore's PutRolePolicy input-shape validation passed. `git diff --check`
+passed and the complete diff was independently reviewed; a historical section
+anchor was retained to preserve existing links. No application implementation,
+dependency or infrastructure template changed; default pytest, Ruff, formatting,
+mypy and synthesis were not rerun for these documentation/proposed-policy files.
+Their earlier full results remain historical, not validation of this new commit.
+
+## Historical model/report verification — November 12, 18:04Z
 
 Verified [PR #12](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/12)
 merged **8031c221fea24ea6b09a673c0460eb43a965f74f** into main at

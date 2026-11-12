@@ -9,7 +9,9 @@ Do not use the developer SSO role to grant itself IAM permissions.
 **November 12 follow-up:** both policy attachments and exact active documents
 are verified from the supplied report. All three previously blocked model
 agreements are now independently verified AVAILABLE. Do not repeat those steps.
-The remaining gate is the directory simulation described below.
+The supplement now verifies its exact request and current M4 policy, identifying
+the Project-condition gap. The remaining gate is separate approval/application
+of the proposed directory correction below, followed by an allowed simulation.
 
 ## Attach the reviewed permissions as two managed policies
 
@@ -128,14 +130,22 @@ If the result is `implicitDeny`, `explicitDeny`, or has missing context, return 
 report before changing more permissions. No blanket AgentCore/IAM grant or manual
 directory retagging is part of these instructions.
 
-## Resolve the reported directory simulation
+<a id="resolve-the-reported-directory-simulation"></a>
+
+## Directory simulation evidence — received and diagnosed
 
 The downloaded `streaming-admin-evidence.json` matches SHA-256
 `67333dff4ea0e92f43103b297c51df7b81d366ae4539c2a0d2b32ebb414e751f`.
 Its directory TagResource result is **implicitDeny**, with no matched statements.
-The original combined report does not include its simulation request/context or
-the active M4 policy document. Capture those missing inputs before deciding on a
-permission correction. Do not reattach the already verified policies.
+The original combined report did not include its simulation request/context or
+the active M4 policy document. The downloaded supplement now supplies both;
+SHA-256 `f93373f83efe0e70c06ecf760776922b88c7d0c60ab44cfc60bb54ac8a14733e`.
+Its exact request uses the reviewed execution role, directory, region/account and
+`Project=enterprise-analytics-stream`; the result remains implicitDeny. Active M4
+default **v5** exactly matches the committed policy, whose directory Allow
+requires `Project=enterprise-analytics-dev`. Both streaming policies omit a
+directory TagResource grant. This establishes the narrow gap. No further report
+is needed to identify it; preserve the following collection procedure as history.
 
 In the same existing **administrator CloudShell**, run the block below. It uses
 read-only STS/IAM operations and a fresh local directory. It does not change IAM,
@@ -198,6 +208,47 @@ fields. In particular, do not invent `iam:AWSServiceName` or `iam:PassedToServic
 values for TagResource merely to remove the simulator's missing-context output.
 No additional permission is approved by collecting this report. A specific
 correction, if established, requires review before application.
+
+## Proposed directory correction — separate approval required
+
+The smallest proposed delta is [this separate policy](../infrastructure/cdk/streaming-directory-tag-policy.proposed.json),
+SHA-256 **ba04feb1ce5c92ab55b94e09bfa522e641a0b2a2eedb10d97d313e42d996d39b**.
+It grants only `bedrock-agentcore:TagResource` on the exact account/region default
+workload-identity directory, conditioned on the reviewed requested Project,
+account and region. The directory is shared; this is not a new Runtime-only
+resource. The [review record](../evaluations/bedrock-streaming/directory-tag-review.proposed.json)
+binds the reports, exact target role, policy checksum and verification gates.
+
+The approved deployment plan deliberately excluded this grant. **Do not apply it
+until the user separately approves this correction.** No AWS policy was changed
+while preparing it. Keep the original aggregate, both split managed policies,
+M3/M4 policies, trust, package/templates, data and all budgets unchanged.
+
+After that approval, the administrator can apply the exact additive inline
+policy using the console:
+
+1. Open **IAM → Roles → cdk-hnb659fds-cfn-exec-role-453711491609-us-west-2**.
+2. Choose **Permissions → Add permissions → Create inline policy → JSON**.
+3. Paste the complete proposed JSON, review it, and use the name
+   **enterprise-analytics-stream-directory-tag**. If that name already exists,
+   compare its contents first; do not overwrite an unexplained policy.
+4. Preserve all existing policies and trust. Record the actual inline policy
+   using administrator `get-role-policy` evidence and rerun the exact reviewed
+   directory simulation request. Require **allowed** and review the complete
+   result; a simulation is not proof of deployment success.
+5. Return the exact inline-policy JSON and simulation evidence. The operator
+   repeats full fresh preflight before the already approved upload/deployment.
+
+Do not append this grant to the 5,891-character managed policy or replace the old
+M4 Project condition. A separate inline policy preserves those approved documents
+and avoids their managed-policy size constraints; IAM's total inline-policy quota
+still applies. Cleanup, if subsequently approved, removes only this named inline
+policy after confirming it is no longer needed; it does not untag/delete the
+shared directory or alter M3/M4 permissions.
+
+Official references: [AgentCore resource/action/condition support](https://docs.aws.amazon.com/service-authorization/latest/reference/list_bedrock-agentcore.html),
+[IAM simulation and additional-policy behavior](https://docs.aws.amazon.com/cli/latest/reference/iam/simulate-principal-policy.html),
+and [IAM policy editing](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_manage-edit.html).
 
 ## Query-role trust is a later administrator step
 

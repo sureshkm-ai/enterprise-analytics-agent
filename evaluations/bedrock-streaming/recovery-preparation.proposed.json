@@ -1,0 +1,239 @@
+{
+  "schema_version": "bedrock-streaming-recovery-preparation-v1",
+  "prepared_at": "2026-11-12T19:21:33.939731+00:00",
+  "approved": false,
+  "original_review_sha256": "cf222d7e870e0d033a5b65d4f74876a581b83f237f651c0eaa6033745b86c76d",
+  "recovery_review_sha256": "10433404c65249308e326a5867d499cabe4fab24c43201a6639a29c769b946c4",
+  "review_path": "evaluations/bedrock-streaming/review.recovery.proposed.json",
+  "review_file_sha256": "fb47ccb56e425f0e0b9a65eb7fb22571c58167b5f75a34a5b783a93e23e060be",
+  "assembly_directory": "artifacts/bedrock-streaming/cdk.recovery.proposed.out",
+  "verification_assembly_directory": "artifacts/bedrock-streaming/cdk.recovery.verification.out",
+  "same_frozen_zip_sha256": "c136a3931e2af31d6453c54910ddc9e839ef03e69a6f2ddebb35b3eb7cfdc306",
+  "same_frozen_source_sha256": "c2311efc915339f0e7b7d7d86da660d037fb84be700332e45006299b3b70b687",
+  "uploaded_s3_version_id": "GSY36sTbDpCNZGogULTe3cBL__bujiQK",
+  "campaign_id": "bedrock-stream-models-v1-01",
+  "budget_before": {
+    "used": 0,
+    "maximum": 40,
+    "ordinary_used": 0,
+    "regular_remaining": 38,
+    "protected_cleanup": 1,
+    "unapproved_reserve": 1,
+    "failed": false,
+    "incomplete": false,
+    "expired": false,
+    "blocked": false
+  },
+  "expiry_unchanged": "2026-11-15T23:59:00+00:00",
+  "all_ten_templates_reproduced": true,
+  "changes": {
+    "nova-lite": {
+      "old_template_sha256": "a5d6be87e3ecec5977bdb9bbf8f1faf6b05be38a055de495d57d3011536325b7",
+      "new_template_sha256": "9ae565b9401cb29829c3a8bc73697ca447b1a05c2b2da3ee7b45f4009851298c",
+      "template_file_sha256": "4c13a90db05efeaba7b58a6d3a0892de26be566337aa88fd8d6789c3055ff219",
+      "resource_policy_representations_changed": 2,
+      "additional_workload_statement": {
+        "Action": "logs:PutResourcePolicy",
+        "Condition": {
+          "StringEquals": {
+            "aws:RequestedRegion": "us-west-2"
+          }
+        },
+        "Effect": "Allow",
+        "Resource": "arn:aws:logs:us-west-2:453711491609:log-group:/aws/bedrock-agentcore/runtimes/enterprise_analytics_stream_nova_lite-*"
+      },
+      "all_other_template_properties_unchanged": true
+    },
+    "claude-sonnet-5-5": {
+      "old_template_sha256": "c5296cbf5acb0ca4e8239b1eb6e2427e0559efb89df002d94601d9d4912baa8e",
+      "new_template_sha256": "cf6da894dcc9644af3739fb562c428873003843138c3eadfb2e8d88db0ab1adc",
+      "template_file_sha256": "d1ffd98aea5a5a3880fd33c6d830d5443f22d6d9c2aaef5cd9adbd1250d38561",
+      "resource_policy_representations_changed": 2,
+      "additional_workload_statement": {
+        "Action": "logs:PutResourcePolicy",
+        "Condition": {
+          "StringEquals": {
+            "aws:RequestedRegion": "us-west-2"
+          }
+        },
+        "Effect": "Allow",
+        "Resource": "arn:aws:logs:us-west-2:453711491609:log-group:/aws/bedrock-agentcore/runtimes/enterprise_analytics_stream_claude_sonnet_5_5-*"
+      },
+      "all_other_template_properties_unchanged": true
+    },
+    "claude-opus-5-5": {
+      "old_template_sha256": "41af4154b2853a61c8eeaa69320ae68fefad74bb5d50306c1df16eee9f1a9111",
+      "new_template_sha256": "f691070f63157042d6bc4f55d781bf95a1ac96397e96ec7181e747de4f6618bf",
+      "template_file_sha256": "25f4dd2a03dece1a7062464e54d8721ba8d43d29bf231f58fc449fe06245fe27",
+      "resource_policy_representations_changed": 2,
+      "additional_workload_statement": {
+        "Action": "logs:PutResourcePolicy",
+        "Condition": {
+          "StringEquals": {
+            "aws:RequestedRegion": "us-west-2"
+          }
+        },
+        "Effect": "Allow",
+        "Resource": "arn:aws:logs:us-west-2:453711491609:log-group:/aws/bedrock-agentcore/runtimes/enterprise_analytics_stream_claude_opus_5_5-*"
+      },
+      "all_other_template_properties_unchanged": true
+    },
+    "gpt-6-astra": {
+      "old_template_sha256": "308912692c261e4d9588b6dff74fe19cdaf5d6abe3179f2a7f48fa5904ceb6dd",
+      "new_template_sha256": "304997fbefb51388cf9e5cbf2591a32f44cbb8c0611d31c85579dd8a07a798f0",
+      "template_file_sha256": "70a94bd2c3d19550fe1fbf3cf6ba8ef56fe2b5a0c1792173f357e4a48cb43cc2",
+      "resource_policy_representations_changed": 2,
+      "additional_workload_statement": {
+        "Action": "logs:PutResourcePolicy",
+        "Condition": {
+          "StringEquals": {
+            "aws:RequestedRegion": "us-west-2"
+          }
+        },
+        "Effect": "Allow",
+        "Resource": "arn:aws:logs:us-west-2:453711491609:log-group:/aws/bedrock-agentcore/runtimes/enterprise_analytics_stream_gpt_6_astra-*"
+      },
+      "all_other_template_properties_unchanged": true
+    },
+    "gpt-6-1-sol": {
+      "old_template_sha256": "b5a7636b718e50ee79eecf0d6a9ef4e79f5d1bc5f34a1feaa23244b19b01d56d",
+      "new_template_sha256": "a808374a46ee9a042f53d0e714f7bba6c0d2041c86f6af5fc6a5645abd9905d3",
+      "template_file_sha256": "32156b75bd52efed57149a0e376fa4aad8f1bdad0fc8c34cd4412d4d74f87044",
+      "resource_policy_representations_changed": 2,
+      "additional_workload_statement": {
+        "Action": "logs:PutResourcePolicy",
+        "Condition": {
+          "StringEquals": {
+            "aws:RequestedRegion": "us-west-2"
+          }
+        },
+        "Effect": "Allow",
+        "Resource": "arn:aws:logs:us-west-2:453711491609:log-group:/aws/bedrock-agentcore/runtimes/enterprise_analytics_stream_gpt_6_1_sol-*"
+      },
+      "all_other_template_properties_unchanged": true
+    },
+    "gemma-4-31b": {
+      "old_template_sha256": "4392e07638fa980f7b0af20779a384562c017ab87855b950643ea52f22e58de8",
+      "new_template_sha256": "966a8bf1cec6518a1e905c49b07f9c5042f3076868927ac2cc444886013d8658",
+      "template_file_sha256": "720f2f46a5d286b5d15d2e27bc8189318ce510c569ff69569fd379349768e374",
+      "resource_policy_representations_changed": 2,
+      "additional_workload_statement": {
+        "Action": "logs:PutResourcePolicy",
+        "Condition": {
+          "StringEquals": {
+            "aws:RequestedRegion": "us-west-2"
+          }
+        },
+        "Effect": "Allow",
+        "Resource": "arn:aws:logs:us-west-2:453711491609:log-group:/aws/bedrock-agentcore/runtimes/enterprise_analytics_stream_gemma_4_31b-*"
+      },
+      "all_other_template_properties_unchanged": true
+    },
+    "llama-4-maverick": {
+      "old_template_sha256": "2d7d6575a717d33d00613bb2efefb2707e6c01af6f71b7f22159b3213ee1e8d9",
+      "new_template_sha256": "bc2d5f4e1eac0351c07893b16068406289eece838ca6e054e7539f6579c357e3",
+      "template_file_sha256": "acd7bb8b2723241b088b57722ee24c4fdf0794b7776ef5535df8307b25aea564",
+      "resource_policy_representations_changed": 2,
+      "additional_workload_statement": {
+        "Action": "logs:PutResourcePolicy",
+        "Condition": {
+          "StringEquals": {
+            "aws:RequestedRegion": "us-west-2"
+          }
+        },
+        "Effect": "Allow",
+        "Resource": "arn:aws:logs:us-west-2:453711491609:log-group:/aws/bedrock-agentcore/runtimes/enterprise_analytics_stream_llama_4_maverick-*"
+      },
+      "all_other_template_properties_unchanged": true
+    },
+    "deepseek-v3-2": {
+      "old_template_sha256": "2385ac2a982702ec5f66c19777264a05b29f1aaf08f00bb161e5fff2ce949bba",
+      "new_template_sha256": "e168b4f0876cdc1207d6baaed792bdffa583cea81172b6c251d6c31055f3bcd4",
+      "template_file_sha256": "9f87b1f23c5671ad19bbd230a23a45ae9f3bbe612e28bfb87a9ba6dc77ee4403",
+      "resource_policy_representations_changed": 2,
+      "additional_workload_statement": {
+        "Action": "logs:PutResourcePolicy",
+        "Condition": {
+          "StringEquals": {
+            "aws:RequestedRegion": "us-west-2"
+          }
+        },
+        "Effect": "Allow",
+        "Resource": "arn:aws:logs:us-west-2:453711491609:log-group:/aws/bedrock-agentcore/runtimes/enterprise_analytics_stream_deepseek_v3_2-*"
+      },
+      "all_other_template_properties_unchanged": true
+    },
+    "qwen3-235b": {
+      "old_template_sha256": "2392e3e7375f2edd05b963b8deda1135f9fbf3f23c81217672fb8538de24bb7c",
+      "new_template_sha256": "5064c9889a5e2611fae081263fe014344191e412d4b5fd8827e66f9186de67d4",
+      "template_file_sha256": "72d3a615427f52089253e3ef0eb2530af365ec09e55b52fa5b0553b9fb5af430",
+      "resource_policy_representations_changed": 2,
+      "additional_workload_statement": {
+        "Action": "logs:PutResourcePolicy",
+        "Condition": {
+          "StringEquals": {
+            "aws:RequestedRegion": "us-west-2"
+          }
+        },
+        "Effect": "Allow",
+        "Resource": "arn:aws:logs:us-west-2:453711491609:log-group:/aws/bedrock-agentcore/runtimes/enterprise_analytics_stream_qwen3_235b-*"
+      },
+      "all_other_template_properties_unchanged": true
+    },
+    "mistral-large-3": {
+      "old_template_sha256": "3d3a3b2824a4feb86eb72fc6e83dc0394c1f32384408391332263718af5be1fa",
+      "new_template_sha256": "80402709ab13c673ee68a9077d4379622bf4317ecb90fc43cc76f223b9fe8d47",
+      "template_file_sha256": "d2818d697f1180d818e9f98ba5e0c518c7196a7a4665f692deb2312f835b469f",
+      "resource_policy_representations_changed": 2,
+      "additional_workload_statement": {
+        "Action": "logs:PutResourcePolicy",
+        "Condition": {
+          "StringEquals": {
+            "aws:RequestedRegion": "us-west-2"
+          }
+        },
+        "Effect": "Allow",
+        "Resource": "arn:aws:logs:us-west-2:453711491609:log-group:/aws/bedrock-agentcore/runtimes/enterprise_analytics_stream_mistral_large_3-*"
+      },
+      "all_other_template_properties_unchanged": true
+    }
+  },
+  "assembly_files": {
+    "cdk.out": "3b2d27f00c6d3d531050c84e658962dbf4daacb555c46eb4940c71c669716dbe",
+    "enterprise-analytics-stream-claude-opus-5-5.assets.json": "8e6f9968a283b78b2693e15c9a3c674e6b82194d1145a67bb4b702ed439d5476",
+    "enterprise-analytics-stream-claude-opus-5-5.metadata.json": "678905b590438f5878bd282509fac1211d076f1d4424d79ec7d06589948f35ec",
+    "enterprise-analytics-stream-claude-opus-5-5.template.json": "25f4dd2a03dece1a7062464e54d8721ba8d43d29bf231f58fc449fe06245fe27",
+    "enterprise-analytics-stream-claude-sonnet-5-5.assets.json": "87021b66ef32fe02f10225f5e0a963a904c11b06e538234a9b892b29d9c3edf4",
+    "enterprise-analytics-stream-claude-sonnet-5-5.metadata.json": "69d842261a172eb467a371f090c4e0b7155717960b96054daa7cbb1f75d82b96",
+    "enterprise-analytics-stream-claude-sonnet-5-5.template.json": "d1ffd98aea5a5a3880fd33c6d830d5443f22d6d9c2aaef5cd9adbd1250d38561",
+    "enterprise-analytics-stream-deepseek-v3-2.assets.json": "359fffe48df219c04b0e9467bded445f493a54b3008f7d3d5bded8d7f3352647",
+    "enterprise-analytics-stream-deepseek-v3-2.metadata.json": "170f8c7aaaf42774c2fc5113df2b942d7663b5821d1e8802e6eb993b170d45e2",
+    "enterprise-analytics-stream-deepseek-v3-2.template.json": "9f87b1f23c5671ad19bbd230a23a45ae9f3bbe612e28bfb87a9ba6dc77ee4403",
+    "enterprise-analytics-stream-gemma-4-31b.assets.json": "17e39a86770496210fd90f2bdf3148e801445323aaf3087af68b5febbffeddde",
+    "enterprise-analytics-stream-gemma-4-31b.metadata.json": "507e427120c70b5bc21f7e7ad8b315e21ae896e7a9e37008f0c572b09852ec99",
+    "enterprise-analytics-stream-gemma-4-31b.template.json": "720f2f46a5d286b5d15d2e27bc8189318ce510c569ff69569fd379349768e374",
+    "enterprise-analytics-stream-gpt-6-1-sol.assets.json": "1a410f25f5121df61fc7ae66c3cbf2bfa1790589ec4e7c51038dcc5558ec4a52",
+    "enterprise-analytics-stream-gpt-6-1-sol.metadata.json": "b22f60997e7f4864e480c5c2e24c0c0146d9e1b940b3f8b7748e1f0ecd0a0b3c",
+    "enterprise-analytics-stream-gpt-6-1-sol.template.json": "32156b75bd52efed57149a0e376fa4aad8f1bdad0fc8c34cd4412d4d74f87044",
+    "enterprise-analytics-stream-gpt-6-astra.assets.json": "737be1c7af38c806a6e47d712a1acd81f193c230b82b9a56975fd3d938881baa",
+    "enterprise-analytics-stream-gpt-6-astra.metadata.json": "ff2d0910c1e19e1478d1c98098a6c3cd7991f5b264e7910156e3541d179cf21e",
+    "enterprise-analytics-stream-gpt-6-astra.template.json": "70a94bd2c3d19550fe1fbf3cf6ba8ef56fe2b5a0c1792173f357e4a48cb43cc2",
+    "enterprise-analytics-stream-llama-4-maverick.assets.json": "3703e6eddfa086e2c5d4363de0f7874698b67c5a562939d6b6308fd788c31f66",
+    "enterprise-analytics-stream-llama-4-maverick.metadata.json": "98c332a8dd47eddd2b3c826a0c7a30674a703d444f6e97e9116a18d80dd69275",
+    "enterprise-analytics-stream-llama-4-maverick.template.json": "acd7bb8b2723241b088b57722ee24c4fdf0794b7776ef5535df8307b25aea564",
+    "enterprise-analytics-stream-mistral-large-3.assets.json": "9c521298f7d3ac76c9fe761f4e411a712ab3de389a88a915bb5f18b4be5c2215",
+    "enterprise-analytics-stream-mistral-large-3.metadata.json": "9eb0cf5cdc3a7eabd02ad2b1c4d0d19cb8689ffcfe2ef7aa8d5bd372fe6ad135",
+    "enterprise-analytics-stream-mistral-large-3.template.json": "d2818d697f1180d818e9f98ba5e0c518c7196a7a4665f692deb2312f835b469f",
+    "enterprise-analytics-stream-nova-lite.assets.json": "9e665fa5ced8b9324ee738f64780167f441ad13b9bd9d414f4ea28649bb7f2ad",
+    "enterprise-analytics-stream-nova-lite.metadata.json": "1b960b015a75bbe0beb828bccff795e68a44ba0c46bc62293dc3551eded6e81a",
+    "enterprise-analytics-stream-nova-lite.template.json": "4c13a90db05efeaba7b58a6d3a0892de26be566337aa88fd8d6789c3055ff219",
+    "enterprise-analytics-stream-qwen3-235b.assets.json": "2bc109f3352d6ce8127ea34868c03e05e68e890a057cc906bb9e2d88c1a2ad3e",
+    "enterprise-analytics-stream-qwen3-235b.metadata.json": "4503976b3cacfec87780ae053dd4b050db7ef58c764eb2fceec17e0456236608",
+    "enterprise-analytics-stream-qwen3-235b.template.json": "72d3a615427f52089253e3ef0eb2530af365ec09e55b52fa5b0553b9fb5af430",
+    "manifest.json": "863e6d7e0e2fedf03db97baf5a3621d2cf59cc0086a3402863ee2647a70c030f",
+    "tree.json": "6240146cae4931172921887f3c04b592f88ad6b0f180c4de16d90f9918694ed9",
+    "validation-report.json": "cbebe50f044ceaab25443e7d742800baae183e829634ddcc7a60a0a47e9a2301"
+  },
+  "aws_operations_during_preparation": 0,
+  "billable_invocations": 0
+}

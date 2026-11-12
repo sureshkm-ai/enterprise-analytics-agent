@@ -40,8 +40,10 @@ runtime remains JSON-based. The separate **local implementation** now adds actua
 provider word streaming and a Bedrock-only model catalog: Anthropic Claude, OpenAI
 GPT through Bedrock, Google **Gemma through Bedrock Mantle**, Meta Llama, DeepSeek,
 Qwen and Mistral, plus Nova. Additional choices stay disabled until the separate
-release is deployed and accepted; its execution is now approved, while documented
-administrator and model-agreement prerequisites remain open. Catalog inclusion
+release is deployed and accepted. Directory-policy/model prerequisites are now
+verified; one new Nova stack was created, but policy-shape verification and a
+workload logging denial stopped further deployment. The [scoped recovery proposal](docs/bedrock-streaming-recovery-plan.md)
+requires review before continuation. Catalog inclusion
 does not prove effective access.
 
 The new streaming runner reuses the unchanged semantic agent loop with at most
@@ -52,8 +54,9 @@ rejected stream is labeled and is never retried or replaced with a typing animat
 The [deployment and live-evaluation proposal](docs/bedrock-multimodel-streaming-plan.md)
 covers ten new isolated runtimes/roles, a new artifact and a separate approved
 40-attempt outer ceiling, including an unavailable reserve. Follow the
-[administrator steps](docs/bedrock-streaming-administrator-steps.md) to unblock
-preflight. No new deployment or live acceptance is claimed.
+[administrator steps](docs/bedrock-streaming-administrator-steps.md) record completed
+policy evidence and the later query-trust handoff. New model acceptance remains
+pending at **0/40**; the retained legacy v15 is unchanged.
 
 The separate UI campaign used **19/20 attempts**: Q18 verification 1 and all 18
 regular slots; the protected rollback smoke was unused. No regular live allowance

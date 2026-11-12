@@ -176,13 +176,16 @@ class StreamingDeploymentConfig(BaseModel):
 
 
 def _inbound_policy(callers: tuple[str, ...], resource_arn: str) -> dict[str, object]:
+    # AgentCore reads back a single ARN as a scalar. Emit that representation so
+    # exact policy verification succeeds without normalizing or weakening it.
+    caller_values: str | list[str] = callers[0] if len(callers) == 1 else list(callers)
     return {
         "Version": "2012-10-17",
         "Statement": [
             {
                 "Sid": "AllowApprovedCallers",
                 "Effect": "Allow",
-                "Principal": {"AWS": list(callers)},
+                "Principal": {"AWS": caller_values},
                 "Action": "bedrock-agentcore:InvokeAgentRuntime",
                 "Resource": resource_arn,
             },
@@ -192,7 +195,7 @@ def _inbound_policy(callers: tuple[str, ...], resource_arn: str) -> dict[str, ob
                 "Principal": "*",
                 "Action": "bedrock-agentcore:InvokeAgentRuntime",
                 "Resource": resource_arn,
-                "Condition": {"ArnNotEquals": {"aws:PrincipalArn": list(callers)}},
+                "Condition": {"ArnNotEquals": {"aws:PrincipalArn": caller_values}},
             },
             {
                 "Sid": "DenyDelegationAndInteractiveProtocols",
@@ -285,6 +288,11 @@ class StreamingRuntimeStack(Stack):
                 iam.PolicyStatement(
                     actions=["logs:CreateLogStream", "logs:PutLogEvents"],
                     resources=[f"{logs}:log-stream:*"],
+                ),
+                iam.PolicyStatement(
+                    actions=["logs:PutResourcePolicy"],
+                    resources=[logs],
+                    conditions={"StringEquals": {"aws:RequestedRegion": REGION}},
                 ),
                 iam.PolicyStatement(
                     actions=["logs:DescribeLogGroups"],

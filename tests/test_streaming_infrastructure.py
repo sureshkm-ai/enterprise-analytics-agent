@@ -2,6 +2,7 @@
 
 import json
 from copy import deepcopy
+from fnmatch import fnmatchcase
 from pathlib import Path
 from typing import Any
 
@@ -21,7 +22,126 @@ from infrastructure.cdk.streaming_app import (
     REGION,
     StreamingDeploymentConfig,
     StreamingRuntimeStack,
+    _inbound_policy,
 )
+
+AUTHORED_RUNTIME_ARN = (
+    "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/"
+    "enterprise_analytics_stream_nova_lite-AuthoredFixture"
+)
+AUTHORED_CALLER = "arn:aws:iam::453711491609:role/ApprovedDeveloper"
+SECOND_AUTHORED_CALLER = "arn:aws:iam::453711491609:role/SecondApprovedDeveloper"
+# AWS's single-caller readback shape uses scalar ARN values in these two
+# locations. This independently authored response protects exact comparison
+# without teaching the runtime verifier to weaken or normalize policy equality.
+AUTHORED_SINGLE_CALLER_READBACK: dict[str, Any] = {
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AllowApprovedCallers",
+            "Effect": "Allow",
+            "Principal": {"AWS": "arn:aws:iam::453711491609:role/ApprovedDeveloper"},
+            "Action": "bedrock-agentcore:InvokeAgentRuntime",
+            "Resource": AUTHORED_RUNTIME_ARN,
+        },
+        {
+            "Sid": "DenyOtherPrincipals",
+            "Effect": "Deny",
+            "Principal": "*",
+            "Action": "bedrock-agentcore:InvokeAgentRuntime",
+            "Resource": AUTHORED_RUNTIME_ARN,
+            "Condition": {
+                "ArnNotEquals": {
+                    "aws:PrincipalArn": "arn:aws:iam::453711491609:role/ApprovedDeveloper"
+                }
+            },
+        },
+        {
+            "Sid": "DenyDelegationAndInteractiveProtocols",
+            "Effect": "Deny",
+            "Principal": "*",
+            "Action": [
+                "bedrock-agentcore:InvokeAgentRuntimeForUser",
+                "bedrock-agentcore:InvokeAgentRuntimeCommand",
+                "bedrock-agentcore:InvokeAgentRuntimeCommandShell",
+                "bedrock-agentcore:InvokeAgentRuntimeWithWebSocketStream",
+                "bedrock-agentcore:InvokeAgentRuntimeWithWebSocketStreamForUser",
+            ],
+            "Resource": AUTHORED_RUNTIME_ARN,
+        },
+    ],
+}
+
+
+@pytest.mark.parametrize("endpoint", [False, True], ids=("runtime", "DEFAULT"))
+def test_single_caller_policy_matches_authored_aws_readback(endpoint: bool) -> None:
+    resource = AUTHORED_RUNTIME_ARN + ("/runtime-endpoint/DEFAULT" if endpoint else "")
+    expected = deepcopy(AUTHORED_SINGLE_CALLER_READBACK)
+    for statement in expected["Statement"]:
+        statement["Resource"] = resource
+    assert _inbound_policy((AUTHORED_CALLER,), resource) == expected
+
+
+@pytest.mark.parametrize("endpoint", [False, True], ids=("runtime", "DEFAULT"))
+def test_multiple_callers_keep_exact_allow_and_deny_arn_lists(endpoint: bool) -> None:
+    resource = AUTHORED_RUNTIME_ARN + ("/runtime-endpoint/DEFAULT" if endpoint else "")
+    expected = deepcopy(AUTHORED_SINGLE_CALLER_READBACK)
+    for statement in expected["Statement"]:
+        statement["Resource"] = resource
+    expected["Statement"][0]["Principal"] = {"AWS": [AUTHORED_CALLER, SECOND_AUTHORED_CALLER]}
+    expected["Statement"][1]["Condition"] = {
+        "ArnNotEquals": {"aws:PrincipalArn": [AUTHORED_CALLER, SECOND_AUTHORED_CALLER]}
+    }
+    assert _inbound_policy((AUTHORED_CALLER, SECOND_AUTHORED_CALLER), resource) == expected
+
+
+@pytest.mark.parametrize("multiple_callers", [False, True], ids=("one-caller", "two-callers"))
+def test_synthesized_runtime_and_endpoint_policies_match_service_shape(
+    tmp_path: Path, multiple_callers: bool
+) -> None:
+    raw = configuration()
+    if multiple_callers:
+        raw["approved_caller_arns"].append(SECOND_AUTHORED_CALLER)
+    config = StreamingDeploymentConfig.model_validate(raw)
+    app = App(outdir=str(tmp_path / "service-readback-shape"), analytics_reporting=False)
+    stack = StreamingRuntimeStack(
+        app,
+        "PolicyReadbackShape",
+        config=config,
+        model=config.models[0],
+        env=Environment(account=ACCOUNT, region=REGION),
+    )
+    app.synth()
+    template = Template.from_stack(stack).to_json()
+    for logical_id, resource_arn in (
+        ("RuntimeInboundPolicy", AUTHORED_RUNTIME_ARN),
+        ("EndpointInboundPolicy", AUTHORED_RUNTIME_ARN + "/runtime-endpoint/DEFAULT"),
+    ):
+        # Resolve only the authored Runtime ARN placeholder in CDK's serialized
+        # JSON. The expected policy remains the literal AWS response above.
+        serialized = template["Resources"][logical_id]["Properties"]["Policy"]
+        assert set(serialized) == {"Fn::Join"}
+        separator, parts = serialized["Fn::Join"]
+        assert separator == ""
+        resolved = []
+        for part in parts:
+            if isinstance(part, str):
+                resolved.append(part)
+            else:
+                assert part == {"Fn::GetAtt": ["StreamingRuntime", "AgentRuntimeArn"]}
+                resolved.append(AUTHORED_RUNTIME_ARN)
+        actual = json.loads("".join(resolved))
+        expected = deepcopy(AUTHORED_SINGLE_CALLER_READBACK)
+        for statement in expected["Statement"]:
+            statement["Resource"] = resource_arn
+        if multiple_callers:
+            expected["Statement"][0]["Principal"] = {
+                "AWS": [AUTHORED_CALLER, SECOND_AUTHORED_CALLER]
+            }
+            expected["Statement"][1]["Condition"] = {
+                "ArnNotEquals": {"aws:PrincipalArn": [AUTHORED_CALLER, SECOND_AUTHORED_CALLER]}
+            }
+        assert actual == expected
 
 
 def configuration(*, bound: bool = True) -> dict[str, Any]:
@@ -153,6 +273,97 @@ def test_native_permissions_scope_model_code_query_and_logs(
     assert trust["Principal"] == {"Service": "bedrock-agentcore.amazonaws.com"}
     assert trust["Condition"]["StringEquals"] == {"aws:SourceAccount": ACCOUNT}
     assert "enterprise_analytics_stream_nova_lite-*" in json.dumps(trust)
+
+
+@pytest.mark.parametrize(
+    ("index", "own_log_group"),
+    [
+        (
+            0,
+            "arn:aws:logs:us-west-2:453711491609:log-group:"
+            "/aws/bedrock-agentcore/runtimes/enterprise_analytics_stream_nova_lite-*",
+        ),
+        (
+            1,
+            "arn:aws:logs:us-west-2:453711491609:log-group:"
+            "/aws/bedrock-agentcore/runtimes/enterprise_analytics_stream_gemma_27b-*",
+        ),
+    ],
+    ids=("nova", "gemma"),
+)
+def test_runtime_can_configure_only_its_own_scoped_log_resource_policy(
+    templates: tuple[dict[str, Any], ...], index: int, own_log_group: str
+) -> None:
+    grants = statements(templates[index])
+    resource_policy_grants = [
+        grant for grant in grants if "logs:PutResourcePolicy" in actions(grant)
+    ]
+    assert resource_policy_grants == [
+        {
+            "Action": "logs:PutResourcePolicy",
+            "Effect": "Allow",
+            "Resource": own_log_group,
+            "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}},
+        }
+    ]
+    assert {
+        action for grant in grants for action in actions(grant) if action.startswith("logs:")
+    } == {
+        "logs:CreateLogGroup",
+        "logs:DescribeLogStreams",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents",
+        "logs:DescribeLogGroups",
+        "logs:PutResourcePolicy",
+    }
+
+
+@pytest.mark.parametrize(
+    ("resource", "expected_match"),
+    [
+        (
+            "arn:aws:logs:us-west-2:453711491609:log-group:"
+            "/aws/bedrock-agentcore/runtimes/enterprise_analytics_stream_nova_lite-Authored-DEFAULT",
+            True,
+        ),
+        (
+            "arn:aws:logs:us-west-2:453711491609:log-group:"
+            "/aws/bedrock-agentcore/runtimes/enterprise_analytics_stream_gemma_27b-Authored-DEFAULT",
+            False,
+        ),
+        (
+            "arn:aws:logs:us-west-2:453711491609:log-group:"
+            "/aws/bedrock-agentcore/runtimes/enterprise_analytics_dev_agent-Authored-DEFAULT",
+            False,
+        ),
+        (
+            "arn:aws:logs:us-east-1:453711491609:log-group:"
+            "/aws/bedrock-agentcore/runtimes/enterprise_analytics_stream_nova_lite-Authored-DEFAULT",
+            False,
+        ),
+        (
+            "arn:aws:logs:us-west-2:111122223333:log-group:"
+            "/aws/bedrock-agentcore/runtimes/enterprise_analytics_stream_nova_lite-Authored-DEFAULT",
+            False,
+        ),
+        (
+            "arn:aws:logs:us-west-2:453711491609:log-group:/aws/unrelated/application",
+            False,
+        ),
+        (
+            "arn:aws:logs:us-west-2:453711491609:resource-policy:AccountWidePolicy",
+            False,
+        ),
+    ],
+    ids=("own", "other-model", "legacy", "region", "account", "unrelated", "account-policy"),
+)
+def test_log_resource_policy_grant_excludes_other_roles_and_account_policies(
+    templates: tuple[dict[str, Any], ...], resource: str, expected_match: bool
+) -> None:
+    grant = next(
+        grant for grant in statements(templates[0]) if "logs:PutResourcePolicy" in actions(grant)
+    )
+    assert fnmatchcase(resource, grant["Resource"]) is expected_match
 
 
 def test_mantle_permissions_use_exact_project_and_model_condition(

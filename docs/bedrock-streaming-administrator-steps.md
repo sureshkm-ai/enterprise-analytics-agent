@@ -9,10 +9,15 @@ Do not use the developer SSO role to grant itself IAM permissions.
 **November 12 follow-up:** both policy attachments and exact active documents
 are verified from the supplied report. All three previously blocked model
 agreements are now independently verified AVAILABLE. Do not repeat those steps.
-The supplement now verifies its exact request and current M4 policy, identifying
-the Project-condition gap. The user separately approved the exact correction at
-f68e191. The remaining gate is administrator application/readback, followed by an
-allowed simulation. Approval does not establish that the policy has been applied.
+The exact directory correction is now applied: the supplied
+`streaming-directory-verification.json`, SHA-256
+`2c1b01a6e182da96dd4a155ebb5e3fb8318978c94cf01473eb86b4f616b063f6`,
+confirms exact policy readback, preserved attachments and an **allowed** simulation
+with no missing context. Do not repeat directory-policy creation or evidence
+collection. The [recovery proposal](bedrock-streaming-recovery-plan.md) addresses
+the later workload logging denial/template verification issue. It proposes no
+additional CloudFormation-role console grant. Query-role trust remains a later
+administrator step after all ten roles exist; currently only streaming Nova exists.
 
 ## Attach the reviewed permissions as two managed policies
 
@@ -212,7 +217,9 @@ correction, if established, requires review before application.
 
 <a id="proposed-directory-correction--separate-approval-required"></a>
 
-## Approved directory correction — administrator application pending
+<a id="approved-directory-correction--administrator-application-pending"></a>
+
+## Approved directory correction — administrator application verified
 
 The smallest proposed delta is [this separate policy](../infrastructure/cdk/streaming-directory-tag-policy.proposed.json),
 SHA-256 **ba04feb1ce5c92ab55b94e09bfa522e641a0b2a2eedb10d97d313e42d996d39b**.
@@ -226,11 +233,13 @@ The original deployment plan deliberately excluded this grant. The user has now
 **separately approved this exact correction**, recorded in the
 [approval record](../evaluations/bedrock-streaming/directory-tag-approval.json).
 The proposed review JSON and policy bytes remain unchanged as historical review
-evidence. Administrator application and an allowed post-change simulation are
-still unverified. Keep the original aggregate, both split managed policies,
+evidence. Administrator application and the allowed post-change simulation are
+now verified by the supplied readback file. The following application/readback
+steps are preserved as history and must not be repeated. Keep both managed parts,
 M3/M4 policies, trust, package/templates, data and all budgets unchanged.
 
-The administrator can now apply the exact additive inline policy using the console:
+**Completed procedure—do not repeat.** The administrator used the exact additive
+inline policy procedure below; it is retained for the audit history:
 
 1. Open **IAM → Roles → cdk-hnb659fds-cfn-exec-role-453711491609-us-west-2**.
 2. Choose **Permissions → Add permissions → Create inline policy → JSON**.

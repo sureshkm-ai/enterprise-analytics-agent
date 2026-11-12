@@ -76,11 +76,17 @@ receipts, separate from every existing campaign. Twenty authored AWS checks must
 pass before UI activation. Its proposed outer 40 attempts comprise those checks,
 18 user questions, one protected retained-v15 smoke and one unapproved reserve.
 The implementation merged through PR #11; the user approved the unchanged
-execution plan on November 11, 2026. Fresh read-only preflight verifies the retained
-v15 release/publication and profile routing, while administrator evidence and
-three model agreements remain prerequisites. No resource mutation, upload or new
-live acceptance has occurred. Existing Nova v15 and session 02's 17 remaining
-questions are unchanged. See the [activation record](../evaluations/bedrock-streaming/activation-preflight-2026-11-11.json).
+execution plan on November 11, 2026. Administrator directory readback/simulation
+and model agreements now pass. Fresh preflight passed; the reviewed ZIP was uploaded
+once and only streaming Nova was created, READY v1. Exact policy verification
+stopped on singleton representation differences; CloudTrail also identifies a
+missing workload-role own-log-group permission. The [CDK-only recovery proposal](bedrock-streaming-recovery-plan.md)
+preserves the frozen agent source/package and exact public/metric/tool behavior,
+preparing corrected policy serialization and one scoped logging action for review.
+No new model/Runtime invocation occurred, campaign **0/40**. Legacy v15 was fully
+reverified untouched; session 02 and all historical ledgers remain unchanged.
+The [initial activation record](../evaluations/bedrock-streaming/activation-preflight-2026-11-11.json)
+remains historical evidence, not current deployment status.
 
 `ui/shared.py` maintains one separate allowance for both billable modes. Exclusive,
 fsynced question and SDK receipts precede dispatch, with journal reconciliation,

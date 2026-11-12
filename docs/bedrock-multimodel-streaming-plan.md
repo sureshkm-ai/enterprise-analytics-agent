@@ -4,20 +4,19 @@ The user **approved execution of this development deployment and live evaluation
 on November 11, 2026, after PR #11 merged at `01aabc1`. The scope is separate from
 completed Milestones 1–5 and every historical campaign. Approval is recorded in
 `artifacts/bedrock-streaming/approval.json` and remains valid for the unchanged plan.
-The first read-only preflight verified the retained v15/canonical checkpoint and
-routing. A November 12 read-only follow-up confirms all three model agreements
-are AVAILABLE and the administrator report verifies both attached policy parts.
-Deployment remains stopped on the report's shared-directory TagResource
-implicitDeny. The supplement confirms the exact request and current M4 policy:
-its directory grant requires the old Project value. A separate, exact-directory
-TagResource correction now has separate user approval, recorded independently
-of the unchanged deployment review. Administrator application/readback and an
-allowed post-change simulation remain pending. See [administrator steps](bedrock-streaming-administrator-steps.md) and
-the [actual preflight record](../evaluations/bedrock-streaming/activation-preflight-2026-11-11.json). The existing
-Nova candidate/retail Runtime and DEFAULT remain the retained **v15** checkpoint;
-the existing interactive allowance and its ledger are unchanged. A new model is
-listed in the UI catalog as a documented choice, not as an enabled or accepted
-backend.
+The directory grant is now applied and administrator readback/simulation passed.
+Fresh operator preflight passed, the reviewed ZIP uploaded once as
+**GSY36sTbDpCNZGogULTe3cBL__bujiQK**, and only the new streaming Nova stack was
+created: **CREATE_COMPLETE**, Runtime/DEFAULT **READY v1**. Verification stopped
+on AWS singleton policy normalization and a separate workload-role logging denial.
+The [recovery proposal](bedrock-streaming-recovery-plan.md) prepares exact corrected
+templates plus a scoped `logs:PutResourcePolicy` grant and recreation of only the
+unused new Nova stack before all ten corrected creates. This revision needs
+separate approval; it is not a claim that the earlier directory grant is missing.
+No new model/Runtime invocation or Athena query occurred; usage remains **0/40**.
+Legacy candidate-retail Runtime/DEFAULT **READY v15** was fully reverified untouched.
+Historical reviews/assemblies and the frozen ZIP/source are preserved. New model
+choices remain disabled until all twenty acceptance gates pass.
 
 ## Behavior and model scope
 
@@ -129,7 +128,7 @@ No AWS operation, upload or new question dispatch was performed.
 | ZIP bytes | `39298651` |
 | Deployment config file SHA-256 | `ab4019e79cf0e7b57978869873550ed6dfcc26b14c7f6f84cdf9a024675f2258` |
 | Additive policy file SHA-256 | `9be307f2bf73232c6146a7cfda8eb90e31d4952af2eb0de5ce8eb79e51a8723f` |
-| Real uploaded VersionId | **Not created**; remains null before separately approved upload |
+| Real uploaded VersionId | **GSY36sTbDpCNZGogULTe3cBL__bujiQK**, verified after the one-time approved upload |
 | Campaign | `bedrock-stream-models-v1-01`, proposed **0/40**, no ledger/claim created |
 
 The five-planning-call cap also works for sequential-tool Gemma: after the fifth
@@ -194,8 +193,10 @@ Mantle default project and applicable model access before deployment/evaluation.
 
 ## Offline preparation commands
 
-Use the existing activated Conda environment and confirm Python 3.12/Poetry before
-these commands. The package command writes a separate new ZIP and refuses to
+These are historical preparation commands. Frozen outputs now exist: do not
+rerun them into the reviewed directories or rebuild/upload the ZIP. The recovery
+plan uses separate output directories and pins. Use the existing activated Conda
+environment for any separately authorized preparation. The package command writes a separate new ZIP and refuses to
 overwrite an existing output when using the new entry point.
 
 ```bash
@@ -439,10 +440,10 @@ links each exact official model card. API/protocol and permission references use
 - [Conditional PutObject and explicit SHA-256 checksum options](https://docs.aws.amazon.com/cli/latest/reference/s3api/put-object.html).
 
 Offline checks establish implementation readiness only. Execution approval is now
-recorded; retain the frozen checksums and real-version binding procedure. Resolve
-the remaining directory correction's administrator application/readback and
-allowed simulation documented in the administrator guide, then repeat fresh
-preflight and continue
-the already approved ten-runtime scope. The controlled reserve remains unusable.
-No live acceptance, new permission, upload, deployment or production-readiness
-claim is recorded here.
+recorded; retain the frozen checksums and real-version binding procedure. The directory
+application/readback and allowed simulation have passed. Review the separate
+recovery proposal for corrected templates, the workload logging grant and scoped
+recreation before further mutation. After that approval, repeat fresh preflight
+and continue the reviewed ten-runtime scope. The controlled reserve remains unusable.
+The upload and one unaccepted streaming deployment are recorded above; full
+streaming live acceptance and production readiness remain unverified.

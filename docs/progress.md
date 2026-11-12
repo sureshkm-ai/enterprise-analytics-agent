@@ -2,7 +2,143 @@
 
 Updated: 2026-11-12 (America/Chicago).
 
-## Current checkpoint: directory correction approved; administrator application pending
+## Current checkpoint: first streaming stack created; recovery prepared, awaiting review
+
+The supplied `streaming-directory-verification.json` was inspected as data,
+SHA-256 **2c1b01a6e182da96dd4a155ebb5e3fb8318978c94cf01473eb86b4f616b063f6**.
+It confirms the exact approved inline policy/name/role and all four preserved
+managed attachments. The exact directory simulation is **allowed**, with no
+missing context and the new inline statement matched. Administrator application
+is verified; no further directory-policy console action is required. Original
+review/approval/report history remains unchanged.
+
+Used the existing **enterprise-analytics** Conda Python **3.12.16** and Poetry
+**2.3.1**. The branch was clean at **5b8c117** before this work. Only
+**analytics-dev / 453711491609 / us-west-2** was used. Fresh read-only preflights
+at **18:50Z** and **19:01Z** passed identity, retained v15, all seven canonical
+publication/Glue bindings, package/source/assemblies, native model availability
+and US routing, Mantle project, expiry and process guards. No denied developer
+IAM inspection, alternate profile or bootstrap was attempted.
+
+### Actual AWS operations and stopped checkpoint
+
+- Conditional ZIP upload occurred **once**, with explicit SHA256 and no SDK
+  retry. SHA **c136a3931e2af31d6453c54910ddc9e839ef03e69a6f2ddebb35b3eb7cfdc306**,
+  bytes **39298651**, actual S3 VersionId **GSY36sTbDpCNZGogULTe3cBL__bujiQK**.
+  The exact version/hash/size were read back. Historical ZIPs/versions are intact.
+- A local pre-dispatch callback initially mishandled ReadPool's wrapped expected
+  missing-stack response. CDK was not started. Preserved the failure, corrected
+  only exact missing-stack cause handling, passed **8** offline cases and fresh
+  empty inventories, then recorded explicit journal inspection/resolution. This
+  was not a repeated AWS deployment or an authorization denial.
+- The single real CDK deployment created **enterprise-analytics-stream-nova-lite**,
+  StackId suffix **89307e20-decb-11f1-81c6-0affd1492891**. CloudFormation reached
+  **CREATE_COMPLETE**; new Runtime **enterprise_analytics_stream_nova_lite-PYEiLA6Tud**
+  and DEFAULT are **READY v1**. Its actual new log group has seven-day retention.
+  Other nine stacks were **not** deployed.
+- Strict verification stopped because both inbound policies read back singleton
+  ARN values as scalars rather than lists. The principal/actions/resources/denies
+  are unchanged. The live verifier was not weakened or bypassed. CDK was still
+  running when the check failed; failure cleanup reaped only its owned process
+  group using SIGTERM. This does not prove a transport cause or CLI hang. The
+  inactive, reaped process journal still requires inspection before recovery.
+- Complete CloudTrail capture additionally found **logs:PutResourcePolicy**
+  denied for the **new Nova workload role**, on its own exact new log-group ARN.
+  Event **a2e86f89-a23e-37d3-883e-79823c5cc032**, **19:02:46Z**, request
+  **a3014671-40fc-4964-88e5-20c60c1f28af**; no identity-based Allow. Its full
+  errorMessage is retained; requestParameters/responseElements are null. The
+  successful parent CreateAgentRuntime used the reviewed CloudFormation role.
+  This is separate from the now-correct directory grant. Bounded session-index
+  lookup returned zero rows and is not an exhaustive permission assurance.
+- Read-only baseline inspection verified all remaining new Nova properties and
+  raw policies, explicitly distinguishing singleton representation equivalence
+  from final acceptance. The retained legacy Runtime/DEFAULT **READY v15** passed
+  complete verification at **19:11:25Z**. No legacy redeployment, restoration or
+  smoke was necessary; it was never modified.
+
+Raw report/preflight/upload proof is under
+`artifacts/bedrock-streaming/operations/20261112T185007Z/`; stopped-deployment,
+policy/CloudTrail/raw baseline/legacy proof is under
+`artifacts/bedrock-streaming/operations/20261112T190109Z/deployments/`.
+All model/Runtime invocations and Athena queries remain **0**. Same campaign
+**0/40**, no question ledger/claim/reservation created, no reset/reopen, reserve
+unapproved. Historical **203** files plus **10** Nova-session files are preserved.
+
+### Local correction and approval-ready recovery
+
+The CDK-only correction emits scalar ARN values for a single inbound caller,
+retaining multiple-caller lists and unchanged deny behavior. It also proposes
+one **logs:PutResourcePolicy** statement per workload role on only that model's
+log-group namespace, conditioned on **us-west-2**. AWS direct-deployment role
+documentation and the actual denial support that single action; no broad logging,
+Bedrock, S3, query-role or CloudFormation-role permissions were added.
+
+Both changes are **local proposals, not deployed**. The frozen **76-file** agent
+source closure, ZIP, S3 version, configuration, original reviews/assemblies,
+goldens, data and all historical ledgers are unchanged. The [recovery preparation](../evaluations/bedrock-streaming/recovery-preparation.proposed.json)
+proves ten byte-reproduced templates differ only in the two policy representations
+and the one scoped logging statement; all other template properties are identical.
+Recovery review SHA:
+**10433404c65249308e326a5867d499cabe4fab24c43201a6639a29c769b946c4**.
+
+The [concrete recovery plan](bedrock-streaming-recovery-plan.md) proposes deleting
+only the unused/unaccepted newly created Nova stack, retaining its manually
+created log group/evidence and the untouched legacy v15, then fresh creation of
+all ten corrected targets using the already uploaded ZIP. The new logging grant
+is present before each fresh Runtime initializes. No description-only update,
+additional ZIP upload or counter reset is proposed. Source/config/data/expiry and
+the existing **20 acceptance + 18 user + 1 protected cleanup + 1 unapproved reserve**
+allocation remain fixed. The original deployment approval and directory approval
+persist; corrected template pins and the additional workload-role logging grant
+require separate recovery review before any more mutation.
+
+### Verification for this checkpoint
+
+- New authored regressions failed before the fixes: single-caller policy readback
+  and missing native/Mantle logging grant. After correction, focused infrastructure
+  and packaging tests passed **43** cases.
+- `poetry check --lock`: passed. `poetry run ruff check .`: passed.
+  `poetry run ruff format --check .`: **187** files formatted.
+  `poetry run mypy src tests`: passed, **148** files. Agent's additional mypy of
+  the two changed implementation/test files passed.
+- Initial sandboxed `poetry run pytest`: **1867 passed, 19 failed, 20 errors,
+  85 deselected in 85.97s**; UI tests were denied loopback socket binding. No code
+  was changed to suppress those checks. Rerun in the existing Conda environment
+  with loopback permission: **1915 passed, 85 deselected in 94.66s, zero skipped**.
+- Two independent offline syntheses of the final recovery assembly passed.
+  All **10** templates are byte-identical between outputs; an exact diff proof
+  validates only the two named policy shape changes and one scoped logging grant.
+  The earlier serialization-only synthesis is retained separately as preparation
+  history, not the final candidate.
+- Pinned supervisor tests passed **16** offline cases; per-target proof tests
+  passed one success, **13** drift and **2** not-ready/deadline rejections; these
+  create no AWS client or fake live binding. The baseline helper passed **26**
+  offline cases, preserving raw policy responses and rejecting broader principals,
+  wildcard actions and removed denies. The complete recovery operator passed
+  **17** offline flow cases in temporary fixtures: exact approval/code/metadata
+  gates, one delete/ten sequential creates, no automatic retry, preserved logs,
+  deletion timeout/interruption, malformed baseline and duplicate-claim rejection.
+  Actual workspace claims/guards were not touched by those tests. Operator helper
+  sources and tests are preserved under the ignored recovery artifacts with
+  committed checksum pins; stop if any required local file is missing/different.
+  Final metadata/hash checks passed for all six helpers, exact retained stopped
+  guard, uploaded-version record and unchanged original pins. Documentation checks
+  passed **9** Markdown files, **134** local links and **35** parsed-only shell
+  blocks; `git diff --check` passed. Independent read-only review found no
+  actionable scope, permission, pin or evidence defects. No new hosted CI is
+  claimed for this local checkpoint; earlier PR #12 CI covers only its own head.
+
+**Exact next task:** review/approve
+[the recovery plan](bedrock-streaming-recovery-plan.md) and exact recovery review
+SHA above. No additional console policy change is requested now. After approval,
+repeat fresh preflight, inspect the preserved stopped journal, perform the scoped
+recreation/deployment, and obtain the previously reviewed administrator query-role
+trust application after all ten roles exist. Then bind actual releases and run
+the unchanged twenty acceptance questions before UI activation. Do not run more
+AWS mutations, spend a question/reserve, manufacture approval, push or claim live
+acceptance from this offline checkpoint. M1–M5 completion is unchanged.
+
+## Historical directory approval — recorded at 5b8c117
 
 The user separately approved the exact additional directory-tagging policy at
 **f68e1913a61151da031816d77c1adfc5fac63de8**. Recorded that instruction in
@@ -2353,4 +2489,17 @@ Milestone 2 introduced no AWS credentials, calls, deployment, Athena adapter, or
 
 ## Exact next task
 
-The agreed development proof of concept for **Milestones 1–5 is complete**, merged and hosted-CI verified. The separately approved shared UI follow-on also passed Q18/all 18 paired outcomes on candidate READY v13. Its next task is the outcome PR/CI/user-review handoff recorded above; no ordinary live allowance remains. Other development still requires a separately defined scope. Preserve the recorded original READY v12 checkpoint, frozen assets/goldens and all closed ledgers/claims. **Recovery 38/38 and aggregate repair 40/40 are exhausted**; no rerun, additional demonstration, quota reset, AWS operation or next milestone is authorized by closeout. Production-readiness limitations above remain explicit.
+Milestones **1–5**, shared UI acceptance and full-live validation remain complete
+for the agreed development proof of concept. The active follow-on is the stopped
+Bedrock multi-model/word-streaming deployment: review the
+[recovery proposal](bedrock-streaming-recovery-plan.md), exact corrected review
+**10433404c65249308e326a5867d499cabe4fab24c43201a6639a29c769b946c4**,
+additional workload-role own-log-group permission and scoped recreation of only
+the unused new Nova stack. Directory evidence is complete; no more console grant
+is requested now. After recovery approval and fresh proof, deploy corrected
+resources, obtain the already planned administrator query-role trust readback,
+then pass all twenty authored checks before enabling model choices. Preserve
+legacy v15, uploaded code/version, manual logs, data, original reviews/assemblies
+and all historical ledgers. New streaming usage remains **0/40**; reserve and
+expiry are unchanged. This checkpoint starts no new milestone and makes no
+production-readiness or new live-acceptance claim.

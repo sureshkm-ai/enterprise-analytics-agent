@@ -60,11 +60,39 @@ model ARNs. This is **not Runtime-role effective-access proof**. No specific
 missing permission or policy broadening is supported. See the bounded
 [read-only administrator handoff](bedrock-streaming-completion-plan.md#read-only-sonnet-authorization-handoff).
 
+Subsequent administrator-console evidence supplied by the user is now
+[recorded](../evaluations/bedrock-streaming/sonnet-runtime-policy.user-supplied.json).
+The reported sole inline policy **RuntimePermissionsA5C20CF1** matches the restored
+reviewed template **exactly**; its two Bedrock actions and four Sonnet ARNs are
+unchanged in the approved candidate. No duplicate grant is needed. This records
+user-reported attachment evidence, not an independent IAM read. The user also
+reports **Permissions boundary: Not set**. Session/organization/effective-context
+evaluation remains unavailable. Seven credential/routing source members match the frozen
+ZIP byte-for-byte. Source audits show Bedrock uses the workload session and only
+Athena/S3 use assumed query-role credentials; no concrete credential, model-ID or
+region wiring defect was found. Actual denied session/resource/conditions remain
+unknown. The next evidence is **effective-context/simulator results**, not another copy or reattachment of this inline policy.
+
 All **352** protected historical files remain byte-for-byte unchanged; sealed
 preparation/review/readiness, frozen ZIPs, actual S3 versions, original assemblies,
 goldens, prior ledgers/claims and M3 permissions are preserved. New approval,
 release/restoration records and receipt hashes are retained separately. Existing
 M1–M5 completion is unaffected; multi-model UI acceptance remains incomplete.
+
+Outcome checkpoint **5f5c09eef4ee7769d4d1c69424a6b87d8e9382c6** is pushed and
+passed [push CI 43321676010](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43321676010)
+and [PR CI 43321689020](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43321689020):
+**2055 passed, 85 deselected, zero skipped**, lock/lint/format/types and all
+synthesis checks passed. These runs predate the supplemental user-policy evidence.
+Its review used offline JSON equality and seven frozen-ZIP member comparisons;
+no new source, AWS operation or billable invocation occurred. Supplemental checks passed for **9** Markdown files, **156** local links, **35**
+documentation shell blocks and **2** CI shell blocks, policy/record JSON, seven
+source hashes, retained STS evidence and `git diff --check`; all **352** historical
+files remain unchanged. A post-execution
+`verify-offline` invocation returned **exit 1** at the deliberate untouched-0/37
+loader guard because usage is already 4/37; this confirms the non-replay condition,
+not a failed test or extra execution. Its record is retained at
+`artifacts/bedrock-streaming/completion-fix/post-execution-replay-guard.json`.
 
 Commands actually run after approval:
 
@@ -88,9 +116,9 @@ three case reports, the protected smoke and all raw hashes. `git diff --check`
 passed. No application/source/infrastructure code changed after f591498; its
 completed required local/hosted checks were not repeated merely for documentation.
 
-**Exact next task:** obtain administrator **read-only** effective-policy/context
-and simulation evidence for the actual Sonnet Runtime role; do not add speculative
-grants. Preserve the failed campaign and verified restored checkpoint. Any later
+**Exact next task:** the supplied inline policy already matches; obtain administrator
+**read-only** effective-context/simulator results or the actual
+full Sonnet denial. Do not request the same policy again or add speculative grants. Preserve the failed campaign and verified restored checkpoint. Any later
 replacement/retry needs its own concrete reviewed artifact/checkpoint/allocation
 and approval, including a new cleanup allowance; no such execution is authorized
 by the unused quota. Keep PR #13 unmerged and all new choices disabled.
@@ -2777,7 +2805,8 @@ The completion correction passed both live Nova gates, but Sonnet denied its
 first model call. All ten original streaming configurations are restored on
 **READY v3**, and retained-v15 Q18 smoke passed. Child **4/37**, aggregate **7/40**,
 is failed/blocked; no replay, reserve use or implicit cleanup budget remains.
-Obtain the read-only Sonnet-role evidence described in the
+The supplied inline policy matches exactly; obtain the remaining read-only
+effective-context evidence described in the
 [completed execution handoff](bedrock-streaming-completion-plan.md#read-only-sonnet-authorization-handoff)
 before proposing a correction or separately approved retry. Keep new UI choices
 disabled and PR #13 unmerged. M1–M5 remain complete for the development scope.

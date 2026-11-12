@@ -280,14 +280,27 @@ AVAILABLE with authorization AUTHORIZED. Those are control-plane observations;
 they are not the workload role's effective-access proof. The developer identity's
 previously denied IAM inspection was not repeated. No new grant is proposed.
 
-An administrator should inspect the **actual role** below read-only, preserving
-all existing policies:
+Subsequent administrator-console evidence supplied by the user is now
+[recorded](../evaluations/bedrock-streaming/sonnet-runtime-policy.user-supplied.json).
+The reported sole inline policy **RuntimePermissionsA5C20CF1** matches the restored
+reviewed template **exactly**; its two Bedrock actions and four Sonnet ARNs are
+unchanged in the approved candidate. No duplicate grant is needed. This records
+user-reported attachment evidence, not an independent IAM read. The user also
+reports **Permissions boundary: Not set**. Session/organization/effective-context
+evaluation remains unavailable. Seven credential/routing source members match the frozen
+ZIP byte-for-byte. Source audits show Bedrock uses the workload session and only
+Athena/S3 use assumed query-role credentials; no concrete credential, model-ID or
+region wiring defect was found. Actual denied session/resource/conditions remain
+unknown. The next evidence is **effective-context/simulator results**, not another copy or reattachment of this inline policy.
+
+The supplied inline document does not need to be requested or attached again.
+An administrator should now establish the remaining **effective request-context/simulator evidence** below read-only, preserving all policies:
 
 - Role: `arn:aws:iam::453711491609:role/enterprise-analytics-stream-claude-sonnet-5-5`.
-- Active inline policy documents, attached managed policies' default versions,
-  permissions boundary and role tags; verify the actual policy against the
-  reviewed restored template. PowerUser SSO policy coverage does not substitute
-  for this separate workload role.
+- The sole inline document is supplied and matches the restored template. Obtain
+  the applicable organization/session/context
+  restrictions and actual required tags. PowerUser SSO policy coverage does not
+  substitute for this separate workload role.
 - Simulate `bedrock:InvokeModel` for the failed Converse path, and
   `bedrock:InvokeModelWithResponseStream` for the prospective presenter, against
   each of these exact resources:
@@ -307,6 +320,38 @@ and any actual required tags/profile context. Do not override/exclude policies o
 invent missing context to obtain an allowed result. A missing-context implicit
 deny is not proof of a missing grant, and an allowed simulation is not live
 acceptance. No grant, trust edit, model retry or permission change is requested.
+
+For an administrator in **CloudShell, account 453711491609**, the following is
+read-only. It uses the existing console identity, creates no profile, adds no
+policy and invokes no model. Save the full result rather than copying a long
+terminal response. Do not run it under the developer profile to repeat a denied
+IAM inspection. If context keys beyond the supplied real region/role are reported,
+return them as missing rather than inventing values.
+
+```sh
+aws iam get-context-keys-for-principal-policy \
+  --policy-source-arn arn:aws:iam::453711491609:role/enterprise-analytics-stream-claude-sonnet-5-5 \
+  --region us-west-2 --no-cli-pager
+
+AWS_MAX_ATTEMPTS=1 aws iam simulate-principal-policy \
+  --policy-source-arn arn:aws:iam::453711491609:role/enterprise-analytics-stream-claude-sonnet-5-5 \
+  --action-names bedrock:InvokeModel bedrock:InvokeModelWithResponseStream \
+  --resource-arns \
+    arn:aws:bedrock:us-west-2:453711491609:inference-profile/us.anthropic.claude-sonnet-5-5 \
+    arn:aws:bedrock:us-west-2::foundation-model/anthropic.claude-sonnet-5-5 \
+    arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-sonnet-5-5 \
+    arn:aws:bedrock:us-east-2::foundation-model/anthropic.claude-sonnet-5-5 \
+  --context-entries \
+    ContextKeyName=aws:RequestedRegion,ContextKeyValues=us-west-2,ContextKeyType=string \
+    ContextKeyName=aws:PrincipalArn,ContextKeyValues=arn:aws:iam::453711491609:role/enterprise-analytics-stream-claude-sonnet-5-5,ContextKeyType=string \
+  --region us-west-2 --cli-connect-timeout 5 --cli-read-timeout 20 \
+  --no-cli-pager --output json > sonnet-simulation.json
+```
+
+These commands are prepared instructions, **not operations run in this session**.
+Download `sonnet-simulation.json` from CloudShell for review. Preserve all result
+fields, including missing context and organization decisions; an `allowed`
+simulation does not explain away the observed failure or authorize a retry.
 
 The API/action relationship and simulator limitations are documented in the
 [AWS Converse reference](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html)

@@ -88,8 +88,12 @@ policy evidence and completed query-trust handoff. New model acceptance is
 new protected smoke passed, separately from the earlier cleanup. Read-only
 administrator verification of the configured Sonnet role and denied request
 context is next; developer/model availability does not prove workload-role access.
-The actual denied session, resource, message and conditions remain unknown. Do not
-replay either closed campaign or broaden IAM without evidence.
+The actual denied session, resource, message and conditions remain unknown. The
+subsequently supplied Sonnet inline policy matches the reviewed template exactly;
+both invocation actions and all four ARNs are already allowed. Source/archive
+credential routing also matches. The user reports no permissions boundary. Remaining read-only evidence is
+effective request context/simulation; do not duplicate or reattach the policy.
+Do not replay either closed campaign or broaden IAM without evidence.
 
 The separate UI campaign used **19/20 attempts**: Q18 verification 1 and all 18
 regular slots; the protected rollback smoke was unused. No regular live allowance

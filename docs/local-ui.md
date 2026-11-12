@@ -95,8 +95,8 @@ its separately reviewed runtime, applicable `bedrock:InvokeModelWithResponseStre
 access and model-specific transport/acceptance checks.
 [ConverseStream](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html),
 [client-side tool use](https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use-client-side.html).
-One new streaming Nova stack has now been created, with no billable verification.
-The stopped deployment and proposed continuation are recorded below.
+The initial streaming Nova create stopped at verification, with no billable calls.
+Its historical failures, completed deployment and failed live acceptance are recorded below.
 
 ## Prepared Bedrock-only model and word-streaming release
 
@@ -108,10 +108,20 @@ APIs are outside this scope. The optional GPT-OSS catalog entry is not one of th
 ten reviewed deployments. Execution was approved on November 11, 2026; the
 [administrator guide](bedrock-streaming-administrator-steps.md) records the verified
 directory grant/model agreements and later query-role trust handoff. Only the new
-Nova stack reached CREATE_COMPLETE/READY v1. The [recovery proposal](bedrock-streaming-recovery-plan.md)
-addresses policy representation and an actual workload logging denial before any
-further deployment. Live acceptance remains pending at **0/40**; all new choices
-stay disabled and legacy v15 remains unchanged.
+Nova stack reached CREATE_COMPLETE/READY v1. The user approved the
+[recovery](bedrock-streaming-recovery-plan.md) at **7dad05a**, covering the policy
+representation correction and scoped workload logging grant. Fresh preflight
+passed, the reviewed unused Nova stack was deleted, and all ten corrected stacks
+verified **CREATE_COMPLETE / Runtime and DEFAULT READY v1**, exact proofs and
+seven-day retention. Administrator-applied trust readback and release binding
+passed. Nova Q18 passed with provider streaming; the all-five question had the
+correct complete plan/results but failed `token_limit` before presentation.
+Acceptance stopped with no other model invoked or accepted UI binding. Protected
+legacy **v15** cleanup smoke passed. Campaign **3/40** is closed (two ordinary,
+one cleanup), with reserve untouched; all new choices stay disabled. The source,
+frozen ZIP/version and permissions remain unchanged. Next prepare the focused
+offline input-reservation/complete-plan correction, regressions and new
+candidate/review; do not replay the closed campaign.
 
 Local Bedrock and AWS modes reuse the unchanged `BedrockAnalyticsAgent` semantic
 tool loop. At most five planning calls precede one tool-free presentation call,
@@ -422,7 +432,7 @@ Historical screenshot from the initial deterministic/legacy UI implementation:
 | `hosting/application.py` | Existing workload-credential runtime using the shared agent |
 | `adapters/bedrock_model_catalog.py`, `streaming_agent.py`, `bedrock_word_stream.py`, `bedrock_mantle.py` | New catalog, unchanged semantic loop wrapper and canonical provider-word transports |
 | `ui/model_streams.py`, `adapters/model_stream_ui.py`, `model_stream_cli.py` | Separate proposed review/ledger, release proof, authored acceptance and protected cleanup |
-| `hosting/streaming_server.py`, `infrastructure/cdk/streaming_app.py` | SSE hosting and isolated stacks; original scope approved, first create stopped verification, corrected recovery pending review |
+| `hosting/streaming_server.py`, `infrastructure/cdk/streaming_app.py` | SSE hosting and isolated stacks; ten targets deployed/verified; trust passed; acceptance stopped on Nova input-reservation guard, campaign closed 3/40, legacy v15 cleanup passed |
 | `infrastructure/agentcore/ui_workflow.py`, `source_audit.py` | Offline assembly/source review and guarded release operator |
 
 Package paths are relative to `src/enterprise_analytics_agent/`, except infrastructure.

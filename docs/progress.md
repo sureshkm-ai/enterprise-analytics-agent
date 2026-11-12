@@ -2,7 +2,98 @@
 
 Updated: 2026-11-12 (America/Chicago).
 
-## Current checkpoint: first streaming stack created; recovery prepared, awaiting review
+## Current checkpoint: streaming acceptance failed safely; legacy v15 verified
+
+The scoped recovery approved at **7dad05a47b141a163eec1034b000b1337bcfab64**
+executed once. The [approval record](../evaluations/bedrock-streaming/recovery-approval.json)
+binds recovery review **10433404c65249308e326a5867d499cabe4fab24c43201a6639a29c769b946c4**,
+execution-proposal SHA **ee90ac77cd3c689e23c150d0e7f1e1ca2032cca3ffd2f52595f2b4c9e17bf0f7**,
+the unchanged uploaded ZIP/version, ceiling and expiry.
+
+Fresh preflight **20261112T200119Z** passed. After preserving the stopped journal
+and exact unused Nova checkpoint, the operator deleted only that reviewed stack
+and created all ten corrected replacements. At **20:20:07Z**, all ten verified
+**CREATE_COMPLETE / Runtime and DEFAULT READY v1**, exact artifact/configuration/
+policy proofs and seven-day retention. The [deployment checkpoint](../evaluations/bedrock-streaming/recovery-deployment-checkpoint-2026-11-12.json)
+preserves actual releases and proof hashes. Raw deployment evidence remains under
+`artifacts/bedrock-streaming/operations/20261112T200119Z/recovery-deployments/`.
+
+The administrator applied the exact reviewed query-role trust addition. The
+user-supplied saved-policy readback at **20:22:58Z** matches merged SHA
+**3d2b5cd161956ae147c825cc71d28b977d03e24e909f21eea50d508b41203ec1**:
+both prior statements remain, and the ten added principals match deployed roles.
+Actual release binding passed. No IAM changes were made by the agent.
+
+Acceptance then stopped after two Nova questions. **Q18 passed**, including the
+complete request, **110.25 USD [2025-03-31, 2025-04-01)** and provider streaming.
+The all-five regional question produced all five exact requests and golden
+results, but returned **token_limit** before presentation; it failed acceptance.
+No other model was invoked and no accepted UI binding was created. Reports are
+`artifacts/bedrock-streaming/acceptance-recovery/nova-lite-0.json` and
+`nova-lite-1.json`.
+
+The second question used **3,215 reported tokens** across two model calls, below
+the **10,000** planning ceiling. Offline fake replay reproduced the failure:
+conversation JSON required an **8,369-byte conservative input reservation**,
+so the next dispatch guard calculated **10000 - 3215 - 8369 = -1584**. This is a
+reproduction from retained tool inputs/results and usage, without unavailable
+assistant prose; the complete live transcript was not retained, so **8,369 is not
+claimed as the exact live request size**. The complete successful plan was already
+available, but the wrapper only completes it after iteration exhaustion, not this
+reservation stop. No permission change or higher ceiling is supported by this
+failure.
+
+The [acceptance failure record](../evaluations/bedrock-streaming/acceptance-failure-2026-11-12.json)
+preserves report/ledger hashes, exact request/result comparison and the separate
+7,514-byte minimum reservation bound from retained content.
+
+The protected cleanup smoke passed on retained legacy **v15** at approximately
+**20:26Z**, with exact Q18 **110.25 USD**; see
+`artifacts/bedrock-streaming/cleanup-recovery.json`. No legacy redeployment was
+needed. Campaign **bedrock-stream-models-v1-01** is closed/blocked at **3/40**:
+two ordinary attempts plus one protected cleanup, no incomplete SDK attempt and
+no automatic retry. The reserve remains untouched and unapproved. All new model
+choices remain disabled. Frozen ZIP/source/S3 version, canonical data, goldens,
+permissions and historical ledgers remain unchanged.
+
+### Verification during approved execution
+
+- `poetry run python artifacts/bedrock-streaming/recovery/operator/preflight.py`:
+  passed, with zero mutations/invocations; evidence **20261112T200119Z**.
+- `poetry run python artifacts/bedrock-streaming/recovery/operator/deploy.py --execute-approved`:
+  exit **0**; approved old-stack deletion and all **10** corrected creates verified.
+  Each task-owned CDK process was reaped and the final process guard is resolved.
+- `poetry run python -m enterprise_analytics_agent.adapters.model_stream_cli --review evaluations/bedrock-streaming/review.recovery.proposed.json verify-offline`:
+  passed before acceptance, ten models/two checks each, **0/40**, zero AWS calls.
+- `PYTHONPATH=. poetry run python /private/tmp/bedrock-streaming-final-proof.py`:
+  passed, **76** packaged source/assets match, **203 + 10** protected files
+  unchanged; no AWS session or question ledger. The first invocation lacked the
+  repository import path; rerun with the documented `PYTHONPATH=.` passed.
+- `poetry check --lock`, `poetry run ruff check .`,
+  `poetry run ruff format --check .` (**188** files), and
+  `poetry run mypy src tests` (**148** files): passed. The unchanged application
+  and infrastructure code retain the **1915 passed / 85 deselected / zero skipped**
+  pytest result below; the default suite was not rerun during this execution-only update.
+- Offline failure replay reproduced `token_limit` without AWS. A temporary
+  in-memory complete-plan prototype passed **9 tests in 0.30s**, including
+  incomplete/invalid plans, real token overruns, provider truncation and bounded
+  presentation. Command: `PYTHONPATH=. poetry run pytest -c /private/tmp/streaming-budget-prototype-audit/pytest.ini --rootdir=/private/tmp/streaming-budget-prototype-audit /private/tmp/streaming-budget-prototype-audit/test_streaming_budget_early_completion_prototype.py -q`.
+  Scripts/hashes are preserved under
+  `artifacts/bedrock-streaming/token-budget-diagnosis/`; this is not a packaged fix.
+- `PYTHONPATH=. poetry run python /private/tmp/streaming-recovery-postflight-proof.py`:
+  passed after cleanup: **76** packaged files and **203 + 10** historical files
+  unchanged, campaign closed **3/40**, no accepted binding and zero AWS calls.
+- Documentation check: **7** Markdown files, **116** local links and **30** shell
+  blocks pass existence/syntax checks; shell examples were not executed.
+  `git diff --check`: passed.
+
+The [deployment checkpoint](../evaluations/bedrock-streaming/recovery-deployment-checkpoint-2026-11-12.json)
+records actual target identifiers/versions and hashes of all ten exact proofs.
+It records deployment proof and the separately attributed administrator trust
+readback; model acceptance failed as recorded above. No hosted CI is claimed for
+this new checkpoint.
+
+### Historical initial streaming attempt and recovery preparation
 
 The supplied `streaming-directory-verification.json` was inspected as data,
 SHA-256 **2c1b01a6e182da96dd4a155ebb5e3fb8318978c94cf01473eb86b4f616b063f6**.
@@ -64,7 +155,7 @@ All model/Runtime invocations and Athena queries remain **0**. Same campaign
 **0/40**, no question ledger/claim/reservation created, no reset/reopen, reserve
 unapproved. Historical **203** files plus **10** Nova-session files are preserved.
 
-### Local correction and approval-ready recovery
+### Historical local correction and recovery preparation
 
 The CDK-only correction emits scalar ARN values for a single inbound caller,
 retaining multiple-caller lists and unchanged deny behavior. It also proposes
@@ -73,7 +164,8 @@ log-group namespace, conditioned on **us-west-2**. AWS direct-deployment role
 documentation and the actual denial support that single action; no broad logging,
 Bedrock, S3, query-role or CloudFormation-role permissions were added.
 
-Both changes are **local proposals, not deployed**. The frozen **76-file** agent
+At that preparation checkpoint both changes were **local proposals, not deployed**.
+The later approval and execution status are recorded above. The frozen **76-file** agent
 source closure, ZIP, S3 version, configuration, original reviews/assemblies,
 goldens, data and all historical ledgers are unchanged. The [recovery preparation](../evaluations/bedrock-streaming/recovery-preparation.proposed.json)
 proves ten byte-reproduced templates differ only in the two policy representations
@@ -90,7 +182,8 @@ additional ZIP upload or counter reset is proposed. Source/config/data/expiry an
 the existing **20 acceptance + 18 user + 1 protected cleanup + 1 unapproved reserve**
 allocation remain fixed. The original deployment approval and directory approval
 persist; corrected template pins and the additional workload-role logging grant
-require separate recovery review before any more mutation.
+required separate recovery review before any more mutation. That approval is now
+recorded above; the original proposed review bytes remain unchanged.
 
 ### Verification for this checkpoint
 
@@ -128,15 +221,14 @@ require separate recovery review before any more mutation.
   actionable scope, permission, pin or evidence defects. No new hosted CI is
   claimed for this local checkpoint; earlier PR #12 CI covers only its own head.
 
-**Exact next task:** review/approve
-[the recovery plan](bedrock-streaming-recovery-plan.md) and exact recovery review
-SHA above. No additional console policy change is requested now. After approval,
-repeat fresh preflight, inspect the preserved stopped journal, perform the scoped
-recreation/deployment, and obtain the previously reviewed administrator query-role
-trust application after all ten roles exist. Then bind actual releases and run
-the unchanged twenty acceptance questions before UI activation. Do not run more
-AWS mutations, spend a question/reserve, manufacture approval, push or claim live
-acceptance from this offline checkpoint. M1–M5 completion is unchanged.
+**Exact next task:** prepare a focused offline source correction and regressions
+for safe completion of an exact successful governed plan before another planner
+turn. Preserve genuine token overruns, partial plans and provider failures as
+errors; do not raise limits or bypass acceptance. A changed source requires a new
+candidate/package and reviewed execution proposal before any live retry. Preserve
+the closed campaign/claim, frozen current ZIP, deployment/failure evidence and
+legacy v15. No new budget, upload, deployment, invocation or permission change is
+authorized by this checkpoint. M1–M5 completion is unchanged.
 
 ## Historical directory approval — recorded at 5b8c117
 
@@ -2490,16 +2582,12 @@ Milestone 2 introduced no AWS credentials, calls, deployment, Athena adapter, or
 ## Exact next task
 
 Milestones **1–5**, shared UI acceptance and full-live validation remain complete
-for the agreed development proof of concept. The active follow-on is the stopped
-Bedrock multi-model/word-streaming deployment: review the
-[recovery proposal](bedrock-streaming-recovery-plan.md), exact corrected review
-**10433404c65249308e326a5867d499cabe4fab24c43201a6639a29c769b946c4**,
-additional workload-role own-log-group permission and scoped recreation of only
-the unused new Nova stack. Directory evidence is complete; no more console grant
-is requested now. After recovery approval and fresh proof, deploy corrected
-resources, obtain the already planned administrator query-role trust readback,
-then pass all twenty authored checks before enabling model choices. Preserve
-legacy v15, uploaded code/version, manual logs, data, original reviews/assemblies
-and all historical ledgers. New streaming usage remains **0/40**; reserve and
-expiry are unchanged. This checkpoint starts no new milestone and makes no
-production-readiness or new live-acceptance claim.
+for the agreed development proof of concept. The follow-on streaming recovery
+created and verified all ten corrected deployments, but new release acceptance
+failed safely on Nova's second question. Legacy **v15** cleanup verification
+passed; campaign **3/40** is closed and no new model choices are enabled. Prepare
+the focused offline complete-plan/token-reservation correction, regression tests,
+and a new candidate/review before requesting any further live scope. Preserve
+frozen assets, the closed claim/ledger, golden results, applied trust, deployment
+proofs and all historical evidence. Do not replay acceptance or use remaining
+quota/reserve as authorization. No production-readiness claim follows.

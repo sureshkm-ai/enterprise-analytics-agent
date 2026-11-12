@@ -1,11 +1,40 @@
 # Bedrock streaming deployment recovery proposal
 
-Status: **prepared offline; separate recovery approval required**. The directory
-policy is applied and verified. This proposal does not request another console
-policy attachment. It changes the generated workload-role policy through CDK,
-using the existing CloudFormation role's already scoped role-policy authority.
+Status: **recovery deployed; acceptance stopped safely; campaign closed 3/40**.
+The user approved this recovery at **7dad05a**; the
+[approval record](../evaluations/bedrock-streaming/recovery-approval.json) binds its
+unchanged review/execution hashes. Fresh preflight **20261112T200119Z** passed,
+the reviewed unused Nova stack was deleted, and all ten corrected replacements
+verified **CREATE_COMPLETE / Runtime and DEFAULT READY v1** at **20:20:07Z**,
+with exact artifact/configuration/policies and seven-day retention. The
+[deployment checkpoint](../evaluations/bedrock-streaming/recovery-deployment-checkpoint-2026-11-12.json)
+preserves the deployment-window identifiers and proof hashes alongside the later
+failure/cleanup status. Deployment success does not establish model acceptance.
 
-## Actual checkpoint
+The administrator-applied saved trust at **20:22:58Z** matches the exact merged
+policy SHA **3d2b5cd161956ae147c825cc71d28b977d03e24e909f21eea50d508b41203ec1**,
+preserving both prior statements and adding exactly ten deployed role principals.
+Release binding passed. Nova Q18 passed the complete request, **110.25 USD** and
+provider streaming. Its all-five question had exact requests and golden values,
+but failed `token_limit` before presentation. Only **3,215 reported tokens** were
+used; offline replay reproduced an **8,369-byte** conservative conversation-input
+reservation blocking the next planner turn. The actual full live transcript was
+not retained; that size is an offline reproduction, not an exact live request
+measurement. No permission error or higher token ceiling follows from this result.
+The [acceptance failure record](../evaluations/bedrock-streaming/acceptance-failure-2026-11-12.json)
+preserves exact comparisons and raw-evidence hashes, including the separate
+7,514-byte minimum reservation bound established from retained content.
+
+No other target was invoked and no accepted UI binding exists. Protected cleanup
+smoke passed on unchanged legacy **v15** around **20:26Z**; the campaign is now
+closed **3/40**, comprising two ordinary attempts and one cleanup. Reserve remains
+untouched/unapproved. Frozen ZIP/source/version, data, goldens, existing permissions
+and historical campaigns remain intact; no automatic retry occurred. Evidence:
+`artifacts/bedrock-streaming/acceptance-recovery/` and `cleanup-recovery.json`.
+Initial failures and the approved commands below are historical evidence, not
+instructions to replay this closed campaign.
+
+## Historical initial checkpoint
 
 Only **analytics-dev / 453711491609 / us-west-2** may be used locally. No profile
 creation or administrator assumption is permitted.
@@ -82,7 +111,7 @@ account/region or account-wide policy resource. No other logging action is added
 It does not change the CloudFormation execution-role policies, shared-directory
 grant, S3/data/Bedrock permissions, caller trust or public semantic contracts.
 
-## Reviewed candidate for approval
+## Approved recovery candidate
 
 - [Recovery review](../evaluations/bedrock-streaming/review.recovery.proposed.json):
   **10433404c65249308e326a5867d499cabe4fab24c43201a6639a29c769b946c4**.
@@ -100,7 +129,7 @@ is solely in CDK and its infrastructure tests, outside the packaged agent source
 The real uploaded VersionId remains a required deployment parameter, not a new
 default or a guessed value.
 
-## Proposed sequence after approval
+## Approved execution sequence — executed; do not replay
 
 1. Repeat read-only preflight. Require the exact untouched legacy v15 and the
    exact unused new Nova v1/stack above, its original template/parameters and
@@ -138,15 +167,16 @@ default or a guessed value.
    and no automatic billable retries. Enable the new UI only after every exact
    structured-result and provider-word gate passes.
 
-## Concrete operator commands
+## Historical operator commands — closed campaign
 
 Use the existing Conda Python/Poetry environment. These operator files are pinned
 local preparation artifacts, not new runtime-package files. Stop if a required
 file is missing/different; do not reconstruct a fake checkpoint or rewrite pins.
 The recovery driver has an explicit execution gate and needs a separately
 approved recovery record at `artifacts/bedrock-streaming/approval.recovery.json`.
-That record **does not exist yet** and must not be manufactured before approval.
-It must bind the recovery review SHA, unchanged maximum/expiry, and
+The execution copy now exists following explicit approval; the committed
+[approval record](../evaluations/bedrock-streaming/recovery-approval.json) preserves
+the authorization. Both bind the recovery review SHA, unchanged maximum/expiry, and
 `execution_proposal_sha256` **ee90ac77cd3c689e23c150d0e7f1e1ca2032cca3ffd2f52595f2b4c9e17bf0f7**.
 The driver verifies that exact proposal and all six non-aliased operator-source
 checksums before importing helpers, creating its claim or constructing a session.
@@ -204,18 +234,23 @@ expiry; no extra warm-up, demonstration or reserve use is included.
 
 ## Budget, expiry and remaining gates
 
-Same campaign **bedrock-stream-models-v1-01**, currently **0/40**; no existing
-question claim/ledger is reopened or reset. Same allocation: authored acceptance
+Campaign **bedrock-stream-models-v1-01** is closed **3/40**, after two ordinary
+attempts and the protected v15 cleanup. Do not reopen/reset its claim or ledger.
+Its original approved allocation was: authored acceptance
 **20**, later user-owned questions **18**, protected v15 cleanup **1**, controlled
 reserve **1 unapproved**. Each model's Q18 is its warm-up. Same expiry
-**2026-11-15T23:59:00Z**. Require sufficient bounded execution time plus at least
-45 additional cleanup minutes before starting; the driver conservatively requires
-five hours remaining. No budget extension or dollar-cost guarantee is requested.
+**2026-11-15T23:59:00Z**. The approved driver required sufficient bounded execution
+time plus cleanup allowance, conservatively five hours remaining before starting.
+Neither unexpired time nor unused quota reopens this closed attempt. No budget
+extension or dollar-cost guarantee is requested.
 Model/AgentCore/Athena/storage prices and the original per-question limits remain
 those of the [original approved plan](bedrock-multimodel-streaming-plan.md).
 
 Offline checks establish implementation/preparation readiness. They do not prove
 that logging delivery or all ten model integrations pass live acceptance. This
-proposal is not a production-readiness claim. The sole next approval is the exact
-corrected templates, narrow workload logging grant and scoped recreation sequence;
-the later administrator trust application remains a required execution handoff.
+plan is not a production-readiness claim. The exact corrected templates, narrow
+workload logging grant and scoped recreation sequence were approved and executed;
+all ten deployment proofs and administrator trust readback passed. Live acceptance
+failed safely and cleanup passed. Next prepare the focused offline source
+correction/regressions and a new candidate/review. No remaining quota, reserve,
+upload, deployment, retry or new live allowance is authorized here.

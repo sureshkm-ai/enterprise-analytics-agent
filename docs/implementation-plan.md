@@ -53,9 +53,23 @@ November 12 confirms all three model agreements and both attached policy parts;
 the directory grant is now administrator-applied with exact readback and an
 allowed simulation. Fresh preflight and the one-time ZIP upload passed. Only the
 new Nova stack was created; verification stopped on AWS singleton policy shape
-and a workload-role logging denial. The [recovery proposal](bedrock-streaming-recovery-plan.md)
-keeps the frozen ZIP/S3 version and 0/40 budget, with CDK-only corrections pending
-separate review before scoped recreation/remaining deployment. The [concrete plan](bedrock-multimodel-streaming-plan.md)
+and a workload-role logging denial. The user approved the
+[recovery plan](bedrock-streaming-recovery-plan.md) at **7dad05a**; its
+[approval record](../evaluations/bedrock-streaming/recovery-approval.json) binds
+the exact review and execution-proposal hashes. Fresh preflight
+**20261112T200119Z** passed; only the reviewed unused Nova stack was deleted and
+all ten corrected stacks verified **CREATE_COMPLETE**, Runtime/DEFAULT **READY v1**,
+exact artifact/configuration/policy proofs and seven-day retention at **20:20:07Z**.
+The administrator-applied trust readback matches the exact reviewed addition,
+preserving both old statements; release binding passed. Nova Q18 passed streaming,
+but the all-five question returned `token_limit` despite all exact requests/results
+and only 3,215 reported tokens. Offline replay identified conservative conversation
+byte reservation before an unnecessary planner turn. Acceptance stopped; no other
+model ran and no new choices were enabled. Protected legacy v15 cleanup smoke
+passed; the campaign is closed **3/40** (two ordinary, one cleanup), reserve
+untouched. Frozen ZIP/source/S3 version remain unchanged. A focused offline
+source correction, regression coverage and new candidate/review are the next
+scope; no live retry or new allowance is implied. The [concrete plan](bedrock-multimodel-streaming-plan.md)
 proposes nine additional Bedrock choices and a new streaming Nova baseline, each
 with a separate fixed-model role/Runtime and a new artifact. Google is **Gemma via
 Bedrock Mantle**; native OpenAI GPT choices remain inside Bedrock. Optional catalog
@@ -212,6 +226,6 @@ The approved [plan](milestone-5-plan.md) is implemented for local review on `fea
 
 11. Approved `q18-recovery-v1` executed once from fresh original v10: deployed pinned candidate READY v11, Q18 **110.25 USD [2025-03-31,2025-04-01)** and all **36/36** cases passed; client p95 **13.381s**, complete diagnostics. Mandatory original restore/smoke and separate read-only final verification passed on READY v12. Recovery **38/38**, aggregate **40/40**, no retries/failures/incomplete calls. All 122 protected files and historical ledgers/claims unchanged. No code/upload/IAM/dataset changes during execution.
 
-Exact next task: review the [streaming recovery proposal](bedrock-streaming-recovery-plan.md), exact corrected template review `10433404c65249308e326a5867d499cabe4fab24c43201a6639a29c769b946c4`, and the additional own-log-group `logs:PutResourcePolicy` grant. The directory grant/model agreements are resolved; upload and the first streaming Nova create occurred, but new live acceptance remains pending at 0/40. Keep further mutation/invocation stopped until recovery approval, fresh inspection and the remaining administrator query-role trust handoff after all ten roles exist. Preserve the uploaded ZIP/version, retained legacy v15, both original assemblies and all historical counters; no package rebuild, replay, reserve use or new profile is authorized. M1–M5 completion and production limitations remain unchanged.
+Exact next task: prepare the focused offline complete-plan/token-reservation correction and meaningful regressions, preserving genuine overruns, partial plans and provider failures. The approved [streaming recovery](bedrock-streaming-recovery-plan.md) deployed all ten corrected targets and applied/read back the exact administrator trust addition; acceptance stopped on Nova's second question. The protected v15 smoke passed and the campaign is closed **3/40**, with no accepted UI binding. Preserve frozen ZIP/source/version, current infrastructure, goldens, permissions and all historical campaigns. New candidate packaging and an exact reviewed execution proposal must precede any live retry; no new budget or permission change is authorized. M1–M5 completion and production limitations remain unchanged.
 
 Cube remains a later adapter extension outside milestones 2–5 unless separately requested.

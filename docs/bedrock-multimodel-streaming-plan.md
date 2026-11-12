@@ -9,14 +9,25 @@ Fresh operator preflight passed, the reviewed ZIP uploaded once as
 **GSY36sTbDpCNZGogULTe3cBL__bujiQK**, and only the new streaming Nova stack was
 created: **CREATE_COMPLETE**, Runtime/DEFAULT **READY v1**. Verification stopped
 on AWS singleton policy normalization and a separate workload-role logging denial.
-The [recovery proposal](bedrock-streaming-recovery-plan.md) prepares exact corrected
+The [recovery plan](bedrock-streaming-recovery-plan.md) prepares exact corrected
 templates plus a scoped `logs:PutResourcePolicy` grant and recreation of only the
-unused new Nova stack before all ten corrected creates. This revision needs
-separate approval; it is not a claim that the earlier directory grant is missing.
-No new model/Runtime invocation or Athena query occurred; usage remains **0/40**.
-Legacy candidate-retail Runtime/DEFAULT **READY v15** was fully reverified untouched.
-Historical reviews/assemblies and the frozen ZIP/source are preserved. New model
-choices remain disabled until all twenty acceptance gates pass.
+unused new Nova stack before all ten corrected creates. The user approved this
+revision at **7dad05a**; its [approval record](../evaluations/bedrock-streaming/recovery-approval.json)
+binds the exact review/execution hashes. Fresh preflight **20261112T200119Z**
+passed, the reviewed old stack was deleted, and all ten corrected stacks verified
+**CREATE_COMPLETE / Runtime and DEFAULT READY v1**, with exact
+artifact/configuration/policy proofs and seven-day retention at **20:20:07Z**. The directory grant remains verified.
+Administrator trust application/readback at **20:22:58Z** matches the exact reviewed
+addition and preserves both prior statements; release binding passed. Nova Q18
+passed with exact **110.25 USD** and provider streaming. Its all-five question
+produced every expected request/result, but a conservative conversation-input
+reservation caused `token_limit` before presentation, despite only **3,215**
+reported tokens. Acceptance stopped; no other model was invoked or enabled.
+Protected cleanup smoke passed on retained legacy **v15** around **20:26Z**.
+Campaign **3/40** is closed (two ordinary, one cleanup), reserve untouched. Frozen
+ZIP/source/version, historical reviews/assemblies and permissions are preserved.
+Prepare a focused offline complete-plan/reservation correction, new candidate and
+review before any live retry; do not treat unused quota as approval.
 
 ## Behavior and model scope
 
@@ -129,7 +140,7 @@ No AWS operation, upload or new question dispatch was performed.
 | Deployment config file SHA-256 | `ab4019e79cf0e7b57978869873550ed6dfcc26b14c7f6f84cdf9a024675f2258` |
 | Additive policy file SHA-256 | `9be307f2bf73232c6146a7cfda8eb90e31d4952af2eb0de5ce8eb79e51a8723f` |
 | Real uploaded VersionId | **GSY36sTbDpCNZGogULTe3cBL__bujiQK**, verified after the one-time approved upload |
-| Campaign | `bedrock-stream-models-v1-01`, proposed **0/40**, no ledger/claim created |
+| Campaign | `bedrock-stream-models-v1-01`, now closed **3/40**; failed acceptance and successful protected legacy-v15 cleanup retained |
 
 The five-planning-call cap also works for sequential-tool Gemma: after the fifth
 successful query, the wrapper may finish only if every exact required metric,
@@ -442,8 +453,12 @@ links each exact official model card. API/protocol and permission references use
 Offline checks establish implementation readiness only. Execution approval is now
 recorded; retain the frozen checksums and real-version binding procedure. The directory
 application/readback and allowed simulation have passed. Review the separate
-recovery proposal for corrected templates, the workload logging grant and scoped
-recreation before further mutation. After that approval, repeat fresh preflight
-and continue the reviewed ten-runtime scope. The controlled reserve remains unusable.
-The upload and one unaccepted streaming deployment are recorded above; full
-streaming live acceptance and production readiness remain unverified.
+recovery plan for the approved corrected templates, workload logging grant and
+scoped recreation. Fresh preflight and all ten reviewed deployments passed exact
+verification, with Runtime/DEFAULT READY v1 and seven-day retention. Administrator
+trust readback and release binding passed; live acceptance failed safely on Nova's
+second question and protected legacy-v15 cleanup passed. Campaign **3/40** is
+closed and the controlled reserve remains unusable. Prepare only the focused
+offline source correction/regressions and new candidate/review next. No new live
+scope follows from remaining quota. Full streaming acceptance and production
+readiness remain unverified.

@@ -42,9 +42,17 @@ GPT through Bedrock, Google **Gemma through Bedrock Mantle**, Meta Llama, DeepSe
 Qwen and Mistral, plus Nova. Additional choices stay disabled until the separate
 release is deployed and accepted. Directory-policy/model prerequisites are now
 verified; one new Nova stack was created, but policy-shape verification and a
-workload logging denial stopped further deployment. The [scoped recovery proposal](docs/bedrock-streaming-recovery-plan.md)
-requires review before continuation. Catalog inclusion
-does not prove effective access.
+workload logging denial stopped that attempt. The user approved the
+[scoped recovery](docs/bedrock-streaming-recovery-plan.md) at **7dad05a**. Fresh
+preflight passed, the reviewed unused Nova stack was deleted, and all ten corrected
+stacks verified **CREATE_COMPLETE / Runtime and DEFAULT READY v1**, with exact
+artifact/configuration/policy proofs and seven-day retention. Administrator trust
+application/readback and actual release binding passed. Nova Q18 passed with
+provider streaming, but the all-five question failed an input-reservation guard
+after producing the correct requests/results. Acceptance stopped; new choices
+remain disabled. Protected legacy v15 cleanup passed, and the campaign is closed
+**3/40**. A focused source correction and new candidate/review are required before
+another live attempt; frozen assets and all other existing permissions are unchanged.
 
 The new streaming runner reuses the unchanged semantic agent loop with at most
 five planning calls and one tool-free presentation call. It releases actual
@@ -53,10 +61,12 @@ semantic results, keeping amounts, units, dates and private reasoning safe. A
 rejected stream is labeled and is never retried or replaced with a typing animation.
 The [deployment and live-evaluation proposal](docs/bedrock-multimodel-streaming-plan.md)
 covers ten new isolated runtimes/roles, a new artifact and a separate approved
-40-attempt outer ceiling, including an unavailable reserve. Follow the
+40-attempt outer ceiling, including an unavailable reserve. The
 [administrator steps](docs/bedrock-streaming-administrator-steps.md) record completed
-policy evidence and the later query-trust handoff. New model acceptance remains
-pending at **0/40**; the retained legacy v15 is unchanged.
+policy evidence and completed query-trust handoff. New model acceptance is
+**incomplete**; the retained legacy **v15** passed cleanup verification and remains
+the accepted release. Do not replay the closed campaign or reuse its remaining
+quota/reserve.
 
 The separate UI campaign used **19/20 attempts**: Q18 verification 1 and all 18
 regular slots; the protected rollback smoke was unused. No regular live allowance

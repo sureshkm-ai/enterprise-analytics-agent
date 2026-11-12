@@ -1,8 +1,13 @@
 # Bedrock model selection and provider word streaming
 
-This is a **proposed development deployment and live evaluation**, separate from
-completed Milestones 1–5 and every historical campaign. The implementation and
-offline preparation do not authorize AWS changes or billable calls. The existing
+The user **approved execution of this development deployment and live evaluation**
+on November 11, 2026, after PR #11 merged at `01aabc1`. The scope is separate from
+completed Milestones 1–5 and every historical campaign. Approval is recorded in
+`artifacts/bedrock-streaming/approval.json` and remains valid for the unchanged plan.
+Fresh read-only preflight verified the retained v15/canonical checkpoint and routing,
+but deployment is waiting on administrator permission evidence and three model
+agreements. See [administrator steps](bedrock-streaming-administrator-steps.md) and
+the [actual preflight record](../evaluations/bedrock-streaming/activation-preflight-2026-11-11.json). The existing
 Nova candidate/retail Runtime and DEFAULT remain the retained **v15** checkpoint;
 the existing interactive allowance and its ledger are unchanged. A new model is
 listed in the UI catalog as a documented choice, not as an enabled or accepted
@@ -129,9 +134,15 @@ legacy agent and its existing six-iteration behavior remain unchanged.
 
 ## IAM changes requiring review
 
-An administrator must attach the new deployment policy **additively** to
+An administrator must attach the approved permissions **additively** to
 `arn:aws:iam::453711491609:role/cdk-hnb659fds-cfn-exec-role-453711491609-us-west-2`.
-It adds lifecycle/PassRole access only for the ten exact new roles, scoped
+The aggregate audit policy has 8,147 compact characters, above IAM's 6,144 managed
+policy limit. Its exact statements are therefore packaged into two policies:
+[roles/code](../infrastructure/cdk/streaming-deployment-policy.roles.proposed.json)
+(2,294) and [AgentCore](../infrastructure/cdk/streaming-deployment-policy.agentcore.proposed.json)
+(5,891), with [hash/equivalence evidence](../evaluations/bedrock-streaming/policy-packaging.json).
+Attach both as described in the administrator guide. No permission was changed.
+Together they add lifecycle/PassRole access only for the ten exact new roles, scoped
 Runtime/endpoint/resource-policy actions, automatic workload-identity permissions
 in the new namespace and read access to the exact new ZIP key. Runtime creation
 and automatic DEFAULT creation/tagging use account/region/Project conditions.
@@ -149,7 +160,9 @@ project authorization, not a foundation-model ARN substituted for Mantle.
 
 The existing query role needs ten additive trusted principals. The CDK templates
 output `QueryRoleTrustAdditionProposalOnly`; they deliberately do not modify
-that role. An administrator must merge those statements into the current trust
+that role. The same ten exact principals are consolidated in
+[one additive statement](../infrastructure/cdk/streaming-query-trust-additions.proposed.json)
+to reduce the final trust-document size. An administrator must merge that statement into the current trust
 document, preserving the existing developer SSO and legacy Runtime principals.
 Capture before/after evidence and the exact role list; never replace trust with
 only the new principals. Prepare/review that delta before deployment, then apply
@@ -260,7 +273,8 @@ than exact model prose. A failed/incomplete attempt stops ordinary dispatch.
 
 ## Later approved deployment and evaluation
 
-These are the execution commands to review, **not authorization to run them now**.
+The following execution commands are **approved**, subject to every documented
+preflight gate. No repeated approval is required for the unchanged scope.
 Use a new evidence directory; retain stdout/stderr, process journal, CloudFormation
 events and exact read-only proofs. Resolve all administrator prerequisites first.
 
@@ -418,9 +432,10 @@ links each exact official model card. API/protocol and permission references use
   and [CDK global role/profile options](https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd.html).
 - [Conditional PutObject and explicit SHA-256 checksum options](https://docs.aws.amazon.com/cli/latest/reference/s3api/put-object.html).
 
-Offline checks establish implementation readiness only. Before live approval,
-review the frozen local ZIP/review/template/policy checksums, obtain administrator
-trust and effective-access evidence, resolve the shared-directory prerequisite and
-approve the exact upload/version-binding procedure. Then request explicit approval for this ten-runtime,
-forty-attempt outer scope with its unusable reserve. No live acceptance, new
-permission, upload, deployment or production-readiness claim is recorded here.
+Offline checks establish implementation readiness only. Execution approval is now
+recorded; retain the frozen checksums and real-version binding procedure. Resolve
+the administrator policy/directory evidence and the Opus/GPT agreement statuses
+documented in the administrator guide, then repeat fresh preflight and continue
+the already approved ten-runtime scope. The controlled reserve remains unusable.
+No live acceptance, new permission, upload, deployment or production-readiness
+claim is recorded here.

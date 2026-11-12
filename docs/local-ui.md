@@ -104,7 +104,9 @@ ten isolated model runtimes, including a streaming Nova baseline. The catalog
 offers Anthropic Claude, OpenAI GPT through Bedrock, Google **Gemma through Bedrock
 Mantle**, Meta Llama, DeepSeek, Qwen and Mistral. Google Gemini and direct provider
 APIs are outside this scope. The optional GPT-OSS catalog entry is not one of the
-ten proposed deployments. Their availability/access/quotas remain to be verified.
+ten reviewed deployments. Execution was approved on November 11, 2026; the
+[administrator guide](bedrock-streaming-administrator-steps.md) records current
+permission and model-agreement prerequisites. Live acceptance remains pending.
 
 Local Bedrock and AWS modes reuse the unchanged `BedrockAnalyticsAgent` semantic
 tool loop. At most five planning calls precede one tool-free presentation call,
@@ -124,7 +126,8 @@ The new review, artifact/version, deployment assemblies, SDK receipts and campai
 are separate. The proposed outer maximum is **40 attempts**: twenty mandatory AWS
 checks (Q18 and all five regional metrics per model), eighteen user questions,
 one protected retained-v15 cleanup smoke and one **unapproved reserve**. Expiry is
-`2026-11-15T23:59Z`; the proposal grants no execution permission. New UI models
+`2026-11-15T23:59Z`; execution is approved subject to preflight, while the reserve
+remains unavailable. New UI models
 stay disabled until every authored check passes. Deployment/binding/evaluation and
 the eventual explicit launch command are in the plan; that command requires an
 approved review and real post-deployment release records, not placeholder files.

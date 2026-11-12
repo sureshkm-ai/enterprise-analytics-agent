@@ -1,0 +1,24 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowReviewedStreamingRuntimes",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::453711491609:role/enterprise-analytics-stream-claude-opus-5-5",
+          "arn:aws:iam::453711491609:role/enterprise-analytics-stream-claude-sonnet-5-5",
+          "arn:aws:iam::453711491609:role/enterprise-analytics-stream-deepseek-v3-2",
+          "arn:aws:iam::453711491609:role/enterprise-analytics-stream-gemma-4-31b",
+          "arn:aws:iam::453711491609:role/enterprise-analytics-stream-gpt-6-1-sol",
+          "arn:aws:iam::453711491609:role/enterprise-analytics-stream-gpt-6-astra",
+          "arn:aws:iam::453711491609:role/enterprise-analytics-stream-llama-4-maverick",
+          "arn:aws:iam::453711491609:role/enterprise-analytics-stream-mistral-large-3",
+          "arn:aws:iam::453711491609:role/enterprise-analytics-stream-nova-lite",
+          "arn:aws:iam::453711491609:role/enterprise-analytics-stream-qwen3-235b"
+        ]
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}

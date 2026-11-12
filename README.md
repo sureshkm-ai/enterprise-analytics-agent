@@ -51,8 +51,11 @@ application/readback and actual release binding passed. Nova Q18 passed with
 provider streaming, but the all-five question failed an input-reservation guard
 after producing the correct requests/results. Acceptance stopped; new choices
 remain disabled. Protected legacy v15 cleanup passed, and the campaign is closed
-**3/40**. A focused source correction and new candidate/review are required before
-another live attempt; frozen assets and all other existing permissions are unchanged.
+**3/40**. The [focused completion correction and replacement](docs/bedrock-streaming-completion-plan.md)
+are now implemented and offline-verified, with fresh read-only preflight passed.
+The replacement is not uploaded/deployed or live-accepted. Parent **3/40** is
+closed; the separate proposed child is **0/37**, aggregate **3/40**. Execution
+approval is required before the new package or model choices are enabled.
 
 The new streaming runner reuses the unchanged semantic agent loop with at most
 five planning calls and one tool-free presentation call. It releases actual

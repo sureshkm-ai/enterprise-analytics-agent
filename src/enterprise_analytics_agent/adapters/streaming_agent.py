@@ -15,6 +15,7 @@ from enterprise_analytics_agent.adapters.bedrock_agent import (
     BedrockAgentConfig,
     BedrockAnalyticsAgent,
     ConverseClient,
+    _complete_numeric_plan,
     _render,
 )
 from enterprise_analytics_agent.adapters.bedrock_word_stream import (
@@ -25,7 +26,6 @@ from enterprise_analytics_agent.adapters.bedrock_word_stream import (
 from enterprise_analytics_agent.agent.contracts import AgentDiagnostics, AgentRequest, AgentResponse
 from enterprise_analytics_agent.agent.questions import question_scope
 from enterprise_analytics_agent.contracts import AuthorizationContext
-from enterprise_analytics_agent.contracts_v2 import QueryMetricRequestV2
 
 
 class StreamingLimitError(RuntimeError):
@@ -190,6 +190,7 @@ class StreamingAnalyticsAgent:
             adapter=self.agent.adapter,
             dataset_version=self.agent.dataset_version,
             clock=self.clock,
+            complete_on_planning_limit=True,
         )
         response = planner.run(request, context=context)
         response = AgentResponse.model_validate(response.model_dump(mode="python", warnings=False))
@@ -203,6 +204,23 @@ class StreamingAnalyticsAgent:
             and self.clock() < trace.deadline
         ):
             response = self._complete_plan(request, response)
+        if (
+            response.status == "answer"
+            and response.results
+            and not _complete_numeric_plan(
+                question_scope(request.question, config.reference_date),
+                response.diagnostics.tool_calls,
+                response.results,
+            )
+        ):
+            response = AgentResponse.model_validate(
+                {
+                    **response.model_dump(mode="python"),
+                    "status": "error",
+                    "error_code": "invalid_tool_response",
+                    "answer": "The semantic evidence does not match the complete governed request.",
+                }
+            )
         if (
             response.status == "answer"
             and response.results
@@ -291,41 +309,7 @@ class StreamingAnalyticsAgent:
 
     def _complete_plan(self, request: AgentRequest, response: AgentResponse) -> AgentResponse:
         scope = question_scope(request.question, self.agent.config.reference_date)
-        if scope.clarification or scope.metadata or not scope.metric_ids or not scope.periods:
-            return response
-        expected = tuple(
-            QueryMetricRequestV2(
-                metric_id=metric,
-                time_range=period,
-                group_by=scope.group_by,
-                dimension_filters=scope.filters,
-            )
-            for metric in scope.metric_ids
-            for period in scope.periods
-        )
-        calls = response.diagnostics.tool_calls
-        if not calls or any(call.status != "success" for call in calls):
-            return response
-        query_calls = [call for call in calls if call.name == "query_metric"]
-        if len(query_calls) != len(expected) or len(response.results) != len(expected):
-            return response
-        try:
-            parsed = [QueryMetricRequestV2.model_validate(call.arguments) for call in query_calls]
-            for query in parsed:
-                scope.validate_query(query)
-        except ValueError:
-            return response
-        if {json.dumps(query.model_dump(mode="json"), sort_keys=True) for query in parsed} != {
-            json.dumps(query.model_dump(mode="json"), sort_keys=True) for query in expected
-        }:
-            return response
-        expected_results = {
-            (query.metric_id, query.time_range, query.group_by) for query in expected
-        }
-        actual_results = {
-            (result.metric_id, result.time_range, result.group_by) for result in response.results
-        }
-        if expected_results != actual_results:
+        if not _complete_numeric_plan(scope, response.diagnostics.tool_calls, response.results):
             return response
         return AgentResponse.model_validate(
             {

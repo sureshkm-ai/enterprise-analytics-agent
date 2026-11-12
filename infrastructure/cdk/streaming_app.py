@@ -115,6 +115,7 @@ class StreamingDeploymentConfig(BaseModel):
     code_bucket: Literal["enterprise-analytics-dev-453711491609-us-west-2-agent-code"] = CODE_BUCKET
     artifact_sha256: Annotated[str, Field(pattern=r"^[a-f0-9]{64}$")]
     artifact_key: Annotated[str, Field(pattern=r"^releases/[a-f0-9]{64}/agent\.zip$")]
+    retained_artifact_keys: Annotated[tuple[str, ...], Field(max_length=1)] = ()
     artifact_version_id: str | None = None
     approved_caller_arns: Annotated[tuple[str, ...], Field(min_length=1, max_length=10)]
     models: Annotated[tuple[StreamingModelConfig, ...], Field(min_length=1, max_length=10)]
@@ -145,10 +146,21 @@ class StreamingDeploymentConfig(BaseModel):
             )
         return value
 
+    @field_validator("retained_artifact_keys")
+    @classmethod
+    def exact_retained_artifacts(cls, values: tuple[str, ...]) -> tuple[str, ...]:
+        if any(
+            re.fullmatch(r"releases/[a-f0-9]{64}/agent\.zip", value) is None for value in values
+        ):
+            raise ValueError("Retained code must use an exact content-addressed artifact key")
+        return values
+
     @model_validator(mode="after")
     def coherent_artifact_and_models(self) -> Self:
         if self.artifact_key != f"releases/{self.artifact_sha256}/agent.zip":
             raise ValueError("The candidate S3 key must bind the reviewed archive SHA-256")
+        if self.artifact_key in self.retained_artifact_keys:
+            raise ValueError("Retained code must differ from the current candidate artifact")
         if len({model.key for model in self.models}) != len(self.models):
             raise ValueError("Streaming model keys must be unique")
         baseline = self.models[0].settings.model_dump(mode="json")
@@ -250,7 +262,10 @@ class StreamingRuntimeStack(Stack):
             iam.PolicyStatement(actions=["sts:AssumeRole"], resources=[QUERY_ROLE]),
             iam.PolicyStatement(
                 actions=["s3:GetObject", "s3:GetObjectVersion"],
-                resources=[f"arn:aws:s3:::{config.code_bucket}/{config.artifact_key}"],
+                resources=[
+                    f"arn:aws:s3:::{config.code_bucket}/{key}"
+                    for key in (config.artifact_key, *config.retained_artifact_keys)
+                ],
             ),
             iam.PolicyStatement(
                 actions=["s3:GetBucketLocation"], resources=[f"arn:aws:s3:::{config.code_bucket}"]

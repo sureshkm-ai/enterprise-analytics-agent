@@ -57,36 +57,42 @@ prerequisites. See the [concrete proposal](bedrock-multimodel-streaming-plan.md)
 [ConverseStream](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html),
 [tool-use compatibility](https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use-client-side.html).
 
-`adapters/streaming_agent.py` wraps the unchanged `BedrockAnalyticsAgent` semantic
-loop, with at most five planning calls and one tool-free presentation call, sharing
-a six-call/12,000-token/90-second bound. The sole completion guard handles a fully
-successful exact governed plan after a fifth sequential tool round: it verifies
-the complete expected requests/results before rendering, without a sixth planner
-call or guessed missing work. All four tools and adapter calculations remain shared.
-`bedrock_word_stream.py` validates the stream protocol and releases only actual
-provider characters matching the canonical answer prefix at complete word
-boundaries; the final word waits for a valid terminal event and usage. Private
-reasoning never enters the public stream. Invalid streams receive no automatic
-retry; a validated answer can remain available with an explicit stream-failure label.
+`adapters/streaming_agent.py` wraps the shared `BedrockAnalyticsAgent`, with at
+most five planning calls and one tool-free presentation call inside a six-call,
+12,000-token, 90-second bound. A trusted streaming-only option reuses the existing
+server-resolved numeric plan when another planner turn cannot fit or the planning
+rounds are exhausted. Existing successful queries must form an exact semantic
+subset without duplicates, errors or scope drift. Only missing queries are then
+executed through the same validated semantic tools and trusted context, with real
+server-operation IDs and unchanged tool/deadline limits. It does not fabricate
+model turns, retry failed queries or promote provider/token errors. Every numeric
+answer is checked against the complete query/result evidence before presentation.
+Grouping/filter ordering follows existing set semantics. The base agent defaults
+and published v1/v2 contracts remain unchanged.
 
-The new Bedrock catalog is metadata, not authorization. Ten proposed fixed-model
-roles/Runtimes bind opaque selections to reviewed configurations; disabled entries
-cannot dispatch. `ui/model_streams.py` provides a new review-bound ledger and SDK
-receipts, separate from every existing campaign. Twenty authored AWS checks must
-pass before UI activation. Its proposed outer 40 attempts comprise those checks,
-18 user questions, one protected retained-v15 smoke and one unapproved reserve.
-The implementation merged through PR #11; the user approved the unchanged
-execution plan on November 11, 2026. Administrator directory readback/simulation
-and model agreements now pass. Fresh preflight passed; the reviewed ZIP was uploaded
-once and only streaming Nova was created, READY v1. Exact policy verification
-stopped on singleton representation differences; CloudTrail also identifies a
-missing workload-role own-log-group permission. The [CDK-only recovery proposal](bedrock-streaming-recovery-plan.md)
-preserves the frozen agent source/package and exact public/metric/tool behavior,
-preparing corrected policy serialization and one scoped logging action for review.
-No new model/Runtime invocation occurred, campaign **0/40**. Legacy v15 was fully
-reverified untouched; session 02 and all historical ledgers remain unchanged.
-The [initial activation record](../evaluations/bedrock-streaming/activation-preflight-2026-11-11.json)
-remains historical evidence, not current deployment status.
+`bedrock_word_stream.py` releases only actual provider characters matching the
+canonical validated answer prefix at complete word boundaries; the final word
+waits for terminal/usage validation. Private reasoning never enters the public
+stream. Invalid streams receive no automatic retry; any canonical fallback is
+labeled honestly and does not pass the live provider-streaming gate.
+
+The ten fixed-model streaming roles/Runtimes were deployed and verified READY v1.
+Their exact query-role trust addition is applied, preserving developer/legacy
+access. Initial acceptance passed Nova Q18 and failed its all-five presentation
+on the input reservation guard; protected legacy-v15 cleanup passed and that
+campaign is closed **3/40**. Earlier policy/logging failures and their corrected
+recovery remain [historical evidence](bedrock-streaming-recovery-plan.md).
+
+The [completion replacement](bedrock-streaming-completion-plan.md) is implemented
+and prepared separately. Its versioned continuation review pins the complete
+closed-parent inventory and permits one exclusive continuation claim. Proposed
+child limits are **37 total / 35 ordinary**, one protected cleanup, one unavailable
+reserve; prior usage3 plus the child ceiling retains aggregate40. No parent is
+reopened and offline verification creates no claim. Exact archive/source/template
+proofs and actual returned S3/Runtime versions precede live acceptance. The new
+local source is not asserted equal to historical v15. All twenty authored checks
+must pass before the new UI model bindings can activate. Current local evidence
+and pending approval are recorded in [progress](progress.md).
 
 `ui/shared.py` maintains one separate allowance for both billable modes. Exclusive,
 fsynced question and SDK receipts precede dispatch, with journal reconciliation,

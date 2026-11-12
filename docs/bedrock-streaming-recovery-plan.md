@@ -1,6 +1,10 @@
 # Bedrock streaming deployment recovery proposal
 
 Status: **recovery deployed; acceptance stopped safely; campaign closed 3/40**.
+The focused source correction and guarded replacement are now implemented and
+prepared offline in [the completion plan](bedrock-streaming-completion-plan.md).
+That separate proposal does not reopen this historical campaign or authorize
+additional calls.
 The user approved this recovery at **7dad05a**; the
 [approval record](../evaluations/bedrock-streaming/recovery-approval.json) binds its
 unchanged review/execution hashes. Fresh preflight **20261112T200119Z** passed,

@@ -2,7 +2,106 @@
 
 Updated: 2026-11-12 (America/Chicago).
 
-## Current checkpoint: streaming acceptance failed safely; legacy v15 verified
+## Current checkpoint: completion fix verified locally; replacement ready for approval
+
+Continued on **feat/bedrock-streaming-activation** from clean **ceb01c5** using
+**enterprise-analytics** Conda Python **3.12.16** and Poetry **2.3.1**. The production
+fix is implemented: at the pre-dispatch reservation or planning-round boundary,
+trusted streaming planners execute only the still-missing exact governed queries
+through the existing server-resolved tool path. Prior work must be successful,
+scope-valid and without duplicates; all final requests/results must match before
+presentation. Same authorization/tool/deadline/actual-usage limits apply; genuine
+provider/token errors cannot enter this path. Base-agent defaults and v1/v2
+contracts are unchanged. Initial complete-plan regressions failed **3** cases
+against old behavior; a separate sequential replay then failed **1** new case.
+The final **22** authored cases cover both paths, semantic ordering, real missing
+queries, errors, quotas, deadlines and presentation bounds. Existing tampered-
+diagnostics regressions remain failures before presentation.
+
+The [replacement plan](bedrock-streaming-completion-plan.md),
+[review](../evaluations/bedrock-streaming/review.completion-fix.proposed.json),
+[sealed preparation](../evaluations/bedrock-streaming/completion-fix.preparation.json)
+and [readiness evidence](../evaluations/bedrock-streaming/completion-fix.readiness.json)
+are prepared. ZIP **8cfe8d9bd667c29c871342844898061f986107d94f309f1eef471f09582a4ae8**,
+**39302720 bytes**, was built separately from locked Linux ARM64 wheels and reproduced
+byte-for-byte using the pinned project wheel. All **76** current source/assets
+match it. The core audit matches **24** shared modules plus the explicitly checked
+streaming entry point; the legacy audit entry point intentionally differs. New
+local source is **not** asserted equal to legacy v15. All **352** protected
+historical files, including the closed parent's **16** files, remain unchanged.
+
+Two offline syntheses reproduce **10 templates / 34 assembly files** byte-for-byte.
+Exact diffs permit only the new artifact prefix/checksum output and the ten
+workload roles' exact old-plus-new code-key reads. Old default configuration still
+reproduces all ten original templates. Existing query trust and administrator
+policy attachments need no new change established by this preparation; the scoped
+inline-role updates remain part of the deployment proposal.
+
+The versioned continuation is **bedrock-stream-completion-v1-01**, currently
+**0/37**, prior **3**, aggregate **3/40**, **unclaimed**. Its parent review, journal,
+acceptance claim and full inventory are pinned. One exclusive external claim
+prevents repeated operators or competing children. Proposed allocation is **20
+unchanged acceptance + 15 user + 1 protected cleanup + 1 unavailable reserve**.
+The parent is never reopened/reset, and this reallocation is not yet approved.
+The operator supports conditional upload with actual-version readback, bounded
+sequential updates of exact existing StackIds, full pre/post proofs, mandatory
+failure restoration and restoration-only recovery without the candidate ZIP,
+local source or canonical downloads. Original S3 bytes remain mandatory.
+
+Fresh **read-only** preflight passed at **2026-11-12T21:49:36.711525+00:00** using only
+**analytics-dev / 453711491609 / us-west-2**: caller identity, exact retained v15,
+all ten original streaming Runtime/DEFAULT **READY v1**, source/artifact/process
+pins, canonical publication/Glue bindings and absent new candidate key. Evidence:
+`artifacts/bedrock-streaming/completion-fix/preflight-final-20261112T215000Z/`.
+No IAM inspection was repeated. This correction session performed **zero AWS
+mutations, uploads, Athena queries or model/Runtime invocations**. No new approval,
+claim, ledger or actual S3 VersionId has been manufactured.
+
+Verification actually run:
+
+- `poetry check --lock`: passed.
+- `poetry run pytest`: **2055 passed, 85 deselected, zero skipped in 72.85s**.
+  This is offline coverage, not new live acceptance; historical 85-live-test
+  evidence retains its original attribution.
+- `poetry run ruff check .`: passed; `poetry run ruff format --check .`:
+  **195** files formatted; `poetry run mypy src tests`: **153** files passed.
+- Focused combined regressions: **245 passed**. Whole operator workflow:
+  **26 passed**, including upload/proof failures, interruption, rollback, missing
+  candidate data, primary-error preservation and protected-smoke replay rejection.
+- `poetry run python -m infrastructure.agentcore.package --config infrastructure/agentcore/runtime.streaming.nova-lite.json --entrypoint infrastructure/agentcore/streaming_entry.py --offline --wheel-dir artifacts/agentcore/wheels --output artifacts/bedrock-streaming/completion-fix/candidate/agent.zip`:
+  passed; separate reproduction with the pinned `--project-wheel` is byte-identical.
+  Initial/intermediate unapproved builds are preserved under `initial-build/`,
+  `preparation-01/` and `preparation-02/`; none was uploaded or treated as acceptance.
+- `poetry run python -m infrastructure.cdk.streaming_app --config infrastructure/cdk/streaming.completion-fix.proposed.json --outdir artifacts/bedrock-streaming/completion-fix/cdk.proposed.out --allow-unbound-artifact`:
+  passed; independent `cdk.verification.out` passed and all 34 files match.
+- `poetry run python -m infrastructure.agentcore.streaming_completion --plan evaluations/bedrock-streaming/completion-fix.preparation.json verify-offline`:
+  passed, **0/37 + prior 3 = 3/40**, no AWS session or claims.
+- Same operator `preflight --read-only-aws --output artifacts/bedrock-streaming/completion-fix/preflight-final-20261112T215000Z`:
+  passed. No new hosted CI or deployed acceptance is claimed by these local checks.
+
+Intermediate verification is retained as history: the first complete-only version
+passed **2047 / 85 deselected**; extending sequential completion exposed an old
+metadata-turn expectation plus five post-return tampering cases (**6 failed,
+2048 passed**). Real missing-query execution now has explicit positive coverage,
+and every numeric answer has final strict evidence validation; the tampering
+cases still reject. Another check passed **2054**, followed by the final ordering
+regression and **2055** result above. A Ruff formatting-only failure was fixed;
+final lint/format/type/lock checks pass. No live retries accompanied these fixes.
+
+Final documentation/manifest checks: **9** Markdown files, **150** local links,
+**34** documentation shell blocks and **2** CI shell blocks passed syntax/existence
+checks. Workflow YAML parsed; `git diff --check` passed. CI now synthesizes the
+proposed replacement offline and checks all ten template hashes against its
+committed review; no AWS credentials or generated ZIP are required in CI.
+
+**Exact next task:** obtain approval for the sealed replacement and remaining
+allocation, then execute the guarded operator once, pass all twenty unchanged
+provider-streaming gates and enable the UI from actual release records. Preserve
+all closed campaigns, the legacy v15 checkpoint and unavailable reserve. On
+failure/interruption, use the reviewed restoration path; do not retry billable
+calls or silently create another campaign. M1–M5 completion remains unchanged.
+
+## Historical recovery checkpoint — ceb01c5
 
 The scoped recovery approved at **7dad05a47b141a163eec1034b000b1337bcfab64**
 executed once. The [approval record](../evaluations/bedrock-streaming/recovery-approval.json)
@@ -2581,13 +2680,11 @@ Milestone 2 introduced no AWS credentials, calls, deployment, Athena adapter, or
 
 ## Exact next task
 
-Milestones **1–5**, shared UI acceptance and full-live validation remain complete
-for the agreed development proof of concept. The follow-on streaming recovery
-created and verified all ten corrected deployments, but new release acceptance
-failed safely on Nova's second question. Legacy **v15** cleanup verification
-passed; campaign **3/40** is closed and no new model choices are enabled. Prepare
-the focused offline complete-plan/token-reservation correction, regression tests,
-and a new candidate/review before requesting any further live scope. Preserve
-frozen assets, the closed claim/ledger, golden results, applied trust, deployment
-proofs and all historical evidence. Do not replay acceptance or use remaining
-quota/reserve as authorization. No production-readiness claim follows.
+The focused completion correction, parent-bound remaining counter, package,
+assemblies and recovery operator are prepared and offline-verified. Review
+[the concrete replacement plan](bedrock-streaming-completion-plan.md) and its
+sealed review/preparation hashes before deployment. Fresh read-only preflight
+passed; candidate upload, live acceptance and new-model UI activation remain
+pending exact execution approval. Parent **3/40** and proposed child **0/37** are
+unchanged. Do not reopen/reset any campaign or spend the unavailable reserve.
+No new milestone or production-readiness claim follows.

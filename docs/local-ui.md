@@ -119,15 +119,21 @@ correct complete plan/results but failed `token_limit` before presentation.
 Acceptance stopped with no other model invoked or accepted UI binding. Protected
 legacy **v15** cleanup smoke passed. Campaign **3/40** is closed (two ordinary,
 one cleanup), with reserve untouched; all new choices stay disabled. The source,
-frozen ZIP/version and permissions remain unchanged. Next prepare the focused
-offline input-reservation/complete-plan correction, regressions and new
-candidate/review; do not replay the closed campaign.
+frozen ZIP/version and existing permissions remain preserved. The
+[completion replacement](bedrock-streaming-completion-plan.md) is now implemented
+and prepared offline, including sequential-tool fallback, strict final evidence
+validation, a parent-bound continuation and candidate-independent restoration.
+It is not uploaded/deployed or accepted. New local source differs from historical
+v15: use the offline playground/saved reports until the matching replacement is
+accepted; do not bypass historical review/source checks to enable billable modes.
+Do not replay the closed campaign.
 
 Local Bedrock and AWS modes reuse the unchanged `BedrockAnalyticsAgent` semantic
 tool loop. At most five planning calls precede one tool-free presentation call,
-within six model calls and 12,000 tokens total. A full successful governed plan
-may finish after the fifth sequential tool round without a sixth planning call;
-missing or incorrect work is never accepted. Native models use Converse then
+within six model calls and 12,000 tokens total. At a planning-capacity boundary, only missing queries from the exact resolved
+question may execute through the governed adapter; all requested successful
+results must exist before an answer. Invalid/error plans remain failures, and
+there is no sixth planning call. Native models use Converse then
 ConverseStream; Gemma uses signed AWS Mantle chat with sequential tools.
 
 Only actual provider text matching the validated canonical answer's exact prefix

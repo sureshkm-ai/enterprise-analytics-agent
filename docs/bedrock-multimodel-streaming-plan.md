@@ -1,5 +1,14 @@
 # Bedrock model selection and provider word streaming
 
+The current [completion replacement](bedrock-streaming-completion-plan.md) is
+implemented and prepared offline. The original campaign below is closed **3/40**;
+its deployed v1 targets remain unaccepted. The proposed continuation is **0/37**,
+aggregate **3/40**, with an unavailable reserve. New source/package and the exact
+remaining allocation need approval before any further live execution. The earlier
+approval and recovery history below must not be replayed.
+
+## Historical original scope and execution
+
 The user **approved execution of this development deployment and live evaluation**
 on November 11, 2026, after PR #11 merged at `01aabc1`. The scope is separate from
 completed Milestones 1–5 and every historical campaign. Approval is recorded in

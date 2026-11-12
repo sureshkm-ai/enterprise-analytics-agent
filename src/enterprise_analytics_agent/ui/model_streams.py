@@ -58,16 +58,41 @@ class StreamTarget(BaseModel):
         return self
 
 
+class StreamingParent(BaseModel):
+    """Read-only binding to the closed attempt that funds one continuation."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    campaign_id: Annotated[str, Field(pattern=r"^bedrock-stream-[a-z0-9-]{1,48}$")]
+    review_path: str
+    review_sha256: Annotated[str, Field(pattern=r"^[a-f0-9]{64}$")]
+    journal_sha256: Annotated[str, Field(pattern=r"^[a-f0-9]{64}$")]
+    acceptance_claim_sha256: Annotated[str, Field(pattern=r"^[a-f0-9]{64}$")]
+    inventory_sha256: Annotated[str, Field(pattern=r"^[a-f0-9]{64}$")]
+    prior_used: Literal[3] = 3
+    aggregate_maximum: Literal[40] = 40
+
+    @model_validator(mode="after")
+    def relative_review(self) -> Self:
+        path = Path(self.review_path)
+        if path.is_absolute() or ".." in path.parts or path.as_posix() != self.review_path:
+            raise ValueError("The parent review must be an unaliased repository-relative path.")
+        return self
+
+
 class StreamingReview(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
-    schema_version: Literal["bedrock-model-stream-v1"] = "bedrock-model-stream-v1"
+    schema_version: Literal["bedrock-model-stream-v1", "bedrock-model-stream-continuation-v1"] = (
+        "bedrock-model-stream-v1"
+    )
     campaign_id: Annotated[str, Field(pattern=r"^bedrock-stream-[a-z0-9-]{1,48}$")]
     profile: Literal["analytics-dev"] = "analytics-dev"
     account: Literal["453711491609"] = "453711491609"
     region: Literal["us-west-2"] = "us-west-2"
     expires_at: datetime
-    maximum_attempts: Literal[40] = 40
-    ordinary_limit: Literal[38] = 38
+    maximum_attempts: Annotated[int, Field(strict=True, ge=2, le=40)] = 40
+    ordinary_limit: Annotated[int, Field(strict=True, ge=0, le=38)] = 38
+    # Omission, rather than serialized null, preserves every existing v1 digest.
+    parent: StreamingParent | None = Field(default=None, exclude_if=lambda value: value is None)
     artifact_sha256: Annotated[str, Field(pattern=r"^[a-f0-9]{64}$")]
     artifact_bytes: Annotated[int, Field(gt=0)]
     artifact_path: str
@@ -80,6 +105,15 @@ class StreamingReview(BaseModel):
 
     @model_validator(mode="after")
     def immutable_scope(self) -> Self:
+        if self.schema_version == "bedrock-model-stream-v1":
+            if self.parent is not None or (self.maximum_attempts, self.ordinary_limit) != (40, 38):
+                raise ValueError("The original streaming review keeps its exact 40/38 scope.")
+        elif (
+            self.parent is None
+            or self.parent.campaign_id == self.campaign_id
+            or (self.maximum_attempts, self.ordinary_limit) != (37, 35)
+        ):
+            raise ValueError("The continuation needs its closed parent and exact 37/35 scope.")
         if self.expires_at.tzinfo is None or self.expires_at.utcoffset() is None:
             raise ValueError("The streaming expiry must include a timezone.")
         if self.artifact_key != f"releases/{self.artifact_sha256}/agent.zip":
@@ -166,6 +200,183 @@ class StreamingLedger:
             if path.resolve() != path:
                 raise UiError("Streaming evidence paths must not be aliased.")
 
+    @property
+    def continuation_claim_path(self) -> Path | None:
+        parent = self.review.parent
+        if parent is None:
+            return None
+        return (
+            self.root
+            / "artifacts/bedrock-streaming/continuation-claims"
+            / f"{parent.campaign_id}.json"
+        )
+
+    def _claim_binding(self) -> dict[str, object]:
+        parent = self.review.parent
+        if parent is None:
+            return {}
+        return {
+            "schema_version": "bedrock-stream-continuation-claim-v1",
+            "parent_campaign_id": parent.campaign_id,
+            "parent_review_sha256": parent.review_sha256,
+            "parent_journal_sha256": parent.journal_sha256,
+            "parent_acceptance_claim_sha256": parent.acceptance_claim_sha256,
+            "parent_inventory_sha256": parent.inventory_sha256,
+            "campaign_id": self.review.campaign_id,
+            "review_sha256": self.review.sha256,
+            "prior_used": parent.prior_used,
+            "maximum_attempts": self.review.maximum_attempts,
+            "ordinary_limit": self.review.ordinary_limit,
+            "aggregate_maximum": parent.aggregate_maximum,
+            "expires_at": self.review.expires_at.isoformat(),
+        }
+
+    def _continuation_claim(self, *, create: bool = False, exclusive: bool = False) -> bool:
+        path = self.continuation_claim_path
+        if path is None:
+            return False
+        if path.parent.resolve() != path.parent or path.resolve() != path:
+            raise UiError("The continuation claim path must not be aliased.")
+        expected = self._claim_binding()
+        if create:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            try:
+                descriptor = os.open(
+                    path, os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_NOFOLLOW, 0o600
+                )
+            except FileExistsError:
+                if exclusive:
+                    raise UiError(
+                        "The continuation was already claimed; inspect its retained operation."
+                    ) from None
+            else:
+                with os.fdopen(descriptor, "w") as stream:
+                    stream.write(
+                        json.dumps(
+                            {**expected, "claimed_at": datetime.now(UTC).isoformat()},
+                            sort_keys=True,
+                        )
+                        + "\n"
+                    )
+                    stream.flush()
+                    os.fsync(stream.fileno())
+                descriptor = os.open(path.parent, os.O_RDONLY)
+                try:
+                    os.fsync(descriptor)
+                finally:
+                    os.close(descriptor)
+        if not path.exists():
+            if self.path.exists() or self.claims.exists() or self.sdk_claims.exists():
+                raise UiError("The continuation claim is missing; preserve the child journal.")
+            return False
+        try:
+            value = json.loads(path.read_bytes())
+            if not isinstance(value, dict) or set(value) != {*expected, "claimed_at"}:
+                raise ValueError("claim fields differ")
+            claimed_at = datetime.fromisoformat(value["claimed_at"])
+            if (
+                any(value[key] != item for key, item in expected.items())
+                or claimed_at.tzinfo is None
+                or claimed_at.utcoffset() is None
+                or claimed_at >= self.review.expires_at
+            ):
+                raise ValueError("claim binding differs")
+        except (OSError, ValueError, TypeError, KeyError) as exc:
+            raise UiError(
+                "The parent allowance is claimed by a different or damaged continuation."
+            ) from exc
+        return True
+
+    def _validate_parent(self) -> None:
+        """Inspect the complete closed parent with no directories or counters created."""
+        binding = self.review.parent
+        if binding is None:
+            return
+        try:
+            review_path = self.root / binding.review_path
+            if review_path.resolve() != review_path or not review_path.is_relative_to(self.root):
+                raise ValueError("parent review path differs")
+            parent_review = StreamingReview.model_validate_json(review_path.read_bytes())
+            if (
+                parent_review.schema_version != "bedrock-model-stream-v1"
+                or parent_review.sha256 != binding.review_sha256
+                or parent_review.campaign_id != binding.campaign_id
+                or self.review.expires_at > parent_review.expires_at
+            ):
+                raise ValueError("parent review binding differs")
+            expected_targets = {
+                target.model_key: (target.runtime_name, target.settings.model_dump(mode="json"))
+                for target in parent_review.targets
+            }
+            actual_targets = {
+                target.model_key: (target.runtime_name, target.settings.model_dump(mode="json"))
+                for target in self.review.targets
+            }
+            if expected_targets != actual_targets:
+                raise ValueError("continuation changes the reviewed model or trusted scope")
+            parent = StreamingLedger(self.root, parent_review)
+            parent._paths()
+            if (
+                hashlib.sha256(parent.path.read_bytes()).hexdigest() != binding.journal_sha256
+                or hashlib.sha256(
+                    (parent.directory / "acceptance-claim.json").read_bytes()
+                ).hexdigest()
+                != binding.acceptance_claim_sha256
+            ):
+                raise ValueError("parent journal or attempt claim changed")
+            inventory = {}
+            for item in sorted(parent.directory.rglob("*")):
+                if item.is_symlink() or item.resolve() != item:
+                    raise ValueError("parent inventory aliases another location")
+                if item.is_file():
+                    inventory[str(item.relative_to(parent.directory))] = hashlib.sha256(
+                        item.read_bytes()
+                    ).hexdigest()
+            if (
+                hashlib.sha256(json.dumps(inventory, sort_keys=True).encode()).hexdigest()
+                != binding.inventory_sha256
+            ):
+                raise ValueError("the closed parent inventory changed")
+            claim = json.loads((parent.directory / "acceptance-claim.json").read_bytes())
+            state = parent.summary()
+            rows = parent._rows()
+            cleanup = next(
+                row for row in rows if row["event"] == "reserved" and row["purpose"] == "cleanup"
+            )
+            cleanup_passed = any(
+                row["event"] == "outcome"
+                and row["request_id"] == cleanup["request_id"]
+                and row["status"] == "complete"
+                for row in rows
+            )
+            if (
+                claim.get("review_sha256") != parent_review.sha256
+                or state["used"] != binding.prior_used
+                or not state["failed"]
+                or not state["blocked"]
+                or state["incomplete"]
+                or state["protected_cleanup"] != 0
+                or not cleanup_passed
+            ):
+                raise ValueError("the parent is not the reviewed closed three-call attempt")
+            self._continuation_claim()
+        except (OSError, ValueError, TypeError, KeyError, StopIteration) as exc:
+            raise UiError(
+                "The closed streaming parent requires inspection; no call was sent."
+            ) from exc
+
+    def claim_continuation(self, approval: object) -> None:
+        """Claim the approved child before deployment, without touching its parent.
+
+        The operator holds its existing global runtime lease around deployment.
+        Exclusive creation also prevents a second child selector from spending
+        the same parent allowance through a separate question lock.
+        """
+        verify_approval(self.review, approval, now=datetime.now(UTC))
+        self._validate_parent()
+        if self.review.parent is not None:
+            self._continuation_claim(create=True, exclusive=True)
+
     def _rows(self) -> list[dict[str, Any]]:
         try:
             return self._read_rows()
@@ -174,6 +385,7 @@ class StreamingLedger:
 
     def _read_rows(self) -> list[dict[str, Any]]:
         self._paths()
+        self._validate_parent()
         rows = []
         receipts = set(self.claims.glob("*.json")) if self.claims.exists() else set()
         sdk_receipts = set(self.sdk_claims.glob("*.json")) if self.sdk_claims.exists() else set()
@@ -292,7 +504,7 @@ class StreamingLedger:
         }
         incomplete = incomplete or sdk_started != sdk_ended
         expired = datetime.now(UTC) >= self.review.expires_at
-        return {
+        state: dict[str, object] = {
             "used": used,
             "maximum": self.review.maximum_attempts,
             "ordinary_used": ordinary,
@@ -308,6 +520,16 @@ class StreamingLedger:
             or cleanup_used > 0
             or ordinary >= self.review.ordinary_limit,
         }
+        if self.review.parent is not None:
+            if used > self.review.maximum_attempts - 1 or ordinary > self.review.ordinary_limit:
+                raise UiError("The continuation journal exceeds its approved remaining allowance.")
+            state.update(
+                prior_used=self.review.parent.prior_used,
+                aggregate_used=self.review.parent.prior_used + used,
+                aggregate_maximum=self.review.parent.aggregate_maximum,
+                continuation_claimed=self._continuation_claim(),
+            )
+        return state
 
     @contextmanager
     def _locked(self) -> Iterator[None]:
@@ -349,6 +571,7 @@ class StreamingLedger:
             target.model_key for target in self.review.targets
         }:
             raise UiError("Invalid streaming attempt or model binding.")
+        self._validate_parent()
         with self._locked():
             state = self.summary()
             used = state["used"]
@@ -362,6 +585,8 @@ class StreamingLedger:
                 or used >= self.review.maximum_attempts - 1
             ):
                 raise UiError("The streaming allowance is closed; no call was sent.")
+            if self.review.parent is not None:
+                self._continuation_claim(create=True)
             self.claims.mkdir(exist_ok=True)
             reservation = {
                 "at": datetime.now(UTC).isoformat(),

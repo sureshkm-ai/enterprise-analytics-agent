@@ -66,12 +66,34 @@ The reported sole inline policy **RuntimePermissionsA5C20CF1** matches the resto
 reviewed template **exactly**; its two Bedrock actions and four Sonnet ARNs are
 unchanged in the approved candidate. No duplicate grant is needed. This records
 user-reported attachment evidence, not an independent IAM read. The user also
-reports **Permissions boundary: Not set**. Session/organization/effective-context
-evaluation remains unavailable. Seven credential/routing source members match the frozen
+reports **Permissions boundary: Not set**. At that policy-only checkpoint,
+effective-context evidence was incomplete; the later simulator/organization
+observations below narrow it. Seven credential/routing source members match the frozen
 ZIP byte-for-byte. Source audits show Bedrock uses the workload session and only
 Athena/S3 use assumed query-role credentials; no concrete credential, model-ID or
 region wiring defect was found. Actual denied session/resource/conditions remain
-unknown. The next evidence is **effective-context/simulator results**, not another copy or reattachment of this inline policy.
+unknown. The later simulator report below completes that requested IAM evidence; no
+repeat of the inline-policy/boundary/simulator handoff is needed.
+
+The administrator subsequently supplied the
+[full simulator result](../evaluations/bedrock-streaming/sonnet-simulation.user-supplied.json):
+**2 actions × 4 concrete resources = 8 allowed decisions**, all missing-context
+lists empty, matched to the expected Sonnet inline policy. The generic aggregate
+resource label is preserved as supplied; the four concrete resource-specific
+results for each action establish coverage. This is user-supplied simulation,
+not a successful model invocation. No further inline-policy, boundary or simulator
+request is needed.
+
+A fresh **read-only** `analytics-dev` STS + Organizations `DescribeOrganization`
+check at **22:53:51Z** identified account **453711491609** as the organization
+management account. Its global service endpoint is recorded in
+`artifacts/bedrock-streaming/completion-fix/organization.readonly.json`; no regional
+resource mutation or new profile occurred. AWS documents that SCPs do not restrict
+management-account users/roles. There is no supported SCP/boundary/missing-Allow
+remedy to apply. Full failed Bedrock Error.Message/RequestId and effective denied
+context remain unavailable. The retained evidence is ready in the
+[service-error diagnostic handoff](bedrock-streaming-completion-plan.md#full-service-error-diagnosis);
+no support case, new model call or permission change was made.
 
 All **352** protected historical files remain byte-for-byte unchanged; sealed
 preparation/review/readiness, frozen ZIPs, actual S3 versions, original assemblies,
@@ -94,6 +116,14 @@ loader guard because usage is already 4/37; this confirms the non-replay conditi
 not a failed test or extra execution. Its record is retained at
 `artifacts/bedrock-streaming/completion-fix/post-execution-replay-guard.json`.
 
+Policy-evidence checkpoint **bc39b344c2e409fe269003a6de948adf878fc5e5** is pushed;
+[push CI 43323776935](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43323776935)
+and [PR CI 43323784997](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43323784997)
+passed for that exact commit: **2055 passed, 85 deselected, zero skipped**, with
+lock/lint/format/types and all synthesis checks successful. Those checks predate
+the subsequent simulator/organization evidence, which changes documentation only.
+The assistant did not run IAM simulation: it reviewed the user-pasted report.
+
 Commands actually run after approval:
 
 - `poetry run python -m infrastructure.agentcore.streaming_completion --plan evaluations/bedrock-streaming/completion-fix.preparation.json verify-offline`:
@@ -103,12 +133,15 @@ Commands actually run after approval:
   and protected smoke executed; **exit 1 / failed-restored** as above.
 - Read-only CloudWatch/CloudTrail and Bedrock `get_inference_profile` /
   `get_foundation_model_availability`: evidence preserved, no inference retries.
+- Read-only `analytics-dev` STS identity and Organizations `DescribeOrganization`:
+  expected account/caller verified and management-account status observed; global
+  control-plane endpoint explicitly recorded, no IAM or resource mutation.
 - Git normal push and draft PR creation: **f591498 / PR #13**; both exact-commit CI
   runs independently verified, including **2055** tests, **195** formatted files,
   mypy **153** files and replacement synthesis. Earlier local results below were
   not rerun merely for outcome documentation.
 
-Final outcome-documentation verification: **9** Markdown files, **154** local
+Historical **5f5c09e** outcome-documentation verification: **9** Markdown files, **154** local
 links, **34** documentation shell blocks and **2** CI shell blocks passed local
 syntax/existence checks. Both new evidence JSON documents parse; their summaries
 match all ten actual deployment/restoration proofs, four durable SDK receipts,
@@ -116,9 +149,19 @@ three case reports, the protected smoke and all raw hashes. `git diff --check`
 passed. No application/source/infrastructure code changed after f591498; its
 completed required local/hosted checks were not repeated merely for documentation.
 
-**Exact next task:** the supplied inline policy already matches; obtain administrator
-**read-only** effective-context/simulator results or the actual
-full Sonnet denial. Do not request the same policy again or add speculative grants. Preserve the failed campaign and verified restored checkpoint. Any later
+Final simulator/organization evidence checks passed: **9** Markdown files,
+**159** local links, **35** documentation shell blocks, **2** CI shell blocks,
+all JSON records, exact two-action/four-resource simulation coverage and the raw
+Organizations record checksum. All **352** protected files and the frozen source/
+artifact pins remain unchanged; `git diff --check` passed. Independent review
+found no actionable evidence/attribution discrepancy. No application or
+infrastructure source changed, so completed implementation tests were not
+repeated locally for this documentation-only supplement.
+
+**Exact next task:** IAM policy, no-boundary and simulator checks are complete.
+Use the retained diagnostic packet to obtain the full failed Bedrock service
+response before proposing any correction. Do not repeat IAM evidence requests or
+add speculative grants. Preserve the failed campaign and verified restored checkpoint. Any later
 replacement/retry needs its own concrete reviewed artifact/checkpoint/allocation
 and approval, including a new cleanup allowance; no such execution is authorized
 by the unused quota. Keep PR #13 unmerged and all new choices disabled.
@@ -2805,8 +2848,9 @@ The completion correction passed both live Nova gates, but Sonnet denied its
 first model call. All ten original streaming configurations are restored on
 **READY v3**, and retained-v15 Q18 smoke passed. Child **4/37**, aggregate **7/40**,
 is failed/blocked; no replay, reserve use or implicit cleanup budget remains.
-The supplied inline policy matches exactly; obtain the remaining read-only
-effective-context evidence described in the
-[completed execution handoff](bedrock-streaming-completion-plan.md#read-only-sonnet-authorization-handoff)
-before proposing a correction or separately approved retry. Keep new UI choices
+The supplied policy matches, no boundary is set and all eight simulator decisions
+are allowed. Use the
+[full service-error diagnostic handoff](bedrock-streaming-completion-plan.md#full-service-error-diagnosis)
+before proposing a correction or separately approved retry. No repeated IAM
+request or additional grant is indicated. Keep new UI choices
 disabled and PR #13 unmerged. M1–M5 remain complete for the development scope.

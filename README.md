@@ -85,15 +85,21 @@ covers ten new isolated runtimes/roles, a new artifact and a separate approved
 [administrator steps](docs/bedrock-streaming-administrator-steps.md) record completed
 policy evidence and completed query-trust handoff. New model acceptance is
 **incomplete**. The retained legacy **v15** remains the accepted release; its
-new protected smoke passed, separately from the earlier cleanup. Read-only
-administrator verification of the configured Sonnet role and denied request
-context is next; developer/model availability does not prove workload-role access.
-The actual denied session, resource, message and conditions remain unknown. The
-subsequently supplied Sonnet inline policy matches the reviewed template exactly;
-both invocation actions and all four ARNs are already allowed. Source/archive
-credential routing also matches. The user reports no permissions boundary. Remaining read-only evidence is
-effective request context/simulation; do not duplicate or reattach the policy.
-Do not replay either closed campaign or broaden IAM without evidence.
+new protected smoke passed, separately from the earlier cleanup. The supplied
+Sonnet inline policy matches the reviewed template; administrator simulation
+allows both Bedrock actions on all four concrete model resources with no missing
+context. Source/archive routing matches and the user reports no permissions
+boundary. Read-only Organizations verification identifies this as the management
+account, whose roles are unaffected by SCPs. These IAM checks are complete; no
+additional grant or repeat inspection is justified. Next diagnose the original
+service error from retained evidence/support material: its full message, request
+ID, session, denied resource and conditions remain unavailable. Do not replay
+closed campaigns or infer permission for another billable call.
+
+Pushed **bc39b34** passed [push CI 43323776935](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43323776935)
+and [PR CI 43323784997](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43323784997),
+including 2,055 offline tests with zero selected skips. Those results cover that
+commit, separately from later evidence documentation.
 
 The separate UI campaign used **19/20 attempts**: Q18 verification 1 and all 18
 regular slots; the protected rollback smoke was unused. No regular live allowance

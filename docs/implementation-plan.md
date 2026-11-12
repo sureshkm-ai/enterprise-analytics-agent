@@ -114,8 +114,10 @@ unapproved reserve. Its closed three-call history is preserved. The separately
 approved completion child allocates 20 acceptance + 15 user + protected cleanup +
 one unavailable reserve within the remaining **37**, aggregate ceiling **40**.
 Expiry remains `2026-11-15T23:59Z`. Ordinary dispatch is stopped after the Sonnet
-failure and verified original restoration. Administrator-side read-only denial
-verification is the current task. Historical
+failure and verified original restoration. Reviewed IAM policy/simulation and
+management-account verification establish no missing grant; diagnosis of the
+original full service error from retained evidence/support material is next.
+Historical
 assets, goldens, original reviews and M1–M5 completion remain unchanged.
 
 ## Follow-on validation: execute every test — complete, zero skipped tests
@@ -244,6 +246,6 @@ The approved [plan](milestone-5-plan.md) is implemented for local review on `fea
 
 11. Approved `q18-recovery-v1` executed once from fresh original v10: deployed pinned candidate READY v11, Q18 **110.25 USD [2025-03-31,2025-04-01)** and all **36/36** cases passed; client p95 **13.381s**, complete diagnostics. Mandatory original restore/smoke and separate read-only final verification passed on READY v12. Recovery **38/38**, aggregate **40/40**, no retries/failures/incomplete calls. All 122 protected files and historical ledgers/claims unchanged. No code/upload/IAM/dataset changes during execution.
 
-Exact next task: obtain administrator-side read-only evidence for the configured Sonnet workload role's actual InvokeModel permissions, active policies/boundary and applicable request context, together with the full denied principal/session/resource/message/conditions. The bounded CloudTrail collection did not contain an AccessDenied event, and unrelated log errors are not an established cause. Profile/developer availability does not prove workload-role effective access. Nova's two gates passed, but multi-model acceptance remains incomplete; original restoration and protected smoke passed, with the child closed 4/37 and aggregate 7/40. Preserve all claims, sealed inputs, restored v3 bindings and legacy v15. No new grant, campaign, retry, reserve use or model call is authorized.
+Exact next task: diagnose the original Sonnet service error from retained evidence/support material; the full Error.Message, RequestId, session, resource and conditions remain unavailable. The supplied inline policy matches, administrator simulation allows both Bedrock actions on all four concrete resources with no missing context, and the user reports no permissions boundary. Read-only Organizations verification identifies this as the management account, whose roles are unaffected by SCPs. IAM evidence review is complete; no additional grant, repeat policy/boundary/simulator request or source-routing correction is justified. The bounded CloudTrail collection did not contain an AccessDenied event, and unrelated log errors are not an established cause. Nova's two gates passed, but multi-model acceptance remains incomplete; original restoration and protected smoke passed, with the child closed 4/37 and aggregate 7/40. Preserve all claims, sealed inputs, restored v3 bindings and legacy v15. No new grant, campaign, retry, reserve use or model call is authorized.
 
 Cube remains a later adapter extension outside milestones 2–5 unless separately requested.

@@ -1,0 +1,238 @@
+{
+  "schema_version": "streaming-user-supplied-simulation-v1",
+  "source": "Administrator-generated IAM simulator JSON pasted by the user on 2026-11-12; normalized JSON transcription, not an assistant-run simulation",
+  "role_arn": "arn:aws:iam::453711491609:role/enterprise-analytics-stream-claude-sonnet-5-5",
+  "independently_executed_by_assistant": false,
+  "user_pasted_result": {
+    "EvaluationResults": [
+      {
+        "EvalActionName": "bedrock:InvokeModel",
+        "EvalResourceName": "arn:aws:bedrock:${Region}:${Account}:${ResourceType}/${ResourceId}",
+        "EvalDecision": "allowed",
+        "MatchedStatements": [
+          {
+            "SourcePolicyId": "role_enterprise-analytics-stream-claude-sonnet-5-5_RuntimePermissionsA5C20CF1",
+            "SourcePolicyType": "IAM Policy",
+            "StartPosition": {
+              "Line": 1,
+              "Column": 538
+            },
+            "EndPosition": {
+              "Line": 1,
+              "Column": 955
+            }
+          }
+        ],
+        "MissingContextValues": [],
+        "EvalDecisionDetails": {},
+        "ResourceSpecificResults": [
+          {
+            "EvalResourceName": "arn:aws:bedrock:us-west-2:453711491609:inference-profile/us.anthropic.claude-sonnet-5-5",
+            "EvalResourceDecision": "allowed",
+            "MatchedStatements": [
+              {
+                "SourcePolicyId": "role_enterprise-analytics-stream-claude-sonnet-5-5_RuntimePermissionsA5C20CF1",
+                "SourcePolicyType": "IAM Policy",
+                "StartPosition": {
+                  "Line": 1,
+                  "Column": 538
+                },
+                "EndPosition": {
+                  "Line": 1,
+                  "Column": 955
+                }
+              }
+            ]
+          },
+          {
+            "EvalResourceName": "arn:aws:bedrock:us-west-2::foundation-model/anthropic.claude-sonnet-5-5",
+            "EvalResourceDecision": "allowed",
+            "MatchedStatements": [
+              {
+                "SourcePolicyId": "role_enterprise-analytics-stream-claude-sonnet-5-5_RuntimePermissionsA5C20CF1",
+                "SourcePolicyType": "IAM Policy",
+                "StartPosition": {
+                  "Line": 1,
+                  "Column": 538
+                },
+                "EndPosition": {
+                  "Line": 1,
+                  "Column": 955
+                }
+              }
+            ]
+          },
+          {
+            "EvalResourceName": "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-sonnet-5-5",
+            "EvalResourceDecision": "allowed",
+            "MatchedStatements": [
+              {
+                "SourcePolicyId": "role_enterprise-analytics-stream-claude-sonnet-5-5_RuntimePermissionsA5C20CF1",
+                "SourcePolicyType": "IAM Policy",
+                "StartPosition": {
+                  "Line": 1,
+                  "Column": 538
+                },
+                "EndPosition": {
+                  "Line": 1,
+                  "Column": 955
+                }
+              }
+            ]
+          },
+          {
+            "EvalResourceName": "arn:aws:bedrock:us-east-2::foundation-model/anthropic.claude-sonnet-5-5",
+            "EvalResourceDecision": "allowed",
+            "MatchedStatements": [
+              {
+                "SourcePolicyId": "role_enterprise-analytics-stream-claude-sonnet-5-5_RuntimePermissionsA5C20CF1",
+                "SourcePolicyType": "IAM Policy",
+                "StartPosition": {
+                  "Line": 1,
+                  "Column": 538
+                },
+                "EndPosition": {
+                  "Line": 1,
+                  "Column": 955
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "EvalActionName": "bedrock:InvokeModelWithResponseStream",
+        "EvalResourceName": "arn:aws:bedrock:${Region}:${Account}:${ResourceType}/${ResourceId}",
+        "EvalDecision": "allowed",
+        "MatchedStatements": [
+          {
+            "SourcePolicyId": "role_enterprise-analytics-stream-claude-sonnet-5-5_RuntimePermissionsA5C20CF1",
+            "SourcePolicyType": "IAM Policy",
+            "StartPosition": {
+              "Line": 1,
+              "Column": 538
+            },
+            "EndPosition": {
+              "Line": 1,
+              "Column": 955
+            }
+          }
+        ],
+        "MissingContextValues": [],
+        "EvalDecisionDetails": {},
+        "ResourceSpecificResults": [
+          {
+            "EvalResourceName": "arn:aws:bedrock:us-west-2:453711491609:inference-profile/us.anthropic.claude-sonnet-5-5",
+            "EvalResourceDecision": "allowed",
+            "MatchedStatements": [
+              {
+                "SourcePolicyId": "role_enterprise-analytics-stream-claude-sonnet-5-5_RuntimePermissionsA5C20CF1",
+                "SourcePolicyType": "IAM Policy",
+                "StartPosition": {
+                  "Line": 1,
+                  "Column": 538
+                },
+                "EndPosition": {
+                  "Line": 1,
+                  "Column": 955
+                }
+              }
+            ]
+          },
+          {
+            "EvalResourceName": "arn:aws:bedrock:us-west-2::foundation-model/anthropic.claude-sonnet-5-5",
+            "EvalResourceDecision": "allowed",
+            "MatchedStatements": [
+              {
+                "SourcePolicyId": "role_enterprise-analytics-stream-claude-sonnet-5-5_RuntimePermissionsA5C20CF1",
+                "SourcePolicyType": "IAM Policy",
+                "StartPosition": {
+                  "Line": 1,
+                  "Column": 538
+                },
+                "EndPosition": {
+                  "Line": 1,
+                  "Column": 955
+                }
+              }
+            ]
+          },
+          {
+            "EvalResourceName": "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-sonnet-5-5",
+            "EvalResourceDecision": "allowed",
+            "MatchedStatements": [
+              {
+                "SourcePolicyId": "role_enterprise-analytics-stream-claude-sonnet-5-5_RuntimePermissionsA5C20CF1",
+                "SourcePolicyType": "IAM Policy",
+                "StartPosition": {
+                  "Line": 1,
+                  "Column": 538
+                },
+                "EndPosition": {
+                  "Line": 1,
+                  "Column": 955
+                }
+              }
+            ]
+          },
+          {
+            "EvalResourceName": "arn:aws:bedrock:us-east-2::foundation-model/anthropic.claude-sonnet-5-5",
+            "EvalResourceDecision": "allowed",
+            "MatchedStatements": [
+              {
+                "SourcePolicyId": "role_enterprise-analytics-stream-claude-sonnet-5-5_RuntimePermissionsA5C20CF1",
+                "SourcePolicyType": "IAM Policy",
+                "StartPosition": {
+                  "Line": 1,
+                  "Column": 538
+                },
+                "EndPosition": {
+                  "Line": 1,
+                  "Column": 955
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "review": {
+    "actions": [
+      "bedrock:InvokeModel",
+      "bedrock:InvokeModelWithResponseStream"
+    ],
+    "concrete_resources": [
+      "arn:aws:bedrock:us-west-2:453711491609:inference-profile/us.anthropic.claude-sonnet-5-5",
+      "arn:aws:bedrock:us-west-2::foundation-model/anthropic.claude-sonnet-5-5",
+      "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-sonnet-5-5",
+      "arn:aws:bedrock:us-east-2::foundation-model/anthropic.claude-sonnet-5-5"
+    ],
+    "resource_specific_decisions_reviewed": 8,
+    "all_resource_specific_decisions_allowed": true,
+    "all_missing_context_empty": true,
+    "top_level_resource_label_is_template": true,
+    "interpretation": "The generic top-level resource label is preserved as supplied; coverage is established by all eight concrete ResourceSpecificResults. This is administrator-supplied simulated IAM authorization, not a successful Bedrock invocation or a full denied-service response. No grant or replay is implied."
+  },
+  "organization_observation": {
+    "source": "artifacts/bedrock-streaming/completion-fix/organization.readonly.json",
+    "sha256": "c7e7415b8cdaab790d44c8f6e7a08011c50f7ba96a89f92d5da89eeb84cf8013",
+    "observed_at": "2026-11-12T22:53:51.589009+00:00",
+    "profile": "analytics-dev",
+    "configured_region": "us-west-2",
+    "service_endpoint": "https://organizations.us-east-1.amazonaws.com",
+    "account": "453711491609",
+    "organization": {
+      "Id": "o-cfy959zv3w",
+      "Arn": "arn:aws:organizations::453711491609:organization/o-cfy959zv3w",
+      "FeatureSet": "ALL",
+      "MasterAccountId": "453711491609"
+    },
+    "request_id": "b9d58cee-883c-4401-b630-0d034782d27a",
+    "is_management_account": true,
+    "interpretation": "Read-only Organizations DescribeOrganization identifies the selected account as the organization management account. Its global control-plane endpoint is recorded; no regional deployment or resource mutation occurred.",
+    "scp_applies_to_management_account_users_roles": false,
+    "scp_reference": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html"
+  },
+  "remaining_gap": "Full error response/request ID from the failed Sonnet Bedrock call is unavailable. Runtime logging retained only its class. No specific missing permission, source credential defect or IAM change is supported by current evidence."
+}

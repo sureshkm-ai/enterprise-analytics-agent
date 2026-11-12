@@ -286,24 +286,37 @@ The reported sole inline policy **RuntimePermissionsA5C20CF1** matches the resto
 reviewed template **exactly**; its two Bedrock actions and four Sonnet ARNs are
 unchanged in the approved candidate. No duplicate grant is needed. This records
 user-reported attachment evidence, not an independent IAM read. The user also
-reports **Permissions boundary: Not set**. Session/organization/effective-context
-evaluation remains unavailable. Seven credential/routing source members match the frozen
+reports **Permissions boundary: Not set**. At that policy-only checkpoint,
+effective-context evidence was incomplete; the later simulator/organization
+observations below narrow it. Seven credential/routing source members match the frozen
 ZIP byte-for-byte. Source audits show Bedrock uses the workload session and only
 Athena/S3 use assumed query-role credentials; no concrete credential, model-ID or
 region wiring defect was found. Actual denied session/resource/conditions remain
-unknown. The next evidence is **effective-context/simulator results**, not another copy or reattachment of this inline policy.
+unknown. The subsequent simulator report below completes the requested IAM evidence; no
+repeat of this policy/boundary/simulator handoff is needed.
 
-The supplied inline document does not need to be requested or attached again.
-An administrator should now establish the remaining **effective request-context/simulator evidence** below read-only, preserving all policies:
+The administrator has now supplied the
+[simulator report](../evaluations/bedrock-streaming/sonnet-simulation.user-supplied.json):
+both actions are allowed for every one of the four concrete resources (**8/8**),
+with no missing context. The generic top-level resource label is retained as
+reported; concrete `ResourceSpecificResults` carry the actual ARN decisions.
+This is administrator-supplied simulated access, not a successful model call.
+No repeated policy, boundary or simulator request is needed.
+
+Read-only Organizations metadata additionally confirms the selected account is the
+organization management account. [AWS documents](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html)
+that SCPs do not restrict users or roles in that account. No SCP change is indicated.
+
+The following completed read-only checks and reference commands are preserved as
+history; no policy should be added, removed or reattached:
 
 - Role: `arn:aws:iam::453711491609:role/enterprise-analytics-stream-claude-sonnet-5-5`.
-- The sole inline document is supplied and matches the restored template. Obtain
-  the applicable organization/session/context
-  restrictions and actual required tags. PowerUser SSO policy coverage does not
-  substitute for this separate workload role.
-- Simulate `bedrock:InvokeModel` for the failed Converse path, and
-  `bedrock:InvokeModelWithResponseStream` for the prospective presenter, against
-  each of these exact resources:
+- The sole inline document was supplied and matched the restored template;
+  no boundary was reported. PowerUser SSO policy coverage was not substituted
+  for this separate workload role.
+- The administrator simulated `bedrock:InvokeModel` for the failed Converse path
+  and `bedrock:InvokeModelWithResponseStream` for the prospective presenter
+  against each of these exact resources:
 
 ```text
 arn:aws:bedrock:us-west-2:453711491609:inference-profile/us.anthropic.claude-sonnet-5-5
@@ -312,9 +325,10 @@ arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-sonnet-5-5
 arn:aws:bedrock:us-east-2::foundation-model/anthropic.claude-sonnet-5-5
 ```
 
-Return full simulator decisions, resource-specific results, matched statements,
-missing context and boundary/organization details, plus any actual full invocation
-denial available to the administrator. Query required context first and supply
+The earlier request covered full simulator decisions, resource-specific results,
+matched statements, missing context and actual denial evidence. Those IAM results
+are now supplied; the full failed service response is still missing. For reference,
+the original safe simulation procedure was to query context first and supply
 only real observed context: requested region **us-west-2**, the Sonnet role ARN,
 and any actual required tags/profile context. Do not override/exclude policies or
 invent missing context to obtain an allowed result. A missing-context implicit
@@ -348,10 +362,10 @@ AWS_MAX_ATTEMPTS=1 aws iam simulate-principal-policy \
   --no-cli-pager --output json > sonnet-simulation.json
 ```
 
-These commands are prepared instructions, **not operations run in this session**.
-Download `sonnet-simulation.json` from CloudShell for review. Preserve all result
-fields, including missing context and organization decisions; an `allowed`
-simulation does not explain away the observed failure or authorize a retry.
+These commands are reference instructions, **not IAM operations run by the
+assistant**. The administrator has supplied the result, which is recorded above.
+No repeat is needed. Its allowed decisions do not explain away the observed
+failure or authorize a retry.
 
 The API/action relationship and simulator limitations are documented in the
 [AWS Converse reference](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html)
@@ -361,6 +375,58 @@ is a separate read-only control-plane check. Preserve the sealed review and
 failed attempt. After evidence establishes a concrete cause, prepare a separately
 reviewed correction/checkpoint/allocation before asking to execute again; no
 replay or new cleanup is authorized by the unused numerical quota.
+
+## Full service-error diagnosis
+
+All requested IAM evidence is now complete: the supplied inline policy matches,
+no boundary is configured, all eight simulator decisions are allowed, and the
+account is the organization management account. Source/archive audits found no
+credential, provider, model-ID or region wiring defect. No additional grant or
+console policy change is justified by current evidence.
+
+The unresolved gap is the **full AWS response for the failed Sonnet Converse**.
+The application retained only `AccessDeniedException`; its SDK message and request
+ID were discarded. Bounded CloudTrail lookup did not recover that failed request.
+Do not claim a specific cause from the class or retry normal acceptance to obtain
+more data. The child remains blocked and its protected cleanup is spent.
+
+The following packet is ready for AWS Support/service investigation. It is a
+prepared draft, **not a case submitted by the assistant**:
+
+```text
+Subject: Bedrock Sonnet Converse AccessDenied despite matching role policy and allowed IAM simulation
+Account / region: 453711491609 / us-west-2
+Failure window: 2026-11-12 22:19:25–22:19:30 UTC
+Operation / model: Converse / us.anthropic.claude-sonnet-5-5
+Runtime: enterprise_analytics_stream_claude_sonnet_5_5-wIvJh83KS4, version 2 during failure
+Configured role: arn:aws:iam::453711491609:role/enterprise-analytics-stream-claude-sonnet-5-5
+Local correlation ID: 731ff772-876e-4c33-a8fe-83fd87108b55 (not an AWS model RequestId)
+Observed result: first Converse returned AccessDeniedException after 95 ms; no tool/query ran.
+SDK Error.Message / model RequestId: not retained by application logging.
+Evidence: role inline RuntimePermissionsA5C20CF1 matches the reviewed deployed policy;
+InvokeModel and InvokeModelWithResponseStream allowed for the exact inference profile
+and three regional foundation-model ARNs; no role boundary reported; all eight
+administrator IAM simulation decisions allowed with no missing context.
+DescribeOrganization identifies this account as the management account.
+Model agreement/entitlement/region AVAILABLE, developer authorization AUTHORIZED;
+inference profile ACTIVE with the three expected US model ARNs.
+Source uses workload credentials for Bedrock; query credentials are separate Athena/S3.
+Time-correlated startup STS session observed:
+arn:aws:sts::453711491609:assumed-role/enterprise-analytics-stream-claude-sonnet-5-5/BedrockAgentCore-15afcfbe-a826-4903-9d79-66149e4e9ece
+This is the startup identity, not a proven principal from the missing denied SDK event.
+Request: identify the full denied-service response, actual session/action/resource/
+conditions and service-access reason. Do not infer a missing role Allow from the
+exception class or add broad permissions without the underlying denial evidence.
+Safety state: no retries; all ten original streaming configurations restored READY v3;
+legacy Nova v15 protected Q18 smoke passed; campaign blocked at4/37, aggregate7/40.
+```
+
+A further Runtime probe would require internal failure-message capture first,
+a fresh reviewed artifact/checkpoint and an explicitly approved bounded allocation
+with restoration. None is authorized by numerical unused quota. Keep the frozen
+review/artifacts, all ledgers and current restored deployment intact. Multi-model
+UI activation remains incomplete; ordinary offline playground/report viewing is
+available without AWS calls. Do not request the same IAM material again.
 
 ## References
 

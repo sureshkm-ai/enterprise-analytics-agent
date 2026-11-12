@@ -98,11 +98,16 @@ bindings verified **UPDATE_COMPLETE / Runtime and DEFAULT READY v3**. Protected
 legacy-v15 Q18 smoke passed **110.25 USD** at approximately **22:29:52Z**. The
 child is closed/blocked **4/37**, aggregate **7/40**, with no incomplete attempt.
 All new choices remain disabled; remaining ordinary quota is unusable.
-Administrator-side read-only Sonnet workload-role policy/boundary/context and
-actual denial evidence are required next. Profile ACTIVE and developer
-AVAILABLE/AUTHORIZED checks do not prove workload-role effective access. The
-bounded CloudTrail collection found no AccessDenied event; unrelated log errors
-are not an established cause. No retry or broader permission is implied. The
+Sonnet IAM evidence is complete for the reviewed actions/resources: the supplied
+inline policy matches, administrator simulation allows both actions across all
+four concrete resources with no missing context, and the user reports no
+permissions boundary. Read-only Organizations verification identifies the
+management account; SCPs do not restrict its roles. No missing grant or source
+routing defect is established. Next diagnose the original full service error
+from retained evidence/support material, including its unavailable message,
+request ID, session, resource and conditions. The bounded CloudTrail collection
+found no AccessDenied event; unrelated log errors are not an established cause.
+No further IAM request, retry or live scope is implied. The
 sealed reviews and source/artifact proofs remain immutable. New local source is
 not asserted equal to historical v15. Actual outcome and denial evidence are
 recorded in [progress](progress.md); successful CI for pushed **f591498** covers

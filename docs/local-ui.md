@@ -159,9 +159,15 @@ slots: 20 acceptance, 15 user questions, one protected cleanup and one unavailab
 reserve; expiry remains `2026-11-15T23:59Z`. The child is closed/blocked **4/37**
 (ordinary 3 + cleanup 1), aggregate **7/40**, with no incomplete attempt. The
 numeric remaining ordinary quota is unusable. New UI choices stay disabled.
-Next obtain administrator-side read-only Sonnet role/policy/boundary/context and
-full denial evidence; profile/developer availability is insufficient. No retry,
-new campaign, permission change or reserve use follows from the remaining quota.
+The supplied Sonnet policy matches; administrator simulation allows both Bedrock
+actions on all four concrete resources with no missing context, and the user
+reports no permissions boundary. Read-only verification identifies this as the
+Organizations management account, whose roles are not restricted by SCPs. No
+missing permission or source-routing defect is established. Next diagnose the
+original full service error from retained evidence/support material; its message,
+request ID, session, resource and conditions remain unavailable. Do not repeat
+these IAM requests. No retry, new campaign, permission change or reserve use
+follows from the remaining quota.
 
 The legacy session 02 command is a historical Nova-only launch for its accepted
 v15 source/release. Current local source differs from that frozen closure; do not

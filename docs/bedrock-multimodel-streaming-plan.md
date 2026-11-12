@@ -477,12 +477,16 @@ The original recovery and its failed three-call campaign above are historical.
 The approved completion operation deployed the replacement and passed both Nova
 gates, then stopped on Sonnet's first Converse denial. Original restoration and
 protected cleanup passed; the child is closed 4/37, aggregate 7/40. Keep new
-bindings disabled. Next obtain administrator-side read-only evidence of the
-configured Sonnet role's effective InvokeModel permissions, active policies,
-boundary and applicable context, including the actual denied session, principal,
-resource, message and conditions. Developer/model availability does not establish
-that access. The bounded 444-event CloudTrail collection through 22:29:52Z had no
-AccessDenied event; unrelated log ResourceAlreadyExists/OperationAborted events
-are not an established cause. Do not repeat execution, retry questions, use
+bindings disabled. The supplied Sonnet inline policy matches the reviewed
+permissions; administrator simulation allows both actions on all four concrete
+resources with no missing context. The user reports no permissions boundary.
+Read-only Organizations verification identifies the management account, whose
+roles are unaffected by SCPs. No missing grant or source-routing defect is
+established, and the IAM evidence review is complete. Next diagnose the original
+service error from retained evidence/support material: its full message, request
+ID, denied session/principal, resource and conditions remain unavailable. The
+bounded 444-event CloudTrail collection through 22:29:52Z had no AccessDenied
+event; unrelated log ResourceAlreadyExists/OperationAborted events are not an
+established cause. Do not repeat execution, retry questions, use
 remaining quota/reserve, create another campaign or add speculative IAM.
 Full multi-model acceptance and production readiness remain unverified.

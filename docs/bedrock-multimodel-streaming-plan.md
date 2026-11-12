@@ -10,8 +10,9 @@ are AVAILABLE and the administrator report verifies both attached policy parts.
 Deployment remains stopped on the report's shared-directory TagResource
 implicitDeny. The supplement confirms the exact request and current M4 policy:
 its directory grant requires the old Project value. A separate, exact-directory
-TagResource correction is prepared for additional approval; it is not applied
-or included in the earlier execution approval. See [administrator steps](bedrock-streaming-administrator-steps.md) and
+TagResource correction now has separate user approval, recorded independently
+of the unchanged deployment review. Administrator application/readback and an
+allowed post-change simulation remain pending. See [administrator steps](bedrock-streaming-administrator-steps.md) and
 the [actual preflight record](../evaluations/bedrock-streaming/activation-preflight-2026-11-11.json). The existing
 Nova candidate/retail Runtime and DEFAULT remain the retained **v15** checkpoint;
 the existing interactive allowance and its ledger are unchanged. A new model is
@@ -439,8 +440,8 @@ links each exact official model card. API/protocol and permission references use
 
 Offline checks establish implementation readiness only. Execution approval is now
 recorded; retain the frozen checksums and real-version binding procedure. Resolve
-the remaining directory correction's separate approval, administrator application
-and allowed simulation documented in the administrator guide, then repeat fresh
+the remaining directory correction's administrator application/readback and
+allowed simulation documented in the administrator guide, then repeat fresh
 preflight and continue
 the already approved ten-runtime scope. The controlled reserve remains unusable.
 No live acceptance, new permission, upload, deployment or production-readiness

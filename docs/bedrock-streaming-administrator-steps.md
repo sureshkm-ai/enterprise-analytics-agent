@@ -10,8 +10,9 @@ Do not use the developer SSO role to grant itself IAM permissions.
 are verified from the supplied report. All three previously blocked model
 agreements are now independently verified AVAILABLE. Do not repeat those steps.
 The supplement now verifies its exact request and current M4 policy, identifying
-the Project-condition gap. The remaining gate is separate approval/application
-of the proposed directory correction below, followed by an allowed simulation.
+the Project-condition gap. The user separately approved the exact correction at
+f68e191. The remaining gate is administrator application/readback, followed by an
+allowed simulation. Approval does not establish that the policy has been applied.
 
 ## Attach the reviewed permissions as two managed policies
 
@@ -209,7 +210,9 @@ values for TagResource merely to remove the simulator's missing-context output.
 No additional permission is approved by collecting this report. A specific
 correction, if established, requires review before application.
 
-## Proposed directory correction — separate approval required
+<a id="proposed-directory-correction--separate-approval-required"></a>
+
+## Approved directory correction — administrator application pending
 
 The smallest proposed delta is [this separate policy](../infrastructure/cdk/streaming-directory-tag-policy.proposed.json),
 SHA-256 **ba04feb1ce5c92ab55b94e09bfa522e641a0b2a2eedb10d97d313e42d996d39b**.
@@ -219,13 +222,15 @@ account and region. The directory is shared; this is not a new Runtime-only
 resource. The [review record](../evaluations/bedrock-streaming/directory-tag-review.proposed.json)
 binds the reports, exact target role, policy checksum and verification gates.
 
-The approved deployment plan deliberately excluded this grant. **Do not apply it
-until the user separately approves this correction.** No AWS policy was changed
-while preparing it. Keep the original aggregate, both split managed policies,
+The original deployment plan deliberately excluded this grant. The user has now
+**separately approved this exact correction**, recorded in the
+[approval record](../evaluations/bedrock-streaming/directory-tag-approval.json).
+The proposed review JSON and policy bytes remain unchanged as historical review
+evidence. Administrator application and an allowed post-change simulation are
+still unverified. Keep the original aggregate, both split managed policies,
 M3/M4 policies, trust, package/templates, data and all budgets unchanged.
 
-After that approval, the administrator can apply the exact additive inline
-policy using the console:
+The administrator can now apply the exact additive inline policy using the console:
 
 1. Open **IAM → Roles → cdk-hnb659fds-cfn-exec-role-453711491609-us-west-2**.
 2. Choose **Permissions → Add permissions → Create inline policy → JSON**.
@@ -238,6 +243,29 @@ policy using the console:
    result; a simulation is not proof of deployment success.
 5. Return the exact inline-policy JSON and simulation evidence. The operator
    repeats full fresh preflight before the already approved upload/deployment.
+
+After saving the inline policy, collect its readback and attachment list in a
+fresh CloudShell evidence directory:
+
+```sh
+STREAM_POST_CHANGE_DIR=$(mktemp -d "$PWD/streaming-directory-post-change.XXXXXX")
+aws iam get-role-policy --region us-west-2 --no-cli-pager \
+  --role-name cdk-hnb659fds-cfn-exec-role-453711491609-us-west-2 \
+  --policy-name enterprise-analytics-stream-directory-tag \
+  > "$STREAM_POST_CHANGE_DIR/directory-inline-policy.json"
+aws iam list-attached-role-policies --region us-west-2 --no-cli-pager \
+  --role-name cdk-hnb659fds-cfn-exec-role-453711491609-us-west-2 \
+  > "$STREAM_POST_CHANGE_DIR/attached-policies.json"
+echo "$STREAM_POST_CHANGE_DIR"
+```
+
+Then rerun the unchanged read-only supplement collection block above; it records
+the exact directory simulation request/response in `streaming-admin-supplement.json`.
+Download that new supplement plus the two files in the printed post-change
+directory. Return the full files, including any denial or missing context; do
+not add unrelated IAM context values or retry deployment to test permissions.
+The existing administrator account/region checks still apply. These verification
+commands do not modify AWS and create no local profile.
 
 Do not append this grant to the 5,891-character managed policy or replace the old
 M4 Project condition. A separate inline policy preserves those approved documents

@@ -2,7 +2,46 @@
 
 Updated: 2026-11-12 (America/Chicago).
 
-## Current checkpoint: directory gap diagnosed; exact correction proposed
+## Current checkpoint: directory correction approved; administrator application pending
+
+The user separately approved the exact additional directory-tagging policy at
+**f68e1913a61151da031816d77c1adfc5fac63de8**. Recorded that instruction in
+[directory-tag-approval.json](../evaluations/bedrock-streaming/directory-tag-approval.json),
+binding the exact policy SHA-256
+**ba04feb1ce5c92ab55b94e09bfa522e641a0b2a2eedb10d97d313e42d996d39b**,
+CloudFormation execution role and inline name
+**enterprise-analytics-stream-directory-tag**. The original proposed review and
+policy bytes remain unchanged. Do not request this approval again.
+
+The branch was clean at f68e191 before this update; existing local work and
+historical evidence are preserved. This is a local approval/documentation update:
+**no AWS calls, IAM changes, uploads, deployments or billable invocations**.
+Administrator application and an allowed post-change simulation are still
+unverified. The existing developer profile does not gain administrator access
+from the user's approval; do not attempt self-grant or repeat denied IAM reads.
+
+**Exact next task:** in the existing administrator console, apply only the exact
+approved JSON as an additive inline policy on
+**cdk-hnb659fds-cfn-exec-role-453711491609-us-west-2**. The
+[guide](bedrock-streaming-administrator-steps.md#approved-directory-correction--administrator-application-pending)
+contains console steps and read-only commands for exact policy readback,
+preserved attachments and the unchanged directory simulation. Return those
+files before the operator's full fresh preflight and already approved deployment.
+Frozen source/ZIP/S3 pins, all managed policies, trust and historical ledgers
+remain unchanged; the new campaign is still **0/40**, reserve unavailable.
+No artifact, expiry, budget or new deployment scope was approved by this grant.
+
+Actual checks: the approval's exact policy checksum, target and reviewed commit
+validate; proposed policy/review bytes equal f68e191. The existing streaming
+`verify-offline` CLI passed all ten targets with zero AWS calls and no campaign
+ledger. Documentation checks passed **5** Markdown files, **72** local links and
+**13** parsed-only shell blocks; embedded Python/JSON syntax and
+`git diff --check` passed. The diff was reviewed. Application tests, lint/types,
+lockfile validation, synthesis and live checks were not rerun for this
+approval/documentation-only update. Previous application/live/hosted-CI evidence
+retains its own attribution and does not cover this later checkpoint.
+
+## Historical directory gap diagnosis — policy proposed at f68e191
 
 Inspected clean **feat/bedrock-streaming-activation** at local checkpoint
 **cc60c12**; preserved all existing work. Conda/Poetry still select

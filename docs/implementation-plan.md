@@ -52,8 +52,8 @@ policy-packaging correction, with successful PR CI. Read-only verification on
 November 12 confirms all three model agreements and both attached policy parts;
 the administrator supplement confirms the shared-directory TagResource denial
 comes from the old Project condition/missing new grant. A narrowly scoped,
-separate inline-policy correction awaits its own approval and administrator
-application, then an allowed simulation and fresh preflight. The [concrete plan](bedrock-multimodel-streaming-plan.md)
+separate inline-policy correction is now user-approved; administrator application
+and readback remain pending, followed by an allowed simulation and fresh preflight. The [concrete plan](bedrock-multimodel-streaming-plan.md)
 proposes nine additional Bedrock choices and a new streaming Nova baseline, each
 with a separate fixed-model role/Runtime and a new artifact. Google is **Gemma via
 Bedrock Mantle**; native OpenAI GPT choices remain inside Bedrock. Optional catalog

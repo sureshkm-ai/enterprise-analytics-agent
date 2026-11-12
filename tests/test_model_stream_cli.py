@@ -4,6 +4,7 @@ import hashlib
 import io
 import json
 from contextlib import nullcontext
+from datetime import UTC, datetime
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
@@ -16,6 +17,7 @@ from test_model_streams_review import settings
 
 from enterprise_analytics_agent.adapters import model_stream_cli as cli
 from enterprise_analytics_agent.adapters.bedrock_model_catalog import BEDROCK_MODELS
+from enterprise_analytics_agent.adapters.ui_release import ReleaseRecord
 from enterprise_analytics_agent.agent.contracts import (
     AgentDiagnostics,
     AgentResponse,
@@ -30,16 +32,64 @@ from enterprise_analytics_agent.ui.model_streams import (
     StreamTarget,
 )
 from enterprise_analytics_agent.ui.models import UiError, UiResult
+from enterprise_analytics_agent.ui.shared import SharedReview
 
 REPOSITORY = Path(__file__).resolve().parents[1]
 
 
 @pytest.fixture(autouse=True)
-def no_real_aws(monkeypatch: pytest.MonkeyPatch) -> None:
+def no_real_aws_or_generated_artifacts(monkeypatch: pytest.MonkeyPatch) -> None:
     def forbidden(*args: object, **kwargs: object) -> None:
         pytest.fail("Streaming CLI regression tests must not create real AWS sessions")
 
     monkeypatch.setattr(boto3, "Session", forbidden)
+    read_bytes, read_text = Path.read_bytes, Path.read_text
+
+    def require_tracked_input(path: Path) -> None:
+        if path.resolve().is_relative_to(REPOSITORY / "artifacts"):
+            pytest.fail("Streaming CLI tests must not read generated checkout artifacts")
+
+    def checked_bytes(path: Path) -> bytes:
+        require_tracked_input(path)
+        return read_bytes(path)
+
+    def checked_text(path: Path, encoding: str | None = None, errors: str | None = None) -> str:
+        require_tracked_input(path)
+        return read_text(path, encoding=encoding, errors=errors)
+
+    monkeypatch.setattr(Path, "read_bytes", checked_bytes)
+    monkeypatch.setattr(Path, "read_text", checked_text)
+
+
+@pytest.fixture
+def legacy_cleanup_record(tmp_path: Path) -> ReleaseRecord:
+    """Authored operator evidence, never copied from an ignored live checkpoint."""
+    from enterprise_analytics_agent.adapters import ui_release
+
+    review_path = Path("evaluations/ui-shared/interactive-02.proposed.json")
+    destination = tmp_path / review_path
+    destination.parent.mkdir(parents=True)
+    destination.write_bytes((REPOSITORY / review_path).read_bytes())
+    shared_review = SharedReview.model_validate_json(destination.read_bytes())
+    record = ReleaseRecord(
+        kind="candidate",
+        observed_at=datetime(2026, 11, 11, tzinfo=UTC),
+        runtime_arn=shared_review.target.runtime_arn,
+        runtime_version="15",
+        review_sha256=shared_review.sha256,
+        source_sha256=shared_review.source_sha256,
+        archive_sha256=shared_review.archive_sha256,
+        artifact_version_id=shared_review.artifact_version_id,
+        configuration_sha256=ui_release.CANDIDATE_CONFIG_SHA256,
+        template_sha256=shared_review.runtime_template_sha256,
+        dataset_version="retail-v1",
+        canonical_manifest_sha256=shared_review.canonical_manifest_sha256,
+    )
+    ui_release.validate_record(shared_review, record)
+    release_path = tmp_path / "artifacts/ui-shared/interactive-02-preparation/release-record.json"
+    release_path.parent.mkdir(parents=True)
+    release_path.write_text(record.model_dump_json())
+    return record
 
 
 def ten_model_review(review: StreamingReview) -> StreamingReview:
@@ -509,23 +559,13 @@ def test_cleanup_uses_protected_slot_without_new_source_or_release_dependencies(
     review: StreamingReview,
     monkeypatch: pytest.MonkeyPatch,
     scenario: str,
+    legacy_cleanup_record: ReleaseRecord,
 ) -> None:
     from enterprise_analytics_agent.adapters import agentcore_invocation, ui_live, ui_release
 
     args = prepare(tmp_path, review, monkeypatch)
     drift = scenario == "drift"
-    for path in (
-        "evaluations/ui-shared/interactive-02.proposed.json",
-        "artifacts/ui-shared/interactive-02-preparation/release-record.json",
-    ):
-        destination = tmp_path / path
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        destination.write_bytes((REPOSITORY / path).read_bytes())
-    expected = ui_release.ReleaseRecord.model_validate_json(
-        (
-            tmp_path / ("artifacts/ui-shared/interactive-02-preparation/release-record.json")
-        ).read_bytes()
-    )
+    expected = legacy_cleanup_record
     state = fake_read_session(monkeypatch)
     monkeypatch.setattr(ui_live, "runtime_lease", lambda root: nullcontext())
     monkeypatch.setattr(

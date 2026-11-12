@@ -2,7 +2,62 @@
 
 Updated: 2026-11-11 (America/Chicago).
 
-## Current task: Bedrock-only model choices and verified provider word streaming
+## Current task: fix three clean-checkout CI failures
+
+Verified [PR #11](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/11)
+is open on **feat/ui-streaming-model-selection** with pushed head
+**4616777f40a236cc37a034da65db306b3c06afba**. Its
+[PR CI 43137963697](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43137963697)
+failed with **3 failed, 1,891 passed, 85 deselected in 186.31s**. Read the actual
+job log through the GitHub connector after CLI authentication/network inspection
+was unavailable. The failure was the cleanup test fixture reading an ignored
+local release record, not a runtime/AWS, lint or type failure. Later hosted steps
+were not reached. Earlier local results below retain their historical attribution.
+
+The three cleanup scenarios now construct a typed, explicitly test-only legacy
+v15 `ReleaseRecord` from the tracked shared review and validate its pins offline.
+They write it only beneath pytest's temporary directory. The module also rejects
+reads from the checkout's generated `artifacts/` tree, so locally retained files
+cannot mask this regression again. Existing success, drift, protected-slot,
+original-exception and failure-report assertions remain intact.
+
+### Actual verification
+
+Used Python **3.12.16** and Poetry **2.3.1** in the existing
+**enterprise-analytics** Conda environment. Exported only tracked files with
+`git archive HEAD`, forced imports from that export's `src`/root and asserted the
+imported module location. No original generated artifacts were copied or removed.
+
+| Command/check | Result |
+| --- | --- |
+| Original three cleanup scenarios in the tracked-only export | Reproduced all **3 failures** in **0.16s**, each missing the generated release record. |
+| `poetry run pytest tests/test_model_stream_cli.py -q` after the fix | **21 passed in 0.81s** in this checkout; **21 passed in 1.55s** in the tracked-only export. |
+| `poetry check --lock` | Passed in the export. |
+| `poetry run pytest` in the export with only the fixed test overlaid | **1,894 passed, 85 deselected in 68.39s, zero skipped**. The 85 live items were not executed. |
+| `poetry run ruff check .` | Passed in the export. |
+| `poetry run ruff format --check .` | Passed: **185** files formatted. |
+| `poetry run mypy src tests` | Passed: **147** source files. |
+| CI data-layer synthesis | `poetry run python -m infrastructure.cdk.app --config infrastructure/cdk/config.example.json --outdir artifacts/ci-fixture-fix/cdk.data.out` passed offline in the export. |
+| CI AgentCore foundation synthesis | `poetry run python -m infrastructure.cdk.agentcore_app --config infrastructure/cdk/agentcore.config.example.json --phase foundation --outdir artifacts/ci-fixture-fix/cdk.foundation.out` passed offline in the export. |
+
+Both synthesis commands emitted the existing JSII notice about local Node 26;
+they exited successfully. A separate read-only audit found no other generated
+repository-artifact reads across the thirteen streaming test modules and no
+remaining actionable issue in this fix. Documentation/link and diff checks passed.
+The clean-export location is recorded in `artifacts/ci-fixture-fix/clean-export.json`.
+
+### Exact next task and boundaries
+
+Push this local correction to the existing PR #11 branch and verify hosted CI
+for that exact new commit. No push, merge, AWS operation or live invocation was
+performed for this correction; the failed hosted run covers **4616777**, not this
+fix. Application/infrastructure code, the prepared ZIP/review/template pins,
+canonical data, goldens, historical evidence and all real invocation ledgers are
+unchanged. No package rebuild or deployment is required for this test-only fix.
+The separate multi-model deployment/live-evaluation proposal still needs its
+existing review/approval prerequisites; completed M1–M5 evidence remains preserved.
+
+## Bedrock-only streaming preparation at 4616777 — historical
 
 Implemented the user-requested Bedrock-only follow-on locally on
 **feat/ui-streaming-model-selection**, preserving local **a94a1ff** and its earlier

@@ -1,0 +1,80 @@
+{
+  "runtime": "PYTHON_3_12",
+  "platform": "linux/arm64",
+  "entrypoint": [
+    "runtime_entry.py"
+  ],
+  "poetry_lock_sha256": "902a20a51b4dacb15add668ac06b11507b87ad2e96278b314e2b34d8584cf09a",
+  "project_wheel_sha256": "dad63d3b88f6cee888db38042bda2f84506ffa44135ace9a010d10469cd241b4",
+  "runtime_config_sha256": "085a2c4810ac40dd284c2588d3818db4bd40a1e2e047bbe19d72a51367a83d63",
+  "dependencies": [
+    {
+      "name": "annotated-types",
+      "version": "0.8.0",
+      "sha256": "f072f4d804ea359e4eaf198b1af7a8b0943881a87f31bb764f8bf219bb9419e0"
+    },
+    {
+      "name": "boto3",
+      "version": "1.43.125",
+      "sha256": "101fe3ee99664e671efb9af65c8e98ec0bceddf6de922ea89685da4adc8c6907"
+    },
+    {
+      "name": "botocore",
+      "version": "1.43.125",
+      "sha256": "e3969c8191d3435440037310187d324f37c00da53987ea31df2eceff19a2795a"
+    },
+    {
+      "name": "duckdb",
+      "version": "1.5.6",
+      "sha256": "ce89a1025a5317ebe9c520876c48032b5247ac574865486648b1a004f6009875"
+    },
+    {
+      "name": "jmespath",
+      "version": "1.1.0",
+      "sha256": "a5663118de4908c91729bea0acadca56526eb2698e83de10cd116ae0f4e97c64"
+    },
+    {
+      "name": "pydantic",
+      "version": "2.14.3",
+      "sha256": "3f7b347782ab7e4cf4c798496ae3a82787d9f21ec12676a9c564355eeef8daa8"
+    },
+    {
+      "name": "pydantic-core",
+      "version": "2.50.4",
+      "sha256": "16902a147b3da4840612164a5e67947104d63e978f7a57c395877a5e26690b9c"
+    },
+    {
+      "name": "python-dateutil",
+      "version": "2.9.0.post0",
+      "sha256": "a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427"
+    },
+    {
+      "name": "s3transfer",
+      "version": "0.19.3",
+      "sha256": "24eb7535804306355e31c952a90022bf5b2f9d760f9a11062c7493a217c08553"
+    },
+    {
+      "name": "six",
+      "version": "1.17.0",
+      "sha256": "4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274"
+    },
+    {
+      "name": "typing-extensions",
+      "version": "4.16.0",
+      "sha256": "481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8"
+    },
+    {
+      "name": "typing-inspection",
+      "version": "0.4.5",
+      "sha256": "bc210535442b39e1bf2805e0c7a17dfd6a4ace760c84c7f7d16245d23a6b1c39"
+    },
+    {
+      "name": "urllib3",
+      "version": "2.8.0",
+      "sha256": "0cf3cae568d36aa9576b28dfb35f11328f1cb974ca7647d9475ebb86c75ac6e3"
+    }
+  ],
+  "zip_sha256": "c136a3931e2af31d6453c54910ddc9e839ef03e69a6f2ddebb35b3eb7cfdc306",
+  "zipped_bytes": 39298651,
+  "unzipped_bytes": 86261459
+}

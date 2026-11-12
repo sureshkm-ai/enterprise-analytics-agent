@@ -1,0 +1,177 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ReadOnlyReviewedStreamingCode",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion"
+      ],
+      "Resource": "arn:aws:s3:::enterprise-analytics-dev-453711491609-us-west-2-agent-code/releases/c136a3931e2af31d6453c54910ddc9e839ef03e69a6f2ddebb35b3eb7cfdc306/agent.zip"
+    },
+    {
+      "Sid": "TenStreamingRuntimeRoles",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateRole",
+        "iam:DeleteRole",
+        "iam:GetRole",
+        "iam:TagRole",
+        "iam:UntagRole",
+        "iam:UpdateAssumeRolePolicy",
+        "iam:PutRolePolicy",
+        "iam:GetRolePolicy",
+        "iam:DeleteRolePolicy",
+        "iam:ListRolePolicies",
+        "iam:ListAttachedRolePolicies"
+      ],
+      "Resource": [
+        "arn:aws:iam::453711491609:role/enterprise-analytics-stream-nova-lite",
+        "arn:aws:iam::453711491609:role/enterprise-analytics-stream-claude-sonnet-5-5",
+        "arn:aws:iam::453711491609:role/enterprise-analytics-stream-claude-opus-5-5",
+        "arn:aws:iam::453711491609:role/enterprise-analytics-stream-gpt-6-astra",
+        "arn:aws:iam::453711491609:role/enterprise-analytics-stream-gpt-6-1-sol",
+        "arn:aws:iam::453711491609:role/enterprise-analytics-stream-gemma-4-31b",
+        "arn:aws:iam::453711491609:role/enterprise-analytics-stream-llama-4-maverick",
+        "arn:aws:iam::453711491609:role/enterprise-analytics-stream-deepseek-v3-2",
+        "arn:aws:iam::453711491609:role/enterprise-analytics-stream-qwen3-235b",
+        "arn:aws:iam::453711491609:role/enterprise-analytics-stream-mistral-large-3"
+      ]
+    },
+    {
+      "Sid": "PassOnlyTenStreamingRuntimeRoles",
+      "Effect": "Allow",
+      "Action": [
+        "iam:PassRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::453711491609:role/enterprise-analytics-stream-nova-lite",
+        "arn:aws:iam::453711491609:role/enterprise-analytics-stream-claude-sonnet-5-5",
+        "arn:aws:iam::453711491609:role/enterprise-analytics-stream-claude-opus-5-5",
+        "arn:aws:iam::453711491609:role/enterprise-analytics-stream-gpt-6-astra",
+        "arn:aws:iam::453711491609:role/enterprise-analytics-stream-gpt-6-1-sol",
+        "arn:aws:iam::453711491609:role/enterprise-analytics-stream-gemma-4-31b",
+        "arn:aws:iam::453711491609:role/enterprise-analytics-stream-llama-4-maverick",
+        "arn:aws:iam::453711491609:role/enterprise-analytics-stream-deepseek-v3-2",
+        "arn:aws:iam::453711491609:role/enterprise-analytics-stream-qwen3-235b",
+        "arn:aws:iam::453711491609:role/enterprise-analytics-stream-mistral-large-3"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": "bedrock-agentcore.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "CreateTaggedStreamingRuntime",
+      "Effect": "Allow",
+      "Action": [
+        "bedrock-agentcore:CreateAgentRuntime"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2",
+          "aws:PrincipalAccount": "453711491609",
+          "aws:RequestTag/Project": "enterprise-analytics-stream"
+        }
+      }
+    },
+    {
+      "Sid": "NamedStreamingRuntimeLifecycle",
+      "Effect": "Allow",
+      "Action": [
+        "bedrock-agentcore:GetAgentRuntime",
+        "bedrock-agentcore:UpdateAgentRuntime",
+        "bedrock-agentcore:DeleteAgentRuntime",
+        "bedrock-agentcore:CreateAgentRuntimeEndpoint",
+        "bedrock-agentcore:GetAgentRuntimeEndpoint",
+        "bedrock-agentcore:UpdateAgentRuntimeEndpoint",
+        "bedrock-agentcore:DeleteAgentRuntimeEndpoint",
+        "bedrock-agentcore:TagResource",
+        "bedrock-agentcore:UntagResource",
+        "bedrock-agentcore:ListTagsForResource",
+        "bedrock-agentcore:PutResourcePolicy",
+        "bedrock-agentcore:GetResourcePolicy",
+        "bedrock-agentcore:DeleteResourcePolicy"
+      ],
+      "Resource": [
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_nova_lite-*",
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_claude_sonnet_5_5-*",
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_claude_opus_5_5-*",
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_gpt_6_astra-*",
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_gpt_6_1_sol-*",
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_gemma_4_31b-*",
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_llama_4_maverick-*",
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_deepseek_v3_2-*",
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_qwen3_235b-*",
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_mistral_large_3-*"
+      ]
+    },
+    {
+      "Sid": "CreateTaggedAutomaticDefaultEndpoint",
+      "Effect": "Allow",
+      "Action": [
+        "bedrock-agentcore:CreateAgentRuntimeEndpoint",
+        "bedrock-agentcore:TagResource"
+      ],
+      "Resource": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2",
+          "aws:PrincipalAccount": "453711491609",
+          "aws:RequestTag/Project": "enterprise-analytics-stream"
+        }
+      }
+    },
+    {
+      "Sid": "AutomaticStreamingWorkloadIdentities",
+      "Effect": "Allow",
+      "Action": [
+        "bedrock-agentcore:CreateWorkloadIdentity",
+        "bedrock-agentcore:GetWorkloadIdentity",
+        "bedrock-agentcore:DeleteWorkloadIdentity"
+      ],
+      "Resource": [
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:workload-identity-directory/default",
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:workload-identity-directory/default/workload-identity/enterprise_analytics_stream_nova_lite-*",
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:workload-identity-directory/default/workload-identity/enterprise_analytics_stream_claude_sonnet_5_5-*",
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:workload-identity-directory/default/workload-identity/enterprise_analytics_stream_claude_opus_5_5-*",
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:workload-identity-directory/default/workload-identity/enterprise_analytics_stream_gpt_6_astra-*",
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:workload-identity-directory/default/workload-identity/enterprise_analytics_stream_gpt_6_1_sol-*",
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:workload-identity-directory/default/workload-identity/enterprise_analytics_stream_gemma_4_31b-*",
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:workload-identity-directory/default/workload-identity/enterprise_analytics_stream_llama_4_maverick-*",
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:workload-identity-directory/default/workload-identity/enterprise_analytics_stream_deepseek_v3_2-*",
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:workload-identity-directory/default/workload-identity/enterprise_analytics_stream_qwen3_235b-*",
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:workload-identity-directory/default/workload-identity/enterprise_analytics_stream_mistral_large_3-*"
+      ]
+    },
+    {
+      "Sid": "TagAutomaticStreamingWorkloadIdentities",
+      "Effect": "Allow",
+      "Action": [
+        "bedrock-agentcore:TagResource"
+      ],
+      "Resource": [
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:workload-identity-directory/default/workload-identity/enterprise_analytics_stream_nova_lite-*",
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:workload-identity-directory/default/workload-identity/enterprise_analytics_stream_claude_sonnet_5_5-*",
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:workload-identity-directory/default/workload-identity/enterprise_analytics_stream_claude_opus_5_5-*",
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:workload-identity-directory/default/workload-identity/enterprise_analytics_stream_gpt_6_astra-*",
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:workload-identity-directory/default/workload-identity/enterprise_analytics_stream_gpt_6_1_sol-*",
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:workload-identity-directory/default/workload-identity/enterprise_analytics_stream_gemma_4_31b-*",
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:workload-identity-directory/default/workload-identity/enterprise_analytics_stream_llama_4_maverick-*",
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:workload-identity-directory/default/workload-identity/enterprise_analytics_stream_deepseek_v3_2-*",
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:workload-identity-directory/default/workload-identity/enterprise_analytics_stream_qwen3_235b-*",
+        "arn:aws:bedrock-agentcore:us-west-2:453711491609:workload-identity-directory/default/workload-identity/enterprise_analytics_stream_mistral_large_3-*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2",
+          "aws:PrincipalAccount": "453711491609",
+          "aws:RequestTag/Project": "enterprise-analytics-stream"
+        }
+      }
+    }
+  ]
+}

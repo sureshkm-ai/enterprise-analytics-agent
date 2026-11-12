@@ -2,7 +2,8 @@
 
 import json
 from collections import Counter
-from typing import Literal
+from datetime import date
+from typing import Literal, Protocol
 
 from pydantic import Field, ValidationError
 
@@ -14,8 +15,18 @@ from enterprise_analytics_agent.retail_evaluation.models import (
     EvaluationModel,
     GoldenCase,
     RetailCase,
-    RetailTarget,
 )
+
+
+class JudgingTarget(Protocol):
+    @property
+    def model_id(self) -> str: ...
+
+    @property
+    def dataset_version(self) -> str: ...
+
+    @property
+    def reference_date(self) -> date: ...
 
 
 class CaseResult(EvaluationModel):
@@ -99,7 +110,7 @@ def judge_response(
     case: RetailCase,
     golden: GoldenCase,
     response: AgentResponse,
-    target: RetailTarget,
+    target: JudgingTarget,
     *,
     elapsed_ms: int | None = None,
     raw_response: dict[str, object] | None = None,

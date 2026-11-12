@@ -4,12 +4,12 @@ import json
 import secrets
 import threading
 import time
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from dataclasses import dataclass
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from importlib.resources import files
 from pathlib import Path
-from queue import Empty, Queue
+from queue import Empty, Full, Queue
 from typing import Any, Protocol, cast
 from urllib.parse import urlsplit
 from uuid import UUID
@@ -33,6 +33,25 @@ from enterprise_analytics_agent.ui.models import (
 )
 
 MAX_BODY = 16 * 1024 * 1024
+
+
+class _EventStream(Iterator[dict[str, object]]):
+    def __init__(self, events: Iterator[dict[str, object]], closed: threading.Event) -> None:
+        self.events, self.closed = events, closed
+
+    def __iter__(self) -> "_EventStream":
+        return self
+
+    def __next__(self) -> dict[str, object]:
+        return next(self.events)
+
+    def close(self) -> None:
+        # Also works before the generator's first next(), when its finally block
+        # has not started. Never leave a producer blocked behind a dead browser.
+        self.closed.set()
+        close = getattr(self.events, "close", None)
+        if callable(close):
+            close()
 
 
 class Budget(Protocol):
@@ -129,11 +148,13 @@ class Workbench:
         live: LiveBackend | None = None,
         local_agent: LiveBackend | None = None,
         model_backends: tuple[AgentModel, ...] = (),
+        proposed_models: tuple[dict[str, object], ...] = (),
         report: Path | None = None,
     ) -> None:
         self.local = LocalQuestions(directory)
         self.live = live
         self.local_agent = local_agent
+        self.proposed_models = proposed_models
         if model_backends and (live is not None or local_agent is not None):
             raise ValueError("Configure either explicit model backends or the legacy defaults.")
         if len({model.key for model in model_backends}) != len(model_backends):
@@ -216,6 +237,7 @@ class Workbench:
                 metric.public_description_v2().model_dump(mode="json") for metric in METRICS
             ],
             "replay": self.replay,
+            "proposed_models": list(self.proposed_models),
         }
         options = []
         for model in self.model_backends:
@@ -248,12 +270,22 @@ class Workbench:
         # the selected backend; its SDK payload still contains only the question.
         return request.model_copy(update={"model_key": None}), selected
 
-    def _execute(self, request: AskRequest, backend: AgentModel | None) -> UiResult:
+    def _execute(
+        self,
+        request: AskRequest,
+        backend: AgentModel | None,
+        emit: Callable[[dict[str, object]], None] | None = None,
+    ) -> UiResult:
         if request.mode == "local":
             return _validated_result(self.local.ask(request.question))
         assert backend is not None
         runner = cast(LiveBackend, getattr(backend, request.mode))
-        result = _validated_result(runner.ask(request))
+        streaming = getattr(runner, "ask_with_events", None)
+        result = _validated_result(
+            streaming(request, emit)
+            if emit is not None and callable(streaming)
+            else runner.ask(request)
+        )
         if result.mode != request.mode or result.response.diagnostics.model_id != backend.model_id:
             raise UiError("The response differs from the configured execution mode or model.")
         return result
@@ -276,12 +308,32 @@ class Workbench:
         request, backend = self._request(body)
         if not self.lock.acquire(blocking=False):
             raise UiError("Another question is running. Wait for its result.")
-        completed: Queue[dict[str, object]] = Queue(maxsize=1)
+        completed: Queue[dict[str, object]] = Queue(maxsize=32)
+        disconnected = threading.Event()
         started = time.monotonic()
+
+        def publish(event: dict[str, object]) -> None:
+            if (
+                event.get("type") != "answer_delta"
+                or event.get("validated") is not True
+                or event.get("source") != "bedrock"
+                or not isinstance(event.get("text"), str)
+                or len(cast(str, event["text"])) > 262144
+            ):
+                raise UiError("Invalid validated answer stream event.")
+            deliver(event)
+
+        def deliver(event: dict[str, object]) -> None:
+            while not disconnected.is_set():
+                try:
+                    completed.put(event, timeout=0.25)
+                    return
+                except Full:
+                    continue
 
         def run() -> None:
             try:
-                result = self._execute(request, backend)
+                result = self._execute(request, backend, publish)
                 outcome: dict[str, object] = {
                     "type": "result",
                     "result": result.model_dump(mode="json"),
@@ -297,7 +349,7 @@ class Workbench:
                 }
             finally:
                 self.lock.release()
-            completed.put_nowait(outcome)
+            deliver(outcome)
 
         worker = threading.Thread(target=run, daemon=False, name="analytics-question")
         try:
@@ -307,25 +359,29 @@ class Workbench:
             raise
 
         def events() -> Iterator[dict[str, object]]:
-            yield {
-                "type": "status",
-                "message": "Question accepted. Waiting for validated output.",
-                "elapsed_ms": 0,
-            }
-            while True:
-                try:
-                    outcome = completed.get(timeout=0.25)
-                except Empty:
-                    yield {
-                        "type": "status",
-                        "message": "Execution is still running. Waiting for validated output.",
-                        "elapsed_ms": max(0, int((time.monotonic() - started) * 1000)),
-                    }
-                else:
-                    yield outcome
-                    return
+            try:
+                yield {
+                    "type": "status",
+                    "message": "Question accepted. Waiting for validated output.",
+                    "elapsed_ms": 0,
+                }
+                while True:
+                    try:
+                        outcome = completed.get(timeout=0.25)
+                    except Empty:
+                        yield {
+                            "type": "status",
+                            "message": "Execution is still running. Waiting for validated output.",
+                            "elapsed_ms": max(0, int((time.monotonic() - started) * 1000)),
+                        }
+                    else:
+                        yield outcome
+                        if outcome["type"] in {"result", "error"}:
+                            return
+            finally:
+                disconnected.set()
 
-        return events()
+        return _EventStream(events(), disconnected)
 
 
 def make_server(app: Workbench, port: int) -> ThreadingHTTPServer:

@@ -700,6 +700,12 @@ def test_ui_cli_startup_is_aws_free_and_discloses_model_cost_before_serving(
     def workbench(directory: Path, **kwargs: Any) -> Any:
         assert directory.is_dir()
         expected = approved_backend if shared else None
+        from enterprise_analytics_agent.adapters.bedrock_model_catalog import model_catalog
+
+        assert kwargs.pop("model_backends") == ()
+        proposed = kwargs.pop("proposed_models")
+        assert {item["key"] for item in proposed} == {model.key for model in model_catalog()}
+        assert all("note" in item and "provider" in item for item in proposed)
         assert kwargs == {"live": expected, "local_agent": expected, "report": None}
         calls.append("workbench")
         return SimpleNamespace()

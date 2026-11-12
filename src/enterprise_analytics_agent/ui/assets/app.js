@@ -58,6 +58,18 @@ function modelPicker() {
     });
     picker.value = modelKey;
   }
+  if (mode !== "local") {
+    const pending = (state?.proposed_models || []).filter(item => !options.some(active => active.key === item.key));
+    if (pending.length) {
+      const group = element("optgroup"); group.label = "Catalog candidates · deployment approval required";
+      pending.forEach(item => {
+        const option = element("option", "", `${item.provider} · ${item.label}`);
+        option.value = item.key; option.disabled = true; option.title = item.note;
+        group.append(option);
+      });
+      picker.append(group);
+    }
+  }
   picker.disabled = busy || !options.length;
   $("model-help").textContent = mode === "local"
     ? "The offline playground uses its deterministic planner, with no model calls."
@@ -130,7 +142,11 @@ function beginProgress(question, selectedMode) {
   elapsed.id = "stream-elapsed";
   const timeline = element("ol", "stream-timeline");
   timeline.id = "stream-timeline";
-  shell.append(status, elapsed, timeline);
+  const words = element("p", "answer-description streamed-answer");
+  words.id = "stream-answer";
+  words.hidden = true;
+  words.setAttribute("aria-live", "polite");
+  shell.append(status, elapsed, timeline, words);
   $("answer").replaceChildren(shell);
 }
 function showProgress(event) {
@@ -167,13 +183,27 @@ async function streamedQuestion(data) {
   let buffer = "";
   let result = null;
   let terminal = false;
+  let streamedText = "";
   function record(line) {
     if (!line.trim()) return;
     if (terminal) throw new Error("The server sent output after the final response.");
     const event = JSON.parse(line);
     if (!event || typeof event !== "object") throw new Error("The server sent an invalid progress record. No automatic retry was sent.");
     if (event.type === "status") showProgress(event);
+    else if (event.type === "answer_delta") {
+      if (event.source !== "bedrock" || event.validated !== true || typeof event.text !== "string" || streamedText.length + event.text.length > 262144) {
+        throw new Error("The validated word stream was invalid. No automatic retry was sent.");
+      }
+      streamedText += event.text;
+      const words = $("stream-answer");
+      words.hidden = false;
+      words.append(document.createTextNode(event.text));
+      $("stream-status").textContent = "Receiving Bedrock words checked against the verified answer…";
+    }
     else if (event.type === "result" && event.result?.response) {
+      if (streamedText && !event.result.response.answer.startsWith(streamedText)) {
+        throw new Error("The streamed text differs from the verified answer. Inspect the run before another request.");
+      }
       result = event.result;
       terminal = true;
     } else if (event.type === "error" && typeof event.error === "string") {
@@ -256,6 +286,7 @@ function renderResult(container, result, question, caseStatus = null) {
   heading.append(element("span", `badge ${result.mode}`, names[result.mode]));
   if (response.status !== "answer") heading.append(element("span", `badge ${response.status}`, response.status.toUpperCase()));
   if (caseStatus) heading.append(element("span", "small", `Recorded verdict: ${caseStatus}`));
+  if (result.presentation_status === "streamed") heading.append(element("span", "badge", "VERIFIED BEDROCK STREAM"));
   const download = element("button", "text-button", "Download JSON");
   download.addEventListener("click", () => {
     const url = URL.createObjectURL(new Blob([JSON.stringify(response, null, 2)], {type:"application/json"}));
@@ -264,6 +295,7 @@ function renderResult(container, result, question, caseStatus = null) {
   });
   heading.append(download);
   shell.append(heading, element("h2", "answer-title", question), element("p", "answer-description", response.answer));
+  if (result.presentation_status === "fallback") shell.append(element("p", "small", "The model stream was unavailable or did not match. Showing the verified answer without another model call."));
   const tabs = element("div", "result-tabs"); const content = element("div", "result-body");
   const buttons = [];
   function select(tab) {

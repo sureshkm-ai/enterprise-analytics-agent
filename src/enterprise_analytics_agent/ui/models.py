@@ -22,6 +22,7 @@ class UiResult(BaseModel):
     elapsed_ms: Annotated[int, Field(ge=0)] | None = None
     metadata: list[dict[str, object]] = Field(default_factory=list)
     unreported_diagnostics: tuple[str, ...] = ()
+    presentation_status: Literal["streamed", "fallback", "not_needed"] | None = None
 
 
 def unreported_diagnostics(response: AgentResponse) -> tuple[str, ...]:

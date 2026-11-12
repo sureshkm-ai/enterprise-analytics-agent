@@ -63,20 +63,20 @@ does not refill the composer or submit it again; enter a new question only after
 inspecting the displayed error and, for billable work, its retained counter evidence.
 
 The browser reads a live newline-delimited JSON response from `/api/ask/stream`.
-Accepted/running messages and elapsed time arrive while execution is in progress;
-the typed answer, exact metric tables and diagnostics appear when validation
-finishes. These are actual progress events, with no invented tool stages or delayed
-typing animation. They are **not raw Bedrock token streaming**. The existing frozen
-AgentCore handler still returns its complete validated JSON response. Closing the
-browser does not retry a billable request or release the execution lock while its
-backend continues; that worker finishes its existing accounting and diagnostics.
+On the accepted Nova release, accepted/running messages and elapsed time arrive
+while execution is in progress, then the typed answer, exact metric tables and
+diagnostics appear. Those messages are progress rather than model tokens; the
+frozen AgentCore handler still returns validated JSON. The separate word-streaming
+implementation described below adds genuine provider words after semantic execution.
+Closing the browser does not retry a billable request or release its execution
+lock while backend accounting continues.
 
 The **Model** selector lists server-configured models available for the selected
 agent mode. The existing accepted release offers **Amazon Nova Lite**
-(`us.amazon.nova-lite-v1:0`) only. Multiple choices appear when the trusted
-application supplies multiple reviewed `AgentModel` backend bindings. This change
-does not configure or approve another model, target, allowance or deployment. The
-offline playground has no Bedrock model to select.
+(`us.amazon.nova-lite-v1:0`) only. The new Bedrock catalog also lists other
+providers, with choices disabled until separately reviewed backends are deployed
+and accepted. A catalog row does not establish access or authorize a question.
+The offline playground has no Bedrock model to select.
 
 The browser sends an opaque `model_key` for UI routing. Python resolves it against
 the configured bindings and removes it before the backend receives the request;
@@ -90,12 +90,52 @@ to the hosted application, rather than an invocation-level model parameter. Its
 HTTP contract supports JSON or SSE when the application implements the appropriate
 response. [InvokeAgentRuntime](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_InvokeAgentRuntime.html),
 [HTTP protocol contract](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-http-protocol-contract.html).
-True upstream model-token streaming would require a separately reviewed runtime
-implementation/release and verification of `bedrock:InvokeModelWithResponseStream`
-access and the chosen model's streaming/tool-use compatibility.
+The new release implements upstream word streaming; enabling it still requires
+its separately reviewed runtime, applicable `bedrock:InvokeModelWithResponseStream`
+access and model-specific transport/acceptance checks.
 [ConverseStream](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html),
 [client-side tool use](https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use-client-side.html).
-No such AWS, IAM or frozen-artifact change is part of this local UI update.
+No deployment, IAM mutation or billable verification of that new release has run.
+
+## Prepared Bedrock-only model and word-streaming release
+
+The [new deployment/evaluation plan](bedrock-multimodel-streaming-plan.md) covers
+ten isolated model runtimes, including a streaming Nova baseline. The catalog
+offers Anthropic Claude, OpenAI GPT through Bedrock, Google **Gemma through Bedrock
+Mantle**, Meta Llama, DeepSeek, Qwen and Mistral. Google Gemini and direct provider
+APIs are outside this scope. The optional GPT-OSS catalog entry is not one of the
+ten proposed deployments. Their availability/access/quotas remain to be verified.
+
+Local Bedrock and AWS modes reuse the unchanged `BedrockAnalyticsAgent` semantic
+tool loop. At most five planning calls precede one tool-free presentation call,
+within six model calls and 12,000 tokens total. A full successful governed plan
+may finish after the fifth sequential tool round without a sixth planning call;
+missing or incorrect work is never accepted. Native models use Converse then
+ConverseStream; Gemma uses signed AWS Mantle chat with sequential tools.
+
+Only actual provider text matching the validated canonical answer's exact prefix
+is published at complete word boundaries. Amounts/dates cannot be replaced by
+model calculations; unfinished words and the last word wait for validation.
+Private reasoning is not displayed. A malformed, changed or interrupted provider
+stream is labeled, with the validated answer retained when available. It triggers
+no retry, replacement model or typing animation.
+
+The new review, artifact/version, deployment assemblies, SDK receipts and campaign
+are separate. The proposed outer maximum is **40 attempts**: twenty mandatory AWS
+checks (Q18 and all five regional metrics per model), eighteen user questions,
+one protected retained-v15 cleanup smoke and one **unapproved reserve**. Expiry is
+`2026-11-15T23:59Z`; the proposal grants no execution permission. New UI models
+stay disabled until every authored check passes. Deployment/binding/evaluation and
+the eventual explicit launch command are in the plan; that command requires an
+approved review and real post-deployment release records, not placeholder files.
+
+The legacy session 02 restart command above still selects only Nova and its
+accepted v15 release. Its last local counter observation remains **2/20 used,
+17 regular questions remaining**, subject to subsequent usage and expiry. This
+implementation spends none of them and leaves historical permissions, artifacts,
+goldens and ledgers unchanged. Earlier hosted/live results do not cover this new
+local implementation. Offline playground and Saved runs remain available with
+the ordinary no-argument launch.
 
 ## Approved live acceptance completed
 
@@ -372,6 +412,9 @@ Historical screenshot from the initial deterministic/legacy UI implementation:
 | `ui/shared.py`, `adapters/ui_shared.py`, `adapters/ui_release.py` | Shared budget, SDK attempts, release/data proof and protected gates |
 | `ui/live.py`, `adapters/ui_live.py` | Historical original-v12 review/ledger path |
 | `hosting/application.py` | Existing workload-credential runtime using the shared agent |
+| `adapters/bedrock_model_catalog.py`, `streaming_agent.py`, `bedrock_word_stream.py`, `bedrock_mantle.py` | New catalog, unchanged semantic loop wrapper and canonical provider-word transports |
+| `ui/model_streams.py`, `adapters/model_stream_ui.py`, `model_stream_cli.py` | Separate proposed review/ledger, release proof, authored acceptance and protected cleanup |
+| `hosting/streaming_server.py`, `infrastructure/cdk/streaming_app.py` | New SSE hosting and isolated fixed-model stacks; deployment not yet authorized |
 | `infrastructure/agentcore/ui_workflow.py`, `source_audit.py` | Offline assembly/source review and guarded release operator |
 
 Package paths are relative to `src/enterprise_analytics_agent/`, except infrastructure.

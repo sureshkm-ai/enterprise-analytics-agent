@@ -39,22 +39,45 @@ artifact/configuration and Runtime/DEFAULT proofs; READY alone is insufficient.
 The composer clears immediately after capturing a valid submission, including when
 the subsequent request fails. The operator UI's `/api/ask/stream` returns NDJSON:
 truthful accepted/running progress and elapsed time while the backend executes,
-followed by the validated `UiResult` or an authored error. This local HTTP stream
-does not expose unvalidated model-generated numeric text, change public semantic
-contracts or claim upstream token streaming. One backend worker owns the execution
+followed by the validated `UiResult` or an authored error for the accepted Nova
+release. That legacy progress path does not claim upstream token streaming or
+change public semantic contracts. One backend worker owns the execution
 lock through completion and finishes existing durable accounting if the browser
 disconnects; streaming creates no automatic invocation retry.
 
-The frozen AgentCore application continues to return complete JSON. AgentCore
-supports application-implemented SSE, while `ConverseStream` is the separate
-Bedrock API for model-token streaming and requires
-`bedrock:InvokeModelWithResponseStream`. Model/tool streaming compatibility is
-specific to the chosen model. Any future upstream stream or additional live model
-requires its own reviewed server configuration, runtime release and applicable
-access/deployment verification, preserving validated answer grounding.
+The frozen AgentCore application continues to return complete JSON. The new local
+implementation adds a separate provider word-streaming release with an
+application-level SSE Runtime response; it does not update that frozen application.
+Native planning uses Converse and presentation uses ConverseStream, requiring
+`bedrock:InvokeModelWithResponseStream`. Google Gemma uses signed Bedrock Mantle
+chat requests with sequential tools; OpenAI GPT choices use Bedrock, not a direct
+OpenAI API. Model availability, routing, permissions and acceptance remain deployment
+prerequisites. See the [concrete proposal](bedrock-multimodel-streaming-plan.md).
 [AgentCore HTTP contract](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-http-protocol-contract.html),
 [ConverseStream](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html),
 [tool-use compatibility](https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use-client-side.html).
+
+`adapters/streaming_agent.py` wraps the unchanged `BedrockAnalyticsAgent` semantic
+loop, with at most five planning calls and one tool-free presentation call, sharing
+a six-call/12,000-token/90-second bound. The sole completion guard handles a fully
+successful exact governed plan after a fifth sequential tool round: it verifies
+the complete expected requests/results before rendering, without a sixth planner
+call or guessed missing work. All four tools and adapter calculations remain shared.
+`bedrock_word_stream.py` validates the stream protocol and releases only actual
+provider characters matching the canonical answer prefix at complete word
+boundaries; the final word waits for a valid terminal event and usage. Private
+reasoning never enters the public stream. Invalid streams receive no automatic
+retry; a validated answer can remain available with an explicit stream-failure label.
+
+The new Bedrock catalog is metadata, not authorization. Ten proposed fixed-model
+roles/Runtimes bind opaque selections to reviewed configurations; disabled entries
+cannot dispatch. `ui/model_streams.py` provides a new review-bound ledger and SDK
+receipts, separate from every existing campaign. Twenty authored AWS checks must
+pass before UI activation. Its proposed outer 40 attempts comprise those checks,
+18 user questions, one protected retained-v15 smoke and one unapproved reserve.
+No AWS operation, deployment, new live acceptance or hosted CI coverage is claimed
+for this local implementation. Existing Nova v15 and session 02's last locally
+observed 17 remaining questions are unchanged.
 
 `ui/shared.py` maintains one separate allowance for both billable modes. Exclusive,
 fsynced question and SDK receipts precede dispatch, with journal reconciliation,

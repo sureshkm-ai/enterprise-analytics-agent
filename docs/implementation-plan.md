@@ -47,8 +47,11 @@ and the local feature commit are handed off through [progress](progress.md).
 ## Follow-on scope: Bedrock-only models and provider word streaming
 
 The separately requested implementation merged through PR #11 at `01aabc1`. The
-user approved deployment/live evaluation on November 11, 2026; current preflight
-is waiting on administrator evidence and three model agreements before mutation. The [concrete plan](bedrock-multimodel-streaming-plan.md)
+user approved deployment/live evaluation on November 11, 2026. PR #12 merged the
+policy-packaging correction, with successful PR CI. Read-only verification on
+November 12 confirms all three model agreements and both attached policy parts;
+the administrator's shared-directory TagResource simulation remains implicitDeny
+and needs exact-input/current-policy diagnosis before mutation. The [concrete plan](bedrock-multimodel-streaming-plan.md)
 proposes nine additional Bedrock choices and a new streaming Nova baseline, each
 with a separate fixed-model role/Runtime and a new artifact. Google is **Gemma via
 Bedrock Mantle**; native OpenAI GPT choices remain inside Bedrock. Optional catalog

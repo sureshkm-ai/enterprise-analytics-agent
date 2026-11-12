@@ -4,9 +4,12 @@ The user **approved execution of this development deployment and live evaluation
 on November 11, 2026, after PR #11 merged at `01aabc1`. The scope is separate from
 completed Milestones 1–5 and every historical campaign. Approval is recorded in
 `artifacts/bedrock-streaming/approval.json` and remains valid for the unchanged plan.
-Fresh read-only preflight verified the retained v15/canonical checkpoint and routing,
-but deployment is waiting on administrator permission evidence and three model
-agreements. See [administrator steps](bedrock-streaming-administrator-steps.md) and
+The first read-only preflight verified the retained v15/canonical checkpoint and
+routing. A November 12 read-only follow-up confirms all three model agreements
+are AVAILABLE and the administrator report verifies both attached policy parts.
+Deployment remains stopped on the report's shared-directory TagResource
+implicitDeny; exact simulation inputs/current M4 policy need diagnosis before
+any additional grant is proposed. See [administrator steps](bedrock-streaming-administrator-steps.md) and
 the [actual preflight record](../evaluations/bedrock-streaming/activation-preflight-2026-11-11.json). The existing
 Nova candidate/retail Runtime and DEFAULT remain the retained **v15** checkpoint;
 the existing interactive allowance and its ledger are unchanged. A new model is
@@ -434,8 +437,8 @@ links each exact official model card. API/protocol and permission references use
 
 Offline checks establish implementation readiness only. Execution approval is now
 recorded; retain the frozen checksums and real-version binding procedure. Resolve
-the administrator policy/directory evidence and the Opus/GPT agreement statuses
-documented in the administrator guide, then repeat fresh preflight and continue
+the remaining administrator directory-simulation evidence documented in the
+administrator guide, then repeat fresh preflight and continue
 the already approved ten-runtime scope. The controlled reserve remains unusable.
 No live acceptance, new permission, upload, deployment or production-readiness
 claim is recorded here.

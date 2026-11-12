@@ -1,8 +1,86 @@
 # Progress
 
-Updated: 2026-11-11 (America/Chicago).
+Updated: 2026-11-12 (America/Chicago).
 
-## Current task: approved Bedrock streaming activation — preflight checkpoint
+## Current checkpoint: model access verified; directory authorization unresolved
+
+Verified [PR #12](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/12)
+merged **8031c221fea24ea6b09a673c0460eb43a965f74f** into main at
+**a5ec8155923745716e11f3d70cd168543bf509f0**, November 12, 2026, 17:26:38Z.
+[PR CI 43268647131](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43268647131)
+passed for that feature commit. The local checkout remains on
+**feat/bedrock-streaming-activation** at 8031c22 before this documentation update;
+it was clean on inspection. No branch switch, pull or reset occurred. That CI does
+not cover this later documentation checkpoint.
+
+At **2026-11-12T18:04Z**, read-only STS using **analytics-dev** verified account
+**453711491609**, region **us-west-2**, and the expected existing PowerUser SSO
+principal. All three previously blocked models—**Claude Opus 5.5, GPT-6 Astra and
+GPT-6.1 Sol**—now report agreement **AVAILABLE**, authorization **AUTHORIZED**,
+entitlement **AVAILABLE**, and region **AVAILABLE**. The initial sandboxed read
+failed on DNS to the SSO endpoint; the authorized network-enabled read succeeded.
+This was not an expired-token result and no new login/profile was requested.
+
+The administrator report downloaded as `streaming-admin-evidence.json` was found
+locally and preserved byte-for-byte, SHA-256
+**67333dff4ea0e92f43103b297c51df7b81d366ae4539c2a0d2b32ebb414e751f**.
+Both split policies' active **v1** documents exactly match the committed files;
+their attachments to the expected CloudFormation execution role are confirmed.
+The report retains M3/M4 policy attachments, reports no role permissions boundary,
+and preserves developer/legacy Runtime principals in query-role trust.
+
+**Deployment remains stopped:** the report's `bedrock-agentcore:TagResource`
+simulation for
+`arn:aws:bedrock-agentcore:us-west-2:453711491609:workload-identity-directory/default`
+returned **implicitDeny**, with no matched statements. It also lists missing
+`iam:AWSServiceName` and `iam:PassedToService`; those concern other IAM actions and
+must not be fabricated as TagResource request context. The report omits the
+simulation input and current M4 policy contents, so the precise effective-policy
+cause is not independently established. This is a simulator result, not a new
+failed deployment or a live TagResource denial. The historical M4 grant's old
+Project condition and the reviewed omission of a new directory grant remain
+relevant evidence, not permission to broaden IAM automatically.
+
+Actual model reads, identity, and the original administrator report are retained
+under `artifacts/bedrock-streaming/operations/20261112T180433Z/`.
+Offline preservation and `verify-offline` passed: **76** packaged source/assets,
+**13** locked dependencies, **34** assembly files, **203** historical files and
+**10** Nova-session files remain pinned. The preservation script's initial
+invocation lacked the repository import path; rerunning with `PYTHONPATH=.` passed
+without changing source. New campaign remains **0/40**, with no ledger/claim;
+all old ledgers, frozen ZIPs, S3 version records, goldens and permissions remain
+unchanged. **Uploads 0; AWS mutations 0; Athena queries 0; Runtime/model calls 0.**
+
+The earlier full offline test/lint/type/lockfile results below retain their
+original attribution; application code and infrastructure templates did not
+change and those checks were not rerun for this documentation update. Actual
+applicable checks for this checkpoint:
+
+- `PYTHONPATH=. poetry run python /private/tmp/bedrock-streaming-final-proof.py`:
+  passed the frozen-source/archive/assembly/canonical and historical preservation
+  checks above, with AWS client creation blocked.
+- `poetry run python -m enterprise_analytics_agent.adapters.model_stream_cli
+  --review evaluations/bedrock-streaming/review.proposed.json verify-offline`:
+  passed all ten targets; zero AWS calls and no new campaign ledger.
+- `python /private/tmp/enterprise-analytics-doc-check.py`: passed **5** changed
+  Markdown files, **64** local links and **12** parsed-only shell blocks. Separate
+  AST parsing passed both embedded Python blocks; Botocore input-shape validation
+  passed the exact supplemental IAM simulation request offline.
+- `git diff --check`: passed; documentation diff reviewed. No application tests,
+  lint/type checks, synthesis or live acceptance were rerun or claimed here.
+
+**Exact next task:** obtain the supplemental read-only administrator report in
+[the guide](bedrock-streaming-administrator-steps.md#resolve-the-reported-directory-simulation),
+including current M4 default policy and the exact directory simulation request
+and response. Diagnose the result before proposing any additional permission;
+any correction needs its own evidence-backed review/approval. Once the directory
+gate passes, repeat the full fresh preflight and resume the already approved
+conditional upload, ten sequential deployments, later query-trust additions,
+twenty AWS checks and UI activation. Do not request the same execution approval
+again. The reserve remains unavailable; no live deployment readiness or new
+acceptance is claimed. M1–M5 remain complete.
+
+## Historical approved streaming preflight — November 11, 2026
 
 The user approved the unchanged [deployment/evaluation plan](bedrock-multimodel-streaming-plan.md)
 on November 11, 2026: **analytics-dev / 453711491609 / us-west-2**, review

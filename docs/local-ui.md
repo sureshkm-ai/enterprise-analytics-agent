@@ -9,7 +9,39 @@ The catalog, v2 contracts, question guard and semantic tools remain shared.
 
 ![Analytics Workbench with three explicit execution modes](images/analytics-workbench-shared-ui.png)
 
-## Merged application and approved interactive session
+## Current workbench: four accepted streaming models
+
+Open **http://127.0.0.1:8501/?mode=live**. The current server exposes **Amazon Nova
+Lite, DeepSeek V3.2, Qwen3 235B and Mistral Large 3** in both **Local agent** and
+**AWS AgentCore** modes. Select a model, enter a question and submit it. The input
+clears immediately, and real provider words stream into a readable answer while
+exact semantic values remain available in the result details/download.
+
+The approved execution reached **partial model acceptance**: the 15 AWS cases
+produced **9 passes and 6 failures**, with both required cases passing for each of
+the four enabled models. Four actual Local browser questions and one AWS Nova
+browser question then passed Q18's complete request/value, streaming and composer
+checks. Anthropic Sonnet/Opus and OpenAI Astra/Sol remain quarantined after Bedrock
+account-availability 403 responses; Gemma reached its iteration limit, and Llama's
+all-five case failed after invalid tool arguments/token limits. No failed model
+is silently retried or replaced.
+
+The separate campaign **`bedrock-stream-workbench-v1-01`** is **20/40 used**, with
+**18 ordinary questions remaining**, protected cleanup **1** and unavailable reserve
+**1**. Expiry is **November 15, 5:59 p.m. CST** (`2026-11-15T23:59Z`). Read the
+persistent counter after later questions; do not spend a protected slot or reset
+any campaign. The old Nova ledger stays separate at **3/20**.
+
+Fresh read-only proof at **2026-11-13T15:59:41Z** verified all ten candidate bindings
+on Runtime/DEFAULT **READY v4**, stable stacks, exact templates/configuration/code,
+both policies, seven-day retention and canonical publication. The frozen candidate
+is **f2755c33…**, S3 VersionId **xnQiGsnGRkgFV3ktJ2DfhUbOClx9gVEn**. Legacy v15,
+M3 infrastructure and canonical inputs remain unchanged. See the
+[executed proposal and exact restart command](ui-model-workbench-deployment-proposal.md).
+The workbench's source, review and release pins must still match on restart;
+the historical Nova-only commands below are not the current launcher.
+
+## Merged application and historical interactive sessions
 
 The Workbench merged through [PR #8](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/8)
 at `e222875` on November 11, 2026. Full validation merged through
@@ -23,12 +55,15 @@ at **http://127.0.0.1:8501**. Later source changes invalidate that shared launch
 local/remote source-equality check; do not use the historical command below as the
 current live launch. The [AWS-only accepted Nova binding](ui-accepted-nova-live.md)
 was explicitly approved by the user at `1d7e8f6`, binding review `e6fdf135…`.
-It is now running at **http://127.0.0.1:8501/?mode=live**. Fresh read-only proof at
+It was activated at **http://127.0.0.1:8501/?mode=live** before the current workbench.
+Fresh read-only proof at
 **2026-11-13T00:13:44Z** verified the exact retail-v1 Runtime/DEFAULT **READY v15**;
 the actual browser check selected Nova and verified **Ask AWS** without submitting
 a question. The existing counter stayed **2/20 used, 17 regular questions remaining**.
-Local Bedrock and other models stay disabled. The browser shows progress followed
-by validated final output, rather than provider-word streaming. The required
+At that historical activation, Local Bedrock and other models stayed disabled.
+That JSON release showed progress followed by validated final output, rather than
+provider-word streaming. It has been replaced locally by the workbench above;
+its Runtime and separate ledger remain preserved. The required
 original Q18 verification passed its full request/result gate:
 **110.25 USD [2025-03-31,2025-04-01)**. Fresh proof at **21:52:13Z** on November 11,
 2026 verified the matching source/artifact/configuration/canonical data and
@@ -48,7 +83,7 @@ assertion. The activation's 18-question record remains unchanged historical evid
 read the persistent counter for subsequent usage.
 
 The following is the **historical shared launcher**, preserved for the activation
-record. Use the [current AWS-only connection procedure](ui-accepted-nova-live.md#activation-after-exact-binding-approval)
+record. Use the [current workbench launch](ui-model-workbench-deployment-proposal.md)
 for this changed checkout; the plain UI command starts offline mode only.
 
 ```sh
@@ -75,19 +110,19 @@ does not refill the composer or submit it again; enter a new question only after
 inspecting the displayed error and, for billable work, its retained counter evidence.
 
 The browser reads a live newline-delimited JSON response from `/api/ask/stream`.
-On the accepted Nova release, accepted/running messages and elapsed time arrive
-while execution is in progress, then the typed answer, exact metric tables and
-diagnostics appear. Those messages are progress rather than model tokens; the
-frozen AgentCore handler still returns validated JSON. The separate word-streaming
-implementation described below adds genuine provider words after semantic execution.
+The current workbench first shows honest execution progress, then streams actual
+provider characters matching the readable answer rendered from validated results.
+The final word is withheld until terminal events and usage are checked. Exact
+metric tables and diagnostics accompany the completed answer. Heartbeats are
+progress rather than model tokens. The historical Nova v15 JSON handler remains
+unchanged and did not provide provider-word streaming.
 Closing the browser does not retry a billable request or release its execution
 lock while backend accounting continues.
 
 The **Model** selector lists server-configured models available for the selected
-agent mode. The existing accepted release offers **Amazon Nova Lite**
-(`us.amazon.nova-lite-v1:0`) only. The new Bedrock catalog also lists other
-providers, with choices disabled until separately reviewed backends are deployed
-and accepted. A catalog row does not establish access or authorize a question.
+agent mode. The current accepted choices are **Amazon Nova Lite**, **DeepSeek V3.2**,
+**Qwen3 235B** and **Mistral Large 3**. Six quarantined choices remain disabled;
+their catalog entries do not establish access or authorize a retry.
 The offline playground has no Bedrock model to select.
 
 The browser sends an opaque `model_key` for UI routing. Python resolves it against
@@ -110,7 +145,7 @@ access and model-specific transport/acceptance checks.
 The initial streaming Nova create stopped at verification, with no billable calls.
 Its historical failures, completed deployment and failed live acceptance are recorded below.
 
-## Prepared Bedrock-only model and word-streaming release
+## Historical Bedrock-only preparation and failed rollouts
 
 The [new deployment/evaluation plan](bedrock-multimodel-streaming-plan.md) covers
 ten isolated model runtimes, including a streaming Nova baseline. The catalog
@@ -260,6 +295,12 @@ null ratios remain distinct from zero, and absent diagnostics are labeled unrepo
 
 ## Understand the modes and current deployment
 
+The current workbench uses the new frozen **f2755c33…** package and separate
+approved review/releases, with four accepted models. Final read-only proof at
+**15:59:41Z on November 13, 2026** verified all ten v4 bindings; readiness is
+distinct from each model's acceptance. Every question rechecks its exact release
+and canonical publication before reservation.
+
 | Mode | Data and reference date | Execution and cost |
 | --- | --- | --- |
 | Offline playground | Temporary `local-sample-seed-20260101`; `2025-04-01` | Deterministic planner, real DuckDB, no AWS/model calls |
@@ -272,9 +313,9 @@ model execution**: its button and mode notice disclose Bedrock usage before subm
 
 Historical read-only checks on November 10, 2026, found original/parity
 Runtime and DEFAULT **READY v12**, before the separately approved v13 deployment. Its original artifact differs from the local Q18
-correction in `bedrock_agent.py` and `agent/questions.py`. It is not the proposed shared
-retail release. The accepted frozen candidate matches all **25** audited shared source
-files; it can be reused without rebuilding or uploading a ZIP. Its dependency/build,
+correction in `bedrock_agent.py` and `agent/questions.py`. It was not the proposed shared
+retail release. At that historical checkpoint the frozen candidate matched all **25** audited shared source
+files and could be reused without rebuilding or uploading a ZIP. Its dependency/build,
 configuration, artifact and canonical-data evidence are recorded in
 [the shared-code proposal](ui-shared-code-live.md). This source comparison alone does
 not prove which code is active. The approved execution and final v13 proof above
@@ -401,7 +442,13 @@ Evidence is under `artifacts/ui-shared/<campaign_id>/`: `question-attempts.jsonl
 preflight JSON and protected verification output. Preserve the review hash binding,
 all evidence and the existing operator/deployment guards across restarts.
 
-## Failure, expiry and original rollback
+## Historical shared-release failure, expiry and original rollback
+
+The procedure below belongs to the completed original shared release. The current
+workbench uses its own [approved failure/restoration procedure](ui-model-workbench-deployment-proposal.md);
+an isolated completed model failure quarantines that model, while incomplete
+accounting or an unresolved deployment blocks the full session. Do not run the
+historical rollback commands against the new scope.
 
 A failed candidate deployment triggers the operator's mandatory original restoration
 when process guards allow. A failed Q18 or paired-comparison gate requires explicit

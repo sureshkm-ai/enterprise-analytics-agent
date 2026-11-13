@@ -1,10 +1,20 @@
 # Multi-model streaming workbench: exact execution proposal
 
+**Approved and executed at 27e1ae8.** The [actual outcome](../evaluations/bedrock-streaming/workbench.outcome.json)
+records partial acceptance: Nova Lite, DeepSeek, Qwen and Mistral passed both AWS
+cases and actual Local/AWS browser gates. Actual ZIP VersionId is
+**xnQiGsnGRkgFV3ktJ2DfhUbOClx9gVEn**; fresh proof verified all ten candidate
+bindings READY **v4** at **2026-11-13T15:59:41Z**. Usage is **20/40**, with **18
+ordinary questions remaining**, cleanup and reserve unused. The candidate stays
+deployed under the approved partial-acceptance policy. The proposal below preserves
+its reviewed pre-execution assumptions; use the [current launch](ui-model-workbench.md#running-and-verified).
+
 Implementation **106b17309716d11f154c8954024f7a260c8fbf7a** is prepared on
 `feat/bedrock-streaming-activation`; PR #13 stays unmerged. This is a **new**
 workbench scope, not a replay of a failed campaign or reuse of the stale accepted-Nova
 source binding. Packaging, offline verification and fresh read-only preflight are
-complete. Upload, deployment and billable acceptance await the single approval below.
+were complete at review time. The single approval and execution are now recorded
+above; historical commands do not authorize a second operation or upload.
 
 ## Reviewed inputs and current state
 

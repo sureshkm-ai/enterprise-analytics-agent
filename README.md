@@ -1,10 +1,11 @@
 # Enterprise structured-data analytics agent
 
-**Current UI task:** the [multi-model streaming workbench](docs/ui-model-workbench.md)
-has a reproducible candidate and successful fresh read-only preflight. Its
-[exact deployment/acceptance proposal](docs/ui-model-workbench-deployment-proposal.md)
-awaits approval. The older Nova launcher on port 8501 is disabled by current source
-drift; do not reuse it or treat the historical activation below as current readiness.
+**The multi-model Analytics Workbench is running at
+http://127.0.0.1:8501/?mode=live.** Amazon Nova Lite, DeepSeek V3.2, Qwen3 235B and
+Mistral Large 3 passed independent AWS acceptance and are available in both Local
+agent and AWS AgentCore modes, with readable answers and real provider-word streaming.
+This is **partial model acceptance**: six other models remain disabled. See
+[actual results and launch instructions](docs/ui-model-workbench-deployment-proposal.md).
 
 **Milestones 1–5 are complete for the agreed development proof of concept.** Further development requires a separately defined scope; this is not a production-readiness claim.
 
@@ -16,19 +17,36 @@ The separately approved shared UI merged through [PR #8](https://github.com/sure
 
 ## Run locally
 
-The accepted **Analytics Workbench** AWS connection is running at
-**http://127.0.0.1:8501/?mode=live**. Select **Amazon Nova Lite** and click **Ask AWS**.
-Fresh read-only proof at **2026-11-13T00:13:44Z** verified the exact accepted
-retail-v1 Runtime/DEFAULT **READY v15**. The browser check submitted no question:
-the existing counter remains **2/20 used, 17 regular questions remaining**, expiring
-**November 13, 5:59 p.m. CST** (`2026-11-13T23:59Z`). Local Bedrock and other models
-remain disabled. This release shows progress followed by validated output;
-it does not provide provider-word streaming.
+Open **http://127.0.0.1:8501/?mode=live**, select **Local agent** or **AWS AgentCore**,
+then choose one of the four enabled models and submit a question. The composer
+clears immediately; validated provider words appear as the answer streams.
+Local agent uses canonical DuckDB data and billable Bedrock; AWS AgentCore uses
+Athena. Both share the agent, semantic contracts and exact-value presentation.
 
-The user approved this AWS-only binding under review `e6fdf135…` at `1d7e8f6`.
-It changes no deployment, artifact, permission or allowance. Use the exact restart
-command in [Connect accepted Nova](docs/ui-accepted-nova-live.md) after stopping the
-existing local UI; do not start another server on the same port.
+The separate `bedrock-stream-workbench-v1-01` counter is **20/40 used**, leaving
+**18 ordinary questions**, one protected cleanup slot and one unavailable reserve.
+Expiry is **November 15, 5:59 p.m. CST** (`2026-11-15T23:59Z`). Read the displayed
+counter for subsequent use. The 15 AWS acceptance cases produced **9 passes and
+6 isolated failures**; four Local browser questions and one AWS Nova browser
+question then passed. Failed models are quarantined and receive no automatic retry.
+
+Fresh read-only proof at **2026-11-13T15:59:41Z** verified all ten candidate
+Runtime/DEFAULT bindings **READY v4**, exact code/configuration/policies and canonical
+publication. The retained legacy Nova v15 and its separate ledger are unchanged.
+To restart after stopping this task's existing server, run from the repository root:
+
+```sh
+conda activate enterprise-analytics
+poetry run python -m enterprise_analytics_agent.ui --allow-live --port 8501 \
+  --streaming-review evaluations/bedrock-streaming/review.workbench.proposed.json \
+  --streaming-releases artifacts/bedrock-streaming/workbench-fix/operations-approved-01/releases.actual.json \
+  --streaming-approval artifacts/bedrock-streaming/workbench-fix/approval.json \
+  --canonical-dir artifacts/milestone-5/canonical/retail-v1
+```
+
+These retained local files are required; a fresh clone does not contain generated
+deployment evidence. Startup and model/mode selection submit no question. Do not
+run the historical Nova-only launcher or reset a ledger to enable additional calls.
 
 For the separate **offline playground only**, run this from the repository root:
 
@@ -56,9 +74,11 @@ model prose or general production equivalence. See [UI setup](docs/local-ui.md)
 and [shared-code acceptance evidence](docs/ui-shared-code-live.md).
 This follow-on UI scope does not change completed M1–M5 acceptance or their ledgers.
 
-Submitting a question clears the text box immediately. The accepted Nova release
-streams truthful progress and returns its validated final answer; its frozen AWS
-runtime remains JSON-based. The separate streaming implementation adds actual
+## Historical rollout and legacy Nova evidence
+
+The earlier accepted Nova release streamed truthful progress and returned its
+validated final answer; its frozen AWS runtime remains JSON-based. The separate
+streaming implementation added actual
 provider word streaming and a Bedrock-only model catalog: Anthropic Claude, OpenAI
 GPT through Bedrock, Google **Gemma through Bedrock Mantle**, Meta Llama, DeepSeek,
 Qwen and Mistral, plus Nova. Additional choices stay disabled until the separate
@@ -105,28 +125,29 @@ The [deployment and live-evaluation proposal](docs/bedrock-multimodel-streaming-
 covers ten new isolated runtimes/roles, a new artifact and a separate approved
 40-attempt outer ceiling, including an unavailable reserve. The
 [administrator steps](docs/bedrock-streaming-administrator-steps.md) record completed
-policy evidence and completed query-trust handoff. New model acceptance is
-**incomplete**. The retained legacy **v15** remains the accepted release; its
+policy evidence and completed query-trust handoff. At that failed completion
+checkpoint, new model acceptance was **incomplete** and retained legacy **v15**
+remained the accepted release; its
 new protected smoke passed, separately from the earlier cleanup. The supplied
 Sonnet inline policy matches the reviewed template; administrator simulation
 allows both Bedrock actions on all four concrete model resources with no missing
 context. Source/archive routing matches and the user reports no permissions
 boundary. Read-only Organizations verification identifies this as the management
 account, whose roles are unaffected by SCPs. These IAM checks are complete; no
-additional grant or repeat inspection is justified. Next diagnose the original
-service error from retained evidence/support material: its full message, request
-ID, session, denied resource and conditions remain unavailable. Do not replay
-closed campaigns or infer permission for another billable call.
+additional grant or repeat inspection was justified. The original response was
+unavailable at that checkpoint; the later workbench's private diagnostics captured
+account-availability 403 responses. Preserve both records. Do not replay closed
+campaigns or infer permission for another billable call.
 
 Pushed **bc39b34** passed [push CI 43323776935](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43323776935)
 and [PR CI 43323784997](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43323784997),
 including 2,055 offline tests with zero selected skips. Those results cover that
 commit, separately from later evidence documentation.
 
-The separate UI campaign used **19/20 attempts**: Q18 verification 1 and all 18
+The separate historical UI campaign used **19/20 attempts**: Q18 verification 1 and all 18
 regular slots; the protected rollback smoke was unused. No regular live allowance
 remains, and the completed review cannot restart billable mode. Additional billable
-questions cannot reuse that completed review. The user approved [interactive session 02](docs/ui-interactive-session-02.md) at `319a872`; its original activation enabled Local agent and AWS AgentCore with Nova Lite at **http://127.0.0.1:8501**. Its counted Q18 verification passed **110.25 USD [2025-03-31,2025-04-01)** after a fresh **READY v15** proof at **21:52:13Z** on November 11, 2026. At activation, usage was **1 verification / 1 Runtime invocation / 0 ordinary questions / 0 direct local Converse calls**, leaving **18 user-owned questions across both modes** until **2026-11-13T23:59Z**. A later local ledger inspection found **2/20 used and 17 regular questions remaining**; read that persistent counter for subsequent usage. The protected original-rollback slot stays unavailable. This streaming preparation does not spend or expand that Nova allowance, update v15 or alter its historical artifacts. The current source no longer matches that historical shared launcher. The separately approved [AWS-only connection](docs/ui-accepted-nova-live.md) is activated and browser-verified without submitting a question. It keeps Local Bedrock disabled and does not reset the counter. Inspect the saved historical AWS acceptance responses offline without spending another call:
+questions cannot reuse that completed review. The user approved [interactive session 02](docs/ui-interactive-session-02.md) at `319a872`; its original activation enabled Local agent and AWS AgentCore with Nova Lite at **http://127.0.0.1:8501**. Its counted Q18 verification passed **110.25 USD [2025-03-31,2025-04-01)** after a fresh **READY v15** proof at **21:52:13Z** on November 11, 2026. At activation, usage was **1 verification / 1 Runtime invocation / 0 ordinary questions / 0 direct local Converse calls**, leaving **18 user-owned questions across both modes** until **2026-11-13T23:59Z**. A later local ledger inspection found **2/20 used and 17 regular questions remaining**; read that persistent counter for subsequent usage. The protected original-rollback slot stays unavailable. This streaming preparation does not spend or expand that Nova allowance, update v15 or alter its historical artifacts. The current source no longer matches that historical shared launcher. The separately approved [AWS-only connection](docs/ui-accepted-nova-live.md) was subsequently activated and browser-verified; it is now historical and has been replaced by the current workbench above. Its separate ledger remains 3/20 used and is not spent by the new workbench. Inspect the saved historical AWS acceptance responses offline without spending another call:
 
 ```sh
 conda activate enterprise-analytics

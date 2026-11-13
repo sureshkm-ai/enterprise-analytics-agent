@@ -1,0 +1,20 @@
+{
+  "approved": true,
+  "review_sha256": "c17f1bb9a7c3a29620c42bcf1a0217298a2fd6b0d473b9fcce7608ca90d247b3",
+  "preparation_sha256": "195fb2033f92458ff6548e9e1aeb1b7e0a0dc0aa7c59de053e260ac7714a4d32",
+  "maximum_attempts": 40,
+  "expires_at": "2026-11-15T23:59:00+00:00",
+  "approved_at": "2026-11-13T15:39:02.289336+00:00",
+  "approved_preparation_commit": "27e1ae8f726819a732f7ca81400b39c4781b8bef",
+  "profile": "analytics-dev",
+  "account": "453711491609",
+  "region": "us-west-2",
+  "scope": "Exact workbench deployment, independent model evaluation, counted Local/AWS browser checks, and mandatory failure restoration.",
+  "user_reply": "Approve the exact workbench execution",
+  "planned_aws_acceptance_maximum": 20,
+  "planned_local_browser_maximum": 10,
+  "planned_aws_browser_maximum": 1,
+  "ordinary_limit": 38,
+  "protected_cleanup": 1,
+  "reserve_approved": false
+}

@@ -1,13 +1,24 @@
 # Implementation plan
 
-The current selectable-model/readable-streaming correction is documented in
-[the UI workbench implementation](ui-model-workbench.md). Candidate packaging,
-configuration, reproducible synthesis and fresh read-only preflight are complete;
-the [concrete execution proposal](ui-model-workbench-deployment-proposal.md) requires
-one exact approval for the new workbench review/preparation, 40-slot cap, expiry and
-restoration. All ten current streaming releases verified READY v3 and retained
-Nova v15 was checked separately; neither observation establishes live acceptance
-of the new f2755c33 candidate. No new upload, deployment or invocation has occurred.
+The [selectable-model/readable-streaming workbench](ui-model-workbench.md) is
+operational at **http://127.0.0.1:8501/?mode=live** with **partial model acceptance**:
+Nova Lite, DeepSeek V3.2, Qwen3 235B and Mistral Large 3 passed both independent AWS
+cases and are enabled in both agent modes. Fifteen AWS cases produced **9 passes,
+6 failures**; four Local browser checks and one AWS Nova browser check also passed.
+Six failed models are quarantined. This does not establish acceptance of all ten
+models or production readiness.
+
+The approved new campaign is **20/40 used**, leaving **18 ordinary questions**,
+protected cleanup **1** and unavailable reserve **1**, expiring
+**2026-11-15T23:59Z**. Final read-only proof at **2026-11-13T15:59:41Z** verified all
+ten new f2755c33/xnQiGsnGRkgFV3ktJ2DfhUbOClx9gVEn bindings READY **v4**, retained
+legacy **v15** and unchanged canonical publication. See the
+[executed proposal](ui-model-workbench-deployment-proposal.md) for exact pins,
+commands, acceptance and failure procedures. Historical ledgers remain separate;
+the old Nova counter stays **3/20**.
+The unchanged source passed the current local baseline: **2,165 offline tests**,
+zero selected skips, lockfile/lint/format/type checks; hosted CI for the forthcoming
+outcome commit must be reported separately.
 
 **Milestones 1–5 are complete for the agreed development proof of concept.** M5 completion [`7905d13`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/7905d13f59e13d0b5a1b11231348721471a19411) merged through [PR #6](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/6) on **November 10, 2026**, at [`c0d2c5a569e2d242bf840a715c31050888b579ab`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/c0d2c5a569e2d242bf840a715c31050888b579ab). [Main CI 42872516193](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42872516193) passed for that exact merge. Further development requires a separately defined scope; no production-readiness or new-milestone claim follows from this closeout.
 
@@ -37,7 +48,7 @@ The UI outcome is pushed and merged through [PR #8](https://github.com/sureshkm-
 
 ## Follow-on UI interaction: composer, progress and model selection
 
-Current correction: the [AWS-only accepted Nova connection](ui-accepted-nova-live.md)
+Historical correction: the [AWS-only accepted Nova connection](ui-accepted-nova-live.md)
 was user-approved at `1d7e8f6` under review `e6fdf135…` and activated at
 **http://127.0.0.1:8501/?mode=live**. Fresh read-only proof at
 **2026-11-13T00:13:44Z** verified the retained retail Runtime/DEFAULT READY v15;
@@ -48,9 +59,10 @@ interactive-02 ledger (**2/20 used, 17 regular remaining**, unchanged expiry).
 Activation spent no question; no deployment, upload, IAM change,
 additional allowance or automated ordinary question is proposed. UI readiness now
 reflects actual connection/source status; private future streaming errors retain
-complete redacted SDK diagnostics. Current checks: **2141 offline passes**, zero
+complete redacted SDK diagnostics. That preparation's checks: **2141 offline passes**, zero
 selected skips, lock/lint/format/type checks successful. Multi-model acceptance
-below remains failed/restored; this connection does not replay that campaign.
+below remained failed/restored; this connection did not replay that campaign.
+That Nova-only local server has now been replaced by the accepted workbench above.
 
 The user requested immediate input clearing, streaming output and model choices.
 Local implementation clears the composer on submission, streams truthful execution
@@ -59,7 +71,7 @@ trusted server-configured backend bindings. The existing JSON endpoint, question
 agent request, shared semantic rules and accepted runtime/source/artifact remain
 unchanged. A disconnected browser does not retry or abandon durable accounting.
 
-The current accepted live configuration exposes **Nova Lite only**. Its existing
+At that historical checkpoint the accepted live configuration exposed **Nova Lite only**. Its existing
 JSON runtime and progress stream remain separate from the newly requested word
 streaming release below. The initial interaction-only change performed no AWS
 operation, rebuild, upload, deployment, IAM change or billable test, and did not
@@ -272,6 +284,16 @@ The approved [plan](milestone-5-plan.md) is implemented for local review on `fea
 
 11. Approved `q18-recovery-v1` executed once from fresh original v10: deployed pinned candidate READY v11, Q18 **110.25 USD [2025-03-31,2025-04-01)** and all **36/36** cases passed; client p95 **13.381s**, complete diagnostics. Mandatory original restore/smoke and separate read-only final verification passed on READY v12. Recovery **38/38**, aggregate **40/40**, no retries/failures/incomplete calls. All 122 protected files and historical ledgers/claims unchanged. No code/upload/IAM/dataset changes during execution.
 
-Exact next task: the user may submit the existing 17 regular questions through the approved AWS-only Nova UI until the unchanged expiry; read the persistent counter for subsequent usage. Local Bedrock and other models remain disabled. Separately diagnose the original Sonnet service error from retained evidence/support material; the full Error.Message, RequestId, session, resource and conditions remain unavailable. The supplied inline policy matches, administrator simulation allows both Bedrock actions on all four concrete resources with no missing context, and the user reports no permissions boundary. Read-only Organizations verification identifies this as the management account, whose roles are unaffected by SCPs. IAM evidence review is complete; no additional grant, repeat policy/boundary/simulator request or source-routing correction is justified. The bounded CloudTrail collection did not contain an AccessDenied event, and unrelated log errors are not an established cause. Nova's two streaming gates passed, but multi-model acceptance remains incomplete; original restoration and protected smoke passed, with the separate streaming child closed 4/37 and aggregate 7/40. Preserve all claims, sealed inputs, restored v3 bindings and legacy v15. No new grant, campaign, retry, reserve use or automated model call is authorized.
+Exact next task: the user may submit the remaining **18 ordinary questions** with
+Nova Lite, DeepSeek V3.2, Qwen3 235B or Mistral Large 3 in Local agent or AWS
+AgentCore mode at the live workbench. Read the persistent counter for later usage;
+expiry remains **November 15, 5:59 p.m. CST**. Preserve the cleanup slot and unavailable
+reserve. Optional follow-up is resolving the four models' account-availability
+403 responses and separately reviewing Gemma/Llama behavior; no automatic IAM
+change, retry, additional deployment or new allowance follows. Keep the six failed
+models disabled. Preserve historical closed campaigns, original/frozen assets,
+legacy v15, M3 permissions/data and the old Nova ledger. M1–M5 remain complete for
+the agreed development scope; full ten-model acceptance and production readiness
+remain unverified.
 
 Cube remains a later adapter extension outside milestones 2–5 unless separately requested.

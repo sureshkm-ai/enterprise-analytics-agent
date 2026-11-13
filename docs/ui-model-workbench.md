@@ -1,5 +1,43 @@
 # Selectable models and readable streaming
 
+## Running and verified
+
+Open **http://127.0.0.1:8501/?mode=live** and refresh an older page. **Nova Lite,
+DeepSeek V3.2, Qwen3 235B and Mistral Large 3** are enabled in **Local agent** and
+**AWS AgentCore** modes. Select a model, enter a question and click the run button.
+The composer clears; readable provider words stream before the validated final
+result. Offline playground stays separately labeled.
+
+All four passed both authored AWS cases. Actual browser checks passed Local Q18
+for all four and AWS Nova Q18: exact **110.25 USD for March 31, 2025**, full date
+boundaries and independent goldens. Usage is **20/40**, with **18 ordinary questions**
+until **November 15, 2026, 5:59 p.m. CST**. Cleanup and reserve remain unused. This
+is partial acceptance; six failing models are explicitly unavailable.
+
+Current server launch from the repository root:
+
+```sh
+conda activate enterprise-analytics
+poetry run python -m enterprise_analytics_agent.ui --port 8501 --allow-live \
+  --streaming-review evaluations/bedrock-streaming/review.workbench.proposed.json \
+  --streaming-releases artifacts/bedrock-streaming/workbench-fix/operations-approved-01/releases.actual.json \
+  --streaming-approval artifacts/bedrock-streaming/workbench-fix/approval.json \
+  --canonical-dir artifacts/milestone-5/canonical/retail-v1
+```
+
+The server is already running; do not start a second process on port 8501. Restarting
+cannot reset the allowance or extend expiry. Actual ZIP is `f2755c33…`, S3 VersionId
+`xnQiGsnGRkgFV3ktJ2DfhUbOClx9gVEn`; all ten Runtime/DEFAULT bindings independently
+verified READY **v4** at **2026-11-13T15:59:41Z**. Legacy v15 and M3 data/trust remain
+unchanged. See [actual outcome](../evaluations/bedrock-streaming/workbench.outcome.json).
+
+Anthropic/OpenAI returned complete AWS account-model-unavailability errors, not
+an established missing IAM grant. Gemma failed iteration bounds and Llama failed
+the complete all-five case. [Diagnostics](../evaluations/bedrock-streaming/workbench.model-diagnostics.json)
+preserve actual reasons; no failing model was retried or silently substituted.
+
+## Implementation and preparation history
+
 This change follows `5f5fa06389c5b9cc8302153ef25169c88215d249` on
 `feat/bedrock-streaming-activation` (PR #13). It implements one selected model per
 question, shared local/AWS presentation, and independent model acceptance. It
@@ -140,7 +178,7 @@ acceptance for a selected model in a separately prepared workbench session, the
 existing `adapters.model_stream_cli evaluate` supports repeated `--model KEY`;
 each model can be evaluated only once in that session.
 
-## Current evidence and remaining boundary
+## Historical pre-execution evidence and remaining boundary
 
 The implementation has offline regression coverage for the real semantic loop,
 Runtime stream validation, actual shipped JavaScript, fragmented UTF-8 delivery,
@@ -158,18 +196,16 @@ process uses the old accepted-Nova launcher and correctly disables it because
 106b173 changes its source pin. It is not the new workbench.
 
 The [concrete deployment/acceptance proposal](ui-model-workbench-deployment-proposal.md)
-is fully prepared: reproducible new ARM64 ZIP, exact source/configuration/review,
+was fully prepared: reproducible new ARM64 ZIP, exact source/configuration/review,
 two matching syntheses, original restoration assembly, fresh baseline and formal
 preflight, and a separate untouched 40-slot campaign. Its actual commands replace
 the illustrative placeholders above. See the
 [readiness summary](../evaluations/bedrock-streaming/workbench.readiness.json).
-No upload, deployment, IAM change, subscription or billable invocation has occurred
-for this new scope. One explicit approval of its exact review/preparation, expiry,
-attempt allocation and restoration remains required before execution. The old
+At that preparation checkpoint no upload, deployment or billable invocation had
+occurred. The owner subsequently approved its exact review/preparation, expiry,
+attempt allocation and restoration; actual results are recorded above. The old
 accepted-Nova binding and historical failed reviews cannot authorize it.
 
-The Sonnet service denial remains unresolved; its existing IAM evidence does not
-justify another speculative grant. New private AWS diagnostics can establish the
-actual error if that model fails. Other models can be tested independently under
-the proposed workbench scope. Do not claim live streaming/browser acceptance until
-the approved deployment and counted Local/AWS browser checks actually pass.
+The later full Sonnet message establishes account/model unavailability; no missing
+IAM grant is supported. The recorded live streaming/browser acceptance applies to
+the four enabled models only, not failing choices or unexecuted cases.

@@ -1,6 +1,82 @@
 # Progress
 
-## Current task — workbench candidate/preflight complete; exact execution approval pending
+## Current task — four-model streaming workbench activated and browser-verified
+
+**Open http://127.0.0.1:8501/?mode=live** and refresh any old page. **Nova Lite,
+DeepSeek V3.2, Qwen3 235B and Mistral Large 3** are enabled in both Local
+Bedrock/DuckDB and AWS AgentCore/Athena. Six failing choices remain unavailable.
+The owner approved the exact proposal at **27e1ae8**, review **c17f1bb9…** and
+preparation **195fb203…**. Actual [approval](../evaluations/bedrock-streaming/workbench.approval.json),
+[outcome](../evaluations/bedrock-streaming/workbench.outcome.json) and
+[model diagnostics](../evaluations/bedrock-streaming/workbench.model-diagnostics.json)
+are recorded separately. PR #13 remains unmerged on this branch.
+
+The operator executed **once**. Conditional upload returned actual VersionId
+**xnQiGsnGRkgFV3ktJ2DfhUbOClx9gVEn** for ZIP **f2755c33…**. All ten existing
+stacks verified **UPDATE_COMPLETE**, Runtime/DEFAULT **READY v4**, exact approved
+artifact/template/parameters/configuration/policies and seven-day retention. Fresh
+read-only proof at **2026-11-13T15:59:41Z** reverified all ten, legacy **v15**,
+canonical S3/Glue and current source/ZIP. Its summary SHA is
+`aeba6395c09292f8bc0b7b61c5687f11e661d67f9d2e2699d25d88289f5d402a`.
+Only the approved exact new/original code-key reads changed; model grants, query
+trust, M3/foundation/data, profiles and original artifacts were preserved.
+
+AWS acceptance dispatched **15 questions: 9 passed, 6 failed**. Each of the four
+enabled models passed Q18 and all-five regional metrics with complete independent
+plans/results and readable provider words. Anthropic Sonnet/Opus and OpenAI
+Astra/Sol returned full private AWS 403 messages: their foundation models are
+**not available for this account**, with individual RequestIds and AWS Sales
+guidance. This is an account/model availability failure, not an established
+missing IAM Allow. Gemma reached its iteration bound. Llama passed Q18 but failed
+the all-five case after invalid tool arguments, without a successful complete plan.
+All six are quarantined; no failed model was retried or silently substituted.
+
+Actual Playwright browser checks passed **four Local Q18 questions plus one AWS
+Nova Q18**, submitted once each: exact **110.25 USD**, complete
+**[2025-03-31,2025-04-01)**, correct model/scope, cleared composer, visible validated
+provider-word prefixes and readable final output. Captures, screenshots, five
+durable once-only claims and independent judgments are under
+`output/playwright/workbench-live-20261113/`. The answer displays **Net revenue:
+110.25 USD for March 31, 2025**; technical data is collapsed. This is actual live
+browser evidence, separate from earlier fixture checks.
+
+Final recorded usage: **20/40**, **18 ordinary user questions remaining**. Protected
+cleanup and the **unapproved reserve** remain untouched. SDK accounting is **27
+reserved / 27 returned**: **16 Runtime, 7 Converse, 4 ConverseStream**, with no
+incomplete receipt or automatic retry. Six model failures remain recorded while
+the session stays usable under model-scoped failure isolation. All ten candidate
+bindings remain deployed under the approved partial-acceptance policy; restoration
+was not required. If later overall failure requires it, retain the original
+c136/GSY restoration and single protected legacy-v15 smoke procedure. Expiry is
+**November 15, 2026, 5:59 p.m. CST** (`2026-11-15T23:59Z`).
+
+Only stale task-owned PID **13049** was replaced. Current server **54226** uses the
+new review, actual `operations-approved-01/releases.actual.json` and approval paths
+in the [launch/runbook](ui-model-workbench.md). Unrelated servers were preserved.
+All **555** protected historical files still match; separate Nova stays **3/20**,
+closed streaming histories **3/40 + 4/37**, aggregate **7/40**. No old allowance,
+ledger or claim was reset or borrowed.
+
+Current source remains **106b173 / 8ee90d63…** and the verified frozen package.
+Its preceding **2165-test** suite, lockfile/Ruff/format/mypy and reproducible
+synthesis remain applicable; source did not change during deployment or outcome
+documentation. Independent actual-browser/ledger audit confirmed all five checks,
+27 matched SDK receipts, unchanged source/archive and preserved files. Final checks
+passed for **7 Markdown files, 139 local links, 35 shell blocks**, all three new
+outcome JSON records, **15** case-report hashes, **5** browser judgment/capture
+hashes, all **555** preserved files, source/archive/final-proof hashes and
+`git diff --check`. Earlier
+106b173 CI covers that exact implementation; later hosted CI is reported separately
+for its exact head.
+
+**Exact next task:** use the running four-model workbench within the remaining
+ordinary allowance. Do not retry quarantined models, reset counters, spend the
+reserve, add speculative permissions or claim every catalog model/production
+readiness. Optional Anthropic/OpenAI access resolution follows the captured AWS
+account/model-availability messages, not another policy attachment. M1–M5 remain
+complete and their evidence is unchanged.
+
+## Historical workbench preparation — before exact execution approval
 
 Continued on **feat/bedrock-streaming-activation**, clean implementation
 **106b17309716d11f154c8954024f7a260c8fbf7a**, preserving PR #13. The process actually
@@ -3087,12 +3163,12 @@ Milestone 2 introduced no AWS credentials, calls, deployment, Athena adapter, or
 
 ## Exact next task
 
-Approve the [complete workbench deployment/acceptance proposal](ui-model-workbench-deployment-proposal.md),
-review `c17f1bb9a7c3a29620c42bcf1a0217298a2fd6b0d473b9fcce7608ca90d247b3`,
-preparation `195fb2033f92458ff6548e9e1aeb1b7e0a0dc0aa7c59de053e260ac7714a4d32`.
-Then run its one conditional upload, exact sequential updates, independent per-model
-AWS acceptance, counted Local/AWS browser checks and required failure restoration.
-The prepared candidate is not deployed. Do not reuse the stale accepted-Nova source
-binding, spend its remaining16questions on this work, replay a closed campaign or
-make speculative permission changes. Preserve PR #13 and all historical evidence.
-M1–M5 remain complete; the multi-model workbench remains open until actual gates pass.
+Use **http://127.0.0.1:8501/?mode=live** with Nova Lite, DeepSeek V3.2, Qwen3 235B
+or Mistral Large 3 in Local agent or AWS AgentCore mode. Refresh an old page after
+the server replacement. **18 ordinary questions** remain at the recorded checkpoint,
+expiring November 15, 2026, 5:59 p.m. CST; read the durable counter for later usage.
+No further operator demo, failed-model retry, reset, reserve use, permission change
+or deployment is implied. Preserve the protected cleanup and approved restoration
+procedure. Six unavailable models remain disabled; their exact reasons are in the
+model diagnostics. Keep PR #13 unmerged. M1–M5 remain complete for the agreed scope;
+partial four-model acceptance does not establish all-model or production readiness.

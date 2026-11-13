@@ -14,6 +14,7 @@ from enterprise_analytics_agent.adapters.bedrock_mantle import BedrockMantleClie
 from enterprise_analytics_agent.adapters.bedrock_model_catalog import ModelSpec, model_catalog
 from enterprise_analytics_agent.adapters.bedrock_word_stream import ConverseStreamClient
 from enterprise_analytics_agent.adapters.streaming_agent import StreamingAnalyticsAgent
+from enterprise_analytics_agent.adapters.streaming_diagnostics import report_aws_failure
 from enterprise_analytics_agent.agent.contracts import AgentDiagnostics, AgentRequest, AgentResponse
 from enterprise_analytics_agent.hosting.application import build_agent
 from enterprise_analytics_agent.hosting.config import RuntimeSettings, load_settings
@@ -74,8 +75,28 @@ class StreamingApplication:
                 )
             )
 
+        def diagnostic(event: dict[str, object]) -> None:
+            # This sink is separate from call_events and every public SSE/response
+            # field. The adapter supplies only allowlisted, redacted AWS fields.
+            self.log(
+                json.dumps(
+                    {
+                        "event": "streaming_aws_error",
+                        "request_id": identifier,
+                        "model_id": self.settings.model_id,
+                        **event,
+                    }
+                )
+            )
+
         try:
-            runner = self.factory(self.settings)
+            try:
+                runner = self.factory(self.settings)
+            except BaseException as exc:
+                # Setup reads/credential assumption are not model attempts. Keep
+                # their AWS failure private without fabricating call reservations.
+                report_aws_failure(exc, operation=None, number=0, diagnostic=diagnostic)
+                raise
             outcome = runner.run(
                 request,
                 context=self.settings.authorization_context(),
@@ -91,6 +112,7 @@ class StreamingApplication:
                     }
                 ),
                 record=record,
+                diagnostic=diagnostic,
             )
             result: dict[str, object] = {
                 "type": "result",

@@ -61,7 +61,7 @@ function modelPicker() {
   if (mode !== "local") {
     const pending = (state?.proposed_models || []).filter(item => !options.some(active => active.key === item.key));
     if (pending.length) {
-      const group = element("optgroup"); group.label = "Catalog candidates · deployment approval required";
+      const group = element("optgroup"); group.label = "Catalog models · not enabled in this workspace";
       pending.forEach(item => {
         const option = element("option", "", `${item.provider} · ${item.label}`);
         option.value = item.key; option.disabled = true; option.title = item.note;
@@ -76,19 +76,41 @@ function modelPicker() {
     : options.length > 1
       ? "Choose a server-configured model. Each choice keeps its reviewed release and allowance."
       : options.length === 1
-        ? "One reviewed model is configured. Additional models require approved server targets."
-        : "Enable a reviewed server target to choose a model. The browser cannot supply a model ID.";
+        ? "One server-configured model is bound. Availability and allowance are shown below."
+        : "No agent model is configured in this workspace. The offline playground does not use Bedrock.";
   $("model-identifier").textContent = selectedModel()?.model_id || "";
+}
+function modeAvailability(value) {
+  if (value === "local") return "DuckDB · no model calls";
+  if (!state) return "Checking availability…";
+  const configs = (state.model_options || []).map(option => option.modes?.[value]).filter(Boolean);
+  if (!configs.length) return "Not configured";
+  if (configs.every(config => config.budget?.blocked)) return "Allowance blocked";
+  if (!configs.some(config => config.enabled && !config.budget?.blocked)) return "Unavailable";
+  return `${configs.filter(config => config.enabled && !config.budget?.blocked).length} model(s) · billable`;
 }
 function ready() {
   const config = activeConfig();
   const blocked = mode !== "local" && (!config?.enabled || config.budget?.blocked);
   $("ask-button").disabled = busy || !state || blocked || !$("question").value.trim();
   $("question").disabled = busy;
-  ["local", "local_agent", "live"].forEach(value => { $(`mode-${value}`).disabled = busy; });
+  ["local", "local_agent", "live"].forEach(value => {
+    $(`mode-${value}`).disabled = busy;
+    $(`mode-${value}-status`).textContent = modeAvailability(value);
+  });
   $("model-choice").disabled = busy || mode === "local" || !availableModels().length;
   $("ask-button").textContent = busy ? "Running…" : mode === "live" ? "Ask AWS" : mode === "local_agent" ? "Ask Bedrock" : "Run offline question";
-  $("execution-state").textContent = busy ? progressMessage || "Submitting your question…" : "Ready for a question";
+  let status;
+  if (busy) status = progressMessage || "Submitting your question…";
+  else if (!state) status = "Loading workspace availability…";
+  else if (mode !== "local" && config?.budget?.blocked) status = `${modeNames[mode]} blocked · allowance unavailable`;
+  else if (mode !== "local" && config?.error) status = `${modeNames[mode]} unavailable · inspect the message above`;
+  else if (mode !== "local" && !config?.enabled) status = selectedModel() || config?.configured
+    ? `${modeNames[mode]} unavailable · target is disabled`
+    : `${modeNames[mode]} is not configured`;
+  else if ($("ask-button").disabled) status = `${modeNames[mode]} · enter a question`;
+  else status = mode === "local" ? "Offline question ready · no model calls" : `${modeNames[mode]} question ready · billable`;
+  $("execution-state").textContent = status;
 }
 function selectMode(next) {
   if (busy || !state) return;
@@ -104,16 +126,35 @@ function selectMode(next) {
   ready();
 }
 function updateContext() {
-  const config = activeConfig();
-  $("dataset").textContent = config.dataset;
-  $("reference-date").textContent = config.reference_date;
+  const config = activeConfig() || {};
+  const configured = mode === "local" || config.configured === true || (config.configured !== false && Boolean(selectedModel()));
+  $("dataset").textContent = configured ? config.dataset || "Not reported" : "Not configured";
+  $("reference-date").textContent = configured ? config.reference_date || "Not reported" : "—";
+  $("target-details").textContent = mode === "local"
+    ? "Deterministic local planner · no Bedrock model or deployed target"
+    : !configured
+      ? "No agent target is bound to this workspace. Switching modes does not enable AWS execution."
+      : `${selectedModel()?.model_id || config.model_id || "Model not reported"}${config.runtime_version ? ` · Bound Runtime version: v${config.runtime_version}` : ""}`;
   $("usage-label").textContent = mode === "local" ? "MODEL CALLS" : "SHARED QUESTION ALLOWANCE";
   $("usage").textContent = usage(config);
-  $("source-description").textContent = config.description;
-  $("composer-hint").textContent = mode === "local" ? "Offline sample data · no model or AWS calls" : mode === "local_agent" ? "Local DuckDB + BILLABLE Bedrock · no automatic retries" : "BILLABLE AgentCore + Bedrock + Athena · no automatic retries";
-  $("cost-notice").textContent = config.cost_notice;
-  $("cost-notice").classList.toggle("billable", mode !== "local");
-  $("live-notice").hidden = mode === "local" || config.enabled;
+  $("source-description").textContent = configured ? config.description || modeNames[mode] : `${modeNames[mode]} · not configured in this workspace`;
+  const available = Boolean(config.enabled && !config.budget?.blocked);
+  $("composer-hint").textContent = mode === "local" ? "Offline sample data · no model or AWS calls" : !configured ? "No agent connection · submissions disabled" : !available ? "Configured target unavailable · submissions disabled" : mode === "local_agent" ? "Local DuckDB + BILLABLE Bedrock · no automatic retries" : "BILLABLE AgentCore + Bedrock + Athena · no automatic retries";
+  $("cost-notice").textContent = mode !== "local" && !available
+    ? "No live question can be submitted. No model or Runtime call will be made."
+    : config.cost_notice || (mode === "local" ? "No model or AWS calls." : "Billable model execution · no automatic retries.");
+  $("cost-notice").classList.toggle("billable", mode !== "local" && available);
+  $("live-notice").hidden = mode === "local" || available;
+  if (!configured) {
+    $("live-notice-title").textContent = `${modeNames[mode]} is not connected to this workbench`;
+    $("live-notice-body").textContent = "This page has no live model connection. Open the workbench with its accepted Runtime configuration; changing tabs does not connect it.";
+  } else if (config.budget?.blocked) {
+    $("live-notice-title").textContent = `${modeNames[mode]} question allowance is unavailable`;
+    $("live-notice-body").textContent = config.error || "This configured target cannot submit questions because its existing allowance is exhausted, expired or needs inspection. Inspect its recorded status before another submission.";
+  } else {
+    $("live-notice-title").textContent = `${modeNames[mode]} is paused`;
+    $("live-notice-body").textContent = config.error || "This configured target has been disabled. Its existing configuration and question history are preserved; inspect the recorded status before another submission.";
+  }
   if (mode !== "local" && config.error) message(config.error);
   else if (mode !== "local" && config.budget?.blocked) message("This shared allowance is exhausted, expired or needs inspection. See docs/ui-shared-code-live.md.");
   else message("");
@@ -354,7 +395,7 @@ async function ask(event) {
       state.local_agent = refreshed.local_agent;
       state.model_options = refreshed.model_options || [];
       modelPicker();
-      $("usage").textContent = usage(activeConfig());
+      updateContext();
     } catch (_) {
       if (state.live) state.live.enabled = false;
       if (state.local_agent) state.local_agent.enabled = false;
@@ -403,6 +444,10 @@ function buildGuide() {
     row.append(element("span", "step-number", index + 1), body); $("code-map").append(row);
   });
 }
+function initialMode() {
+  const requested = new URLSearchParams(location.search).get("mode");
+  return ["local", "local_agent", "live"].includes(requested) ? requested : "local";
+}
 async function start() {
   try {
     const response = await fetch("/api/state"); if (!response.ok) throw new Error("Cannot connect to the local application."); state = await response.json();
@@ -415,7 +460,7 @@ async function start() {
     });
     state.metrics.forEach(metric => $("catalog").append(metricCard(metric)));
     if (state.replay) loadReplay(state.replay);
-    buildGuide(); selectMode("local");
+    buildGuide(); selectMode(initialMode());
   } catch (error) { message(error.message); }
 }
 document.querySelectorAll("[data-view]").forEach(button => button.addEventListener("click", () => showView(button.dataset.view)));

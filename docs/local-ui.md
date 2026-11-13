@@ -17,9 +17,14 @@ at `e222875` on November 11, 2026. Full validation merged through
 [main CI](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43100659276)
 passed for that merge. The implementation and completed live acceptance are preserved.
 
-[Interactive session 02](ui-interactive-session-02.md) was approved at `319a872` and
-is active at **http://127.0.0.1:8501**. Both **Local agent** and **AWS AgentCore** are
-enabled. The required Q18 verification passed its full request/result gate:
+[Interactive session 02](ui-interactive-session-02.md) was approved at `319a872`.
+At its original activation, both **Local agent** and **AWS AgentCore** were enabled
+at **http://127.0.0.1:8501**. Later source changes invalidate that shared launcher's
+local/remote source-equality check; do not use the historical command below as the
+current live launch. The [AWS-only accepted Nova binding](ui-accepted-nova-live.md)
+is prepared and read-only verified, awaiting its explicit binding approval. It
+uses the existing 17 remaining questions; Local Bedrock and other models stay
+disabled. The required original Q18 verification passed its full request/result gate:
 **110.25 USD [2025-03-31,2025-04-01)**. Fresh proof at **21:52:13Z** on November 11,
 2026 verified the matching source/artifact/configuration/canonical data and
 Runtime/DEFAULT **READY v15**, stack UPDATE_COMPLETE. No deployment, IAM change,
@@ -37,8 +42,9 @@ This is a local counter observation, not another invocation or fresh AWS readine
 assertion. The activation's 18-question record remains unchanged historical evidence;
 read the persistent counter for subsequent usage.
 
-Use the running server. If it needs restarting, first stop that Workbench process
-and launch one server from the repository root with the same session and record:
+The following is the **historical shared launcher**, preserved for the activation
+record. Use the [current AWS-only connection procedure](ui-accepted-nova-live.md#activation-after-exact-binding-approval)
+for this changed checkout; the plain UI command starts offline mode only.
 
 ```sh
 conda activate enterprise-analytics
@@ -51,9 +57,10 @@ poetry run python -m enterprise_analytics_agent.ui \
   --port 8501
 ```
 
-Restarting does not reset the allowance or repeat Q18. The existing counter and fresh
-per-question release checks remain enforced. Keep the historical commands/reviews
-below unchanged; Offline playground and Saved runs remain AWS-free.
+Neither launcher resets the allowance or repeats Q18. The existing counter and fresh
+per-question release checks remain enforced. Offline playground and Saved runs remain
+AWS-free; current status must not claim readiness when the selected backend is absent
+or source verification fails.
 
 ## Submit, follow progress and choose a model
 

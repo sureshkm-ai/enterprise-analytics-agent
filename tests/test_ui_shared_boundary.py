@@ -410,6 +410,26 @@ def test_shared_workbench_metadata_uses_reviewed_retail_scope_not_legacy_parity(
     assert "session" not in boundary.events
 
 
+@pytest.mark.parametrize("mode", ["local_agent", "live"])
+def test_shared_status_rechecks_source_changes_without_cloud_or_quota_writes(
+    boundary: SimpleNamespace, monkeypatch: pytest.MonkeyPatch, mode: str
+) -> None:
+    enable_questions(boundary)
+    assert boundary.backend.public_state(mode)["enabled"] is True
+    before = boundary.backend.ledger.path.read_bytes()
+
+    def changed(*args: Any, **kwargs: Any) -> None:
+        raise ValueError("source differs from the approved archive")
+
+    monkeypatch.setattr(ui_shared, "verify_local_release", changed)
+    state = boundary.backend.public_state(mode)
+    assert state["enabled"] is False
+    assert "source" in state["error"]
+    assert boundary.backend.ledger.path.read_bytes() == before
+    assert boundary.calls == []
+    assert "session" not in boundary.events
+
+
 @pytest.fixture
 def http_boundary(offline_workbench: Workbench) -> Iterator[tuple[Workbench, int]]:
     server = make_server(offline_workbench, 0)

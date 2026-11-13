@@ -1,0 +1,22 @@
+{
+  "schema_version": "ui-accepted-runtime-v1",
+  "binding_id": "accepted-nova-interactive02-v1",
+  "evidence_mode": "aws-only-frozen-archive",
+  "profile": "analytics-dev",
+  "account": "453711491609",
+  "region": "us-west-2",
+  "shared_review_path": "evaluations/ui-shared/interactive-02.proposed.json",
+  "shared_review_file_sha256": "e83033debb375d63540033a04837278f641e1103b540b7db9b322ff77606828a",
+  "shared_review_sha256": "385f936a719ca17ee09fe4c62af7d7153d04e8cc9d6ee3e2aaf7bd7defa8bbc8",
+  "release_record_path": "artifacts/ui-shared/interactive-02-preparation/release-record.json",
+  "release_record_file_sha256": "3908c11e5de25907451e0cc382afe54260b2a1d41a517438003e719449630ebe",
+  "runtime_version": "15",
+  "archive_path": "artifacts/milestone-5/q18-repair-v1/candidate/agent.zip",
+  "archive_sha256": "398124e89d2be1e9ce00f5b57c263fe2cdde0654527b27f949b9f3abb58029f1",
+  "archive_bytes": 39171778,
+  "archive_source_sha256": "aefa4ffa38d1d52ad152e98e0293356221bc964be86e3022c12c6871545830be",
+  "archive_manifest_sha256": "00dd46a64741149944b68f51c26579c7cac23f290cba37b3fc00c4aa7953fa6e",
+  "operator_source_sha256": "98d1521be7e35c6a89a6d7e5ad537bcdb92851306a40a6725c2a8086988eebc9",
+  "canonical_directory": "artifacts/milestone-5/canonical/retail-v1",
+  "expires_at": "2026-11-13T23:59:00Z"
+}

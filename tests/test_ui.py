@@ -59,6 +59,20 @@ def test_local_real_values_and_trusted_scope(workbench: Workbench) -> None:
     assert result.response.metric_versions == {"net_revenue": "1.0.0"}
 
 
+def test_unconfigured_agent_modes_do_not_claim_a_deployed_scope(workbench: Workbench) -> None:
+    state = workbench.state()
+    for mode in ("local_agent", "live"):
+        value = state[mode]
+        assert isinstance(value, dict)
+        assert value["configured"] is False and value["enabled"] is False
+        assert value["dataset"] is None and value["reference_date"] is None
+        assert value["runtime_version"] is None and value["tenant"] is None
+        assert value["regions"] == []
+        assert "not configured" in value["description"]
+        assert "connected" in value["error"]
+    assert state["model_options"] == []
+
+
 def test_local_relative_date_and_complete_multi_metric_plan(workbench: Workbench) -> None:
     yesterday = workbench.local.ask("Show net_revenue for yesterday.")
     period = yesterday.response.results[0].time_range

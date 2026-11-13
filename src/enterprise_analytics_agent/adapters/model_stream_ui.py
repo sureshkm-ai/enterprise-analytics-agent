@@ -451,18 +451,23 @@ class StreamingQuestions:
     def public_state(self, mode: str) -> dict[str, object]:
         state = self.ledger.summary()
         model = get_model(self.target.model_key)
+        accepted = self._accepted()
+        source_error = ""
+        try:
+            verify_local_inputs(self.root, self.review, self.canonical)
+        except (UiError, OSError, ValueError):
+            source_error = "Local streaming source or data differs from the approved release."
         return {
-            "enabled": not state["blocked"] and self._accepted(),
-            "error": "The model needs its reviewed deployed acceptance gates."
-            if not self._accepted()
-            else "",
+            "enabled": not state["blocked"] and accepted and not source_error,
+            "error": source_error
+            or ("The model needs its reviewed deployed acceptance gates." if not accepted else ""),
             "dataset": "retail-v1",
             "tenant": "retail_demo",
             "regions": ["North", "South"],
             "reference_date": "2025-04-01",
             "model_id": model.model_id,
             "runtime_version": self.release.runtime_version,
-            "description": f"{model.label} · Bedrock · verified words",
+            "description": f"{model.label} · configured Bedrock streaming target",
             "cost_notice": (
                 "BILLABLE: up to five planning calls plus one verified presentation stream."
             ),

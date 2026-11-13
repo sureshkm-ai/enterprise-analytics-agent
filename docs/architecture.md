@@ -2,6 +2,15 @@
 
 ## Local testing UI
 
+The [AWS-only accepted Nova connection](ui-accepted-nova-live.md) is a separately
+reviewed operator binding to the retained v15 JSON Runtime. It validates the frozen
+archive's 25-file closure independently of current operator source, without
+claiming current local/AWS code equivalence. Local Bedrock stays disabled in that
+binding; it reuses the existing interactive-02 ledger/expiry and verifies the exact
+artifact/configuration/publication before each question. Unconfigured or stale
+backends report unavailable rather than fabricated target/readiness metadata.
+Private redacted SDK diagnostics stay outside public semantic/model-visible fields.
+
 The separately requested Analytics Workbench serves local assets on loopback without
 additional dependencies. It has three modes: the default offline deterministic
 playground, an explicit billable local Bedrock agent with canonical DuckDB data, and

@@ -28,6 +28,18 @@ The UI outcome is pushed and merged through [PR #8](https://github.com/sureshkm-
 
 ## Follow-on UI interaction: composer, progress and model selection
 
+Current correction: the [AWS-only accepted Nova connection](ui-accepted-nova-live.md)
+is prepared with offline verification and fresh read-only proof of the retained
+retail Runtime/DEFAULT READY v15. It separates the frozen remote source from the
+changed operator source, keeps Local Bedrock disabled and preserves the same
+interactive-02 ledger (**2/20 used, 17 regular remaining**, unchanged expiry).
+Explicit binding approval precedes activation; no deployment, upload, IAM change,
+additional allowance or automated ordinary question is proposed. UI readiness now
+reflects actual connection/source status; private future streaming errors retain
+complete redacted SDK diagnostics. Current checks: **2141 offline passes**, zero
+selected skips, lock/lint/format/type checks successful. Multi-model acceptance
+below remains failed/restored; this connection does not replay that campaign.
+
 The user requested immediate input clearing, streaming output and model choices.
 Local implementation clears the composer on submission, streams truthful execution
 progress followed by validated results, and routes opaque model selections through
@@ -148,7 +160,7 @@ completion commit `39d7edb644d4c6d6229d7864d639f9f19410bf18` is pushed and merge
 activated without an application/archive/deployment/IAM change. Fresh proof at
 **21:52:13Z** on November 11, 2026 verified the existing candidate-retail Runtime/DEFAULT
 **READY v15**, stack UPDATE_COMPLETE. Its single counted Q18 passed the full expected
-request/result: **110.25 USD [2025-03-31,2025-04-01)**. The UI is running at
+request/result: **110.25 USD [2025-03-31,2025-04-01)**. At that activation the UI ran at
 **http://127.0.0.1:8501** with both agent modes enabled.
 
 The activation record used one verification / one Runtime invocation, zero ordinary
@@ -156,7 +168,9 @@ questions / zero direct local Converse calls, leaving **18 user-owned regular qu
 across Local Bedrock/AWS** until **2026-11-13T23:59Z**; the protected original-rollback
 slot is unavailable. Historical counters, records and frozen assets remain unchanged;
 no automatic regular submissions or invocation retries are authorized. Exact next task:
-the user may use those 18 questions in the active UI. The activation handoff reports
+the user could use those 18 questions in the activated UI. This is historical
+activation evidence; the current prepared binding and remaining 17 questions are
+recorded above. The activation handoff reports
 its exact commit, PR and CI links once verified; earlier CI links above cover their
 named commits, not this new activation outcome. No next milestone
 or production-readiness claim is implied.

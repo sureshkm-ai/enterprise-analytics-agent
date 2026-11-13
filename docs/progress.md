@@ -2,7 +2,79 @@
 
 Updated: 2026-11-12 (America/Chicago).
 
-## Current checkpoint: completion fix passed Nova; Sonnet denied; restoration verified
+## Current checkpoint: AWS-only accepted Nova connection prepared; activation needs binding approval
+
+The screenshot showed an offline-only server, which had no AgentCore backend to
+select. The old port-8501 shared server also held stale readiness even though the
+current local source no longer matched its frozen Runtime review. This was an
+operator/UI delivery failure; neither the tab nor the plain launch command could
+make that connection usable. The new status logic reports unconfigured/disabled
+targets accurately, rechecks local compatibility and removes invented parity/v12
+metadata. Real JavaScript regressions cover the browser states and safe AWS-mode
+deep link, with no automatic question submission.
+
+The [AWS-only connection plan](ui-accepted-nova-live.md) and
+[review](../evaluations/ui-shared/accepted-nova-runtime.proposed.json) are ready.
+It verifies the existing accepted Nova **v15** frozen archive independently of
+current operator source, keeps Local Bedrock and additional models disabled, and
+uses the **same** interactive-02 ledger: **2/20 used, 17 regular remaining**, expiry
+**2026-11-13T23:59Z**. No reset, new allowance, deployment, upload or permission
+change is proposed. The different AWS-only source-evidence basis requires explicit
+binding approval before activation. Review SHA is
+`e6fdf1354c736f07b54807978af8af4e0612c85e6c091c5b162cbef25b2003a8`;
+current operator source SHA is
+`98d1521be7e35c6a89a6d7e5ad537bcdb92851306a40a6725c2a8086988eebc9`.
+
+Fresh read-only `analytics-dev` preflight passed at **2026-11-12T23:54:52Z**:
+expected account **453711491609**/region **us-west-2**, Runtime/DEFAULT **READY v15**,
+exact ZIP/version/configuration/template/parameters, both resource policies,
+seven-day retention and canonical S3/Glue publication. Offline verification proved
+the frozen 25-file source closure/dependencies, canonical bytes/provenance and
+goldens; all **352** protected historical files are unchanged. Evidence is in
+`artifacts/ui-shared/accepted-nova-runtime/preflight-20261112T235400Z.json`, SHA
+`b4c782bd419092c7c36a5c1d7ef4a3edfd7042a40e2c33911f536b6a8165ca35`, and its read
+journal; the [committed summary](../evaluations/ui-shared/accepted-nova-runtime.readiness.json)
+preserves the observation. No Runtime/model invocation, Athena execution or AWS
+mutation occurred during this correction. The 17 regular questions remain user-owned.
+
+Private streaming diagnostics now retain redacted SDK code, full message and
+request ID, including wrapped setup failures, without adding public/model-visible
+fields or retries. The missing original Sonnet message cannot be reconstructed by
+this local fix, and no frozen/deployed archive was changed. IAM evidence remains
+complete; no repeat policy/simulator request or speculative grant is justified.
+
+Commands actually run with Conda **enterprise-analytics**, Python **3.12.16** and
+Poetry **2.3.1**:
+
+- `poetry check --lock`: passed.
+- `poetry run pytest`: **2141 passed, 85 deselected, zero selected skips in 76.61s**.
+- `poetry run ruff check .`: passed.
+- `poetry run ruff format --check .`: **201 files** already formatted.
+- `poetry run mypy src tests`: **159 source files**, no issues.
+- Accepted-runtime operator `verify-offline`: passed; same **2/20**, **17** regular
+  remaining, no failed/incomplete receipt; 31 focused binding regressions passed.
+- Accepted-runtime operator `preflight --read-only-aws`: passed as recorded above;
+  **42 bounded read pairs**, no failures or invocation/query operations.
+- Browser check of the offline-only server's AWS tab: unavailable status, no fake
+  target metadata and disabled submission; no question sent.
+- Documentation checks: **7 Markdown files, 137 local links, 26 shell blocks**,
+  both new JSON records and `git diff --check` passed; all 352 protected files
+  were independently rechecked without changes.
+
+Earlier **d3694df4d5758a024a87f75f968e511c4d7284fe** is pushed and passed
+[push CI 43325497464](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43325497464)
+and [PR CI 43325507337](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43325507337).
+Those **2055-test** results predate these new source changes. Draft
+[PR #13](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/13) stays unmerged.
+
+**Exact next task:** obtain approval of the concrete AWS-only binding, replace only
+the task-owned stale port-8501 process, then verify the actual Nova selector and
+enabled Ask AWS control at **http://127.0.0.1:8501/?mode=live** without submitting a
+question. This is progress + validated final output, not provider-word streaming.
+Multi-model acceptance remains blocked and its failed campaign stays closed
+**4/37**, aggregate **7/40**; do not replay it. M1–M5 completion is unchanged.
+
+## Historical completion-fix execution: Nova passed; Sonnet denied; restoration verified
 
 The owner approved the exact replacement at **f591498**: review
 **67f3f3aab2a086ad16633e6cdc2195edbe02543065a4b5934c7b1177345ea58c**,
@@ -158,7 +230,7 @@ found no actionable evidence/attribution discrepancy. No application or
 infrastructure source changed, so completed implementation tests were not
 repeated locally for this documentation-only supplement.
 
-**Exact next task:** IAM policy, no-boundary and simulator checks are complete.
+**Historical next task at d3694df:** IAM policy, no-boundary and simulator checks are complete.
 Use the retained diagnostic packet to obtain the full failed Bedrock service
 response before proposing any correction. Do not repeat IAM evidence requests or
 add speculative grants. Preserve the failed campaign and verified restored checkpoint. Any later
@@ -2844,13 +2916,12 @@ Milestone 2 introduced no AWS credentials, calls, deployment, Athena adapter, or
 
 ## Exact next task
 
-The completion correction passed both live Nova gates, but Sonnet denied its
-first model call. All ten original streaming configurations are restored on
-**READY v3**, and retained-v15 Q18 smoke passed. Child **4/37**, aggregate **7/40**,
-is failed/blocked; no replay, reserve use or implicit cleanup budget remains.
-The supplied policy matches, no boundary is set and all eight simulator decisions
-are allowed. Use the
-[full service-error diagnostic handoff](bedrock-streaming-completion-plan.md#full-service-error-diagnosis)
-before proposing a correction or separately approved retry. No repeated IAM
-request or additional grant is indicated. Keep new UI choices
-disabled and PR #13 unmerged. M1–M5 remain complete for the development scope.
+Approve the [AWS-only accepted Nova binding](ui-accepted-nova-live.md), then activate
+and verify **http://127.0.0.1:8501/?mode=live** without an operator question. It uses
+the existing **17** regular user questions and unchanged expiry; no deployment,
+upload, IAM change or new allowance is needed. Local Bedrock and additional models
+stay disabled. The failed multi-model campaign remains closed/restored, child
+**4/37**, aggregate **7/40**. Diagnose the original full Sonnet service response
+before any separately reviewed replacement; do not repeat IAM requests or add
+speculative grants. Keep PR #13 unmerged. M1–M5 remain complete for the development
+scope; provider-word streaming and multi-model acceptance are not complete.

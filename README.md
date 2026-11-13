@@ -17,6 +17,12 @@ after installing the existing Poetry environment:
 poetry run python -m enterprise_analytics_agent.ui
 ```
 
+That command opens the **offline playground only**; it does not connect a live
+model. For the prepared AWS-only connection to the existing accepted Nova v15
+Runtime, use the exact reviewed launch in [Connect accepted Nova](docs/ui-accepted-nova-live.md)
+after binding approval. It retains the existing **17** regular questions and
+expiry; no deployment or new IAM grant is required. Other models remain unavailable.
+
 Open **http://127.0.0.1:8501**. The professional local interface includes
 three explicit modes, suggested questions, exact result tables, execution details,
 a metric catalog, saved-run viewer and code guide. **Offline playground** uses a

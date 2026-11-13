@@ -183,14 +183,31 @@ class Workbench:
     def _backend_state(
         self, backend: LiveBackend | None, mode: str, defaults: dict[str, object]
     ) -> dict[str, object]:
-        value = {**defaults, "enabled": backend is not None, "billable": True}
+        label = "AWS AgentCore" if mode == "live" else "Local Bedrock"
+        value: dict[str, object] = {
+            **defaults,
+            "configured": backend is not None,
+            "enabled": backend is not None,
+            "billable": True,
+        }
+        if backend is None:
+            return {
+                **value,
+                "dataset": None,
+                "reference_date": None,
+                "tenant": None,
+                "regions": [],
+                "runtime_version": None,
+                "description": f"{label} · not configured",
+                "error": f"No {label} model is connected to this workbench.",
+            }
         if backend is not None:
             try:
                 public_state = getattr(backend, "public_state", None)
                 if callable(public_state):
                     value.update(public_state(mode))
                 value["budget"] = backend.ledger.summary()
-            except (UiError, OSError):
+            except (UiError, OSError, ValueError):
                 value.update(enabled=False, error="The shared/live ledger needs inspection.")
         return value
 
@@ -199,6 +216,7 @@ class Workbench:
             "token": self.token,
             "samples": SAMPLES,
             "local": {
+                "configured": True,
                 "enabled": True,
                 "billable": False,
                 "dataset": LOCAL_DATASET,
@@ -212,11 +230,11 @@ class Workbench:
                 self.local_agent,
                 "local_agent",
                 {
-                    "dataset": "retail-v1",
-                    "reference_date": "2025-04-01",
-                    "tenant": "retail_demo",
-                    "regions": ["North", "South"],
-                    "description": "Local agent · canonical DuckDB data + Amazon Bedrock",
+                    "dataset": None,
+                    "reference_date": None,
+                    "tenant": None,
+                    "regions": [],
+                    "description": "Local agent · configured Bedrock target",
                     "cost_notice": "Billable Bedrock: up to 6 calls/question. Approval required.",
                 },
             ),
@@ -224,12 +242,12 @@ class Workbench:
                 self.live,
                 "live",
                 {
-                    "dataset": "parity-v1",
-                    "reference_date": "2025-02-01",
-                    "tenant": "t1",
-                    "regions": ["North", "South"],
-                    "runtime_version": "12",
-                    "description": "AWS AgentCore · original parity deployment · reviewed v12",
+                    "dataset": None,
+                    "reference_date": None,
+                    "tenant": None,
+                    "regions": [],
+                    "runtime_version": None,
+                    "description": "AWS AgentCore · configured target",
                     "cost_notice": "Billable AWS agent. One Runtime call; no retries.",
                 },
             ),

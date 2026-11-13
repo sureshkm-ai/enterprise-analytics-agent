@@ -98,7 +98,7 @@ function modelPicker() {
   } else {
     options.forEach(item => {
       const config = item.modes[mode];
-      const status = config.enabled && !config.budget?.blocked ? (config.acceptance_status === "testing" ? " · Testing" : "") : " · Unavailable";
+      const status = config.availability_label ? ` · ${config.availability_label}` : config.enabled && !config.budget?.blocked ? (config.acceptance_status === "testing" ? " · Testing" : "") : " · Unavailable";
       const option = element("option", "", item.label + status);
       option.value = item.key;
       picker.append(option);
@@ -192,10 +192,13 @@ function updateContext() {
     ? "No live question can be submitted. No model or Runtime call will be made."
     : config.cost_notice || (mode === "local" ? "No model or AWS calls." : "Billable model execution · no automatic retries.");
   $("cost-notice").classList.toggle("billable", mode !== "local" && available);
-  $("live-notice").hidden = mode === "local" || available;
+  $("live-notice").hidden = mode === "local" || (available && !config.notice);
   if (!configured) {
     $("live-notice-title").textContent = `${modeNames[mode]} is not connected to this workbench`;
     $("live-notice-body").textContent = "This page has no live model connection. Open the workbench with its accepted Runtime configuration; changing tabs does not connect it.";
+  } else if (available && config.notice) {
+    $("live-notice-title").textContent = "Model ready · previous request failed";
+    $("live-notice-body").textContent = config.notice;
   } else if (config.budget?.blocked) {
     $("live-notice-title").textContent = `${modeNames[mode]} question allowance is unavailable`;
     $("live-notice-body").textContent = config.error || "This configured target cannot submit questions because its existing allowance is exhausted, expired or needs inspection. Inspect its recorded status before another submission.";

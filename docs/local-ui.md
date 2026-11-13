@@ -1,5 +1,11 @@
 # Analytics Workbench
 
+For the later 24/40 workbench request failures, use the
+[client repair diagnostic and restart commands](workbench-request-repair.md).
+The earlier four-model acceptance below remains historical; current availability
+comes from the retained ledger. The client repair preserves the deployed agent
+and original budget and does not enable failed-acceptance models.
+
 The Workbench provides three explicit execution modes and offline saved-report viewing
 for the separately requested UI scope after milestones 1–5. The default **Offline
 playground** creates no AWS session. **Local agent** uses the existing
@@ -9,7 +15,7 @@ The catalog, v2 contracts, question guard and semantic tools remain shared.
 
 ![Analytics Workbench with three explicit execution modes](images/analytics-workbench-shared-ui.png)
 
-## Current workbench: four accepted streaming models
+## Historical workbench acceptance: four streaming models
 
 Open **http://127.0.0.1:8501/?mode=live**. The current server exposes **Amazon Nova
 Lite, DeepSeek V3.2, Qwen3 235B and Mistral Large 3** in both **Local agent** and

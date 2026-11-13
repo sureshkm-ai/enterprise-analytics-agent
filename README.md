@@ -1,11 +1,14 @@
 # Enterprise structured-data analytics agent
 
-**The multi-model Analytics Workbench is running at
-http://127.0.0.1:8501/?mode=live.** Amazon Nova Lite, DeepSeek V3.2, Qwen3 235B and
-Mistral Large 3 passed independent AWS acceptance and are available in both Local
-agent and AWS AgentCore modes, with readable answers and real provider-word streaming.
-This is **partial model acceptance**: six other models remain disabled. See
-[actual results and launch instructions](docs/ui-model-workbench-deployment-proposal.md).
+**Analytics Workbench: later request failures have a client repair.** The owner
+reported 24/40 attempts and only Qwen enabled after the four-model acceptance
+checkpoint. Follow the [diagnostic and restart instructions](docs/workbench-request-repair.md)
+in the original checkout. The fix preserves the deployed agent and existing
+allowance; it has not been live-validated on the owner's Mac.
+
+Amazon Nova Lite, DeepSeek V3.2, Qwen3 235B and Mistral Large 3 passed the earlier
+independent AWS acceptance. Six other models remain disabled. See
+[recorded acceptance](docs/ui-model-workbench-deployment-proposal.md).
 
 **Milestones 1–5 are complete for the agreed development proof of concept.** Further development requires a separately defined scope; this is not a production-readiness claim.
 
@@ -17,13 +20,14 @@ The separately approved shared UI merged through [PR #8](https://github.com/sure
 
 ## Run locally
 
-Open **http://127.0.0.1:8501/?mode=live**, select **Local agent** or **AWS AgentCore**,
-then choose one of the four enabled models and submit a question. The composer
+After the [client repair restart](docs/workbench-request-repair.md), open
+**http://127.0.0.1:8501/?mode=live**, select **Local agent** or **AWS AgentCore**,
+then choose an available accepted model and submit a question. The composer
 clears immediately; validated provider words appear as the answer streams.
 Local agent uses canonical DuckDB data and billable Bedrock; AWS AgentCore uses
 Athena. Both share the agent, semantic contracts and exact-value presentation.
 
-The separate `bedrock-stream-workbench-v1-01` counter is **20/40 used**, leaving
+At the earlier acceptance checkpoint, `bedrock-stream-workbench-v1-01` was **20/40 used**, leaving
 **18 ordinary questions**, one protected cleanup slot and one unavailable reserve.
 Expiry is **November 15, 5:59 p.m. CST** (`2026-11-15T23:59Z`). Read the displayed
 counter for subsequent use. The 15 AWS acceptance cases produced **9 passes and
@@ -41,6 +45,7 @@ poetry run python -m enterprise_analytics_agent.ui --allow-live --port 8501 \
   --streaming-review evaluations/bedrock-streaming/review.workbench.proposed.json \
   --streaming-releases artifacts/bedrock-streaming/workbench-fix/operations-approved-01/releases.actual.json \
   --streaming-approval artifacts/bedrock-streaming/workbench-fix/approval.json \
+  --streaming-operator-repair evaluations/bedrock-streaming/workbench.operator-repair.json \
   --canonical-dir artifacts/milestone-5/canonical/retail-v1
 ```
 

@@ -1,5 +1,24 @@
 # Repository instructions
 
+Current follow-up: the owner's screenshot at **24/40** shows later failures after
+the four-model acceptance checkpoint below. Consult `docs/workbench-request-repair.md`.
+The client repair changes only six enumerated operator/UI files and pins them in
+`evaluations/bedrock-streaming/workbench.operator-repair.json`; the original 80-file
+source inventory, ZIP/S3 version, deployed agent/semantic/hosting code and all
+approvals stay unchanged. It requires the retained journal with at least 24
+attempts. No reset, new campaign, budget extension, IAM change or deployment is
+authorized. Only accepted models with explicitly classified request failures can
+recover for manual questions; uncertain transport outcomes wait five minutes.
+Unknown/correctness errors, failed acceptance and global ledger limits stay paused.
+The exact cause of the owner's four newer requests needs the original local
+records; a 35.5-second screenshot is not proof of a timeout. No live acceptance
+or new Runtime/model call has been performed for this client repair.
+
+## Historical acceptance checkpoint — 20/40 on November 13
+
+The observations in this section predate the owner's 24/40 failure screenshot.
+Read the current follow-up above before treating availability or usage as current.
+
 For the current multi-model UI task, also consult `docs/ui-model-workbench.md`.
 The new `bedrock-model-workbench-v1` / `bedrock-workbench-preparation-v1` schemas
 require exact approval and release pins. They do not reopen historical reviews or

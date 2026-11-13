@@ -19,6 +19,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 from enterprise_analytics_agent.adapters.bedrock_model_catalog import get_model
 from enterprise_analytics_agent.hosting.config import RuntimeSettings
 from enterprise_analytics_agent.ui.models import UiError
+from enterprise_analytics_agent.ui.streaming_health import accepted_model, request_failures
 
 
 class StreamTarget(BaseModel):
@@ -193,8 +194,13 @@ def verify_approval(review: StreamingReview, approval: object, *, now: datetime)
 class StreamingLedger:
     """One new journal/receipt namespace; old campaigns are never opened for writing."""
 
-    def __init__(self, root: Path, review: StreamingReview) -> None:
+    def __init__(
+        self, root: Path, review: StreamingReview, *, recover_requests: bool = False
+    ) -> None:
+        if recover_requests and review.schema_version != "bedrock-model-workbench-v1":
+            raise UiError("Request recovery cannot reopen historical campaigns.")
         self.root, self.review = root.resolve(), review
+        self.recover_requests = recover_requests
         self.directory = self.root / "artifacts/bedrock-streaming" / review.campaign_id
         self.path = self.directory / "attempts.jsonl"
         self.claims = self.directory / "reservations"
@@ -539,6 +545,24 @@ class StreamingLedger:
             or ordinary >= self.review.ordinary_limit,
         }
         if isolated:
+            if self.recover_requests:
+                failures = request_failures(
+                    self.directory,
+                    rows,
+                    {target.model_key: target.settings.model_id for target in self.review.targets},
+                    now=datetime.now(UTC),
+                )
+                blocked_models = sorted(
+                    {
+                        item["model_key"]
+                        for item in failures
+                        if not item["recoverable"]
+                        or item["wait_seconds"]
+                        or not accepted_model(self.directory, self.review.sha256, item["model_key"])
+                    }
+                )
+                state["request_failures"] = failures
+                state["request_recovery"] = "accepted-models-only; manual submissions; no retries"
             state["blocked_models"] = blocked_models
             state["failure_scope"] = "model"
         if self.review.parent is not None:

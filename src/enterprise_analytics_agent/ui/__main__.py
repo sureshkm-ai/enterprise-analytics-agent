@@ -41,6 +41,11 @@ def main() -> int:
         "--streaming-approval", type=Path, help="Explicit approval record for that scope"
     )
     parser.add_argument(
+        "--streaming-operator-repair",
+        type=Path,
+        help="Exact client-only repair binding; preserves the deployed archive and existing budget",
+    )
+    parser.add_argument(
         "--model-testing",
         action="store_true",
         help="Test selectable models within a fresh workbench review; does not claim acceptance",
@@ -55,6 +60,8 @@ def main() -> int:
     if not 1 <= args.port <= 65535:
         parser.error("port must be between 1 and 65535")
     streaming = any((args.streaming_review, args.streaming_releases, args.streaming_approval))
+    if args.streaming_operator_repair and not streaming:
+        parser.error("--streaming-operator-repair requires the existing streaming configuration")
     accepted_runtime = any((args.accepted_runtime_review, args.accepted_runtime_approval))
     if args.model_testing and not streaming:
         parser.error("--model-testing requires the streaming review, releases and approval")
@@ -121,6 +128,7 @@ def main() -> int:
                     StreamingReleases,
                     StreamingReview,
                 )
+                from enterprise_analytics_agent.ui.workbench_repair import OperatorRepair
 
                 stream_review = StreamingReview.model_validate_json(
                     args.streaming_review.read_bytes()
@@ -129,6 +137,11 @@ def main() -> int:
                     args.streaming_releases.read_bytes()
                 )
                 approval = json.loads(args.streaming_approval.read_bytes())
+                operator_repair = (
+                    OperatorRepair.model_validate_json(args.streaming_operator_repair.read_bytes())
+                    if args.streaming_operator_repair
+                    else None
+                )
                 choices = []
                 for target in stream_review.targets:
                     backend = StreamingQuestions(
@@ -139,6 +152,7 @@ def main() -> int:
                         target.model_key,
                         args.canonical_dir,
                         model_testing=args.model_testing,
+                        operator_repair=operator_repair,
                     )
                     model = get_model(target.model_key)
                     choices.append(

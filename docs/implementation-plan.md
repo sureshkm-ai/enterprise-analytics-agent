@@ -1,5 +1,11 @@
 # Implementation plan
 
+Current follow-up: [repair later workbench request failures](workbench-request-repair.md).
+The owner reports 24/40 attempts and additional disabled models; the 20/40 result
+below is historical acceptance. The client-only repair preserves the deployed
+agent, exact artifacts and original allowance. Original-checkout diagnosis and
+manual restart remain necessary; no live verification or deployment was performed.
+
 The [selectable-model/readable-streaming workbench](ui-model-workbench.md) is
 operational at **http://127.0.0.1:8501/?mode=live** with **partial model acceptance**:
 Nova Lite, DeepSeek V3.2, Qwen3 235B and Mistral Large 3 passed both independent AWS

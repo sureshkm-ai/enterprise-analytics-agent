@@ -1,6 +1,52 @@
 # Progress
 
-## Current task — four-model streaming workbench activated and browser-verified
+## Current task — diagnose later request failures and repair the client
+
+The owner's newer screenshot shows **24/40 attempts**, a Nova request stopping
+after **35.5 seconds**, and only Qwen enabled. This review started from GitHub
+checkpoint 94bdb7c at 20/40; raw attempts 21–24 are in the owner's original checkout and are
+not available here. Do not claim that these specific requests timed out without
+reading their error types. The earlier four-model acceptance remains historical.
+
+Confirmed defects: Runtime invocation reused the 30-second configuration-read
+timeout; one request failure quarantined a previously accepted model for the
+campaign; generic browser errors obscured the failing SDK/stage. The client repair
+uses a separate 300-second invocation read timeout with one SDK attempt, retains
+structured private diagnostics and shows distinct availability reasons. Accepted
+models can recover from proved transient transport failures after a five-minute
+settling period, or completed question limits/validated presentation fallbacks.
+New submissions stay manual and counted. Unknown/correctness failures, failed
+acceptance, incomplete accounting and global budget/expiry/cleanup gates still stop.
+
+The exact operator binding preserves all 80 accepted source/assets except six
+enumerated client/UI paths (including two new helper modules). Agent, semantic,
+model adapter, rendering and hosting code remains identical to the deployed ZIP.
+The original review/approval, artifact hash/S3 version, Runtime settings, IAM,
+canonical data and all historical evidence are unchanged. The repair requires
+the retained ledger with at least the 24 attempts already reported; a fresh clone
+or old 20-attempt snapshot cannot create a new counter.
+
+Final offline verification passed **2186 tests, 85 deselected**, Poetry lock
+validation, Ruff, formatting (213 files), mypy (167 source files), and diff checks.
+The three offline CDK syntheses completed; all ten streaming template hashes
+still match the approved review. Documentation verification passed 143 local
+links and 33 shell blocks. Targeted verification reproduced the simulated
+cold-start regression against the old timeout and passed the repaired setting.
+The exact operator binding passed; the read-only CLI correctly refused this
+checkout's missing operational ledger instead of reporting zero usage. Hosted CI
+for this repair must be checked against its pushed commit; the earlier 94bdb7c
+CI results cover only that historical checkpoint.
+No AWS calls, deployment, live question, ledger reset or automatic retry occurred.
+
+Next: use the [read-only diagnostic and restart commands](workbench-request-repair.md)
+in the original checkout. The account-unavailable four models and failed-acceptance
+Gemma/Llama remain disabled. Their status is not fixed by speculative IAM changes.
+
+## Historical acceptance checkpoint — four models at 20/40
+
+The observations below describe the retained 94bdb7c checkpoint. Later failures
+and the client repair are recorded above; these are not current availability or
+remaining-allowance claims.
 
 **Open http://127.0.0.1:8501/?mode=live** and refresh any old page. **Nova Lite,
 DeepSeek V3.2, Qwen3 235B and Mistral Large 3** are enabled in both Local

@@ -176,6 +176,26 @@ def test_enabled_backend_can_be_ready_only_with_a_question() -> None:
     assert result["notice_hidden"]
 
 
+def test_recovered_model_is_ready_and_shows_counted_previous_failure() -> None:
+    state = configured_state()
+    config = state["model_options"][0]["modes"]["live"]
+    config.update(notice="Previous response timed out. A new submission is a billable attempt.")
+    result = render({"state": state, "mode": "live", "question": "Revenue?"})
+    assert not result["ask_disabled"] and not result["notice_hidden"]
+    assert result["live-notice-title"] == "Model ready · previous request failed"
+    assert "timed out" in result["live-notice-body"]
+    assert "Unavailable" not in result["model_groups"][0]
+
+
+@pytest.mark.parametrize("label", ["Acceptance failed", "Waiting after connection failure"])
+def test_picker_distinguishes_acceptance_from_a_temporary_request_failure(label: str) -> None:
+    state = configured_state(error="Inspect the recorded request.")
+    state["model_options"][0]["modes"]["live"]["availability_label"] = label
+    result = render({"state": state, "mode": "live", "question": "Revenue?"})
+    assert result["ask_disabled"]
+    assert result["model_groups"][0] == "Approved model · " + label
+
+
 def test_closed_allowance_keeps_bound_metadata_but_cannot_look_ready() -> None:
     result = render(
         {"state": configured_state(blocked=True), "mode": "live", "question": "Revenue?"}

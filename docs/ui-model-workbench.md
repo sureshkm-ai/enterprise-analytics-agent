@@ -1,6 +1,16 @@
 # Selectable models and readable streaming
 
-## Running and verified
+## Later request failures and client repair
+
+The owner subsequently reported **24/40** attempts with only Qwen enabled.
+The four-model results below are the earlier acceptance checkpoint. Follow
+[the client repair](workbench-request-repair.md) to inspect the retained requests
+and restart with the exact operator binding, preserving the existing release
+and ledger. The repair corrects invocation timeouts and failure classification;
+it has not been live-validated on the owner's Mac. Six failed-acceptance models
+remain disabled. Do not rebuild the deployed ZIP or reset a campaign.
+
+## Historical acceptance checkpoint at 20/40
 
 Open **http://127.0.0.1:8501/?mode=live** and refresh an older page. **Nova Lite,
 DeepSeek V3.2, Qwen3 235B and Mistral Large 3** are enabled in **Local agent** and
@@ -14,7 +24,7 @@ boundaries and independent goldens. Usage is **20/40**, with **18 ordinary quest
 until **November 15, 2026, 5:59 p.m. CST**. Cleanup and reserve remain unused. This
 is partial acceptance; six failing models are explicitly unavailable.
 
-Current server launch from the repository root:
+Original server launch at that checkpoint (use the repair runbook above for the current client):
 
 ```sh
 conda activate enterprise-analytics

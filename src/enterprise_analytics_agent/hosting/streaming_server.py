@@ -39,6 +39,7 @@ def build_streaming_agent(settings: RuntimeSettings) -> StreamingAnalyticsAgent:
         presentation_operation=(
             "ChatCompletionsStream" if model.transport == "mantle_chat" else "ConverseStream"
         ),
+        readable=True,
     )
 
 
@@ -101,7 +102,15 @@ class StreamingApplication:
                 request,
                 context=self.settings.authorization_context(),
                 on_verified=lambda value: emit(
-                    {"type": "verified", "response": value.model_dump(mode="json")}
+                    {
+                        "type": "verified",
+                        "response": value.model_dump(mode="json"),
+                        **(
+                            {"display_answer": runner.presentation_text(value)}
+                            if isinstance(runner, StreamingAnalyticsAgent) and runner.readable
+                            else {}
+                        ),
+                    }
                 ),
                 on_word=lambda text: emit(
                     {
@@ -120,6 +129,11 @@ class StreamingApplication:
                 "presentation_status": outcome.presentation,
                 "presentation_reason": outcome.reason,
                 "model_calls": list(outcome.calls),
+                **(
+                    {"display_answer": outcome.display_answer}
+                    if outcome.display_answer is not None
+                    else {}
+                ),
             }
         except BaseException as exc:
             try:

@@ -81,9 +81,11 @@ class StreamingParent(BaseModel):
 
 class StreamingReview(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
-    schema_version: Literal["bedrock-model-stream-v1", "bedrock-model-stream-continuation-v1"] = (
-        "bedrock-model-stream-v1"
-    )
+    schema_version: Literal[
+        "bedrock-model-stream-v1",
+        "bedrock-model-stream-continuation-v1",
+        "bedrock-model-workbench-v1",
+    ] = "bedrock-model-stream-v1"
     campaign_id: Annotated[str, Field(pattern=r"^bedrock-stream-[a-z0-9-]{1,48}$")]
     profile: Literal["analytics-dev"] = "analytics-dev"
     account: Literal["453711491609"] = "453711491609"
@@ -108,6 +110,9 @@ class StreamingReview(BaseModel):
         if self.schema_version == "bedrock-model-stream-v1":
             if self.parent is not None or (self.maximum_attempts, self.ordinary_limit) != (40, 38):
                 raise ValueError("The original streaming review keeps its exact 40/38 scope.")
+        elif self.schema_version == "bedrock-model-workbench-v1":
+            if self.parent is not None or self.ordinary_limit != self.maximum_attempts - 2:
+                raise ValueError("A workbench review reserves cleanup and one unused reserve.")
         elif (
             self.parent is None
             or self.parent.campaign_id == self.campaign_id
@@ -504,6 +509,19 @@ class StreamingLedger:
         }
         incomplete = incomplete or sdk_started != sdk_ended
         expired = datetime.now(UTC) >= self.review.expires_at
+        failed_requests = {
+            row["request_id"]
+            for row in rows
+            if row["event"] in {"sdk_failed", "failure"} or row.get("status") == "failed"
+        }
+        blocked_models = sorted(
+            {
+                row["model_key"]
+                for row in reserved
+                if row["request_id"] in failed_requests and row["purpose"] == "question"
+            }
+        )
+        isolated = self.review.schema_version == "bedrock-model-workbench-v1"
         state: dict[str, object] = {
             "used": used,
             "maximum": self.review.maximum_attempts,
@@ -514,12 +532,15 @@ class StreamingLedger:
             "failed": failed,
             "incomplete": incomplete,
             "expired": expired,
-            "blocked": failed
+            "blocked": (failed and not isolated)
             or incomplete
             or expired
             or cleanup_used > 0
             or ordinary >= self.review.ordinary_limit,
         }
+        if isolated:
+            state["blocked_models"] = blocked_models
+            state["failure_scope"] = "model"
         if self.review.parent is not None:
             if used > self.review.maximum_attempts - 1 or ordinary > self.review.ordinary_limit:
                 raise UiError("The continuation journal exceeds its approved remaining allowance.")
@@ -577,7 +598,12 @@ class StreamingLedger:
             used = state["used"]
             if not isinstance(used, int):
                 raise UiError("The streaming journal has an invalid attempt count.")
-            ordinary_blocked = state["blocked"] or used >= self.review.ordinary_limit
+            blocked_models = state.get("blocked_models", [])
+            ordinary_blocked = (
+                state["blocked"]
+                or used >= self.review.ordinary_limit
+                or (isinstance(blocked_models, list) and model_key in blocked_models)
+            )
             if (
                 datetime.now(UTC) >= self.review.expires_at
                 or (cleanup and (state["protected_cleanup"] != 1 or mode != "live"))

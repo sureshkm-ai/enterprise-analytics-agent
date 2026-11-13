@@ -17,6 +17,7 @@ from uuid import UUID
 from pydantic import ValidationError
 
 from enterprise_analytics_agent.agent.contracts import AgentResponse
+from enterprise_analytics_agent.agent.presentation import readable_answer
 from enterprise_analytics_agent.catalog import METRICS
 from enterprise_analytics_agent.retail_evaluation.reporting import EvaluationReport
 from enterprise_analytics_agent.ui.local import (
@@ -89,7 +90,11 @@ def _validated_result(value: object) -> UiResult:
     # introduced through model_copy/model_construct. Publish only a deep recheck.
     if isinstance(value, UiResult):
         value = value.model_dump(mode="python", warnings=False)
-    return UiResult.model_validate(value)
+    result = UiResult.model_validate(value)
+    expected = readable_answer(result.response)
+    if result.display_answer is not None and result.display_answer != expected:
+        raise UiError("The readable answer differs from verified semantic results.")
+    return result.model_copy(update={"display_answer": expected})
 
 
 def read_replay(value: object) -> dict[str, object]:
@@ -109,6 +114,7 @@ def read_replay(value: object) -> dict[str, object]:
                     "result": UiResult(
                         mode="replay",
                         response=response,
+                        display_answer=readable_answer(response),
                         unreported_diagnostics=unreported_diagnostics(response),
                     ).model_dump(mode="json"),
                 }
@@ -129,6 +135,7 @@ def read_replay(value: object) -> dict[str, object]:
                 "result": UiResult(
                     mode="replay",
                     response=case.response,
+                    display_answer=readable_answer(case.response),
                     elapsed_ms=case.client_latency_ms,
                     unreported_diagnostics=unreported_diagnostics(case.response),
                 ).model_dump(mode="json")
@@ -202,6 +209,9 @@ class Workbench:
                 "error": f"No {label} model is connected to this workbench.",
             }
         if backend is not None:
+            # Per-model defaults may originate from the unconfigured legacy slot.
+            # Its error is not evidence about this explicitly bound backend.
+            value.pop("error", None)
             try:
                 public_state = getattr(backend, "public_state", None)
                 if callable(public_state):

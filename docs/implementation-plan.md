@@ -1,5 +1,9 @@
 # Implementation plan
 
+The current selectable-model/readable-streaming correction is documented in
+[the UI workbench implementation](ui-model-workbench.md). Local implementation
+and offline verification do not establish live acceptance of the new package.
+
 **Milestones 1–5 are complete for the agreed development proof of concept.** M5 completion [`7905d13`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/7905d13f59e13d0b5a1b11231348721471a19411) merged through [PR #6](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/6) on **November 10, 2026**, at [`c0d2c5a569e2d242bf840a715c31050888b579ab`](https://github.com/sureshkm-ai/enterprise-analytics-agent/commit/c0d2c5a569e2d242bf840a715c31050888b579ab). [Main CI 42872516193](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/42872516193) passed for that exact merge. Further development requires a separately defined scope; no production-readiness or new-milestone claim follows from this closeout.
 
 ## Follow-on scope: local testing UI

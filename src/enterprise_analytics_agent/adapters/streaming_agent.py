@@ -25,6 +25,7 @@ from enterprise_analytics_agent.adapters.bedrock_word_stream import (
 )
 from enterprise_analytics_agent.adapters.streaming_diagnostics import report_aws_failure
 from enterprise_analytics_agent.agent.contracts import AgentDiagnostics, AgentRequest, AgentResponse
+from enterprise_analytics_agent.agent.presentation import readable_answer
 from enterprise_analytics_agent.agent.questions import question_scope
 from enterprise_analytics_agent.contracts import AuthorizationContext
 
@@ -148,6 +149,7 @@ class StreamingOutcome:
     reason: str | None
     words: int
     calls: tuple[dict[str, object], ...]
+    display_answer: str | None = None
 
 
 class StreamingAnalyticsAgent:
@@ -163,6 +165,7 @@ class StreamingAnalyticsAgent:
         presentation_operation: str = "ConverseStream",
         limits: StreamingLimits | None = None,
         clock: Callable[[], float] = time.monotonic,
+        readable: bool = False,
     ) -> None:
         self.agent, self.presentation_client = agent, presentation_client
         self.allow_temperature = allow_temperature
@@ -171,6 +174,10 @@ class StreamingAnalyticsAgent:
             presentation_operation,
         )
         self.limits, self.clock = limits or StreamingLimits(), clock
+        self.readable = readable
+
+    def presentation_text(self, response: AgentResponse) -> str:
+        return readable_answer(response) if self.readable else response.answer
 
     def run(
         self,
@@ -250,6 +257,7 @@ class StreamingAnalyticsAgent:
 
         presentation: Literal["streamed", "fallback", "not_needed"] = "not_needed"
         reason = None
+        display_answer = self.presentation_text(response)
         if response.status == "answer" and response.answer:
             payload: dict[str, object] = {
                 "modelId": config.model_id,
@@ -263,7 +271,7 @@ class StreamingAnalyticsAgent:
                         )
                     }
                 ],
-                "messages": [{"role": "user", "content": [{"text": response.answer}]}],
+                "messages": [{"role": "user", "content": [{"text": display_answer}]}],
             }
             reserved_input = len(json.dumps(payload, ensure_ascii=False).encode()) + 256
             remaining = self.limits.total_tokens - trace.input_tokens - trace.output_tokens
@@ -280,7 +288,7 @@ class StreamingAnalyticsAgent:
                     streamed = consume_presentation(
                         self.presentation_client,
                         payload,
-                        response.answer,
+                        display_answer,
                         publish,
                         clock=self.clock,
                         deadline=trace.deadline,
@@ -326,7 +334,14 @@ class StreamingAnalyticsAgent:
                 "diagnostics": aggregated_diagnostics.model_dump(),
             }
         )
-        return StreamingOutcome(final, presentation, reason, words, tuple(trace.calls))
+        return StreamingOutcome(
+            final,
+            presentation,
+            reason,
+            words,
+            tuple(trace.calls),
+            display_answer if self.readable else None,
+        )
 
     def _complete_plan(self, request: AgentRequest, response: AgentResponse) -> AgentResponse:
         scope = question_scope(request.question, self.agent.config.reference_date)

@@ -28,6 +28,7 @@ from enterprise_analytics_agent.adapters.streaming_agent import StreamingAnalyti
 from enterprise_analytics_agent.adapters.ui_live import runtime_lease
 from enterprise_analytics_agent.adapters.ui_release import verify_publication
 from enterprise_analytics_agent.agent.contracts import AgentRequest, AgentResponse
+from enterprise_analytics_agent.agent.presentation import readable_answer
 from enterprise_analytics_agent.ui.model_streams import (
     StreamingLedger,
     StreamingReleases,
@@ -299,6 +300,7 @@ def read_runtime_stream(
     verified: AgentResponse | None = None
     gate: CanonicalWordGate | None = None
     final: UiResult | None = None
+    display_answer: str | None = None
     primary: BaseException | None = None
 
     def checked(value: object) -> AgentResponse:
@@ -318,13 +320,17 @@ def read_runtime_stream(
             kind = event.get("type")
             if kind == "verified" and verified is None:
                 verified = checked(event["response"])
+                if "display_answer" in event:
+                    if event["display_answer"] != readable_answer(verified):
+                        raise UiError("The readable answer differs from verified semantic results.")
+                    display_answer = readable_answer(verified)
                 if (
                     verified.diagnostics.model_id != target.settings.model_id
                     or verified.dataset_version != "retail-v1"
                 ):
                     raise UiError("The verified Runtime answer has a different model/dataset.")
                 gate = CanonicalWordGate(
-                    verified.answer,
+                    display_answer if display_answer is not None else verified.answer,
                     lambda text: emit(
                         {
                             "type": "answer_delta",
@@ -366,6 +372,8 @@ def read_runtime_stream(
                 ):
                     raise UiError("The Runtime changed its verified answer after streaming.")
                 status = event.get("presentation_status")
+                if event.get("display_answer") != display_answer:
+                    raise UiError("The Runtime changed its readable answer after streaming.")
                 if status == "streamed":
                     if gate is None:
                         raise UiError("The Runtime omitted verified word-stream evidence.")
@@ -374,6 +382,7 @@ def read_runtime_stream(
                     mode="live",
                     response=response,
                     presentation_status=status,
+                    display_answer=display_answer,
                     metadata=[{"streaming_model_calls": event.get("model_calls", [])}],
                     unreported_diagnostics=("input_tokens", "output_tokens")
                     if any(
@@ -409,7 +418,12 @@ class StreamingQuestions:
         canonical: Path,
         *,
         operator: bool = False,
+        model_testing: bool = False,
     ) -> None:
+        if model_testing and review.schema_version != "bedrock-model-workbench-v1":
+            raise UiError(
+                "Model testing requires a new workbench review; historical campaigns stay closed."
+            )
         verify_approval(review, approval, now=datetime.now(UTC))
         releases.validate_review(review)
         verify_local_inputs(root, review, canonical)
@@ -427,10 +441,16 @@ class StreamingQuestions:
         )
         self.canonical = canonical
         self.operator = operator
+        self.model_testing = model_testing
         self.ledger = StreamingLedger(root, review)
 
     def _accepted(self) -> bool:
-        path = self.ledger.directory / "accepted.json"
+        independent = self.review.schema_version == "bedrock-model-workbench-v1"
+        path = (
+            self.ledger.directory / "acceptance" / f"{self.target.model_key}.json"
+            if independent
+            else self.ledger.directory / "accepted.json"
+        )
         if not path.is_file() or path.resolve() != path:
             return False
         try:
@@ -439,6 +459,13 @@ class StreamingQuestions:
             return False
         if not isinstance(value, dict):
             return False
+        if independent:
+            return (
+                value.get("review_sha256") == self.review.sha256
+                and value.get("model_key") == self.target.model_key
+                and value.get("passed") is True
+                and value.get("cases") == ["Q18", "all-five-regionals"]
+            )
         return bool(
             value.get("review_sha256") == self.review.sha256
             and value.get("passed") is True
@@ -452,15 +479,36 @@ class StreamingQuestions:
         state = self.ledger.summary()
         model = get_model(self.target.model_key)
         accepted = self._accepted()
+        blocked = state.get("blocked_models", [])
+        model_blocked = isinstance(blocked, list) and self.target.model_key in blocked
+        model_blocked = model_blocked or self._failed_acceptance()
         source_error = ""
         try:
             verify_local_inputs(self.root, self.review, self.canonical)
         except (UiError, OSError, ValueError):
             source_error = "Local streaming source or data differs from the approved release."
         return {
-            "enabled": not state["blocked"] and accepted and not source_error,
+            "enabled": not state["blocked"]
+            and not model_blocked
+            and (accepted or self.model_testing)
+            and not source_error,
             "error": source_error
-            or ("The model needs its reviewed deployed acceptance gates." if not accepted else ""),
+            or (
+                "This model failed its last attempt. Inspect its diagnostics; "
+                "other models can still be tested."
+                if model_blocked
+                else ""
+            )
+            or (
+                "The model needs its reviewed deployed acceptance gates."
+                if not accepted and not self.model_testing
+                else ""
+            ),
+            "acceptance_status": "accepted"
+            if accepted
+            else "testing"
+            if self.model_testing
+            else "unverified",
             "dataset": "retail-v1",
             "tenant": "retail_demo",
             "regions": ["North", "South"],
@@ -477,6 +525,17 @@ class StreamingQuestions:
     def ask(self, request: AskRequest) -> UiResult:
         return self.ask_with_events(request, lambda event: None)
 
+    def _failed_acceptance(self) -> bool:
+        if self.review.schema_version != "bedrock-model-workbench-v1":
+            return False
+        path = self.ledger.directory / "acceptance" / f"{self.target.model_key}.json"
+        if path.is_symlink():
+            return True
+        if not path.exists():
+            return False
+        # A malformed or mismatched record is unavailable, never a fresh attempt.
+        return not self._accepted()
+
     def ask_with_events(
         self,
         request: AskRequest,
@@ -485,7 +544,9 @@ class StreamingQuestions:
         if request.mode not in ("local_agent", "live") or Path.cwd().resolve() != self.root:
             raise UiError("Start the approved streaming UI from the original checkout.")
         verify_approval(self.review, self.approval, now=datetime.now(UTC))
-        if not self.operator and not self._accepted():
+        if self._failed_acceptance():
+            raise UiError("This model failed acceptance. Its recorded attempt cannot be replayed.")
+        if not self.operator and not self.model_testing and not self._accepted():
             raise UiError("This model has not passed its deployed acceptance gates.")
         verify_local_inputs(self.root, self.review, self.canonical)
         with runtime_lease(self.root):
@@ -594,6 +655,7 @@ class StreamingQuestions:
                 presentation_operation="ChatCompletionsStream"
                 if model.transport == "mantle_chat"
                 else "ConverseStream",
+                readable=True,
             ).run(
                 AgentRequest(question=request.question),
                 context=settings.authorization_context(),
@@ -611,6 +673,7 @@ class StreamingQuestions:
             mode="local_agent",
             response=outcome.response,
             presentation_status=outcome.presentation,
+            display_answer=outcome.display_answer,
             unreported_diagnostics=missing,
             metadata=[{"streaming_model_calls": list(outcome.calls)}],
         )

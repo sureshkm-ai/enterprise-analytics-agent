@@ -245,6 +245,9 @@ def main(argv: list[str] | None = None) -> int:
     evaluate = commands.add_parser("evaluate")
     evaluate.add_argument("--invoke-live", action="store_true")
     evaluate.add_argument("--output", type=Path, required=True)
+    evaluate.add_argument(
+        "--model", action="append", help="Workbench review only: evaluate selected model keys"
+    )
     cleanup = commands.add_parser("cleanup")
     cleanup.add_argument("--invoke-live", action="store_true")
     cleanup.add_argument("--output", type=Path, required=True)
@@ -371,17 +374,43 @@ def main(argv: list[str] | None = None) -> int:
         verify_approval(review, approval, now=datetime.now(UTC))
         releases.validate_review(review)
         ledger.directory.mkdir(parents=True, exist_ok=True)
-        _write_json_new(
-            ledger.directory / "acceptance-claim.json",
-            {
-                "review_sha256": review.sha256,
-                "output": str(args.output.resolve()),
-                "at": datetime.now(UTC).isoformat(),
-            },
-        )
+        independent = review.schema_version == "bedrock-model-workbench-v1"
+        if args.model and not independent:
+            raise UiError("Selected-model evaluation requires a fresh workbench review.")
+        selected = set(args.model or [target.model_key for target in review.targets])
+        if not selected <= {target.model_key for target in review.targets}:
+            raise UiError("An evaluation model is outside the reviewed scope.")
+        targets = [target for target in review.targets if target.model_key in selected]
+        claim = {
+            "review_sha256": review.sha256,
+            "output": str(args.output.resolve()),
+            "at": datetime.now(UTC).isoformat(),
+        }
+        if independent:
+            claim_dir = ledger.directory / "acceptance-claims"
+            claim_dir.mkdir(exist_ok=True)
+            if any((claim_dir / f"{target.model_key}.json").exists() for target in targets):
+                raise UiError(
+                    "A selected model already has an acceptance claim; no repeat is allowed."
+                )
+            for target in targets:
+                _write_json_new(
+                    claim_dir / f"{target.model_key}.json", {**claim, "model_key": target.model_key}
+                )
+        else:
+            _write_json_new(
+                ledger.directory / "acceptance-claim.json",
+                {
+                    "review_sha256": review.sha256,
+                    "output": str(args.output.resolve()),
+                    "at": datetime.now(UTC).isoformat(),
+                },
+            )
         reports = []
-        for target in review.targets:
+        passed_models = []
+        for target in targets:
             runner = backend(target.model_key)
+            model_passed = True
             for index, (case, golden) in enumerate(cases):
                 request = AskRequest(question=case.question, mode="live", request_id=uuid4())
                 report: dict[str, object] = {
@@ -404,15 +433,24 @@ def main(argv: list[str] | None = None) -> int:
                         raw_response=result.response.model_dump(mode="json"),
                     )
                 except BaseException as exc:
+                    report.update(
+                        status="failed", operation="model_acceptance", error_type=type(exc).__name__
+                    )
+                    reports.append(report)
                     _write_json_new(
                         report_path,
-                        {
-                            **report,
-                            "status": "failed",
-                            "operation": "model_acceptance",
-                            "error_type": type(exc).__name__,
-                        },
+                        report,
                     )
+                    if independent and isinstance(exc, Exception):
+                        state = ledger.summary()
+                        blocked_models = state.get("blocked_models", [])
+                        if (
+                            not state["blocked"]
+                            and isinstance(blocked_models, list)
+                            and target.model_key in blocked_models
+                        ):
+                            model_passed = False
+                            break
                     raise
                 report.update(
                     judgment=judged.model_dump(mode="json"), result=result.model_dump(mode="json")
@@ -420,21 +458,42 @@ def main(argv: list[str] | None = None) -> int:
                 reports.append(report)
                 _write_json_new(report_path, report)
                 if judged.status != "passed" or result.presentation_status != "streamed":
-                    raise UiError(
-                        "A model acceptance gate failed; "
-                        "stop ordinary execution and retain evidence."
-                    )
+                    model_passed = False
+                    if not independent:
+                        raise UiError(
+                            "A model acceptance gate failed; "
+                            "stop ordinary execution and retain evidence."
+                        )
+                    break
+            if model_passed:
+                passed_models.append(target.model_key)
+            if independent:
+                directory = ledger.directory / "acceptance"
+                directory.mkdir(exist_ok=True)
+                _write_json_new(
+                    directory / f"{target.model_key}.json",
+                    {
+                        "review_sha256": review.sha256,
+                        "model_key": target.model_key,
+                        "passed": model_passed,
+                        "cases": ["Q18", "all-five-regionals"] if model_passed else [],
+                        "reports": str(args.output),
+                    },
+                )
         accepted = {
             "review_sha256": review.sha256,
-            "passed": True,
-            "models": [target.model_key for target in review.targets],
+            "passed": len(passed_models) == len(targets),
+            "models": passed_models,
             "reports": str(args.output),
             "questions": len(reports),
             "budget": ledger.summary(),
         }
-        _write_json_new(ledger.directory / "accepted.json", accepted)
+        _write_json_new(
+            args.output / "summary.json" if independent else ledger.directory / "accepted.json",
+            accepted,
+        )
         print(json.dumps(accepted, indent=2))
-        return 0
+        return 0 if accepted["passed"] else 1
     except KeyboardInterrupt:
         print(
             json.dumps(

@@ -1,5 +1,12 @@
 # Repository instructions
 
+For the current multi-model UI task, also consult `docs/ui-model-workbench.md`.
+The new `bedrock-model-workbench-v1` / `bedrock-workbench-preparation-v1` schemas
+require fresh exact approval and release pins. They do not reopen historical
+reviews or authorize use of the existing user-owned Nova allowance. Per-model
+acceptance/failure isolation applies only to the new scope. Preserve the historical
+instructions and evidence below.
+
 ## Scope and architecture
 
 - Milestones 1–5 are complete for the agreed development proof of concept. M5 merged through PR #6 on November 10, 2026, at `c0d2c5a569e2d242bf840a715c31050888b579ab`, with successful main CI 42872516193. Preserve the development-only limits and historical acceptance evidence. Any further development requires a separately defined scope; no new milestone, live budget or production-readiness claim is implied.

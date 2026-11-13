@@ -1,5 +1,39 @@
 # Progress
 
+## Current task — selectable models and readable streaming (November 13, 2026)
+
+Implemented on the existing `feat/bedrock-streaming-activation` branch from
+`5f5fa06389c5b9cc8302153ef25169c88215d249`. See
+[the implementation and live handoff](ui-model-workbench.md).
+
+- Added a shared readable-answer renderer, validated readable provider streams,
+  safe browser formatting and collapsed data/diagnostics. Exact semantic JSON
+  and Decimal results remain unchanged.
+- Fixed inherited "not connected" errors and request errors erased by refresh.
+- Added support for a new workbench scope requiring explicit approval, with
+  per-model acceptance and failure isolation, plus a labeled model-testing launch.
+  The deployment controller can retain independently accepted models. No new live
+  scope has been approved or executed here.
+- Final fresh offline verification: **2,165 passed, 85 live-gated items deselected**
+  in 153.68 seconds. Poetry lock validation, Ruff, formatting (207 files), mypy
+  (164 files), documentation links and diff checks passed. Data, AgentCore foundation
+  and all ten streaming CDK templates synthesized offline; all ten historical
+  streaming template hashes still match their reviewed pins.
+- Tests execute the shipped JavaScript with fragmented UTF-8 provider events and
+  validate partial rendering, exact values, unsafe markup and final consistency.
+  Prior browser checks used labeled fixture backends, not live AWS models.
+- Existing reviews, tracked evaluations/data, CDK configurations, dependency pins,
+  permissions and M1–M5 evidence are unchanged. No AWS operations or live calls ran.
+  The original ignored Mac checkpoints are unavailable in this clone and are not
+  claimed as reverified. No new S3 artifact or VersionId exists for this change.
+- The user authorized pushing this change to existing PR #13. Hosted CI will run
+  on publication; historical CI links below cover only their original commits.
+- Next: verify hosted CI and review the change, then bind fresh baseline/preparation
+  and explicit live approval in the authenticated checkout. Do not replay historical
+  campaigns or infer model access from offline tests.
+
+## Previous accepted Nova checkpoint
+
 Updated: 2026-11-12 (America/Chicago).
 
 ## Current checkpoint: approved AWS-only Nova connection activated and browser-verified

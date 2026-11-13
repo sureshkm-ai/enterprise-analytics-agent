@@ -59,7 +59,9 @@ SHA = Annotated[str, Field(pattern=r"^[a-f0-9]{64}$")]
 
 class CompletionPlan(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
-    schema_version: Literal["bedrock-streaming-completion-preparation-v1"]
+    schema_version: Literal[
+        "bedrock-streaming-completion-preparation-v1", "bedrock-workbench-preparation-v1"
+    ]
     review_path: str
     review_sha256: SHA
     baseline_review_path: str
@@ -138,15 +140,24 @@ def load_prepared(root: Path, path: Path, *, restoration: bool = False) -> Prepa
     release_file = local_path(root, plan.baseline_releases_path)
     releases = StreamingReleases.model_validate_json(release_file.read_bytes())
     releases.validate_review(baseline)
+    workbench = plan.schema_version == "bedrock-workbench-preparation-v1"
+    if workbench:
+        valid_scope = (
+            review.schema_version == "bedrock-model-workbench-v1" and review.parent is None
+        )
+    else:
+        valid_scope = (
+            review.parent is not None
+            and review.parent.review_path == plan.baseline_review_path
+            and review.parent.review_sha256 == baseline.sha256
+            and all(item.runtime_version == "1" for item in releases.models)
+        )
     if (
         review.sha256 != plan.review_sha256
-        or review.parent is None
-        or review.parent.review_path != plan.baseline_review_path
-        or review.parent.review_sha256 != baseline.sha256
+        or not valid_scope
         or digest(release_file) != plan.baseline_releases_sha256
         or releases.artifact_version_id != OLD_VERSION
         or len(review.targets) != 10
-        or any(item.runtime_version != "1" for item in releases.models)
     ):
         raise ValueError("The continuation/baseline deployment pins differ")
     keys = {target.model_key for target in review.targets}
@@ -210,8 +221,12 @@ def load_prepared(root: Path, path: Path, *, restoration: bool = False) -> Prepa
     if not restoration:
         verify_local_inputs(root, review, local_path(root, plan.canonical_directory))
     budget = StreamingLedger(root, review).summary()
-    if not restoration and (budget["used"] != 0 or budget["aggregate_used"] != 3):
-        raise ValueError("The continuation is not the untouched reviewed 0/37 checkpoint")
+    if not restoration and (
+        budget["used"] != 0
+        or budget.get("blocked")
+        or (not workbench and budget["aggregate_used"] != 3)
+    ):
+        raise ValueError("The deployment allowance is not an untouched, open reviewed checkpoint")
     return Prepared(root, plan, digest(path), review, baseline, releases)
 
 
@@ -271,7 +286,10 @@ class CompletionWorkflow:
         if self.restoration_record.exists():
             raise ValueError("Restoration already completed; no smoke or deployment was repeated")
         state = self.ledger.summary()
-        if state.get("continuation_claimed") is not True or state.get("protected_cleanup") != 1:
+        workbench = prepared.plan.schema_version == "bedrock-workbench-preparation-v1"
+        if (not workbench and state.get("continuation_claimed") is not True) or state.get(
+            "protected_cleanup"
+        ) != 1:
             raise ValueError(
                 "A matching continuation claim and unused protected smoke are required"
             )
@@ -373,7 +391,8 @@ class CompletionWorkflow:
                         "output": str(self.output),
                     },
                 )
-                self.ledger.claim_continuation(self.approval)
+                if prepared.plan.schema_version != "bedrock-workbench-preparation-v1":
+                    self.ledger.claim_continuation(self.approval)
                 version = self.boundaries.upload()
                 observed = []
                 for target in prepared.review.targets:
@@ -395,10 +414,15 @@ class CompletionWorkflow:
                 releases.validate_review(prepared.review)
                 write_new(self.output / "releases.actual.json", releases.model_dump(mode="json"))
             self.boundaries.evaluate(releases)
+            status = "accepted"
+            if prepared.plan.schema_version == "bedrock-workbench-preparation-v1":
+                summary = json.loads((self.output / "acceptance/summary.json").read_bytes())
+                if summary.get("passed") is not True:
+                    status = "partially_accepted"
             write_new(
                 self.output / "outcome.json",
                 {
-                    "status": "accepted",
+                    "status": status,
                     "budget": self.ledger.summary(),
                     "releases": releases.model_dump(mode="json"),
                 },
@@ -1068,7 +1092,7 @@ class LiveBoundaries:
             )
         return head
 
-    def _cli(self, action: str, extra: list[str]) -> None:
+    def _cli(self, action: str, extra: list[str], *, allow_partial: bool = False) -> None:
         from enterprise_analytics_agent.adapters.model_stream_cli import main as operator
 
         assert self.approval_path is not None
@@ -1086,12 +1110,13 @@ class LiveBoundaries:
             redirect_stderr(err),
         ):
             result = operator(args)
-        if result != 0:
+        if result != 0 and not (allow_partial and result == 1):
             raise RuntimeError(
                 f"Reviewed {action} stopped with exit code {result}; preserve its diagnostics"
             )
 
     def evaluate(self, releases: StreamingReleases) -> None:
+        workbench = self.prepared.plan.schema_version == "bedrock-workbench-preparation-v1"
         self._cli(
             "evaluation",
             [
@@ -1102,7 +1127,33 @@ class LiveBoundaries:
                 "--output",
                 str(self.output / "acceptance"),
             ],
+            allow_partial=workbench,
         )
+        if workbench:
+            summary = json.loads((self.output / "acceptance/summary.json").read_bytes())
+            ledger = StreamingLedger(self.prepared.root, self.prepared.review)
+            accepted_models = []
+            for target in self.prepared.review.targets:
+                record = json.loads(
+                    (ledger.directory / "acceptance" / f"{target.model_key}.json").read_bytes()
+                )
+                if (
+                    record.get("review_sha256") != self.prepared.review.sha256
+                    or record.get("model_key") != target.model_key
+                ):
+                    raise ValueError("Per-model acceptance proof has a different binding")
+                if record.get("passed") is True:
+                    if record.get("cases") != ["Q18", "all-five-regionals"]:
+                        raise ValueError("Per-model acceptance proof is incomplete")
+                    accepted_models.append(target.model_key)
+            if (
+                not accepted_models
+                or summary.get("models") != accepted_models
+                or summary.get("review_sha256") != self.prepared.review.sha256
+                or ledger.summary()["blocked"]
+            ):
+                raise ValueError("No independently accepted, usable workbench models remain")
+            return
         accepted_path = (
             StreamingLedger(self.prepared.root, self.prepared.review).directory / "accepted.json"
         )

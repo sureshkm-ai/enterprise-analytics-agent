@@ -41,6 +41,11 @@ def main() -> int:
         "--streaming-approval", type=Path, help="Explicit approval record for that scope"
     )
     parser.add_argument(
+        "--model-testing",
+        action="store_true",
+        help="Test selectable models within a fresh workbench review; does not claim acceptance",
+    )
+    parser.add_argument(
         "--accepted-runtime-review", type=Path, help="Separately reviewed AWS-only Nova binding"
     )
     parser.add_argument(
@@ -51,6 +56,8 @@ def main() -> int:
         parser.error("port must be between 1 and 65535")
     streaming = any((args.streaming_review, args.streaming_releases, args.streaming_approval))
     accepted_runtime = any((args.accepted_runtime_review, args.accepted_runtime_approval))
+    if args.model_testing and not streaming:
+        parser.error("--model-testing requires the streaming review, releases and approval")
     if accepted_runtime and (
         streaming or args.live_review or args.shared_review or args.release_record
     ):
@@ -131,6 +138,7 @@ def main() -> int:
                         approval,
                         target.model_key,
                         args.canonical_dir,
+                        model_testing=args.model_testing,
                     )
                     model = get_model(target.model_key)
                     choices.append(

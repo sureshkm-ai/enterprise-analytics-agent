@@ -1,6 +1,89 @@
 # Progress
 
-## Current task — selectable models and readable streaming (November 13, 2026)
+## Current task — workbench candidate/preflight complete; exact execution approval pending
+
+Continued on **feat/bedrock-streaming-activation**, clean implementation
+**106b17309716d11f154c8954024f7a260c8fbf7a**, preserving PR #13. The process actually
+serving port 8501 is **13049**, launched with the historical `--accepted-runtime-review`
+and `--accepted-runtime-approval` files. Its actual API reports disabled because
+current source differs from that approved operator pin. The unrelated servers on
+ports 8502/8510 are preserved. No stale accepted-Nova binding was reused or relaxed.
+
+The [concrete execution proposal](ui-model-workbench-deployment-proposal.md),
+[review](../evaluations/bedrock-streaming/review.workbench.proposed.json),
+[sealed preparation](../evaluations/bedrock-streaming/workbench.preparation.json)
+and [readiness evidence](../evaluations/bedrock-streaming/workbench.readiness.json)
+are complete. New campaign **bedrock-stream-workbench-v1-01** is **0/40**,
+uncreated/unclaimed. Review SHA:
+`c17f1bb9a7c3a29620c42bcf1a0217298a2fd6b0d473b9fcce7608ca90d247b3`;
+preparation SHA:
+`195fb2033f92458ff6548e9e1aeb1b7e0a0dc0aa7c59de053e260ac7714a4d32`.
+
+The new ARM64 ZIP **f2755c33d5bbbef44d834628b974c1c71b7313374c9e7835b4b7ce66238a2a6a**,
+**39,321,518 bytes**, was built and independently reproduced offline using all
+**13** locked cached dependencies. All **80** source/assets, package marker and
+entry point match; current source digest is
+`8ee90d63f5af4fa62b8e82f9525a9b6eca6d6d58fd6693aa023031283fe2224e`.
+Two offline syntheses reproduce **10 templates / 34 assembly files** byte-for-byte.
+The exact diff permits only the new code prefix, artifact SHA output and workload
+roles' exact new-plus-original code-key reads. Model grants, trust, hosting,
+authorization/data scope and M3 resources remain unchanged. Actual S3 VersionId
+is deliberately **unbound**; there has been no upload.
+
+Fresh **read-only** `analytics-dev` STS verified account **453711491609**, region
+**us-west-2**, expected PowerUser SSO principal. Fresh complete baseline and formal
+preflight at **2026-11-13T15:32:13Z** verified all ten existing stacks
+**UPDATE_COMPLETE**, Runtime/DEFAULT **READY v3**, exact original c136/GSY artifact,
+configuration/templates/parameters, both resource policies, stack IDs/execution
+role and retention. Retained Nova independently verified **READY v15**; canonical
+S3/Glue publication and candidate-key absence passed. No denied IAM inspection
+was repeated and no model, Runtime, Athena execution or mutation occurred.
+
+The preservation inventory verifies **555 files** unchanged during this work.
+Of the older 352-file snapshot, **349** remain byte-identical; three active Nova
+journals contain the later authorized user question, started November 13 at
+**01:02:08Z**, returned **01:02:15Z**. That separate ledger is **3/20**, **16** regular
+remaining, with three completed Runtime receipts and no failure/incomplete state.
+Do not replace those journals with older hashes. Historical streaming ledgers
+stay closed **3/40**, **4/37**, aggregate **7/40**; M4/M5 evidence is preserved.
+
+Actual verification with **enterprise-analytics**, Conda Python **3.12.16**, Poetry:
+
+- `poetry check --lock`: passed.
+- `poetry run pytest`: **2165 passed, 85 deselected, zero selected skips in 101.47s**.
+  An initial collection failure from the JSII cache location was environmental;
+  rerunning with `JSII_RUNTIME_PACKAGE_CACHE_ROOT` under `/private/tmp` and local
+  loopback permission passed. Both logs are retained.
+- `poetry run ruff check .`: passed; `poetry run ruff format --check .`: **208 files**.
+- `poetry run mypy src tests`: **164 files**, no issues.
+- Separate candidate/reproduction packaging with `--offline`: identical ZIPs and
+  manifests; original archives unchanged. Strict template diff and both syntheses
+  passed, with logs retained.
+- Completion operator `verify-offline` with the new preparation: passed **0/40**;
+  formal `preflight --read-only-aws`: passed all ten targets and legacy/canonical gates.
+- Independent focused lifecycle/UI/ledger/readable-output review: **184 tests passed**.
+- Final documentation checks: **6 Markdown files, 115 local links, 23 shell blocks**
+  and four new JSON records passed. All **241 preparation pins** and **555 preserved
+  files** were independently rehashed; exact hashes and `git diff --check` passed.
+
+Implementation **106b173** is pushed and passed
+[push CI 43448268388](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43448268388)
+and [PR CI 43448277518](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43448277518):
+**2165 passed, 85 deselected, zero selected skips**, lock/lint/format/types and
+all three synthesis steps successful. Those runs cover 106b173, not this new
+preparation/documentation commit. No new live/browser acceptance is claimed.
+
+**Exact next task:** approve the complete new review/preparation and proposed
+expiry **2026-11-15T23:59Z** (November 15, 5:59 p.m. CST), then run the one reviewed
+upload/deployment/evaluation operation and actual Local/AWS browser checks. The
+40-slot cap allocates up to **20 AWS authored checks + 10 Local browser Q18 +
+1 AWS browser Q18**, then user-owned ordinary slots within 38 total, one protected
+failure-restoration smoke and one unapproved reserve. The actual launch paths and
+restoration-only command are in the proposal. No approval record exists yet;
+do not deploy, invoke, reset a campaign or advertise this candidate as active.
+The new workbench does not reopen any historical budget. Keep PR #13 unmerged.
+
+## Historical implementation-only task — selectable models and readable streaming
 
 Implemented on the existing `feat/bedrock-streaming-activation` branch from
 `5f5fa06389c5b9cc8302153ef25169c88215d249`. See
@@ -36,7 +119,7 @@ Implemented on the existing `feat/bedrock-streaming-activation` branch from
 
 Updated: 2026-11-12 (America/Chicago).
 
-## Current checkpoint: approved AWS-only Nova connection activated and browser-verified
+## Historical checkpoint: approved AWS-only Nova connection activated and browser-verified
 
 **Live Workbench: http://127.0.0.1:8501/?mode=live.** The owner explicitly approved
 the binding at **1d7e8f6**, review
@@ -3004,14 +3087,12 @@ Milestone 2 introduced no AWS credentials, calls, deployment, Athena adapter, or
 
 ## Exact next task
 
-The user can submit a question with **Amazon Nova Lite** at
-**http://127.0.0.1:8501/?mode=live**. The approved AWS-only binding is active and
-browser-verified; at activation **17 regular user questions** remained, with the
-existing November 13, 5:59 p.m. CST expiry. Read the persistent counter for later
-usage; do not automate ordinary questions or repeat Q18. Local Bedrock and additional
-models stay disabled; the accepted Runtime shows progress and validated final
-output, not provider-word streaming. Preserve all artifacts/permissions/ledgers.
-The separate multi-model campaign remains failed/restored and closed **4/37**,
-aggregate **7/40**; diagnose its original full Sonnet service response before any
-separately reviewed replacement. Do not repeat IAM requests or add speculative
-grants. Keep PR #13 unmerged. M1–M5 remain complete for the development scope.
+Approve the [complete workbench deployment/acceptance proposal](ui-model-workbench-deployment-proposal.md),
+review `c17f1bb9a7c3a29620c42bcf1a0217298a2fd6b0d473b9fcce7608ca90d247b3`,
+preparation `195fb2033f92458ff6548e9e1aeb1b7e0a0dc0aa7c59de053e260ac7714a4d32`.
+Then run its one conditional upload, exact sequential updates, independent per-model
+AWS acceptance, counted Local/AWS browser checks and required failure restoration.
+The prepared candidate is not deployed. Do not reuse the stale accepted-Nova source
+binding, spend its remaining16questions on this work, replay a closed campaign or
+make speculative permission changes. Preserve PR #13 and all historical evidence.
+M1–M5 remain complete; the multi-model workbench remains open until actual gates pass.

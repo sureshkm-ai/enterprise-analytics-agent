@@ -1,5 +1,11 @@
 # Enterprise structured-data analytics agent
 
+**Current UI task:** the [multi-model streaming workbench](docs/ui-model-workbench.md)
+has a reproducible candidate and successful fresh read-only preflight. Its
+[exact deployment/acceptance proposal](docs/ui-model-workbench-deployment-proposal.md)
+awaits approval. The older Nova launcher on port 8501 is disabled by current source
+drift; do not reuse it or treat the historical activation below as current readiness.
+
 **Milestones 1–5 are complete for the agreed development proof of concept.** Further development requires a separately defined scope; this is not a production-readiness claim.
 
 The repository provides five governed metrics, unchanged v1/v2 contracts, deterministic retail data, DuckDB/Athena adapters, and automated verification. Milestone 3 is merged and its hosted CI passed; the user's AWS parity result was **66 passed, 458 deselected in 111.94s**. Milestone 4 adds a bounded Bedrock Converse agent hosted on AgentCore Runtime. **Milestone 4 is implemented, deployed, live-validated, merged into main and verified by hosted CI for the agreed development scope.** [PR #4](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/4) merged on November 8, 2026. Recorded live acceptance remains 18 + 3 + 3 tests plus warm-up, 28/40 invocations, corrected parity-v1 restored and Runtime/DEFAULT READY on version 4, with the runtime stack UPDATE_COMPLETE. The default CLI/tests remain local and require no AWS credentials.

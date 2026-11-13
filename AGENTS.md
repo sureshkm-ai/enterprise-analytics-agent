@@ -4,7 +4,10 @@ For the current multi-model UI task, also consult `docs/ui-model-workbench.md`.
 The new `bedrock-model-workbench-v1` / `bedrock-workbench-preparation-v1` schemas
 require fresh exact approval and release pins. They do not reopen historical
 reviews or authorize use of the existing user-owned Nova allowance. Per-model
-acceptance/failure isolation applies only to the new scope. Preserve the historical
+acceptance/failure isolation applies only to the new scope. The completed preparation
+and single exact execution-approval request are in
+`docs/ui-model-workbench-deployment-proposal.md`; the candidate remains unuploaded
+and the separate campaign remains unclaimed at the preparation checkpoint. Preserve the historical
 instructions and evidence below.
 
 ## Scope and architecture

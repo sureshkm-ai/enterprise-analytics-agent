@@ -149,9 +149,27 @@ The prior turn's browser review used clearly labeled fixture backends and made
 no AWS/model calls. That review is not live model acceptance. Current validation
 results are recorded in [progress](progress.md).
 
-This workspace has no authenticated `analytics-dev` session or original ignored
-operator checkpoint. No upload, deployment, IAM change, subscription or billable
-invocation was performed. The Sonnet service denial remains unresolved; its
-existing IAM evidence does not justify another speculative grant. Use the retained
-private AWS error and account/provider availability evidence if that model still
-fails. Other models can now be evaluated independently under the new review.
+The implementation-only clone originally lacked the authenticated session and
+ignored checkpoints; that was historical handoff context. The original checkout
+has now verified `analytics-dev`, current deployments and retained assets through
+fresh read-only calls. All ten streaming stacks verified UPDATE_COMPLETE and
+Runtime/DEFAULT READY v3; legacy Nova remains READY v15. The current port-8501
+process uses the old accepted-Nova launcher and correctly disables it because
+106b173 changes its source pin. It is not the new workbench.
+
+The [concrete deployment/acceptance proposal](ui-model-workbench-deployment-proposal.md)
+is fully prepared: reproducible new ARM64 ZIP, exact source/configuration/review,
+two matching syntheses, original restoration assembly, fresh baseline and formal
+preflight, and a separate untouched 40-slot campaign. Its actual commands replace
+the illustrative placeholders above. See the
+[readiness summary](../evaluations/bedrock-streaming/workbench.readiness.json).
+No upload, deployment, IAM change, subscription or billable invocation has occurred
+for this new scope. One explicit approval of its exact review/preparation, expiry,
+attempt allocation and restoration remains required before execution. The old
+accepted-Nova binding and historical failed reviews cannot authorize it.
+
+The Sonnet service denial remains unresolved; its existing IAM evidence does not
+justify another speculative grant. New private AWS diagnostics can establish the
+actual error if that model fails. Other models can be tested independently under
+the proposed workbench scope. Do not claim live streaming/browser acceptance until
+the approved deployment and counted Local/AWS browser checks actually pass.

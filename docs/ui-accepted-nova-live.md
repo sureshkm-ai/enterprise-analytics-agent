@@ -1,10 +1,15 @@
 # Connect the existing accepted Nova Runtime
 
-This is a proposed **AWS-only UI connection**, using the already accepted Nova
+This is the approved and activated **AWS-only UI connection**, using the already accepted Nova
 Lite Runtime and the existing interactive-session-02 allowance. It does not deploy
 code, upload a ZIP, change permissions or create another question budget. Enabling
-it requires approval of the [binding review](../evaluations/ui-shared/accepted-nova-runtime.proposed.json).
-Preparation and read-only preflight have passed; activation is pending that approval.
+it required approval of the [binding review](../evaluations/ui-shared/accepted-nova-runtime.proposed.json).
+The owner approved that exact scope at **1d7e8f6**; the
+[approval](../evaluations/ui-shared/accepted-nova-runtime.approval.json) and
+[activation outcome](../evaluations/ui-shared/accepted-nova-runtime.activation.json)
+record it. **Open http://127.0.0.1:8501/?mode=live** to use the connected Nova agent.
+Actual browser controls were verified without submitting a question; 17 regular
+user questions remain at the activation checkpoint.
 
 ## What this fixes
 
@@ -56,7 +61,7 @@ with its `.reads.jsonl` operation journal. The committed
 records the pins and observed budget. This proof is a dated observation; each
 question performs fresh checks before reservation and dispatch.
 
-## Activation after exact binding approval
+## Activation and restart with the existing approval
 
 The new approval is needed because this AWS-only connection verifies the frozen
 remote source directly, replacing the old launcher's local/remote source-equality
@@ -64,7 +69,17 @@ requirement. It does not renew, extend or reset the existing approval or allowan
 Record the actual approval in
 `artifacts/ui-shared/accepted-nova-runtime/approval.json` using the strict
 `ui-accepted-runtime-approval-v1` schema and this review SHA. Do not create that
-record before the owner approves this binding.
+record before the owner approves this binding. This exact approval has now been
+recorded; restarting with it does not renew its expiry or reset the counter.
+
+Fresh activation preflight passed at **2026-11-13T00:13:44Z**, preserving v15 and
+all publication/policy/artifact pins. Only stale task-owned PID 60765 was replaced;
+the reviewed server started at **00:14:53Z**, PID 13049. Evidence is retained in
+`artifacts/ui-shared/accepted-nova-runtime/preflight-20261113T001330Z.json`, its
+read journal, `previous-server.json` and `server-process.json`. The actual browser
+showed Nova selected and Ask AWS enabled for an unsent question; that draft was
+cleared. The **00:17:37Z** budget check still showed 2/20 used, 17 regular remaining
+and two historical Runtime invocations, with no new execution.
 
 Recheck the task-owned process on port 8501 before replacing it; preserve unrelated
 servers and logs. From the repository root:
@@ -106,8 +121,8 @@ retries. Private error diagnostics now retain redacted SDK code/message/request 
 including wrapped setup errors, without changing public semantic contracts. These
 local diagnostics changes have not been deployed into any frozen Runtime.
 
-The exact next task is owner approval of the new AWS-only binding, followed by
-local activation and a zero-invocation browser check. Multi-model acceptance and
+The exact next task is user-owned questions through the activated Nova connection,
+within the existing allowance and expiry. Multi-model acceptance and
 provider-word streaming remain incomplete; no further permission change or model
 retry is justified by this proposal. Earlier hosted CI covers its named commits,
 not these new source changes.

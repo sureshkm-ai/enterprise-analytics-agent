@@ -22,9 +22,14 @@ At its original activation, both **Local agent** and **AWS AgentCore** were enab
 at **http://127.0.0.1:8501**. Later source changes invalidate that shared launcher's
 local/remote source-equality check; do not use the historical command below as the
 current live launch. The [AWS-only accepted Nova binding](ui-accepted-nova-live.md)
-is prepared and read-only verified, awaiting its explicit binding approval. It
-uses the existing 17 remaining questions; Local Bedrock and other models stay
-disabled. The required original Q18 verification passed its full request/result gate:
+was explicitly approved by the user at `1d7e8f6`, binding review `e6fdf135…`.
+It is now running at **http://127.0.0.1:8501/?mode=live**. Fresh read-only proof at
+**2026-11-13T00:13:44Z** verified the exact retail-v1 Runtime/DEFAULT **READY v15**;
+the actual browser check selected Nova and verified **Ask AWS** without submitting
+a question. The existing counter stayed **2/20 used, 17 regular questions remaining**.
+Local Bedrock and other models stay disabled. The browser shows progress followed
+by validated final output, rather than provider-word streaming. The required
+original Q18 verification passed its full request/result gate:
 **110.25 USD [2025-03-31,2025-04-01)**. Fresh proof at **21:52:13Z** on November 11,
 2026 verified the matching source/artifact/configuration/canonical data and
 Runtime/DEFAULT **READY v15**, stack UPDATE_COMPLETE. No deployment, IAM change,

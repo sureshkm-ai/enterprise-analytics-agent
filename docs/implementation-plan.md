@@ -29,11 +29,14 @@ The UI outcome is pushed and merged through [PR #8](https://github.com/sureshkm-
 ## Follow-on UI interaction: composer, progress and model selection
 
 Current correction: the [AWS-only accepted Nova connection](ui-accepted-nova-live.md)
-is prepared with offline verification and fresh read-only proof of the retained
-retail Runtime/DEFAULT READY v15. It separates the frozen remote source from the
+was user-approved at `1d7e8f6` under review `e6fdf135…` and activated at
+**http://127.0.0.1:8501/?mode=live**. Fresh read-only proof at
+**2026-11-13T00:13:44Z** verified the retained retail Runtime/DEFAULT READY v15;
+the actual browser check selected Nova and enabled Ask AWS without submitting a
+question. It separates the frozen remote source from the
 changed operator source, keeps Local Bedrock disabled and preserves the same
 interactive-02 ledger (**2/20 used, 17 regular remaining**, unchanged expiry).
-Explicit binding approval precedes activation; no deployment, upload, IAM change,
+Activation spent no question; no deployment, upload, IAM change,
 additional allowance or automated ordinary question is proposed. UI readiness now
 reflects actual connection/source status; private future streaming errors retain
 complete redacted SDK diagnostics. Current checks: **2141 offline passes**, zero
@@ -169,7 +172,7 @@ across Local Bedrock/AWS** until **2026-11-13T23:59Z**; the protected original-r
 slot is unavailable. Historical counters, records and frozen assets remain unchanged;
 no automatic regular submissions or invocation retries are authorized. Exact next task:
 the user could use those 18 questions in the activated UI. This is historical
-activation evidence; the current prepared binding and remaining 17 questions are
+activation evidence; the current approved AWS-only binding and remaining 17 questions are
 recorded above. The activation handoff reports
 its exact commit, PR and CI links once verified; earlier CI links above cover their
 named commits, not this new activation outcome. No next milestone
@@ -260,6 +263,6 @@ The approved [plan](milestone-5-plan.md) is implemented for local review on `fea
 
 11. Approved `q18-recovery-v1` executed once from fresh original v10: deployed pinned candidate READY v11, Q18 **110.25 USD [2025-03-31,2025-04-01)** and all **36/36** cases passed; client p95 **13.381s**, complete diagnostics. Mandatory original restore/smoke and separate read-only final verification passed on READY v12. Recovery **38/38**, aggregate **40/40**, no retries/failures/incomplete calls. All 122 protected files and historical ledgers/claims unchanged. No code/upload/IAM/dataset changes during execution.
 
-Exact next task: diagnose the original Sonnet service error from retained evidence/support material; the full Error.Message, RequestId, session, resource and conditions remain unavailable. The supplied inline policy matches, administrator simulation allows both Bedrock actions on all four concrete resources with no missing context, and the user reports no permissions boundary. Read-only Organizations verification identifies this as the management account, whose roles are unaffected by SCPs. IAM evidence review is complete; no additional grant, repeat policy/boundary/simulator request or source-routing correction is justified. The bounded CloudTrail collection did not contain an AccessDenied event, and unrelated log errors are not an established cause. Nova's two gates passed, but multi-model acceptance remains incomplete; original restoration and protected smoke passed, with the child closed 4/37 and aggregate 7/40. Preserve all claims, sealed inputs, restored v3 bindings and legacy v15. No new grant, campaign, retry, reserve use or model call is authorized.
+Exact next task: the user may submit the existing 17 regular questions through the approved AWS-only Nova UI until the unchanged expiry; read the persistent counter for subsequent usage. Local Bedrock and other models remain disabled. Separately diagnose the original Sonnet service error from retained evidence/support material; the full Error.Message, RequestId, session, resource and conditions remain unavailable. The supplied inline policy matches, administrator simulation allows both Bedrock actions on all four concrete resources with no missing context, and the user reports no permissions boundary. Read-only Organizations verification identifies this as the management account, whose roles are unaffected by SCPs. IAM evidence review is complete; no additional grant, repeat policy/boundary/simulator request or source-routing correction is justified. The bounded CloudTrail collection did not contain an AccessDenied event, and unrelated log errors are not an established cause. Nova's two streaming gates passed, but multi-model acceptance remains incomplete; original restoration and protected smoke passed, with the separate streaming child closed 4/37 and aggregate 7/40. Preserve all claims, sealed inputs, restored v3 bindings and legacy v15. No new grant, campaign, retry, reserve use or automated model call is authorized.
 
 Cube remains a later adapter extension outside milestones 2–5 unless separately requested.

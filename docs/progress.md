@@ -2,7 +2,56 @@
 
 Updated: 2026-11-12 (America/Chicago).
 
-## Current checkpoint: AWS-only accepted Nova connection prepared; activation needs binding approval
+## Current checkpoint: approved AWS-only Nova connection activated and browser-verified
+
+**Live Workbench: http://127.0.0.1:8501/?mode=live.** The owner explicitly approved
+the binding at **1d7e8f6**, review
+`e6fdf1354c736f07b54807978af8af4e0612c85e6c091c5b162cbef25b2003a8`.
+The [actual approval](../evaluations/ui-shared/accepted-nova-runtime.approval.json)
+and [activation outcome](../evaluations/ui-shared/accepted-nova-runtime.activation.json)
+are retained separately from the immutable original shared review and ledgers.
+
+Fresh read-only `analytics-dev` preflight at **2026-11-13T00:13:44Z** verified the
+expected account/region, exact Nova retail artifact/configuration/template/parameters,
+Runtime/DEFAULT **READY v15**, both resource policies, seven-day retention and
+canonical S3/Glue publication. Evidence:
+`artifacts/ui-shared/accepted-nova-runtime/preflight-20261113T001330Z.json` and its
+read journal. Only the task-owned stale port-8501 process **60765** was stopped;
+its logs are preserved. The reviewed server started through the existing Conda/
+Poetry environment at **00:14:53Z**, process **13049**. An initial local startup
+path error was corrected using the verified installed Poetry executable; it
+occurred before a new server or question dispatch and changed no AWS resource.
+
+Actual Playwright browser verification confirmed **Amazon Nova Lite selected**, AWS
+mode selected, retail-v1/reference date April 1/v15 metadata, and **Ask AWS enabled
+after entering an unsent question**. The test draft was then cleared without
+submission. Screenshots are under `output/playwright/ui-readiness-20261112/`;
+API-state evidence is token-redacted. No JavaScript error occurred; the unrelated
+favicon request returned 404. **No operator question or model/Runtime/Athena
+execution was made.** At **00:17:37Z**, the existing ledger was still **2/20 used,
+17 regular remaining**, with two historical Runtime SDK receipts and no failed/
+incomplete receipt. All **352** protected historical files stayed unchanged.
+
+Local Bedrock and other model choices remain disabled. This accepted JSON release
+shows progress followed by exact validated output, **not provider-word streaming**.
+No deployment, upload, IAM change, profile, dataset change, new allowance, counter
+reset or repeat Q18 verification occurred. Expiry stays **November 13, 5:59 p.m.
+CST** (`2026-11-13T23:59Z`); the protected rollback slot remains unavailable.
+
+The unchanged source is covered by the preceding **2141-test** local verification,
+lockfile/lint/format/type checks below; these were not repeated for approval and
+documentation only. Final checks passed for **6 Markdown files, 122 local links,
+26 shell blocks**, both approval/outcome records, their raw evidence checksums,
+all 352 protected files and `git diff --check`. Earlier hosted CI still covers its named
+commits, separately from these new source changes.
+
+**Exact next task:** the user can enter a question and click **Ask AWS** at the live
+URL, using the existing remaining allowance. Do not automate those user-owned
+slots. The separate failed multi-model campaign remains closed/restored **4/37**,
+aggregate **7/40**; diagnose its original service response before proposing any
+separately reviewed retry. Keep PR #13 unmerged. M1–M5 completion is unchanged.
+
+## Historical AWS-only preparation — before binding approval
 
 The screenshot showed an offline-only server, which had no AgentCore backend to
 select. The old port-8501 shared server also held stale readiness even though the
@@ -68,11 +117,11 @@ Those **2055-test** results predate these new source changes. Draft
 [PR #13](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/13) stays unmerged.
 
 Local implementation/review commit **1d7e8f6633c14e92cdd40a23580991b72ed7e8a9**
-is ready. Independent final review confirmed the source/review/preflight pins and
+was ready at that checkpoint. Independent final review confirmed the source/review/preflight pins and
 absence of an approval record; a remaining README present-tense shared-launch claim
-was corrected to historical attribution. The new binding is not yet activated.
+was corrected to historical attribution. The binding was not yet activated then.
 
-**Exact next task:** obtain approval of the concrete AWS-only binding, replace only
+**Historical next task:** obtain approval of the concrete AWS-only binding, replace only
 the task-owned stale port-8501 process, then verify the actual Nova selector and
 enabled Ask AWS control at **http://127.0.0.1:8501/?mode=live** without submitting a
 question. This is progress + validated final output, not provider-word streaming.
@@ -2921,12 +2970,14 @@ Milestone 2 introduced no AWS credentials, calls, deployment, Athena adapter, or
 
 ## Exact next task
 
-Approve the [AWS-only accepted Nova binding](ui-accepted-nova-live.md), then activate
-and verify **http://127.0.0.1:8501/?mode=live** without an operator question. It uses
-the existing **17** regular user questions and unchanged expiry; no deployment,
-upload, IAM change or new allowance is needed. Local Bedrock and additional models
-stay disabled. The failed multi-model campaign remains closed/restored, child
-**4/37**, aggregate **7/40**. Diagnose the original full Sonnet service response
-before any separately reviewed replacement; do not repeat IAM requests or add
-speculative grants. Keep PR #13 unmerged. M1–M5 remain complete for the development
-scope; provider-word streaming and multi-model acceptance are not complete.
+The user can submit a question with **Amazon Nova Lite** at
+**http://127.0.0.1:8501/?mode=live**. The approved AWS-only binding is active and
+browser-verified; at activation **17 regular user questions** remained, with the
+existing November 13, 5:59 p.m. CST expiry. Read the persistent counter for later
+usage; do not automate ordinary questions or repeat Q18. Local Bedrock and additional
+models stay disabled; the accepted Runtime shows progress and validated final
+output, not provider-word streaming. Preserve all artifacts/permissions/ledgers.
+The separate multi-model campaign remains failed/restored and closed **4/37**,
+aggregate **7/40**; diagnose its original full Sonnet service response before any
+separately reviewed replacement. Do not repeat IAM requests or add speculative
+grants. Keep PR #13 unmerged. M1–M5 remain complete for the development scope.

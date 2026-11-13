@@ -10,18 +10,28 @@ The separately approved shared UI merged through [PR #8](https://github.com/sure
 
 ## Run locally
 
-For the new **Analytics Workbench** browser UI, run this from the repository root
-after installing the existing Poetry environment:
+The accepted **Analytics Workbench** AWS connection is running at
+**http://127.0.0.1:8501/?mode=live**. Select **Amazon Nova Lite** and click **Ask AWS**.
+Fresh read-only proof at **2026-11-13T00:13:44Z** verified the exact accepted
+retail-v1 Runtime/DEFAULT **READY v15**. The browser check submitted no question:
+the existing counter remains **2/20 used, 17 regular questions remaining**, expiring
+**November 13, 5:59 p.m. CST** (`2026-11-13T23:59Z`). Local Bedrock and other models
+remain disabled. This release shows progress followed by validated output;
+it does not provide provider-word streaming.
+
+The user approved this AWS-only binding under review `e6fdf135…` at `1d7e8f6`.
+It changes no deployment, artifact, permission or allowance. Use the exact restart
+command in [Connect accepted Nova](docs/ui-accepted-nova-live.md) after stopping the
+existing local UI; do not start another server on the same port.
+
+For the separate **offline playground only**, run this from the repository root:
 
 ```sh
 poetry run python -m enterprise_analytics_agent.ui
 ```
 
-That command opens the **offline playground only**; it does not connect a live
-model. For the prepared AWS-only connection to the existing accepted Nova v15
-Runtime, use the exact reviewed launch in [Connect accepted Nova](docs/ui-accepted-nova-live.md)
-after binding approval. It retains the existing **17** regular questions and
-expiry; no deployment or new IAM grant is required. Other models remain unavailable.
+That plain command does not connect a live model. Use an unused loopback port when
+running it alongside the accepted AWS UI.
 
 Open **http://127.0.0.1:8501**. The professional local interface includes
 three explicit modes, suggested questions, exact result tables, execution details,
@@ -110,7 +120,7 @@ commit, separately from later evidence documentation.
 The separate UI campaign used **19/20 attempts**: Q18 verification 1 and all 18
 regular slots; the protected rollback smoke was unused. No regular live allowance
 remains, and the completed review cannot restart billable mode. Additional billable
-questions cannot reuse that completed review. The user approved [interactive session 02](docs/ui-interactive-session-02.md) at `319a872`; its original activation enabled Local agent and AWS AgentCore with Nova Lite at **http://127.0.0.1:8501**. Its counted Q18 verification passed **110.25 USD [2025-03-31,2025-04-01)** after a fresh **READY v15** proof at **21:52:13Z** on November 11, 2026. At activation, usage was **1 verification / 1 Runtime invocation / 0 ordinary questions / 0 direct local Converse calls**, leaving **18 user-owned questions across both modes** until **2026-11-13T23:59Z**. A later local ledger inspection found **2/20 used and 17 regular questions remaining**; read that persistent counter for subsequent usage. The protected original-rollback slot stays unavailable. This streaming preparation does not spend or expand that Nova allowance, update v15 or alter its historical artifacts. The current source no longer matches that historical shared launcher. Use the prepared [AWS-only connection](docs/ui-accepted-nova-live.md), pending exact binding approval; it keeps Local Bedrock disabled and does not reset the counter. Inspect the saved historical AWS acceptance responses offline without spending another call:
+questions cannot reuse that completed review. The user approved [interactive session 02](docs/ui-interactive-session-02.md) at `319a872`; its original activation enabled Local agent and AWS AgentCore with Nova Lite at **http://127.0.0.1:8501**. Its counted Q18 verification passed **110.25 USD [2025-03-31,2025-04-01)** after a fresh **READY v15** proof at **21:52:13Z** on November 11, 2026. At activation, usage was **1 verification / 1 Runtime invocation / 0 ordinary questions / 0 direct local Converse calls**, leaving **18 user-owned questions across both modes** until **2026-11-13T23:59Z**. A later local ledger inspection found **2/20 used and 17 regular questions remaining**; read that persistent counter for subsequent usage. The protected original-rollback slot stays unavailable. This streaming preparation does not spend or expand that Nova allowance, update v15 or alter its historical artifacts. The current source no longer matches that historical shared launcher. The separately approved [AWS-only connection](docs/ui-accepted-nova-live.md) is activated and browser-verified without submitting a question. It keeps Local Bedrock disabled and does not reset the counter. Inspect the saved historical AWS acceptance responses offline without spending another call:
 
 ```sh
 conda activate enterprise-analytics

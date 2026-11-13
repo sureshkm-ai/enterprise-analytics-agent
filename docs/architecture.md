@@ -2,6 +2,15 @@
 
 ## Local testing UI
 
+The [AWS-only accepted Nova connection](ui-accepted-nova-live.md) is a separately
+reviewed operator binding to the retained v15 JSON Runtime. It validates the frozen
+archive's 25-file closure independently of current operator source, without
+claiming current local/AWS code equivalence. Local Bedrock stays disabled in that
+binding; it reuses the existing interactive-02 ledger/expiry and verifies the exact
+artifact/configuration/publication before each question. Unconfigured or stale
+backends report unavailable rather than fabricated target/readiness metadata.
+Private redacted SDK diagnostics stay outside public semantic/model-visible fields.
+
 The separately requested Analytics Workbench serves local assets on loopback without
 additional dependencies. It has three modes: the default offline deterministic
 playground, an explicit billable local Bedrock agent with canonical DuckDB data, and
@@ -57,30 +66,61 @@ prerequisites. See the [concrete proposal](bedrock-multimodel-streaming-plan.md)
 [ConverseStream](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html),
 [tool-use compatibility](https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use-client-side.html).
 
-`adapters/streaming_agent.py` wraps the unchanged `BedrockAnalyticsAgent` semantic
-loop, with at most five planning calls and one tool-free presentation call, sharing
-a six-call/12,000-token/90-second bound. The sole completion guard handles a fully
-successful exact governed plan after a fifth sequential tool round: it verifies
-the complete expected requests/results before rendering, without a sixth planner
-call or guessed missing work. All four tools and adapter calculations remain shared.
-`bedrock_word_stream.py` validates the stream protocol and releases only actual
-provider characters matching the canonical answer prefix at complete word
-boundaries; the final word waits for a valid terminal event and usage. Private
-reasoning never enters the public stream. Invalid streams receive no automatic
-retry; a validated answer can remain available with an explicit stream-failure label.
+`adapters/streaming_agent.py` wraps the shared `BedrockAnalyticsAgent`, with at
+most five planning calls and one tool-free presentation call inside a six-call,
+12,000-token, 90-second bound. A trusted streaming-only option reuses the existing
+server-resolved numeric plan when another planner turn cannot fit or the planning
+rounds are exhausted. Existing successful queries must form an exact semantic
+subset without duplicates, errors or scope drift. Only missing queries are then
+executed through the same validated semantic tools and trusted context, with real
+server-operation IDs and unchanged tool/deadline limits. It does not fabricate
+model turns, retry failed queries or promote provider/token errors. Every numeric
+answer is checked against the complete query/result evidence before presentation.
+Grouping/filter ordering follows existing set semantics. The base agent defaults
+and published v1/v2 contracts remain unchanged.
 
-The new Bedrock catalog is metadata, not authorization. Ten proposed fixed-model
-roles/Runtimes bind opaque selections to reviewed configurations; disabled entries
-cannot dispatch. `ui/model_streams.py` provides a new review-bound ledger and SDK
-receipts, separate from every existing campaign. Twenty authored AWS checks must
-pass before UI activation. Its proposed outer 40 attempts comprise those checks,
-18 user questions, one protected retained-v15 smoke and one unapproved reserve.
-The implementation merged through PR #11; the user approved the unchanged
-execution plan on November 11, 2026. Fresh read-only preflight verifies the retained
-v15 release/publication and profile routing, while administrator evidence and
-three model agreements remain prerequisites. No resource mutation, upload or new
-live acceptance has occurred. Existing Nova v15 and session 02's 17 remaining
-questions are unchanged. See the [activation record](../evaluations/bedrock-streaming/activation-preflight-2026-11-11.json).
+`bedrock_word_stream.py` releases only actual provider characters matching the
+canonical validated answer prefix at complete word boundaries; the final word
+waits for terminal/usage validation. Private reasoning never enters the public
+stream. Invalid streams receive no automatic retry; any canonical fallback is
+labeled honestly and does not pass the live provider-streaming gate.
+
+The ten fixed-model streaming roles/Runtimes were deployed and verified READY v1.
+Their exact query-role trust addition is applied, preserving developer/legacy
+access. Initial acceptance passed Nova Q18 and failed its all-five presentation
+on the input reservation guard; protected legacy-v15 cleanup passed and that
+campaign is closed **3/40**. Earlier policy/logging failures and their corrected
+recovery remain [historical evidence](bedrock-streaming-recovery-plan.md).
+
+The [completion replacement](bedrock-streaming-completion-plan.md) was explicitly
+approved at **f591498**. Its exclusive parent-bound continuation preserves the
+closed **3/40** history. The one-time upload returned VersionId
+**PQbNv3gkC1HwVYNNiAe95r1XuQDkfKvb**, and all ten existing stacks and Runtime/DEFAULT
+passed exact **UPDATE_COMPLETE / READY v2** proofs. Nova Q18 and all-five regional
+queries passed independent request/result and provider-streaming gates. Sonnet
+Q18 failed the first Converse call with **AccessDeniedException / model_error**;
+no semantic query ran. Ordinary dispatch stopped after three acceptance attempts,
+with no other model invoked and no new accepted UI binding.
+
+Mandatory restoration passed: all ten original streaming code/configuration
+bindings verified **UPDATE_COMPLETE / Runtime and DEFAULT READY v3**. Protected
+legacy-v15 Q18 smoke passed **110.25 USD** at approximately **22:29:52Z**. The
+child is closed/blocked **4/37**, aggregate **7/40**, with no incomplete attempt.
+All new choices remain disabled; remaining ordinary quota is unusable.
+Sonnet IAM evidence is complete for the reviewed actions/resources: the supplied
+inline policy matches, administrator simulation allows both actions across all
+four concrete resources with no missing context, and the user reports no
+permissions boundary. Read-only Organizations verification identifies the
+management account; SCPs do not restrict its roles. No missing grant or source
+routing defect is established. Next diagnose the original full service error
+from retained evidence/support material, including its unavailable message,
+request ID, session, resource and conditions. The bounded CloudTrail collection
+found no AccessDenied event; unrelated log errors are not an established cause.
+No further IAM request, retry or live scope is implied. The
+sealed reviews and source/artifact proofs remain immutable. New local source is
+not asserted equal to historical v15. Actual outcome and denial evidence are
+recorded in [progress](progress.md); successful CI for pushed **f591498** covers
+that implementation commit, not later outcome documentation.
 
 `ui/shared.py` maintains one separate allowance for both billable modes. Exclusive,
 fsynced question and SDK receipts precede dispatch, with journal reconciliation,

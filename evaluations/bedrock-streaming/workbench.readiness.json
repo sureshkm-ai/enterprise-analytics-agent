@@ -1,0 +1,190 @@
+{
+  "schema_version": "bedrock-workbench-readiness-v1",
+  "status": "prepared-awaiting-exact-execution-approval",
+  "observed_at": "2026-11-13T15:35:09.921365+00:00",
+  "implementation_commit": "106b17309716d11f154c8954024f7a260c8fbf7a",
+  "review_sha256": "c17f1bb9a7c3a29620c42bcf1a0217298a2fd6b0d473b9fcce7608ca90d247b3",
+  "preparation_sha256": "195fb2033f92458ff6548e9e1aeb1b7e0a0dc0aa7c59de053e260ac7714a4d32",
+  "pinned_files": 241,
+  "profile": "analytics-dev",
+  "account": "453711491609",
+  "region": "us-west-2",
+  "candidate": {
+    "path": "artifacts/bedrock-streaming/workbench-fix/candidate/agent.zip",
+    "sha256": "f2755c33d5bbbef44d834628b974c1c71b7313374c9e7835b4b7ce66238a2a6a",
+    "bytes": 39321518,
+    "source_sha256": "8ee90d63f5af4fa62b8e82f9525a9b6eca6d6d58fd6693aa023031283fe2224e",
+    "actual_s3_version_id": null,
+    "uploaded": false,
+    "independently_reproduced": true,
+    "source_assets_verified": 80,
+    "locked_arm64_dependencies": 13
+  },
+  "artifact_audit": {
+    "path": "artifacts/bedrock-streaming/workbench-fix/package-audit.json",
+    "sha256": "7ba7b32906ac041c45705575315859a9c2eb66f9c3318a5b60721b1b37c1a99b"
+  },
+  "template_audit": {
+    "path": "artifacts/bedrock-streaming/workbench-fix/template-diff.json",
+    "sha256": "82e18567911a4892e11a6a04ea89b4467d4ba7020b2c27ca39ed066a74042c35",
+    "templates": 10,
+    "assembly_files": 34,
+    "byte_identical_syntheses": true
+  },
+  "preflight": {
+    "path": "artifacts/bedrock-streaming/workbench-fix/preflight-20261113T154100Z/preflight.json",
+    "sha256": "befb00bffbd703598cc3c9ed27f6eaed65ad80ef4c400abbe9a3c13145540fb8",
+    "observed_at": "2026-11-13T15:32:13.156807+00:00",
+    "identity_account": "453711491609",
+    "candidate_key_absent": true,
+    "legacy_runtime_version": "15",
+    "models": [
+      {
+        "model_key": "nova-lite",
+        "runtime_version": "3",
+        "stack_status": "UPDATE_COMPLETE",
+        "runtime_status": "READY",
+        "endpoint_status": "READY",
+        "exact_release_proved": true
+      },
+      {
+        "model_key": "claude-sonnet-5-5",
+        "runtime_version": "3",
+        "stack_status": "UPDATE_COMPLETE",
+        "runtime_status": "READY",
+        "endpoint_status": "READY",
+        "exact_release_proved": true
+      },
+      {
+        "model_key": "claude-opus-5-5",
+        "runtime_version": "3",
+        "stack_status": "UPDATE_COMPLETE",
+        "runtime_status": "READY",
+        "endpoint_status": "READY",
+        "exact_release_proved": true
+      },
+      {
+        "model_key": "gpt-6-astra",
+        "runtime_version": "3",
+        "stack_status": "UPDATE_COMPLETE",
+        "runtime_status": "READY",
+        "endpoint_status": "READY",
+        "exact_release_proved": true
+      },
+      {
+        "model_key": "gpt-6-1-sol",
+        "runtime_version": "3",
+        "stack_status": "UPDATE_COMPLETE",
+        "runtime_status": "READY",
+        "endpoint_status": "READY",
+        "exact_release_proved": true
+      },
+      {
+        "model_key": "gemma-4-31b",
+        "runtime_version": "3",
+        "stack_status": "UPDATE_COMPLETE",
+        "runtime_status": "READY",
+        "endpoint_status": "READY",
+        "exact_release_proved": true
+      },
+      {
+        "model_key": "llama-4-maverick",
+        "runtime_version": "3",
+        "stack_status": "UPDATE_COMPLETE",
+        "runtime_status": "READY",
+        "endpoint_status": "READY",
+        "exact_release_proved": true
+      },
+      {
+        "model_key": "deepseek-v3-2",
+        "runtime_version": "3",
+        "stack_status": "UPDATE_COMPLETE",
+        "runtime_status": "READY",
+        "endpoint_status": "READY",
+        "exact_release_proved": true
+      },
+      {
+        "model_key": "qwen3-235b",
+        "runtime_version": "3",
+        "stack_status": "UPDATE_COMPLETE",
+        "runtime_status": "READY",
+        "endpoint_status": "READY",
+        "exact_release_proved": true
+      },
+      {
+        "model_key": "mistral-large-3",
+        "runtime_version": "3",
+        "stack_status": "UPDATE_COMPLETE",
+        "runtime_status": "READY",
+        "endpoint_status": "READY",
+        "exact_release_proved": true
+      }
+    ]
+  },
+  "budget": {
+    "used": 0,
+    "maximum": 40,
+    "ordinary_used": 0,
+    "regular_remaining": 38,
+    "protected_cleanup": 1,
+    "unapproved_reserve": 1,
+    "failed": false,
+    "incomplete": false,
+    "expired": false,
+    "blocked": false,
+    "blocked_models": [],
+    "failure_scope": "model"
+  },
+  "allocation": {
+    "aws_acceptance_maximum": 20,
+    "local_browser_q18_maximum": 10,
+    "aws_browser_q18_maximum": 1,
+    "ordinary_user_slots_if_all_planned_checks_run": 7,
+    "protected_cleanup": 1,
+    "unapproved_reserve": 1,
+    "no_automatic_redispatch": true
+  },
+  "expires_at": "2026-11-15T23:59:00+00:00",
+  "preserved_files": 555,
+  "historical_352_exact_matches": 349,
+  "separate_later_authorized_nova_usage": {
+    "changed_paths": [
+      "artifacts/ui-shared/ui-shared-retail-v1-02/operator-reads.jsonl",
+      "artifacts/ui-shared/ui-shared-retail-v1-02/question-attempts.jsonl",
+      "artifacts/ui-shared/ui-shared-retail-v1-02/sdk-attempts.jsonl"
+    ],
+    "used": 3,
+    "runtime_invocations": 3,
+    "regular_remaining": 16,
+    "last_question_started_at": "2026-11-13T01:02:08.168712Z",
+    "last_sdk_returned_at": "2026-11-13T01:02:15.601023Z",
+    "failed_or_incomplete": false
+  },
+  "checks": {
+    "pytest_passed": 2165,
+    "pytest_deselected": 85,
+    "pytest_selected_skipped": 0,
+    "pytest_seconds": "101.47",
+    "poetry_check_lock": "passed",
+    "ruff_check": "passed",
+    "ruff_format_files": 208,
+    "mypy_files": 164,
+    "offline_synthesis": "passed",
+    "read_only_preflight": "passed"
+  },
+  "hosted_ci_for_implementation_only": {
+    "push": "https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43448268388",
+    "pull_request": "https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43448277518"
+  },
+  "new_runtime_model_or_athena_executions": 0,
+  "aws_mutations": 0,
+  "approval_exists": false,
+  "live_acceptance_passed": false,
+  "new_ui_activated": false,
+  "current_port8501": {
+    "pid": 13049,
+    "launch": "accepted-runtime-review / accepted-runtime-approval",
+    "enabled": false,
+    "reason": "The old operator source pin differs from current implementation."
+  }
+}

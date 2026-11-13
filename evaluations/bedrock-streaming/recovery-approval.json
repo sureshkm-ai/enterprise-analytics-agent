@@ -1,0 +1,22 @@
+{
+  "approved": true,
+  "review_sha256": "10433404c65249308e326a5867d499cabe4fab24c43201a6639a29c769b946c4",
+  "execution_proposal_sha256": "ee90ac77cd3c689e23c150d0e7f1e1ca2032cca3ffd2f52595f2b4c9e17bf0f7",
+  "maximum_attempts": 40,
+  "expires_at": "2026-11-15T23:59:00+00:00",
+  "approved_at": "2026-11-12T20:01:14.013077+00:00",
+  "approved_commit": "7dad05a47b141a163eec1034b000b1337bcfab64",
+  "approval_context": "User explicitly replied I approve to the scoped recovery: corrected policy representations, own-log-group workload permission, recreation only of unused new Nova then corrected ten targets; fixed uploaded ZIP/version and budget.",
+  "unapproved_reserve": 1,
+  "scope": {
+    "profile": "analytics-dev",
+    "account": "453711491609",
+    "region": "us-west-2",
+    "uploaded_version_id": "GSY36sTbDpCNZGogULTe3cBL__bujiQK",
+    "acceptance_questions": 20,
+    "interactive_questions": 18,
+    "protected_cleanup": 1,
+    "maximum_attempts": 40,
+    "no_zip_upload": true
+  }
+}

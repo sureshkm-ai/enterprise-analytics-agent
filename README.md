@@ -1,5 +1,15 @@
 # Enterprise structured-data analytics agent
 
+**Analytics Workbench: later request failures have a client repair.** The owner
+reported 24/40 attempts and only Qwen enabled after the four-model acceptance
+checkpoint. Follow the [diagnostic and restart instructions](docs/workbench-request-repair.md)
+in the original checkout. The fix preserves the deployed agent and existing
+allowance; it has not been live-validated on the owner's Mac.
+
+Amazon Nova Lite, DeepSeek V3.2, Qwen3 235B and Mistral Large 3 passed the earlier
+independent AWS acceptance. Six other models remain disabled. See
+[recorded acceptance](docs/ui-model-workbench-deployment-proposal.md).
+
 **Milestones 1–5 are complete for the agreed development proof of concept.** Further development requires a separately defined scope; this is not a production-readiness claim.
 
 The repository provides five governed metrics, unchanged v1/v2 contracts, deterministic retail data, DuckDB/Athena adapters, and automated verification. Milestone 3 is merged and its hosted CI passed; the user's AWS parity result was **66 passed, 458 deselected in 111.94s**. Milestone 4 adds a bounded Bedrock Converse agent hosted on AgentCore Runtime. **Milestone 4 is implemented, deployed, live-validated, merged into main and verified by hosted CI for the agreed development scope.** [PR #4](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/4) merged on November 8, 2026. Recorded live acceptance remains 18 + 3 + 3 tests plus warm-up, 28/40 invocations, corrected parity-v1 restored and Runtime/DEFAULT READY on version 4, with the runtime stack UPDATE_COMPLETE. The default CLI/tests remain local and require no AWS credentials.
@@ -10,12 +20,47 @@ The separately approved shared UI merged through [PR #8](https://github.com/sure
 
 ## Run locally
 
-For the new **Analytics Workbench** browser UI, run this from the repository root
-after installing the existing Poetry environment:
+After the [client repair restart](docs/workbench-request-repair.md), open
+**http://127.0.0.1:8501/?mode=live**, select **Local agent** or **AWS AgentCore**,
+then choose an available accepted model and submit a question. The composer
+clears immediately; validated provider words appear as the answer streams.
+Local agent uses canonical DuckDB data and billable Bedrock; AWS AgentCore uses
+Athena. Both share the agent, semantic contracts and exact-value presentation.
+
+At the earlier acceptance checkpoint, `bedrock-stream-workbench-v1-01` was **20/40 used**, leaving
+**18 ordinary questions**, one protected cleanup slot and one unavailable reserve.
+Expiry is **November 15, 5:59 p.m. CST** (`2026-11-15T23:59Z`). Read the displayed
+counter for subsequent use. The 15 AWS acceptance cases produced **9 passes and
+6 isolated failures**; four Local browser questions and one AWS Nova browser
+question then passed. Failed models are quarantined and receive no automatic retry.
+
+Fresh read-only proof at **2026-11-13T15:59:41Z** verified all ten candidate
+Runtime/DEFAULT bindings **READY v4**, exact code/configuration/policies and canonical
+publication. The retained legacy Nova v15 and its separate ledger are unchanged.
+To restart after stopping this task's existing server, run from the repository root:
+
+```sh
+conda activate enterprise-analytics
+poetry run python -m enterprise_analytics_agent.ui --allow-live --port 8501 \
+  --streaming-review evaluations/bedrock-streaming/review.workbench.proposed.json \
+  --streaming-releases artifacts/bedrock-streaming/workbench-fix/operations-approved-01/releases.actual.json \
+  --streaming-approval artifacts/bedrock-streaming/workbench-fix/approval.json \
+  --streaming-operator-repair evaluations/bedrock-streaming/workbench.operator-repair.json \
+  --canonical-dir artifacts/milestone-5/canonical/retail-v1
+```
+
+These retained local files are required; a fresh clone does not contain generated
+deployment evidence. Startup and model/mode selection submit no question. Do not
+run the historical Nova-only launcher or reset a ledger to enable additional calls.
+
+For the separate **offline playground only**, run this from the repository root:
 
 ```sh
 poetry run python -m enterprise_analytics_agent.ui
 ```
+
+That plain command does not connect a live model. Use an unused loopback port when
+running it alongside the accepted AWS UI.
 
 Open **http://127.0.0.1:8501**. The professional local interface includes
 three explicit modes, suggested questions, exact result tables, execution details,
@@ -34,31 +79,80 @@ model prose or general production equivalence. See [UI setup](docs/local-ui.md)
 and [shared-code acceptance evidence](docs/ui-shared-code-live.md).
 This follow-on UI scope does not change completed M1–M5 acceptance or their ledgers.
 
-Submitting a question clears the text box immediately. The accepted Nova release
-streams truthful progress and returns its validated final answer; its frozen AWS
-runtime remains JSON-based. The separate **local implementation** now adds actual
+## Historical rollout and legacy Nova evidence
+
+The earlier accepted Nova release streamed truthful progress and returned its
+validated final answer; its frozen AWS runtime remains JSON-based. The separate
+streaming implementation added actual
 provider word streaming and a Bedrock-only model catalog: Anthropic Claude, OpenAI
 GPT through Bedrock, Google **Gemma through Bedrock Mantle**, Meta Llama, DeepSeek,
 Qwen and Mistral, plus Nova. Additional choices stay disabled until the separate
-release is deployed and accepted; its execution is now approved, while documented
-administrator and model-agreement prerequisites remain open. Catalog inclusion
-does not prove effective access.
+release is deployed and accepted. Directory-policy/model prerequisites are now
+verified; one new Nova stack was created, but policy-shape verification and a
+workload logging denial stopped that attempt. The user approved the
+[scoped recovery](docs/bedrock-streaming-recovery-plan.md) at **7dad05a**. Fresh
+preflight passed, the reviewed unused Nova stack was deleted, and all ten corrected
+stacks verified **CREATE_COMPLETE / Runtime and DEFAULT READY v1**, with exact
+artifact/configuration/policy proofs and seven-day retention. Administrator trust
+application/readback and actual release binding passed. Nova Q18 passed with
+provider streaming, but the all-five question failed an input-reservation guard
+after producing the correct requests/results. Acceptance stopped; new choices
+remain disabled. Protected legacy v15 cleanup passed, and the campaign is closed
+**3/40**.
 
-The new streaming runner reuses the unchanged semantic agent loop with at most
+The exact [completion replacement](docs/bedrock-streaming-completion-plan.md)
+was approved at **f591498**. ZIP **8cfe8d9b…** was uploaded once as actual S3
+VersionId **PQbNv3gkC1HwVYNNiAe95r1XuQDkfKvb**. All ten existing stacks reached
+**UPDATE_COMPLETE**, with Runtime/DEFAULT **READY v2** and strict proofs. Nova Q18
+passed **110.25 USD** with provider streaming, and its all-five regional question
+passed every independent request/result and streaming gate. Claude Sonnet Q18
+then failed its first Converse call with **AccessDeniedException / model_error**;
+no semantic query ran for that question. Ordinary dispatch stopped after three
+acceptance attempts; no other model was invoked and no accepted UI binding exists.
+Mandatory original restoration passed: all ten original streaming configurations
+and **c136a393… / GSY36sTbDpCNZGogULTe3cBL__bujiQK** code bindings verified
+**UPDATE_COMPLETE / Runtime and DEFAULT READY v3**. The protected legacy-v15
+Q18 smoke passed **110.25 USD** at approximately **22:29:52Z**. All new choices
+remain disabled. The parent remains closed **3/40**; the child is closed/blocked
+**4/37** (three ordinary attempts plus cleanup), aggregate **7/40**, with no
+incomplete attempt. Its numeric remaining quota is unusable; no retry, reserve
+use or another campaign is authorized.
+
+The implementation commit **f591498** is pushed; [push CI 43316129337](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43316129337) and [PR CI 43316722939](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43316722939) passed for that commit. Those checks do not cover later outcome documentation.
+
+The streaming runner preserves base-agent defaults and semantic contracts, with
+trusted missing-query completion at planning capacity boundaries. It allows at most
 five planning calls and one tool-free presentation call. It releases actual
 provider words only while they exactly match the canonical answer from validated
 semantic results, keeping amounts, units, dates and private reasoning safe. A
 rejected stream is labeled and is never retried or replaced with a typing animation.
 The [deployment and live-evaluation proposal](docs/bedrock-multimodel-streaming-plan.md)
 covers ten new isolated runtimes/roles, a new artifact and a separate approved
-40-attempt outer ceiling, including an unavailable reserve. Follow the
-[administrator steps](docs/bedrock-streaming-administrator-steps.md) to unblock
-preflight. No new deployment or live acceptance is claimed.
+40-attempt outer ceiling, including an unavailable reserve. The
+[administrator steps](docs/bedrock-streaming-administrator-steps.md) record completed
+policy evidence and completed query-trust handoff. At that failed completion
+checkpoint, new model acceptance was **incomplete** and retained legacy **v15**
+remained the accepted release; its
+new protected smoke passed, separately from the earlier cleanup. The supplied
+Sonnet inline policy matches the reviewed template; administrator simulation
+allows both Bedrock actions on all four concrete model resources with no missing
+context. Source/archive routing matches and the user reports no permissions
+boundary. Read-only Organizations verification identifies this as the management
+account, whose roles are unaffected by SCPs. These IAM checks are complete; no
+additional grant or repeat inspection was justified. The original response was
+unavailable at that checkpoint; the later workbench's private diagnostics captured
+account-availability 403 responses. Preserve both records. Do not replay closed
+campaigns or infer permission for another billable call.
 
-The separate UI campaign used **19/20 attempts**: Q18 verification 1 and all 18
+Pushed **bc39b34** passed [push CI 43323776935](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43323776935)
+and [PR CI 43323784997](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43323784997),
+including 2,055 offline tests with zero selected skips. Those results cover that
+commit, separately from later evidence documentation.
+
+The separate historical UI campaign used **19/20 attempts**: Q18 verification 1 and all 18
 regular slots; the protected rollback smoke was unused. No regular live allowance
 remains, and the completed review cannot restart billable mode. Additional billable
-questions cannot reuse that completed review. The user approved [interactive session 02](docs/ui-interactive-session-02.md) at `319a872`; its launch enables Local agent and AWS AgentCore with Nova Lite at **http://127.0.0.1:8501**. Its counted Q18 verification passed **110.25 USD [2025-03-31,2025-04-01)** after a fresh **READY v15** proof at **21:52:13Z** on November 11, 2026. At activation, usage was **1 verification / 1 Runtime invocation / 0 ordinary questions / 0 direct local Converse calls**, leaving **18 user-owned questions across both modes** until **2026-11-13T23:59Z**. A later local ledger inspection found **2/20 used and 17 regular questions remaining**; read that persistent counter for subsequent usage. The protected original-rollback slot stays unavailable. This streaming preparation does not spend or expand that Nova allowance, update v15 or alter its historical artifacts. See the session plan for the exact restart command; restarting does not reset its counter. Inspect the saved historical AWS acceptance responses offline without spending another call:
+questions cannot reuse that completed review. The user approved [interactive session 02](docs/ui-interactive-session-02.md) at `319a872`; its original activation enabled Local agent and AWS AgentCore with Nova Lite at **http://127.0.0.1:8501**. Its counted Q18 verification passed **110.25 USD [2025-03-31,2025-04-01)** after a fresh **READY v15** proof at **21:52:13Z** on November 11, 2026. At activation, usage was **1 verification / 1 Runtime invocation / 0 ordinary questions / 0 direct local Converse calls**, leaving **18 user-owned questions across both modes** until **2026-11-13T23:59Z**. A later local ledger inspection found **2/20 used and 17 regular questions remaining**; read that persistent counter for subsequent usage. The protected original-rollback slot stays unavailable. This streaming preparation does not spend or expand that Nova allowance, update v15 or alter its historical artifacts. The current source no longer matches that historical shared launcher. The separately approved [AWS-only connection](docs/ui-accepted-nova-live.md) was subsequently activated and browser-verified; it is now historical and has been replaced by the current workbench above. Its separate ledger remains 3/20 used and is not spent by the new workbench. Inspect the saved historical AWS acceptance responses offline without spending another call:
 
 ```sh
 conda activate enterprise-analytics

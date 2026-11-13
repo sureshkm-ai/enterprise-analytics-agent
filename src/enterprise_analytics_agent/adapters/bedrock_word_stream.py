@@ -14,7 +14,9 @@ from collections import deque
 from collections.abc import Callable, Iterator
 from copy import deepcopy
 from dataclasses import dataclass, field
-from typing import Protocol, cast
+from typing import Any, Protocol, cast
+
+from botocore.exceptions import ClientError
 
 from enterprise_analytics_agent.adapters.bedrock_agent import ConverseClient
 
@@ -249,7 +251,7 @@ def consume_presentation(
         raise StreamProtocolError("Bedrock returned no closable presentation stream.")
     primary_error = False
     try:
-        state = _PresentationState(gate, request)
+        state = _PresentationState(gate, request, response.get("ResponseMetadata", {}))
         count = size = 0
         try:
             iterator = iter(stream)
@@ -289,7 +291,9 @@ def consume_presentation(
 
 
 class _PresentationState:
-    def __init__(self, gate: CanonicalWordGate, request: dict[str, object]) -> None:
+    def __init__(
+        self, gate: CanonicalWordGate, request: dict[str, object], metadata: object = None
+    ) -> None:
         self.gate = gate
         self.started = self.stopped = self.metadata = False
         self.active: int | None = None
@@ -298,6 +302,7 @@ class _PresentationState:
         self.usage: tuple[int, int, int] | None = None
         self.provider_latency_ms: int | None = None
         self.max_output = _mapping(request.get("inferenceConfig", {})).get("maxTokens")
+        self.response_metadata = metadata if isinstance(metadata, dict) else {}
 
     def _block(self, event: dict[str, object], *, explicit: bool = False) -> None:
         if not self.started or self.stopped:
@@ -317,6 +322,29 @@ class _PresentationState:
             raise StreamProtocolError("Bedrock returned an invalid tagged stream event.")
         name, value = next(iter(event.items()))
         data = _mapping(value)
+        if name in {
+            "internalServerException",
+            "modelStreamErrorException",
+            "serviceUnavailableException",
+            "throttlingException",
+            "validationException",
+        }:
+            # Preserve the SDK evidence privately; only an authored message is
+            # raised at the public boundary. The diagnostic sink redacts it.
+            cause = ClientError(
+                cast(
+                    Any,
+                    {
+                        "Error": {
+                            "Code": name,
+                            "Message": data.get("message", data.get("originalMessage", "")),
+                        },
+                        "ResponseMetadata": self.response_metadata,
+                    },
+                ),
+                "ConverseStream",
+            )
+            raise StreamProtocolError("Bedrock reported a presentation stream failure.") from cause
         if name == "messageStart":
             if self.started or self.stopped or data.get("role") != "assistant":
                 raise StreamProtocolError("Bedrock returned an invalid message start.")

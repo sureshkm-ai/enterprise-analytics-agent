@@ -1,0 +1,21 @@
+{
+  "schema_version": "bedrock-streaming-directory-tag-approval-v1",
+  "approved": true,
+  "recorded_at": "2026-11-12T18:26:54Z",
+  "approval_context": "User replied I approve to the exact additional directory grant proposed at f68e1913a61151da031816d77c1adfc5fac63de8.",
+  "reviewed_commit": "f68e1913a61151da031816d77c1adfc5fac63de8",
+  "review_path": "evaluations/bedrock-streaming/directory-tag-review.proposed.json",
+  "policy_path": "infrastructure/cdk/streaming-directory-tag-policy.proposed.json",
+  "policy_sha256": "ba04feb1ce5c92ab55b94e09bfa522e641a0b2a2eedb10d97d313e42d996d39b",
+  "attachment": {
+    "kind": "inline-role-policy",
+    "role_arn": "arn:aws:iam::453711491609:role/cdk-hnb659fds-cfn-exec-role-453711491609-us-west-2",
+    "policy_name": "enterprise-analytics-stream-directory-tag"
+  },
+  "administrator_application_verified": false,
+  "allowed_post_change_simulation_verified": false,
+  "changes_deployment_artifact_or_budget": false,
+  "reserve_approved": false,
+  "aws_mutations_by_operator": 0,
+  "invocations_by_operator": 0
+}

@@ -1,5 +1,11 @@
 # Analytics Workbench
 
+For the later 24/40 workbench request failures, use the
+[client repair diagnostic and restart commands](workbench-request-repair.md).
+The earlier four-model acceptance below remains historical; current availability
+comes from the retained ledger. The client repair preserves the deployed agent
+and original budget and does not enable failed-acceptance models.
+
 The Workbench provides three explicit execution modes and offline saved-report viewing
 for the separately requested UI scope after milestones 1–5. The default **Offline
 playground** creates no AWS session. **Local agent** uses the existing
@@ -9,7 +15,39 @@ The catalog, v2 contracts, question guard and semantic tools remain shared.
 
 ![Analytics Workbench with three explicit execution modes](images/analytics-workbench-shared-ui.png)
 
-## Merged application and approved interactive session
+## Historical workbench acceptance: four streaming models
+
+Open **http://127.0.0.1:8501/?mode=live**. The current server exposes **Amazon Nova
+Lite, DeepSeek V3.2, Qwen3 235B and Mistral Large 3** in both **Local agent** and
+**AWS AgentCore** modes. Select a model, enter a question and submit it. The input
+clears immediately, and real provider words stream into a readable answer while
+exact semantic values remain available in the result details/download.
+
+The approved execution reached **partial model acceptance**: the 15 AWS cases
+produced **9 passes and 6 failures**, with both required cases passing for each of
+the four enabled models. Four actual Local browser questions and one AWS Nova
+browser question then passed Q18's complete request/value, streaming and composer
+checks. Anthropic Sonnet/Opus and OpenAI Astra/Sol remain quarantined after Bedrock
+account-availability 403 responses; Gemma reached its iteration limit, and Llama's
+all-five case failed after invalid tool arguments/token limits. No failed model
+is silently retried or replaced.
+
+The separate campaign **`bedrock-stream-workbench-v1-01`** is **20/40 used**, with
+**18 ordinary questions remaining**, protected cleanup **1** and unavailable reserve
+**1**. Expiry is **November 15, 5:59 p.m. CST** (`2026-11-15T23:59Z`). Read the
+persistent counter after later questions; do not spend a protected slot or reset
+any campaign. The old Nova ledger stays separate at **3/20**.
+
+Fresh read-only proof at **2026-11-13T15:59:41Z** verified all ten candidate bindings
+on Runtime/DEFAULT **READY v4**, stable stacks, exact templates/configuration/code,
+both policies, seven-day retention and canonical publication. The frozen candidate
+is **f2755c33…**, S3 VersionId **xnQiGsnGRkgFV3ktJ2DfhUbOClx9gVEn**. Legacy v15,
+M3 infrastructure and canonical inputs remain unchanged. See the
+[executed proposal and exact restart command](ui-model-workbench-deployment-proposal.md).
+The workbench's source, review and release pins must still match on restart;
+the historical Nova-only commands below are not the current launcher.
+
+## Merged application and historical interactive sessions
 
 The Workbench merged through [PR #8](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/8)
 at `e222875` on November 11, 2026. Full validation merged through
@@ -17,9 +55,22 @@ at `e222875` on November 11, 2026. Full validation merged through
 [main CI](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43100659276)
 passed for that merge. The implementation and completed live acceptance are preserved.
 
-[Interactive session 02](ui-interactive-session-02.md) was approved at `319a872` and
-is active at **http://127.0.0.1:8501**. Both **Local agent** and **AWS AgentCore** are
-enabled. The required Q18 verification passed its full request/result gate:
+[Interactive session 02](ui-interactive-session-02.md) was approved at `319a872`.
+At its original activation, both **Local agent** and **AWS AgentCore** were enabled
+at **http://127.0.0.1:8501**. Later source changes invalidate that shared launcher's
+local/remote source-equality check; do not use the historical command below as the
+current live launch. The [AWS-only accepted Nova binding](ui-accepted-nova-live.md)
+was explicitly approved by the user at `1d7e8f6`, binding review `e6fdf135…`.
+It was activated at **http://127.0.0.1:8501/?mode=live** before the current workbench.
+Fresh read-only proof at
+**2026-11-13T00:13:44Z** verified the exact retail-v1 Runtime/DEFAULT **READY v15**;
+the actual browser check selected Nova and verified **Ask AWS** without submitting
+a question. The existing counter stayed **2/20 used, 17 regular questions remaining**.
+At that historical activation, Local Bedrock and other models stayed disabled.
+That JSON release showed progress followed by validated final output, rather than
+provider-word streaming. It has been replaced locally by the workbench above;
+its Runtime and separate ledger remain preserved. The required
+original Q18 verification passed its full request/result gate:
 **110.25 USD [2025-03-31,2025-04-01)**. Fresh proof at **21:52:13Z** on November 11,
 2026 verified the matching source/artifact/configuration/canonical data and
 Runtime/DEFAULT **READY v15**, stack UPDATE_COMPLETE. No deployment, IAM change,
@@ -37,8 +88,9 @@ This is a local counter observation, not another invocation or fresh AWS readine
 assertion. The activation's 18-question record remains unchanged historical evidence;
 read the persistent counter for subsequent usage.
 
-Use the running server. If it needs restarting, first stop that Workbench process
-and launch one server from the repository root with the same session and record:
+The following is the **historical shared launcher**, preserved for the activation
+record. Use the [current workbench launch](ui-model-workbench-deployment-proposal.md)
+for this changed checkout; the plain UI command starts offline mode only.
 
 ```sh
 conda activate enterprise-analytics
@@ -51,9 +103,10 @@ poetry run python -m enterprise_analytics_agent.ui \
   --port 8501
 ```
 
-Restarting does not reset the allowance or repeat Q18. The existing counter and fresh
-per-question release checks remain enforced. Keep the historical commands/reviews
-below unchanged; Offline playground and Saved runs remain AWS-free.
+Neither launcher resets the allowance or repeats Q18. The existing counter and fresh
+per-question release checks remain enforced. Offline playground and Saved runs remain
+AWS-free; current status must not claim readiness when the selected backend is absent
+or source verification fails.
 
 ## Submit, follow progress and choose a model
 
@@ -63,19 +116,19 @@ does not refill the composer or submit it again; enter a new question only after
 inspecting the displayed error and, for billable work, its retained counter evidence.
 
 The browser reads a live newline-delimited JSON response from `/api/ask/stream`.
-On the accepted Nova release, accepted/running messages and elapsed time arrive
-while execution is in progress, then the typed answer, exact metric tables and
-diagnostics appear. Those messages are progress rather than model tokens; the
-frozen AgentCore handler still returns validated JSON. The separate word-streaming
-implementation described below adds genuine provider words after semantic execution.
+The current workbench first shows honest execution progress, then streams actual
+provider characters matching the readable answer rendered from validated results.
+The final word is withheld until terminal events and usage are checked. Exact
+metric tables and diagnostics accompany the completed answer. Heartbeats are
+progress rather than model tokens. The historical Nova v15 JSON handler remains
+unchanged and did not provide provider-word streaming.
 Closing the browser does not retry a billable request or release its execution
 lock while backend accounting continues.
 
 The **Model** selector lists server-configured models available for the selected
-agent mode. The existing accepted release offers **Amazon Nova Lite**
-(`us.amazon.nova-lite-v1:0`) only. The new Bedrock catalog also lists other
-providers, with choices disabled until separately reviewed backends are deployed
-and accepted. A catalog row does not establish access or authorize a question.
+agent mode. The current accepted choices are **Amazon Nova Lite**, **DeepSeek V3.2**,
+**Qwen3 235B** and **Mistral Large 3**. Six quarantined choices remain disabled;
+their catalog entries do not establish access or authorize a retry.
 The offline playground has no Bedrock model to select.
 
 The browser sends an opaque `model_key` for UI routing. Python resolves it against
@@ -95,9 +148,10 @@ its separately reviewed runtime, applicable `bedrock:InvokeModelWithResponseStre
 access and model-specific transport/acceptance checks.
 [ConverseStream](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html),
 [client-side tool use](https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use-client-side.html).
-No deployment, IAM mutation or billable verification of that new release has run.
+The initial streaming Nova create stopped at verification, with no billable calls.
+Its historical failures, completed deployment and failed live acceptance are recorded below.
 
-## Prepared Bedrock-only model and word-streaming release
+## Historical Bedrock-only preparation and failed rollouts
 
 The [new deployment/evaluation plan](bedrock-multimodel-streaming-plan.md) covers
 ten isolated model runtimes, including a streaming Nova baseline. The catalog
@@ -105,14 +159,44 @@ offers Anthropic Claude, OpenAI GPT through Bedrock, Google **Gemma through Bedr
 Mantle**, Meta Llama, DeepSeek, Qwen and Mistral. Google Gemini and direct provider
 APIs are outside this scope. The optional GPT-OSS catalog entry is not one of the
 ten reviewed deployments. Execution was approved on November 11, 2026; the
-[administrator guide](bedrock-streaming-administrator-steps.md) records current
-permission and model-agreement prerequisites. Live acceptance remains pending.
+[administrator guide](bedrock-streaming-administrator-steps.md) records the verified
+directory grant/model agreements and later query-role trust handoff. Only the new
+Nova stack reached CREATE_COMPLETE/READY v1. The user approved the
+[recovery](bedrock-streaming-recovery-plan.md) at **7dad05a**, covering the policy
+representation correction and scoped workload logging grant. Fresh preflight
+passed, the reviewed unused Nova stack was deleted, and all ten corrected stacks
+verified **CREATE_COMPLETE / Runtime and DEFAULT READY v1**, exact proofs and
+seven-day retention. Administrator-applied trust readback and release binding
+passed. Nova Q18 passed with provider streaming; the all-five question had the
+correct complete plan/results but failed `token_limit` before presentation.
+Acceptance stopped with no other model invoked or accepted UI binding. Protected
+legacy **v15** cleanup smoke passed. Campaign **3/40** is closed (two ordinary,
+one cleanup), with reserve untouched; all new choices stay disabled. The source,
+frozen ZIP/version and existing permissions remain preserved. The
+[completion replacement](bedrock-streaming-completion-plan.md) was explicitly
+approved at **f591498**. One upload returned actual VersionId
+**PQbNv3gkC1HwVYNNiAe95r1XuQDkfKvb**; all ten existing stacks and Runtime/DEFAULT
+passed exact **UPDATE_COMPLETE / READY v2** proofs. Nova Q18 (**110.25 USD**) and
+all-five regional acceptance passed with exact independent results and provider
+streaming. Sonnet Q18 then failed the first Converse call with
+**AccessDeniedException / model_error**, without semantic queries. Ordinary
+dispatch stopped after three attempts, no other model was invoked and no accepted
+UI binding exists. Mandatory original restoration passed: all ten original
+streaming code/configuration bindings verified **UPDATE_COMPLETE / Runtime and
+DEFAULT READY v3**. The protected legacy-v15 Q18 smoke passed **110.25 USD** at
+approximately **22:29:52Z**. All new choices stay disabled. Use the offline playground/saved reports until a matching release passes
+all acceptance gates; do not bypass review/source checks or replay this operation.
 
-Local Bedrock and AWS modes reuse the unchanged `BedrockAnalyticsAgent` semantic
-tool loop. At most five planning calls precede one tool-free presentation call,
-within six model calls and 12,000 tokens total. A full successful governed plan
-may finish after the fifth sequential tool round without a sixth planning call;
-missing or incorrect work is never accepted. Native models use Converse then
+The implementation commit **f591498** is pushed; [push CI 43316129337](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43316129337) and [PR CI 43316722939](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43316722939) passed for that commit. Those checks do not cover later outcome documentation.
+
+Local Bedrock and AWS modes share `BedrockAnalyticsAgent` semantic contracts and
+tools, preserving base-agent defaults. Streaming-only trusted completion resolves
+missing exact queries at capacity boundaries. At most five planning calls precede
+one tool-free presentation call,
+within six model calls and 12,000 tokens total. At a planning-capacity boundary, only missing queries from the exact resolved
+question may execute through the governed adapter; all requested successful
+results must exist before an answer. Invalid/error plans remain failures, and
+there is no sixth planning call. Native models use Converse then
 ConverseStream; Gemma uses signed AWS Mantle chat with sequential tools.
 
 Only actual provider text matching the validated canonical answer's exact prefix
@@ -122,23 +206,30 @@ Private reasoning is not displayed. A malformed, changed or interrupted provider
 stream is labeled, with the validated answer retained when available. It triggers
 no retry, replacement model or typing animation.
 
-The new review, artifact/version, deployment assemblies, SDK receipts and campaign
-are separate. The proposed outer maximum is **40 attempts**: twenty mandatory AWS
-checks (Q18 and all five regional metrics per model), eighteen user questions,
-one protected retained-v15 cleanup smoke and one **unapproved reserve**. Expiry is
-`2026-11-15T23:59Z`; execution is approved subject to preflight, while the reserve
-remains unavailable. New UI models
-stay disabled until every authored check passes. Deployment/binding/evaluation and
-the eventual explicit launch command are in the plan; that command requires an
-approved review and real post-deployment release records, not placeholder files.
+The completion review, uploaded version, assemblies, SDK receipts and campaign are
+separate. The parent remains closed **3/40**. The approved child has **37** total
+slots: 20 acceptance, 15 user questions, one protected cleanup and one unavailable
+reserve; expiry remains `2026-11-15T23:59Z`. The child is closed/blocked **4/37**
+(ordinary 3 + cleanup 1), aggregate **7/40**, with no incomplete attempt. The
+numeric remaining ordinary quota is unusable. New UI choices stay disabled.
+The supplied Sonnet policy matches; administrator simulation allows both Bedrock
+actions on all four concrete resources with no missing context, and the user
+reports no permissions boundary. Read-only verification identifies this as the
+Organizations management account, whose roles are not restricted by SCPs. No
+missing permission or source-routing defect is established. Next diagnose the
+original full service error from retained evidence/support material; its message,
+request ID, session, resource and conditions remain unavailable. Do not repeat
+these IAM requests. No retry, new campaign, permission change or reserve use
+follows from the remaining quota.
 
-The legacy session 02 restart command above still selects only Nova and its
-accepted v15 release. Its last local counter observation remains **2/20 used,
-17 regular questions remaining**, subject to subsequent usage and expiry. This
-implementation spends none of them and leaves historical permissions, artifacts,
-goldens and ledgers unchanged. Earlier hosted/live results do not cover this new
-local implementation. Offline playground and Saved runs remain available with
-the ordinary no-argument launch.
+The legacy session 02 command is a historical Nova-only launch for its accepted
+v15 source/release. Current local source differs from that frozen closure; do not
+bypass its source check to enable billable modes. Its last observed counter remains
+**2/20 used, 17 regular remaining**, subject to later usage and expiry; this
+completion campaign spent none of those slots. Historical shared-UI live results
+do not cover this streaming release. Exact f591498 CI and the two passed Nova
+streaming gates are recorded above. Offline playground and Saved runs remain
+available with the ordinary no-argument launch.
 
 ## Approved live acceptance completed
 
@@ -210,6 +301,12 @@ null ratios remain distinct from zero, and absent diagnostics are labeled unrepo
 
 ## Understand the modes and current deployment
 
+The current workbench uses the new frozen **f2755c33…** package and separate
+approved review/releases, with four accepted models. Final read-only proof at
+**15:59:41Z on November 13, 2026** verified all ten v4 bindings; readiness is
+distinct from each model's acceptance. Every question rechecks its exact release
+and canonical publication before reservation.
+
 | Mode | Data and reference date | Execution and cost |
 | --- | --- | --- |
 | Offline playground | Temporary `local-sample-seed-20260101`; `2025-04-01` | Deterministic planner, real DuckDB, no AWS/model calls |
@@ -222,9 +319,9 @@ model execution**: its button and mode notice disclose Bedrock usage before subm
 
 Historical read-only checks on November 10, 2026, found original/parity
 Runtime and DEFAULT **READY v12**, before the separately approved v13 deployment. Its original artifact differs from the local Q18
-correction in `bedrock_agent.py` and `agent/questions.py`. It is not the proposed shared
-retail release. The accepted frozen candidate matches all **25** audited shared source
-files; it can be reused without rebuilding or uploading a ZIP. Its dependency/build,
+correction in `bedrock_agent.py` and `agent/questions.py`. It was not the proposed shared
+retail release. At that historical checkpoint the frozen candidate matched all **25** audited shared source
+files and could be reused without rebuilding or uploading a ZIP. Its dependency/build,
 configuration, artifact and canonical-data evidence are recorded in
 [the shared-code proposal](ui-shared-code-live.md). This source comparison alone does
 not prove which code is active. The approved execution and final v13 proof above
@@ -351,7 +448,13 @@ Evidence is under `artifacts/ui-shared/<campaign_id>/`: `question-attempts.jsonl
 preflight JSON and protected verification output. Preserve the review hash binding,
 all evidence and the existing operator/deployment guards across restarts.
 
-## Failure, expiry and original rollback
+## Historical shared-release failure, expiry and original rollback
+
+The procedure below belongs to the completed original shared release. The current
+workbench uses its own [approved failure/restoration procedure](ui-model-workbench-deployment-proposal.md);
+an isolated completed model failure quarantines that model, while incomplete
+accounting or an unresolved deployment blocks the full session. Do not run the
+historical rollback commands against the new scope.
 
 A failed candidate deployment triggers the operator's mandatory original restoration
 when process guards allow. A failed Q18 or paired-comparison gate requires explicit
@@ -415,9 +518,9 @@ Historical screenshot from the initial deterministic/legacy UI implementation:
 | `ui/shared.py`, `adapters/ui_shared.py`, `adapters/ui_release.py` | Shared budget, SDK attempts, release/data proof and protected gates |
 | `ui/live.py`, `adapters/ui_live.py` | Historical original-v12 review/ledger path |
 | `hosting/application.py` | Existing workload-credential runtime using the shared agent |
-| `adapters/bedrock_model_catalog.py`, `streaming_agent.py`, `bedrock_word_stream.py`, `bedrock_mantle.py` | New catalog, unchanged semantic loop wrapper and canonical provider-word transports |
+| `adapters/bedrock_model_catalog.py`, `streaming_agent.py`, `bedrock_word_stream.py`, `bedrock_mantle.py` | New catalog, bounded shared semantic loop wrapper and canonical provider-word transports |
 | `ui/model_streams.py`, `adapters/model_stream_ui.py`, `model_stream_cli.py` | Separate proposed review/ledger, release proof, authored acceptance and protected cleanup |
-| `hosting/streaming_server.py`, `infrastructure/cdk/streaming_app.py` | New SSE hosting and isolated fixed-model stacks; deployment not yet authorized |
+| `hosting/streaming_server.py`, `infrastructure/cdk/streaming_app.py` | SSE hosting and isolated stacks; completion updated ten targets to v2; Nova gates passed, Sonnet denied; original code/config restored on v3 and legacy-v15 smoke passed; child closed 4/37, new choices disabled |
 | `infrastructure/agentcore/ui_workflow.py`, `source_audit.py` | Offline assembly/source review and guarded release operator |
 
 Package paths are relative to `src/enterprise_analytics_agent/`, except infrastructure.

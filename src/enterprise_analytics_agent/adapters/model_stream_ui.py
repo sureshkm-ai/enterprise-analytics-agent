@@ -3,6 +3,7 @@
 import base64
 import hashlib
 import json
+import os
 import re
 import time
 from collections.abc import Callable, Iterator
@@ -25,9 +26,11 @@ from enterprise_analytics_agent.adapters.bedrock_word_stream import CanonicalWor
 from enterprise_analytics_agent.adapters.duckdb import DuckDBSemanticAdapter
 from enterprise_analytics_agent.adapters.operator_reads import ReadPool
 from enterprise_analytics_agent.adapters.streaming_agent import StreamingAnalyticsAgent
+from enterprise_analytics_agent.adapters.streaming_diagnostics import report_aws_failure
 from enterprise_analytics_agent.adapters.ui_live import runtime_lease
 from enterprise_analytics_agent.adapters.ui_release import verify_publication
 from enterprise_analytics_agent.agent.contracts import AgentRequest, AgentResponse
+from enterprise_analytics_agent.agent.presentation import readable_answer
 from enterprise_analytics_agent.ui.model_streams import (
     StreamingLedger,
     StreamingReleases,
@@ -38,9 +41,22 @@ from enterprise_analytics_agent.ui.model_streams import (
 )
 from enterprise_analytics_agent.ui.models import AskRequest, UiError, UiResult
 from enterprise_analytics_agent.ui.shared import SharedReview
+from enterprise_analytics_agent.ui.streaming_health import (
+    TRANSPORT_ERRORS,
+    acceptance_failure_message,
+)
+from enterprise_analytics_agent.ui.workbench_repair import (
+    OperatorRepair,
+    verify_operator_repair,
+    verify_retained_attempts,
+)
 
 CODE_BUCKET = "enterprise-analytics-dev-453711491609-us-west-2-agent-code"
 READ_CONFIG = Config(connect_timeout=5, read_timeout=30, retries={"total_max_attempts": 1})
+# Invocations may cold-start before the first SSE heartbeat. Keep configuration
+# reads short but allow the hosted 90s + 180s response window for invocation reads.
+# https://docs.aws.amazon.com/botocore/latest/reference/config.html
+INVOKE_CONFIG = Config(connect_timeout=5, read_timeout=300, retries={"total_max_attempts": 1})
 CALLER = (
     "arn:aws:iam::453711491609:role/aws-reserved/sso.amazonaws.com/us-west-2/"
     "AWSReservedSSO_PowerUserAccess_95483085e85e3a9b"
@@ -69,8 +85,12 @@ def source_digest(root: Path) -> str:
     return hashlib.sha256(json.dumps(inventory, sort_keys=True).encode()).hexdigest()
 
 
-def verify_local_inputs(root: Path, review: StreamingReview, canonical: Path) -> None:
-    if source_digest(root) != review.source_sha256:
+def verify_local_inputs(
+    root: Path, review: StreamingReview, canonical: Path, repair: OperatorRepair | None = None
+) -> None:
+    if repair is not None:
+        verify_operator_repair(root, review, repair)
+    elif source_digest(root) != review.source_sha256:
         raise UiError("Local streaming source differs from the reviewed package source.")
     archive = root / review.artifact_path
     data = archive.read_bytes()
@@ -299,6 +319,7 @@ def read_runtime_stream(
     verified: AgentResponse | None = None
     gate: CanonicalWordGate | None = None
     final: UiResult | None = None
+    display_answer: str | None = None
     primary: BaseException | None = None
 
     def checked(value: object) -> AgentResponse:
@@ -318,13 +339,17 @@ def read_runtime_stream(
             kind = event.get("type")
             if kind == "verified" and verified is None:
                 verified = checked(event["response"])
+                if "display_answer" in event:
+                    if event["display_answer"] != readable_answer(verified):
+                        raise UiError("The readable answer differs from verified semantic results.")
+                    display_answer = readable_answer(verified)
                 if (
                     verified.diagnostics.model_id != target.settings.model_id
                     or verified.dataset_version != "retail-v1"
                 ):
                     raise UiError("The verified Runtime answer has a different model/dataset.")
                 gate = CanonicalWordGate(
-                    verified.answer,
+                    display_answer if display_answer is not None else verified.answer,
                     lambda text: emit(
                         {
                             "type": "answer_delta",
@@ -366,6 +391,8 @@ def read_runtime_stream(
                 ):
                     raise UiError("The Runtime changed its verified answer after streaming.")
                 status = event.get("presentation_status")
+                if event.get("display_answer") != display_answer:
+                    raise UiError("The Runtime changed its readable answer after streaming.")
                 if status == "streamed":
                     if gate is None:
                         raise UiError("The Runtime omitted verified word-stream evidence.")
@@ -374,6 +401,7 @@ def read_runtime_stream(
                     mode="live",
                     response=response,
                     presentation_status=status,
+                    display_answer=display_answer,
                     metadata=[{"streaming_model_calls": event.get("model_calls", [])}],
                     unreported_diagnostics=("input_tokens", "output_tokens")
                     if any(
@@ -409,10 +437,19 @@ class StreamingQuestions:
         canonical: Path,
         *,
         operator: bool = False,
+        model_testing: bool = False,
+        operator_repair: OperatorRepair | None = None,
     ) -> None:
+        if model_testing and review.schema_version != "bedrock-model-workbench-v1":
+            raise UiError(
+                "Model testing requires a new workbench review; historical campaigns stay closed."
+            )
         verify_approval(review, approval, now=datetime.now(UTC))
         releases.validate_review(review)
-        verify_local_inputs(root, review, canonical)
+        if operator_repair is not None:
+            verify_local_inputs(root, review, canonical, operator_repair)
+        else:
+            verify_local_inputs(root, review, canonical)
         self.root, self.review, self.releases, self.approval = (
             root.resolve(),
             review,
@@ -427,10 +464,26 @@ class StreamingQuestions:
         )
         self.canonical = canonical
         self.operator = operator
-        self.ledger = StreamingLedger(root, review)
+        self.model_testing = model_testing
+        self.operator_repair = operator_repair
+        self.ledger = StreamingLedger(root, review, recover_requests=operator_repair is not None)
+        if operator_repair is not None:
+            verify_retained_attempts(self.ledger, operator_repair)
+
+    def _verify_inputs(self) -> None:
+        if self.operator_repair is not None:
+            verify_local_inputs(self.root, self.review, self.canonical, self.operator_repair)
+            verify_retained_attempts(self.ledger, self.operator_repair)
+        else:
+            verify_local_inputs(self.root, self.review, self.canonical)
 
     def _accepted(self) -> bool:
-        path = self.ledger.directory / "accepted.json"
+        independent = self.review.schema_version == "bedrock-model-workbench-v1"
+        path = (
+            self.ledger.directory / "acceptance" / f"{self.target.model_key}.json"
+            if independent
+            else self.ledger.directory / "accepted.json"
+        )
         if not path.is_file() or path.resolve() != path:
             return False
         try:
@@ -439,6 +492,13 @@ class StreamingQuestions:
             return False
         if not isinstance(value, dict):
             return False
+        if independent:
+            return (
+                value.get("review_sha256") == self.review.sha256
+                and value.get("model_key") == self.target.model_key
+                and value.get("passed") is True
+                and value.get("cases") == ["Q18", "all-five-regionals"]
+            )
         return bool(
             value.get("review_sha256") == self.review.sha256
             and value.get("passed") is True
@@ -451,38 +511,175 @@ class StreamingQuestions:
     def public_state(self, mode: str) -> dict[str, object]:
         state = self.ledger.summary()
         model = get_model(self.target.model_key)
+        accepted = self._accepted()
+        blocked = state.get("blocked_models", [])
+        model_blocked = isinstance(blocked, list) and self.target.model_key in blocked
+        model_blocked = model_blocked or self._failed_acceptance()
+        source_error = ""
+        try:
+            self._verify_inputs()
+        except (UiError, OSError, ValueError):
+            source_error = "Local streaming source or data differs from the approved release."
+        failures = state.get("request_failures", [])
+        own = (
+            [item for item in failures if item["model_key"] == self.target.model_key]
+            if isinstance(failures, list)
+            else []
+        )
+        waiting = max((item["wait_seconds"] for item in own), default=0)
+        label, notice = "", ""
+        acceptance_error = ""
+        if source_error:
+            label = "Configuration changed"
+        elif state["blocked"]:
+            label = "Allowance unavailable"
+        elif self._failed_acceptance():
+            label, acceptance_error = acceptance_failure_message(
+                self.root, self.review.sha256, self.target.model_key
+            )
+        elif waiting:
+            label = "Waiting after connection failure"
+        elif model_blocked:
+            label = "Request failed — inspect details"
+        elif not accepted and not self.model_testing:
+            label = "Not yet tested"
+        elif own:
+            notice = (
+                "A previous question failed; this model passed acceptance. "
+                "A new submission is a separate billable attempt. "
+                "Nothing was retried automatically."
+            )
         return {
-            "enabled": not state["blocked"] and self._accepted(),
-            "error": "The model needs its reviewed deployed acceptance gates."
-            if not self._accepted()
-            else "",
+            "enabled": not state["blocked"]
+            and not model_blocked
+            and (accepted or self.model_testing)
+            and not source_error,
+            "error": source_error
+            or acceptance_error
+            or (
+                f"The previous response was interrupted. Wait {waiting}s before a new question; "
+                "the AWS request may have completed. Its attempt remains counted."
+                if waiting
+                else ""
+            )
+            or (
+                "This model failed its last attempt. Inspect its diagnostics; "
+                "other models can still be tested."
+                if model_blocked
+                else ""
+            )
+            or (
+                "The model needs its reviewed deployed acceptance gates."
+                if not accepted and not self.model_testing
+                else ""
+            ),
+            "acceptance_status": "accepted"
+            if accepted
+            else "testing"
+            if self.model_testing
+            else "unverified",
             "dataset": "retail-v1",
             "tenant": "retail_demo",
             "regions": ["North", "South"],
             "reference_date": "2025-04-01",
             "model_id": model.model_id,
             "runtime_version": self.release.runtime_version,
-            "description": f"{model.label} · Bedrock · verified words",
+            "description": f"{model.label} · configured Bedrock streaming target",
             "cost_notice": (
                 "BILLABLE: up to five planning calls plus one verified presentation stream."
             ),
             "word_streaming": True,
+            "availability_label": label,
+            "notice": notice,
         }
 
     def ask(self, request: AskRequest) -> UiResult:
         return self.ask_with_events(request, lambda event: None)
+
+    def _failed_acceptance(self) -> bool:
+        if self.review.schema_version != "bedrock-model-workbench-v1":
+            return False
+        path = self.ledger.directory / "acceptance" / f"{self.target.model_key}.json"
+        if path.is_symlink():
+            return True
+        if not path.exists():
+            return False
+        # A malformed or mismatched record is unavailable, never a fresh attempt.
+        return not self._accepted()
 
     def ask_with_events(
         self,
         request: AskRequest,
         emit: Callable[[dict[str, object]], None],
     ) -> UiResult:
+        context: dict[str, object] = {"phase": "preflight"}
+        try:
+            return self._ask_with_events(request, emit, context)
+        except Exception as exc:
+            if self.operator_repair is None:
+                raise
+            saved = self._save_error(request, exc, context)
+            if isinstance(exc, UiError):
+                message = str(exc)
+            elif type(exc).__name__ in TRANSPORT_ERRORS:
+                message = (
+                    f"The connection failed during {context['phase']} ({type(exc).__name__}). "
+                    "AWS may have completed the request; it was not retried."
+                )
+            else:
+                message = f"The request failed during {context['phase']} ({type(exc).__name__})."
+            detail = f" Diagnostic: {saved}." if saved else " Diagnostic file could not be saved."
+            raise UiError(message + detail) from exc
+
+    def _save_error(
+        self, request: AskRequest, exc: Exception, context: dict[str, object]
+    ) -> str | None:
+        record: dict[str, object] = {
+            "request_id": str(request.request_id),
+            "review_sha256": self.review.sha256,
+            "model_key": self.target.model_key,
+            "mode": request.mode,
+            "error_type": type(exc).__name__,
+            **context,
+        }
+        report_aws_failure(
+            exc, operation=None, number=1, diagnostic=lambda value: record.update(value)
+        )
+        path = self.ledger.directory / f"error-{request.request_id}.json"
+        try:
+            if path.resolve() != path:
+                return None
+            path.parent.mkdir(parents=True, exist_ok=True)
+            fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+            with os.fdopen(fd, "w") as output:
+                output.write(json.dumps(record, indent=2) + "\n")
+                output.flush()
+                os.fsync(output.fileno())
+            return path.relative_to(self.root).as_posix()
+        except OSError:
+            return None
+
+    def _ask_with_events(
+        self,
+        request: AskRequest,
+        emit: Callable[[dict[str, object]], None],
+        context: dict[str, object],
+    ) -> UiResult:
         if request.mode not in ("local_agent", "live") or Path.cwd().resolve() != self.root:
             raise UiError("Start the approved streaming UI from the original checkout.")
         verify_approval(self.review, self.approval, now=datetime.now(UTC))
-        if not self.operator and not self._accepted():
+        if self._failed_acceptance():
+            raise UiError("This model failed acceptance. Its recorded attempt cannot be replayed.")
+        if not self.operator and not self.model_testing and not self._accepted():
             raise UiError("This model has not passed its deployed acceptance gates.")
-        verify_local_inputs(self.root, self.review, self.canonical)
+        self._verify_inputs()
+        # Reject a paused model before spending time on AWS preflight reads.
+        state = self.ledger.summary()
+        blocked_models = state.get("blocked_models", [])
+        if state["blocked"] or (
+            isinstance(blocked_models, list) and self.target.model_key in blocked_models
+        ):
+            raise UiError("This model or its allowance is paused. Inspect its request details.")
         with runtime_lease(self.root):
             pool = ReadPool(None, self.ledger.directory / "operator-reads.jsonl")
             pool.session = boto3.Session(profile_name="analytics-dev", region_name="us-west-2")
@@ -502,15 +699,22 @@ class StreamingQuestions:
                 str(request.request_id), self.target.model_key, mode=request.mode
             ) as record:
                 if request.mode == "local_agent":
+                    context["phase"] = "local Bedrock execution"
                     result = self._local(pool.session, request, emit, record)
                 else:
-                    client = pool.session.client("bedrock-agentcore", config=READ_CONFIG)
+                    context["phase"] = "Runtime client setup"
+                    client = pool.session.client("bedrock-agentcore", config=INVOKE_CONFIG)
+                    session_id = str(uuid4())
+                    context.update(
+                        runtime_session_id=session_id, runtime_arn=self.release.runtime_arn
+                    )
                     record({"event": "reserved", "operation": "InvokeAgentRuntime", "number": 1})
                     try:
+                        context["phase"] = "Runtime invocation / first response"
                         response = client.invoke_agent_runtime(
                             agentRuntimeArn=self.release.runtime_arn,
                             qualifier="DEFAULT",
-                            runtimeSessionId=str(uuid4()),
+                            runtimeSessionId=session_id,
                             contentType="application/json",
                             accept="text/event-stream",
                             payload=AgentRequest(question=request.question)
@@ -518,6 +722,12 @@ class StreamingQuestions:
                             .encode(),
                         )
                         body = response["response"]
+                        context["phase"] = "Runtime response stream"
+                        metadata = response.get("ResponseMetadata", {})
+                        if isinstance(metadata, dict) and isinstance(
+                            metadata.get("RequestId"), str
+                        ):
+                            context["aws_request_id"] = metadata["RequestId"]
                         content_type = response.get("contentType")
                         if (
                             response.get("statusCode", 200) != 200
@@ -531,12 +741,25 @@ class StreamingQuestions:
                             raise UiError("Runtime did not return the reviewed stream protocol.")
                         result = read_runtime_stream(body, self.target, emit)
                     except BaseException as exc:
+                        aws_errors: list[dict[str, object]] = []
+                        report_aws_failure(
+                            exc,
+                            operation="InvokeAgentRuntime",
+                            number=1,
+                            diagnostic=aws_errors.append,
+                        )
+                        aws_error = aws_errors[0].get("aws_error", {}) if aws_errors else {}
                         record(
                             {
                                 "event": "failed",
                                 "operation": "InvokeAgentRuntime",
                                 "number": 1,
                                 "error_type": type(exc).__name__,
+                                **(
+                                    {"error_code": aws_error["Code"]}
+                                    if isinstance(aws_error, dict) and "Code" in aws_error
+                                    else {}
+                                ),
                             }
                         )
                         raise
@@ -589,6 +812,7 @@ class StreamingQuestions:
                 presentation_operation="ChatCompletionsStream"
                 if model.transport == "mantle_chat"
                 else "ConverseStream",
+                readable=True,
             ).run(
                 AgentRequest(question=request.question),
                 context=settings.authorization_context(),
@@ -606,6 +830,7 @@ class StreamingQuestions:
             mode="local_agent",
             response=outcome.response,
             presentation_status=outcome.presentation,
+            display_answer=outcome.display_answer,
             unreported_diagnostics=missing,
             metadata=[{"streaming_model_calls": list(outcome.calls)}],
         )

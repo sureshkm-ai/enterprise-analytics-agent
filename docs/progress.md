@@ -1,8 +1,1056 @@
 # Progress
 
-Updated: 2026-11-11 (America/Chicago).
+## Current task — diagnose later request failures and repair the client
 
-## Current task: approved Bedrock streaming activation — preflight checkpoint
+The owner's newer screenshot shows **24/40 attempts**, a Nova request stopping
+after **35.5 seconds**, and only Qwen enabled. This review started from GitHub
+checkpoint 94bdb7c at 20/40; raw attempts 21–24 are in the owner's original checkout and are
+not available here. Do not claim that these specific requests timed out without
+reading their error types. The earlier four-model acceptance remains historical.
+
+Confirmed defects: Runtime invocation reused the 30-second configuration-read
+timeout; one request failure quarantined a previously accepted model for the
+campaign; generic browser errors obscured the failing SDK/stage. The client repair
+uses a separate 300-second invocation read timeout with one SDK attempt, retains
+structured private diagnostics and shows distinct availability reasons. Accepted
+models can recover from proved transient transport failures after a five-minute
+settling period, or completed question limits/validated presentation fallbacks.
+New submissions stay manual and counted. Unknown/correctness failures, failed
+acceptance, incomplete accounting and global budget/expiry/cleanup gates still stop.
+
+The exact operator binding preserves all 80 accepted source/assets except six
+enumerated client/UI paths (including two new helper modules). Agent, semantic,
+model adapter, rendering and hosting code remains identical to the deployed ZIP.
+The original review/approval, artifact hash/S3 version, Runtime settings, IAM,
+canonical data and all historical evidence are unchanged. The repair requires
+the retained ledger with at least the 24 attempts already reported; a fresh clone
+or old 20-attempt snapshot cannot create a new counter.
+
+Final offline verification passed **2186 tests, 85 deselected**, Poetry lock
+validation, Ruff, formatting (213 files), mypy (167 source files), and diff checks.
+The three offline CDK syntheses completed; all ten streaming template hashes
+still match the approved review. Documentation verification passed 143 local
+links and 33 shell blocks. Targeted verification reproduced the simulated
+cold-start regression against the old timeout and passed the repaired setting.
+The exact operator binding passed; the read-only CLI correctly refused this
+checkout's missing operational ledger instead of reporting zero usage. Hosted CI
+for this repair must be checked against its pushed commit; the earlier 94bdb7c
+CI results cover only that historical checkpoint.
+No AWS calls, deployment, live question, ledger reset or automatic retry occurred.
+
+Next: use the [read-only diagnostic and restart commands](workbench-request-repair.md)
+in the original checkout. The account-unavailable four models and failed-acceptance
+Gemma/Llama remain disabled. Their status is not fixed by speculative IAM changes.
+
+## Historical acceptance checkpoint — four models at 20/40
+
+The observations below describe the retained 94bdb7c checkpoint. Later failures
+and the client repair are recorded above; these are not current availability or
+remaining-allowance claims.
+
+**Open http://127.0.0.1:8501/?mode=live** and refresh any old page. **Nova Lite,
+DeepSeek V3.2, Qwen3 235B and Mistral Large 3** are enabled in both Local
+Bedrock/DuckDB and AWS AgentCore/Athena. Six failing choices remain unavailable.
+The owner approved the exact proposal at **27e1ae8**, review **c17f1bb9…** and
+preparation **195fb203…**. Actual [approval](../evaluations/bedrock-streaming/workbench.approval.json),
+[outcome](../evaluations/bedrock-streaming/workbench.outcome.json) and
+[model diagnostics](../evaluations/bedrock-streaming/workbench.model-diagnostics.json)
+are recorded separately. PR #13 remains unmerged on this branch.
+
+The operator executed **once**. Conditional upload returned actual VersionId
+**xnQiGsnGRkgFV3ktJ2DfhUbOClx9gVEn** for ZIP **f2755c33…**. All ten existing
+stacks verified **UPDATE_COMPLETE**, Runtime/DEFAULT **READY v4**, exact approved
+artifact/template/parameters/configuration/policies and seven-day retention. Fresh
+read-only proof at **2026-11-13T15:59:41Z** reverified all ten, legacy **v15**,
+canonical S3/Glue and current source/ZIP. Its summary SHA is
+`aeba6395c09292f8bc0b7b61c5687f11e661d67f9d2e2699d25d88289f5d402a`.
+Only the approved exact new/original code-key reads changed; model grants, query
+trust, M3/foundation/data, profiles and original artifacts were preserved.
+
+AWS acceptance dispatched **15 questions: 9 passed, 6 failed**. Each of the four
+enabled models passed Q18 and all-five regional metrics with complete independent
+plans/results and readable provider words. Anthropic Sonnet/Opus and OpenAI
+Astra/Sol returned full private AWS 403 messages: their foundation models are
+**not available for this account**, with individual RequestIds and AWS Sales
+guidance. This is an account/model availability failure, not an established
+missing IAM Allow. Gemma reached its iteration bound. Llama passed Q18 but failed
+the all-five case after invalid tool arguments, without a successful complete plan.
+All six are quarantined; no failed model was retried or silently substituted.
+
+Actual Playwright browser checks passed **four Local Q18 questions plus one AWS
+Nova Q18**, submitted once each: exact **110.25 USD**, complete
+**[2025-03-31,2025-04-01)**, correct model/scope, cleared composer, visible validated
+provider-word prefixes and readable final output. Captures, screenshots, five
+durable once-only claims and independent judgments are under
+`output/playwright/workbench-live-20261113/`. The answer displays **Net revenue:
+110.25 USD for March 31, 2025**; technical data is collapsed. This is actual live
+browser evidence, separate from earlier fixture checks.
+
+Final recorded usage: **20/40**, **18 ordinary user questions remaining**. Protected
+cleanup and the **unapproved reserve** remain untouched. SDK accounting is **27
+reserved / 27 returned**: **16 Runtime, 7 Converse, 4 ConverseStream**, with no
+incomplete receipt or automatic retry. Six model failures remain recorded while
+the session stays usable under model-scoped failure isolation. All ten candidate
+bindings remain deployed under the approved partial-acceptance policy; restoration
+was not required. If later overall failure requires it, retain the original
+c136/GSY restoration and single protected legacy-v15 smoke procedure. Expiry is
+**November 15, 2026, 5:59 p.m. CST** (`2026-11-15T23:59Z`).
+
+Only stale task-owned PID **13049** was replaced. Current server **54226** uses the
+new review, actual `operations-approved-01/releases.actual.json` and approval paths
+in the [launch/runbook](ui-model-workbench.md). Unrelated servers were preserved.
+All **555** protected historical files still match; separate Nova stays **3/20**,
+closed streaming histories **3/40 + 4/37**, aggregate **7/40**. No old allowance,
+ledger or claim was reset or borrowed.
+
+Current source remains **106b173 / 8ee90d63…** and the verified frozen package.
+Its preceding **2165-test** suite, lockfile/Ruff/format/mypy and reproducible
+synthesis remain applicable; source did not change during deployment or outcome
+documentation. Independent actual-browser/ledger audit confirmed all five checks,
+27 matched SDK receipts, unchanged source/archive and preserved files. Final checks
+passed for **7 Markdown files, 139 local links, 35 shell blocks**, all three new
+outcome JSON records, **15** case-report hashes, **5** browser judgment/capture
+hashes, all **555** preserved files, source/archive/final-proof hashes and
+`git diff --check`. Earlier
+106b173 CI covers that exact implementation; later hosted CI is reported separately
+for its exact head.
+
+**Exact next task:** use the running four-model workbench within the remaining
+ordinary allowance. Do not retry quarantined models, reset counters, spend the
+reserve, add speculative permissions or claim every catalog model/production
+readiness. Optional Anthropic/OpenAI access resolution follows the captured AWS
+account/model-availability messages, not another policy attachment. M1–M5 remain
+complete and their evidence is unchanged.
+
+## Historical workbench preparation — before exact execution approval
+
+Continued on **feat/bedrock-streaming-activation**, clean implementation
+**106b17309716d11f154c8954024f7a260c8fbf7a**, preserving PR #13. The process actually
+serving port 8501 is **13049**, launched with the historical `--accepted-runtime-review`
+and `--accepted-runtime-approval` files. Its actual API reports disabled because
+current source differs from that approved operator pin. The unrelated servers on
+ports 8502/8510 are preserved. No stale accepted-Nova binding was reused or relaxed.
+
+The [concrete execution proposal](ui-model-workbench-deployment-proposal.md),
+[review](../evaluations/bedrock-streaming/review.workbench.proposed.json),
+[sealed preparation](../evaluations/bedrock-streaming/workbench.preparation.json)
+and [readiness evidence](../evaluations/bedrock-streaming/workbench.readiness.json)
+are complete. New campaign **bedrock-stream-workbench-v1-01** is **0/40**,
+uncreated/unclaimed. Review SHA:
+`c17f1bb9a7c3a29620c42bcf1a0217298a2fd6b0d473b9fcce7608ca90d247b3`;
+preparation SHA:
+`195fb2033f92458ff6548e9e1aeb1b7e0a0dc0aa7c59de053e260ac7714a4d32`.
+
+The new ARM64 ZIP **f2755c33d5bbbef44d834628b974c1c71b7313374c9e7835b4b7ce66238a2a6a**,
+**39,321,518 bytes**, was built and independently reproduced offline using all
+**13** locked cached dependencies. All **80** source/assets, package marker and
+entry point match; current source digest is
+`8ee90d63f5af4fa62b8e82f9525a9b6eca6d6d58fd6693aa023031283fe2224e`.
+Two offline syntheses reproduce **10 templates / 34 assembly files** byte-for-byte.
+The exact diff permits only the new code prefix, artifact SHA output and workload
+roles' exact new-plus-original code-key reads. Model grants, trust, hosting,
+authorization/data scope and M3 resources remain unchanged. Actual S3 VersionId
+is deliberately **unbound**; there has been no upload.
+
+Fresh **read-only** `analytics-dev` STS verified account **453711491609**, region
+**us-west-2**, expected PowerUser SSO principal. Fresh complete baseline and formal
+preflight at **2026-11-13T15:32:13Z** verified all ten existing stacks
+**UPDATE_COMPLETE**, Runtime/DEFAULT **READY v3**, exact original c136/GSY artifact,
+configuration/templates/parameters, both resource policies, stack IDs/execution
+role and retention. Retained Nova independently verified **READY v15**; canonical
+S3/Glue publication and candidate-key absence passed. No denied IAM inspection
+was repeated and no model, Runtime, Athena execution or mutation occurred.
+
+The preservation inventory verifies **555 files** unchanged during this work.
+Of the older 352-file snapshot, **349** remain byte-identical; three active Nova
+journals contain the later authorized user question, started November 13 at
+**01:02:08Z**, returned **01:02:15Z**. That separate ledger is **3/20**, **16** regular
+remaining, with three completed Runtime receipts and no failure/incomplete state.
+Do not replace those journals with older hashes. Historical streaming ledgers
+stay closed **3/40**, **4/37**, aggregate **7/40**; M4/M5 evidence is preserved.
+
+Actual verification with **enterprise-analytics**, Conda Python **3.12.16**, Poetry:
+
+- `poetry check --lock`: passed.
+- `poetry run pytest`: **2165 passed, 85 deselected, zero selected skips in 101.47s**.
+  An initial collection failure from the JSII cache location was environmental;
+  rerunning with `JSII_RUNTIME_PACKAGE_CACHE_ROOT` under `/private/tmp` and local
+  loopback permission passed. Both logs are retained.
+- `poetry run ruff check .`: passed; `poetry run ruff format --check .`: **208 files**.
+- `poetry run mypy src tests`: **164 files**, no issues.
+- Separate candidate/reproduction packaging with `--offline`: identical ZIPs and
+  manifests; original archives unchanged. Strict template diff and both syntheses
+  passed, with logs retained.
+- Completion operator `verify-offline` with the new preparation: passed **0/40**;
+  formal `preflight --read-only-aws`: passed all ten targets and legacy/canonical gates.
+- Independent focused lifecycle/UI/ledger/readable-output review: **184 tests passed**.
+- Final documentation checks: **6 Markdown files, 115 local links, 23 shell blocks**
+  and four new JSON records passed. All **241 preparation pins** and **555 preserved
+  files** were independently rehashed; exact hashes and `git diff --check` passed.
+
+Implementation **106b173** is pushed and passed
+[push CI 43448268388](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43448268388)
+and [PR CI 43448277518](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43448277518):
+**2165 passed, 85 deselected, zero selected skips**, lock/lint/format/types and
+all three synthesis steps successful. Those runs cover 106b173, not this new
+preparation/documentation commit. No new live/browser acceptance is claimed.
+
+**Exact next task:** approve the complete new review/preparation and proposed
+expiry **2026-11-15T23:59Z** (November 15, 5:59 p.m. CST), then run the one reviewed
+upload/deployment/evaluation operation and actual Local/AWS browser checks. The
+40-slot cap allocates up to **20 AWS authored checks + 10 Local browser Q18 +
+1 AWS browser Q18**, then user-owned ordinary slots within 38 total, one protected
+failure-restoration smoke and one unapproved reserve. The actual launch paths and
+restoration-only command are in the proposal. No approval record exists yet;
+do not deploy, invoke, reset a campaign or advertise this candidate as active.
+The new workbench does not reopen any historical budget. Keep PR #13 unmerged.
+
+## Historical implementation-only task — selectable models and readable streaming
+
+Implemented on the existing `feat/bedrock-streaming-activation` branch from
+`5f5fa06389c5b9cc8302153ef25169c88215d249`. See
+[the implementation and live handoff](ui-model-workbench.md).
+
+- Added a shared readable-answer renderer, validated readable provider streams,
+  safe browser formatting and collapsed data/diagnostics. Exact semantic JSON
+  and Decimal results remain unchanged.
+- Fixed inherited "not connected" errors and request errors erased by refresh.
+- Added support for a new workbench scope requiring explicit approval, with
+  per-model acceptance and failure isolation, plus a labeled model-testing launch.
+  The deployment controller can retain independently accepted models. No new live
+  scope has been approved or executed here.
+- Final fresh offline verification: **2,165 passed, 85 live-gated items deselected**
+  in 153.68 seconds. Poetry lock validation, Ruff, formatting (207 files), mypy
+  (164 files), documentation links and diff checks passed. Data, AgentCore foundation
+  and all ten streaming CDK templates synthesized offline; all ten historical
+  streaming template hashes still match their reviewed pins.
+- Tests execute the shipped JavaScript with fragmented UTF-8 provider events and
+  validate partial rendering, exact values, unsafe markup and final consistency.
+  Prior browser checks used labeled fixture backends, not live AWS models.
+- Existing reviews, tracked evaluations/data, CDK configurations, dependency pins,
+  permissions and M1–M5 evidence are unchanged. No AWS operations or live calls ran.
+  The original ignored Mac checkpoints are unavailable in this clone and are not
+  claimed as reverified. No new S3 artifact or VersionId exists for this change.
+- The user authorized pushing this change to existing PR #13. Hosted CI will run
+  on publication; historical CI links below cover only their original commits.
+- Next: verify hosted CI and review the change, then bind fresh baseline/preparation
+  and explicit live approval in the authenticated checkout. Do not replay historical
+  campaigns or infer model access from offline tests.
+
+## Previous accepted Nova checkpoint
+
+Updated: 2026-11-12 (America/Chicago).
+
+## Historical checkpoint: approved AWS-only Nova connection activated and browser-verified
+
+**Live Workbench: http://127.0.0.1:8501/?mode=live.** The owner explicitly approved
+the binding at **1d7e8f6**, review
+`e6fdf1354c736f07b54807978af8af4e0612c85e6c091c5b162cbef25b2003a8`.
+The [actual approval](../evaluations/ui-shared/accepted-nova-runtime.approval.json)
+and [activation outcome](../evaluations/ui-shared/accepted-nova-runtime.activation.json)
+are retained separately from the immutable original shared review and ledgers.
+
+Fresh read-only `analytics-dev` preflight at **2026-11-13T00:13:44Z** verified the
+expected account/region, exact Nova retail artifact/configuration/template/parameters,
+Runtime/DEFAULT **READY v15**, both resource policies, seven-day retention and
+canonical S3/Glue publication. Evidence:
+`artifacts/ui-shared/accepted-nova-runtime/preflight-20261113T001330Z.json` and its
+read journal. Only the task-owned stale port-8501 process **60765** was stopped;
+its logs are preserved. The reviewed server started through the existing Conda/
+Poetry environment at **00:14:53Z**, process **13049**. An initial local startup
+path error was corrected using the verified installed Poetry executable; it
+occurred before a new server or question dispatch and changed no AWS resource.
+
+Actual Playwright browser verification confirmed **Amazon Nova Lite selected**, AWS
+mode selected, retail-v1/reference date April 1/v15 metadata, and **Ask AWS enabled
+after entering an unsent question**. The test draft was then cleared without
+submission. Screenshots are under `output/playwright/ui-readiness-20261112/`;
+API-state evidence is token-redacted. No JavaScript error occurred; the unrelated
+favicon request returned 404. **No operator question or model/Runtime/Athena
+execution was made.** At **00:17:37Z**, the existing ledger was still **2/20 used,
+17 regular remaining**, with two historical Runtime SDK receipts and no failed/
+incomplete receipt. All **352** protected historical files stayed unchanged.
+
+Local Bedrock and other model choices remain disabled. This accepted JSON release
+shows progress followed by exact validated output, **not provider-word streaming**.
+No deployment, upload, IAM change, profile, dataset change, new allowance, counter
+reset or repeat Q18 verification occurred. Expiry stays **November 13, 5:59 p.m.
+CST** (`2026-11-13T23:59Z`); the protected rollback slot remains unavailable.
+
+The unchanged source is covered by the preceding **2141-test** local verification,
+lockfile/lint/format/type checks below; these were not repeated for approval and
+documentation only. Final checks passed for **6 Markdown files, 122 local links,
+26 shell blocks**, both approval/outcome records, their raw evidence checksums,
+all 352 protected files and `git diff --check`. Earlier hosted CI still covers its named
+commits, separately from these new source changes.
+
+**Exact next task:** the user can enter a question and click **Ask AWS** at the live
+URL, using the existing remaining allowance. Do not automate those user-owned
+slots. The separate failed multi-model campaign remains closed/restored **4/37**,
+aggregate **7/40**; diagnose its original service response before proposing any
+separately reviewed retry. Keep PR #13 unmerged. M1–M5 completion is unchanged.
+
+## Historical AWS-only preparation — before binding approval
+
+The screenshot showed an offline-only server, which had no AgentCore backend to
+select. The old port-8501 shared server also held stale readiness even though the
+current local source no longer matched its frozen Runtime review. This was an
+operator/UI delivery failure; neither the tab nor the plain launch command could
+make that connection usable. The new status logic reports unconfigured/disabled
+targets accurately, rechecks local compatibility and removes invented parity/v12
+metadata. Real JavaScript regressions cover the browser states and safe AWS-mode
+deep link, with no automatic question submission.
+
+The [AWS-only connection plan](ui-accepted-nova-live.md) and
+[review](../evaluations/ui-shared/accepted-nova-runtime.proposed.json) are ready.
+It verifies the existing accepted Nova **v15** frozen archive independently of
+current operator source, keeps Local Bedrock and additional models disabled, and
+uses the **same** interactive-02 ledger: **2/20 used, 17 regular remaining**, expiry
+**2026-11-13T23:59Z**. No reset, new allowance, deployment, upload or permission
+change is proposed. The different AWS-only source-evidence basis requires explicit
+binding approval before activation. Review SHA is
+`e6fdf1354c736f07b54807978af8af4e0612c85e6c091c5b162cbef25b2003a8`;
+current operator source SHA is
+`98d1521be7e35c6a89a6d7e5ad537bcdb92851306a40a6725c2a8086988eebc9`.
+
+Fresh read-only `analytics-dev` preflight passed at **2026-11-12T23:54:52Z**:
+expected account **453711491609**/region **us-west-2**, Runtime/DEFAULT **READY v15**,
+exact ZIP/version/configuration/template/parameters, both resource policies,
+seven-day retention and canonical S3/Glue publication. Offline verification proved
+the frozen 25-file source closure/dependencies, canonical bytes/provenance and
+goldens; all **352** protected historical files are unchanged. Evidence is in
+`artifacts/ui-shared/accepted-nova-runtime/preflight-20261112T235400Z.json`, SHA
+`b4c782bd419092c7c36a5c1d7ef4a3edfd7042a40e2c33911f536b6a8165ca35`, and its read
+journal; the [committed summary](../evaluations/ui-shared/accepted-nova-runtime.readiness.json)
+preserves the observation. No Runtime/model invocation, Athena execution or AWS
+mutation occurred during this correction. The 17 regular questions remain user-owned.
+
+Private streaming diagnostics now retain redacted SDK code, full message and
+request ID, including wrapped setup failures, without adding public/model-visible
+fields or retries. The missing original Sonnet message cannot be reconstructed by
+this local fix, and no frozen/deployed archive was changed. IAM evidence remains
+complete; no repeat policy/simulator request or speculative grant is justified.
+
+Commands actually run with Conda **enterprise-analytics**, Python **3.12.16** and
+Poetry **2.3.1**:
+
+- `poetry check --lock`: passed.
+- `poetry run pytest`: **2141 passed, 85 deselected, zero selected skips in 76.61s**.
+- `poetry run ruff check .`: passed.
+- `poetry run ruff format --check .`: **201 files** already formatted.
+- `poetry run mypy src tests`: **159 source files**, no issues.
+- Accepted-runtime operator `verify-offline`: passed; same **2/20**, **17** regular
+  remaining, no failed/incomplete receipt; 31 focused binding regressions passed.
+- Accepted-runtime operator `preflight --read-only-aws`: passed as recorded above;
+  **42 bounded read pairs**, no failures or invocation/query operations.
+- Browser check of the offline-only server's AWS tab: unavailable status, no fake
+  target metadata and disabled submission; no question sent.
+- Documentation checks: **7 Markdown files, 137 local links, 26 shell blocks**,
+  both new JSON records and `git diff --check` passed; all 352 protected files
+  were independently rechecked without changes.
+
+Earlier **d3694df4d5758a024a87f75f968e511c4d7284fe** is pushed and passed
+[push CI 43325497464](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43325497464)
+and [PR CI 43325507337](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43325507337).
+Those **2055-test** results predate these new source changes. Draft
+[PR #13](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/13) stays unmerged.
+
+Local implementation/review commit **1d7e8f6633c14e92cdd40a23580991b72ed7e8a9**
+was ready at that checkpoint. Independent final review confirmed the source/review/preflight pins and
+absence of an approval record; a remaining README present-tense shared-launch claim
+was corrected to historical attribution. The binding was not yet activated then.
+
+**Historical next task:** obtain approval of the concrete AWS-only binding, replace only
+the task-owned stale port-8501 process, then verify the actual Nova selector and
+enabled Ask AWS control at **http://127.0.0.1:8501/?mode=live** without submitting a
+question. This is progress + validated final output, not provider-word streaming.
+Multi-model acceptance remains blocked and its failed campaign stays closed
+**4/37**, aggregate **7/40**; do not replay it. M1–M5 completion is unchanged.
+
+## Historical completion-fix execution: Nova passed; Sonnet denied; restoration verified
+
+The owner approved the exact replacement at **f591498**: review
+**67f3f3aab2a086ad16633e6cdc2195edbe02543065a4b5934c7b1177345ea58c**,
+preparation **e9fc7e4711290b058f849b15bbfb4c0786ca083caf1819bfb1b92d8468597e79**.
+[Approval](../evaluations/bedrock-streaming/completion-fix-approval.json) and
+[outcome](../evaluations/bedrock-streaming/completion-fix-outcome-2026-11-12.json)
+are committed summaries; full raw evidence remains in
+`artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/`.
+The branch is **feat/bedrock-streaming-activation**. Commit **f591498** is pushed;
+[push CI 43316129337](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43316129337)
+and [PR CI 43316722939](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43316722939)
+passed for that exact implementation: **2055 passed, 85 deselected, zero skipped**,
+lockfile/lint/format/types and all three synthesis checks successful. These runs
+predate this outcome-documentation commit. [PR #13](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/13)
+is open as a draft; no merge was performed.
+
+The guarded execution ran **once** with only **analytics-dev / 453711491609 /
+us-west-2**. Fresh identity, legacy-v15, all-ten-v1, source/archive, canonical S3/Glue,
+process and immutable-parent preflight passed. ZIP **8cfe8d9bd667c29c871342844898061f986107d94f309f1eef471f09582a4ae8**
+was conditionally uploaded once as actual S3 VersionId **PQbNv3gkC1HwVYNNiAe95r1XuQDkfKvb**;
+version-specific and latest-pointer checksum/size proofs passed. All ten existing
+stacks reached **UPDATE_COMPLETE**, Runtime/DEFAULT **READY v2**, with exact
+approved template/parameter/artifact/configuration/policy proofs and seven-day
+retention. No additional administrator grant, query trust change, profile, dataset
+publication or retained-data-layer deployment occurred.
+
+Live acceptance: **Nova Q18 passed 110.25 USD [2025-03-31, 2025-04-01)**, and
+**Nova all-five regional metrics passed** every independent request/result and
+provider-word gate. This verifies the focused completion correction on the live
+reproduction. Sonnet Q18 then returned **model_error**: its first Converse failed
+with **AccessDeniedException**, no metric query and no presentation. The evaluator
+stopped immediately: **2 passed, 1 failed, 17 not run**. No retries or other model
+questions occurred. No twenty-question acceptance record or new UI binding exists.
+
+Mandatory restoration completed: all ten exact original **c136a393… / GSY36sTbDpCNZGogULTe3cBL__bujiQK**
+artifact/configuration bindings verify **UPDATE_COMPLETE**, Runtime/DEFAULT **READY
+v3**. The protected retained-legacy-v15 smoke passed the full Q18 request and
+**110.25 USD**, completed **2026-11-12T22:29:52Z**; legacy v15 was never redeployed.
+The operator exited **1** for the original acceptance failure, with final status
+**failed-restored**, not successful feature completion. Child usage is **4/37**:
+three ordinary attempts plus one protected cleanup, **4 Runtime SDK attempts**, no
+automatic billable retries, no incomplete receipt. Parent stays **3/40**, aggregate
+**7/40**. The child is **failed/blocked**, cleanup spent, reserve unavailable; its
+numerical 32 remaining ordinary slots cannot be used to replay this campaign.
+
+Read-only diagnosis preserved exact Sonnet Runtime log events and bounded CloudTrail
+samples, plus the operator's **444-event** failure capture. None exposes the
+underlying Sonnet invocation denial message. The application retained only the
+exception class, losing SDK Error.Message/RequestId; actual denied session,
+resource and conditions remain unknown. Captured log-resource duplicate/conflict
+events do not establish the cause of the Bedrock denial. Read-only Sonnet model
+availability reports agreement/entitlement/region available and developer
+authorization authorized; active profile routing matches all three reviewed US
+model ARNs. This is **not Runtime-role effective-access proof**. No specific
+missing permission or policy broadening is supported. See the bounded
+[read-only administrator handoff](bedrock-streaming-completion-plan.md#read-only-sonnet-authorization-handoff).
+
+Subsequent administrator-console evidence supplied by the user is now
+[recorded](../evaluations/bedrock-streaming/sonnet-runtime-policy.user-supplied.json).
+The reported sole inline policy **RuntimePermissionsA5C20CF1** matches the restored
+reviewed template **exactly**; its two Bedrock actions and four Sonnet ARNs are
+unchanged in the approved candidate. No duplicate grant is needed. This records
+user-reported attachment evidence, not an independent IAM read. The user also
+reports **Permissions boundary: Not set**. At that policy-only checkpoint,
+effective-context evidence was incomplete; the later simulator/organization
+observations below narrow it. Seven credential/routing source members match the frozen
+ZIP byte-for-byte. Source audits show Bedrock uses the workload session and only
+Athena/S3 use assumed query-role credentials; no concrete credential, model-ID or
+region wiring defect was found. Actual denied session/resource/conditions remain
+unknown. The later simulator report below completes that requested IAM evidence; no
+repeat of the inline-policy/boundary/simulator handoff is needed.
+
+The administrator subsequently supplied the
+[full simulator result](../evaluations/bedrock-streaming/sonnet-simulation.user-supplied.json):
+**2 actions × 4 concrete resources = 8 allowed decisions**, all missing-context
+lists empty, matched to the expected Sonnet inline policy. The generic aggregate
+resource label is preserved as supplied; the four concrete resource-specific
+results for each action establish coverage. This is user-supplied simulation,
+not a successful model invocation. No further inline-policy, boundary or simulator
+request is needed.
+
+A fresh **read-only** `analytics-dev` STS + Organizations `DescribeOrganization`
+check at **22:53:51Z** identified account **453711491609** as the organization
+management account. Its global service endpoint is recorded in
+`artifacts/bedrock-streaming/completion-fix/organization.readonly.json`; no regional
+resource mutation or new profile occurred. AWS documents that SCPs do not restrict
+management-account users/roles. There is no supported SCP/boundary/missing-Allow
+remedy to apply. Full failed Bedrock Error.Message/RequestId and effective denied
+context remain unavailable. The retained evidence is ready in the
+[service-error diagnostic handoff](bedrock-streaming-completion-plan.md#full-service-error-diagnosis);
+no support case, new model call or permission change was made.
+
+All **352** protected historical files remain byte-for-byte unchanged; sealed
+preparation/review/readiness, frozen ZIPs, actual S3 versions, original assemblies,
+goldens, prior ledgers/claims and M3 permissions are preserved. New approval,
+release/restoration records and receipt hashes are retained separately. Existing
+M1–M5 completion is unaffected; multi-model UI acceptance remains incomplete.
+
+Outcome checkpoint **5f5c09eef4ee7769d4d1c69424a6b87d8e9382c6** is pushed and
+passed [push CI 43321676010](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43321676010)
+and [PR CI 43321689020](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43321689020):
+**2055 passed, 85 deselected, zero skipped**, lock/lint/format/types and all
+synthesis checks passed. These runs predate the supplemental user-policy evidence.
+Its review used offline JSON equality and seven frozen-ZIP member comparisons;
+no new source, AWS operation or billable invocation occurred. Supplemental checks passed for **9** Markdown files, **156** local links, **35**
+documentation shell blocks and **2** CI shell blocks, policy/record JSON, seven
+source hashes, retained STS evidence and `git diff --check`; all **352** historical
+files remain unchanged. A post-execution
+`verify-offline` invocation returned **exit 1** at the deliberate untouched-0/37
+loader guard because usage is already 4/37; this confirms the non-replay condition,
+not a failed test or extra execution. Its record is retained at
+`artifacts/bedrock-streaming/completion-fix/post-execution-replay-guard.json`.
+
+Policy-evidence checkpoint **bc39b344c2e409fe269003a6de948adf878fc5e5** is pushed;
+[push CI 43323776935](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43323776935)
+and [PR CI 43323784997](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43323784997)
+passed for that exact commit: **2055 passed, 85 deselected, zero skipped**, with
+lock/lint/format/types and all synthesis checks successful. Those checks predate
+the subsequent simulator/organization evidence, which changes documentation only.
+The assistant did not run IAM simulation: it reviewed the user-pasted report.
+
+Commands actually run after approval:
+
+- `poetry run python -m infrastructure.agentcore.streaming_completion --plan evaluations/bedrock-streaming/completion-fix.preparation.json verify-offline`:
+  passed **0/37 + prior 3 = 3/40**, before any new claim or AWS execution.
+- Same operator `execute --execute-approved --approval artifacts/bedrock-streaming/completion-fix/approval.json --output artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z`:
+  fresh preflight, upload, ten updates, three acceptance attempts, ten restorations
+  and protected smoke executed; **exit 1 / failed-restored** as above.
+- Read-only CloudWatch/CloudTrail and Bedrock `get_inference_profile` /
+  `get_foundation_model_availability`: evidence preserved, no inference retries.
+- Read-only `analytics-dev` STS identity and Organizations `DescribeOrganization`:
+  expected account/caller verified and management-account status observed; global
+  control-plane endpoint explicitly recorded, no IAM or resource mutation.
+- Git normal push and draft PR creation: **f591498 / PR #13**; both exact-commit CI
+  runs independently verified, including **2055** tests, **195** formatted files,
+  mypy **153** files and replacement synthesis. Earlier local results below were
+  not rerun merely for outcome documentation.
+
+Historical **5f5c09e** outcome-documentation verification: **9** Markdown files, **154** local
+links, **34** documentation shell blocks and **2** CI shell blocks passed local
+syntax/existence checks. Both new evidence JSON documents parse; their summaries
+match all ten actual deployment/restoration proofs, four durable SDK receipts,
+three case reports, the protected smoke and all raw hashes. `git diff --check`
+passed. No application/source/infrastructure code changed after f591498; its
+completed required local/hosted checks were not repeated merely for documentation.
+
+Final simulator/organization evidence checks passed: **9** Markdown files,
+**159** local links, **35** documentation shell blocks, **2** CI shell blocks,
+all JSON records, exact two-action/four-resource simulation coverage and the raw
+Organizations record checksum. All **352** protected files and the frozen source/
+artifact pins remain unchanged; `git diff --check` passed. Independent review
+found no actionable evidence/attribution discrepancy. No application or
+infrastructure source changed, so completed implementation tests were not
+repeated locally for this documentation-only supplement.
+
+**Historical next task at d3694df:** IAM policy, no-boundary and simulator checks are complete.
+Use the retained diagnostic packet to obtain the full failed Bedrock service
+response before proposing any correction. Do not repeat IAM evidence requests or
+add speculative grants. Preserve the failed campaign and verified restored checkpoint. Any later
+replacement/retry needs its own concrete reviewed artifact/checkpoint/allocation
+and approval, including a new cleanup allowance; no such execution is authorized
+by the unused quota. Keep PR #13 unmerged and all new choices disabled.
+
+## Historical preparation checkpoint — f591498 (before execution approval)
+
+Continued on **feat/bedrock-streaming-activation** from clean **ceb01c5** using
+**enterprise-analytics** Conda Python **3.12.16** and Poetry **2.3.1**. The production
+fix is implemented: at the pre-dispatch reservation or planning-round boundary,
+trusted streaming planners execute only the still-missing exact governed queries
+through the existing server-resolved tool path. Prior work must be successful,
+scope-valid and without duplicates; all final requests/results must match before
+presentation. Same authorization/tool/deadline/actual-usage limits apply; genuine
+provider/token errors cannot enter this path. Base-agent defaults and v1/v2
+contracts are unchanged. Initial complete-plan regressions failed **3** cases
+against old behavior; a separate sequential replay then failed **1** new case.
+The final **22** authored cases cover both paths, semantic ordering, real missing
+queries, errors, quotas, deadlines and presentation bounds. Existing tampered-
+diagnostics regressions remain failures before presentation.
+
+The [replacement plan](bedrock-streaming-completion-plan.md),
+[review](../evaluations/bedrock-streaming/review.completion-fix.proposed.json),
+[sealed preparation](../evaluations/bedrock-streaming/completion-fix.preparation.json)
+and [readiness evidence](../evaluations/bedrock-streaming/completion-fix.readiness.json)
+are prepared. ZIP **8cfe8d9bd667c29c871342844898061f986107d94f309f1eef471f09582a4ae8**,
+**39302720 bytes**, was built separately from locked Linux ARM64 wheels and reproduced
+byte-for-byte using the pinned project wheel. All **76** current source/assets
+match it. The core audit matches **24** shared modules plus the explicitly checked
+streaming entry point; the legacy audit entry point intentionally differs. New
+local source is **not** asserted equal to legacy v15. All **352** protected
+historical files, including the closed parent's **16** files, remain unchanged.
+
+Two offline syntheses reproduce **10 templates / 34 assembly files** byte-for-byte.
+Exact diffs permit only the new artifact prefix/checksum output and the ten
+workload roles' exact old-plus-new code-key reads. Old default configuration still
+reproduces all ten original templates. Existing query trust and administrator
+policy attachments need no new change established by this preparation; the scoped
+inline-role updates remain part of the deployment proposal.
+
+The versioned continuation is **bedrock-stream-completion-v1-01**, currently
+**0/37**, prior **3**, aggregate **3/40**, **unclaimed**. Its parent review, journal,
+acceptance claim and full inventory are pinned. One exclusive external claim
+prevents repeated operators or competing children. Proposed allocation is **20
+unchanged acceptance + 15 user + 1 protected cleanup + 1 unavailable reserve**.
+The parent is never reopened/reset, and this reallocation is not yet approved.
+The operator supports conditional upload with actual-version readback, bounded
+sequential updates of exact existing StackIds, full pre/post proofs, mandatory
+failure restoration and restoration-only recovery without the candidate ZIP,
+local source or canonical downloads. Original S3 bytes remain mandatory.
+
+Fresh **read-only** preflight passed at **2026-11-12T21:49:36.711525+00:00** using only
+**analytics-dev / 453711491609 / us-west-2**: caller identity, exact retained v15,
+all ten original streaming Runtime/DEFAULT **READY v1**, source/artifact/process
+pins, canonical publication/Glue bindings and absent new candidate key. Evidence:
+`artifacts/bedrock-streaming/completion-fix/preflight-final-20261112T215000Z/`.
+No IAM inspection was repeated. This correction session performed **zero AWS
+mutations, uploads, Athena queries or model/Runtime invocations**. No new approval,
+claim, ledger or actual S3 VersionId has been manufactured.
+
+Verification actually run:
+
+- `poetry check --lock`: passed.
+- `poetry run pytest`: **2055 passed, 85 deselected, zero skipped in 72.85s**.
+  This is offline coverage, not new live acceptance; historical 85-live-test
+  evidence retains its original attribution.
+- `poetry run ruff check .`: passed; `poetry run ruff format --check .`:
+  **195** files formatted; `poetry run mypy src tests`: **153** files passed.
+- Focused combined regressions: **245 passed**. Whole operator workflow:
+  **26 passed**, including upload/proof failures, interruption, rollback, missing
+  candidate data, primary-error preservation and protected-smoke replay rejection.
+- `poetry run python -m infrastructure.agentcore.package --config infrastructure/agentcore/runtime.streaming.nova-lite.json --entrypoint infrastructure/agentcore/streaming_entry.py --offline --wheel-dir artifacts/agentcore/wheels --output artifacts/bedrock-streaming/completion-fix/candidate/agent.zip`:
+  passed; separate reproduction with the pinned `--project-wheel` is byte-identical.
+  Initial/intermediate unapproved builds are preserved under `initial-build/`,
+  `preparation-01/` and `preparation-02/`; none was uploaded or treated as acceptance.
+- `poetry run python -m infrastructure.cdk.streaming_app --config infrastructure/cdk/streaming.completion-fix.proposed.json --outdir artifacts/bedrock-streaming/completion-fix/cdk.proposed.out --allow-unbound-artifact`:
+  passed; independent `cdk.verification.out` passed and all 34 files match.
+- `poetry run python -m infrastructure.agentcore.streaming_completion --plan evaluations/bedrock-streaming/completion-fix.preparation.json verify-offline`:
+  passed, **0/37 + prior 3 = 3/40**, no AWS session or claims.
+- Same operator `preflight --read-only-aws --output artifacts/bedrock-streaming/completion-fix/preflight-final-20261112T215000Z`:
+  passed. No new hosted CI or deployed acceptance is claimed by these local checks.
+
+Intermediate verification is retained as history: the first complete-only version
+passed **2047 / 85 deselected**; extending sequential completion exposed an old
+metadata-turn expectation plus five post-return tampering cases (**6 failed,
+2048 passed**). Real missing-query execution now has explicit positive coverage,
+and every numeric answer has final strict evidence validation; the tampering
+cases still reject. Another check passed **2054**, followed by the final ordering
+regression and **2055** result above. A Ruff formatting-only failure was fixed;
+final lint/format/type/lock checks pass. No live retries accompanied these fixes.
+
+Final documentation/manifest checks: **9** Markdown files, **150** local links,
+**34** documentation shell blocks and **2** CI shell blocks passed syntax/existence
+checks. Workflow YAML parsed; `git diff --check` passed. CI now synthesizes the
+proposed replacement offline and checks all ten template hashes against its
+committed review; no AWS credentials or generated ZIP are required in CI.
+
+**Exact next task:** obtain approval for the sealed replacement and remaining
+allocation, then execute the guarded operator once, pass all twenty unchanged
+provider-streaming gates and enable the UI from actual release records. Preserve
+all closed campaigns, the legacy v15 checkpoint and unavailable reserve. On
+failure/interruption, use the reviewed restoration path; do not retry billable
+calls or silently create another campaign. M1–M5 completion remains unchanged.
+
+## Historical recovery checkpoint — ceb01c5
+
+The scoped recovery approved at **7dad05a47b141a163eec1034b000b1337bcfab64**
+executed once. The [approval record](../evaluations/bedrock-streaming/recovery-approval.json)
+binds recovery review **10433404c65249308e326a5867d499cabe4fab24c43201a6639a29c769b946c4**,
+execution-proposal SHA **ee90ac77cd3c689e23c150d0e7f1e1ca2032cca3ffd2f52595f2b4c9e17bf0f7**,
+the unchanged uploaded ZIP/version, ceiling and expiry.
+
+Fresh preflight **20261112T200119Z** passed. After preserving the stopped journal
+and exact unused Nova checkpoint, the operator deleted only that reviewed stack
+and created all ten corrected replacements. At **20:20:07Z**, all ten verified
+**CREATE_COMPLETE / Runtime and DEFAULT READY v1**, exact artifact/configuration/
+policy proofs and seven-day retention. The [deployment checkpoint](../evaluations/bedrock-streaming/recovery-deployment-checkpoint-2026-11-12.json)
+preserves actual releases and proof hashes. Raw deployment evidence remains under
+`artifacts/bedrock-streaming/operations/20261112T200119Z/recovery-deployments/`.
+
+The administrator applied the exact reviewed query-role trust addition. The
+user-supplied saved-policy readback at **20:22:58Z** matches merged SHA
+**3d2b5cd161956ae147c825cc71d28b977d03e24e909f21eea50d508b41203ec1**:
+both prior statements remain, and the ten added principals match deployed roles.
+Actual release binding passed. No IAM changes were made by the agent.
+
+Acceptance then stopped after two Nova questions. **Q18 passed**, including the
+complete request, **110.25 USD [2025-03-31, 2025-04-01)** and provider streaming.
+The all-five regional question produced all five exact requests and golden
+results, but returned **token_limit** before presentation; it failed acceptance.
+No other model was invoked and no accepted UI binding was created. Reports are
+`artifacts/bedrock-streaming/acceptance-recovery/nova-lite-0.json` and
+`nova-lite-1.json`.
+
+The second question used **3,215 reported tokens** across two model calls, below
+the **10,000** planning ceiling. Offline fake replay reproduced the failure:
+conversation JSON required an **8,369-byte conservative input reservation**,
+so the next dispatch guard calculated **10000 - 3215 - 8369 = -1584**. This is a
+reproduction from retained tool inputs/results and usage, without unavailable
+assistant prose; the complete live transcript was not retained, so **8,369 is not
+claimed as the exact live request size**. The complete successful plan was already
+available, but the wrapper only completes it after iteration exhaustion, not this
+reservation stop. No permission change or higher ceiling is supported by this
+failure.
+
+The [acceptance failure record](../evaluations/bedrock-streaming/acceptance-failure-2026-11-12.json)
+preserves report/ledger hashes, exact request/result comparison and the separate
+7,514-byte minimum reservation bound from retained content.
+
+The protected cleanup smoke passed on retained legacy **v15** at approximately
+**20:26Z**, with exact Q18 **110.25 USD**; see
+`artifacts/bedrock-streaming/cleanup-recovery.json`. No legacy redeployment was
+needed. Campaign **bedrock-stream-models-v1-01** is closed/blocked at **3/40**:
+two ordinary attempts plus one protected cleanup, no incomplete SDK attempt and
+no automatic retry. The reserve remains untouched and unapproved. All new model
+choices remain disabled. Frozen ZIP/source/S3 version, canonical data, goldens,
+permissions and historical ledgers remain unchanged.
+
+### Verification during approved execution
+
+- `poetry run python artifacts/bedrock-streaming/recovery/operator/preflight.py`:
+  passed, with zero mutations/invocations; evidence **20261112T200119Z**.
+- `poetry run python artifacts/bedrock-streaming/recovery/operator/deploy.py --execute-approved`:
+  exit **0**; approved old-stack deletion and all **10** corrected creates verified.
+  Each task-owned CDK process was reaped and the final process guard is resolved.
+- `poetry run python -m enterprise_analytics_agent.adapters.model_stream_cli --review evaluations/bedrock-streaming/review.recovery.proposed.json verify-offline`:
+  passed before acceptance, ten models/two checks each, **0/40**, zero AWS calls.
+- `PYTHONPATH=. poetry run python /private/tmp/bedrock-streaming-final-proof.py`:
+  passed, **76** packaged source/assets match, **203 + 10** protected files
+  unchanged; no AWS session or question ledger. The first invocation lacked the
+  repository import path; rerun with the documented `PYTHONPATH=.` passed.
+- `poetry check --lock`, `poetry run ruff check .`,
+  `poetry run ruff format --check .` (**188** files), and
+  `poetry run mypy src tests` (**148** files): passed. The unchanged application
+  and infrastructure code retain the **1915 passed / 85 deselected / zero skipped**
+  pytest result below; the default suite was not rerun during this execution-only update.
+- Offline failure replay reproduced `token_limit` without AWS. A temporary
+  in-memory complete-plan prototype passed **9 tests in 0.30s**, including
+  incomplete/invalid plans, real token overruns, provider truncation and bounded
+  presentation. Command: `PYTHONPATH=. poetry run pytest -c /private/tmp/streaming-budget-prototype-audit/pytest.ini --rootdir=/private/tmp/streaming-budget-prototype-audit /private/tmp/streaming-budget-prototype-audit/test_streaming_budget_early_completion_prototype.py -q`.
+  Scripts/hashes are preserved under
+  `artifacts/bedrock-streaming/token-budget-diagnosis/`; this is not a packaged fix.
+- `PYTHONPATH=. poetry run python /private/tmp/streaming-recovery-postflight-proof.py`:
+  passed after cleanup: **76** packaged files and **203 + 10** historical files
+  unchanged, campaign closed **3/40**, no accepted binding and zero AWS calls.
+- Documentation check: **7** Markdown files, **116** local links and **30** shell
+  blocks pass existence/syntax checks; shell examples were not executed.
+  `git diff --check`: passed.
+
+The [deployment checkpoint](../evaluations/bedrock-streaming/recovery-deployment-checkpoint-2026-11-12.json)
+records actual target identifiers/versions and hashes of all ten exact proofs.
+It records deployment proof and the separately attributed administrator trust
+readback; model acceptance failed as recorded above. No hosted CI is claimed for
+this new checkpoint.
+
+### Historical initial streaming attempt and recovery preparation
+
+The supplied `streaming-directory-verification.json` was inspected as data,
+SHA-256 **2c1b01a6e182da96dd4a155ebb5e3fb8318978c94cf01473eb86b4f616b063f6**.
+It confirms the exact approved inline policy/name/role and all four preserved
+managed attachments. The exact directory simulation is **allowed**, with no
+missing context and the new inline statement matched. Administrator application
+is verified; no further directory-policy console action is required. Original
+review/approval/report history remains unchanged.
+
+Used the existing **enterprise-analytics** Conda Python **3.12.16** and Poetry
+**2.3.1**. The branch was clean at **5b8c117** before this work. Only
+**analytics-dev / 453711491609 / us-west-2** was used. Fresh read-only preflights
+at **18:50Z** and **19:01Z** passed identity, retained v15, all seven canonical
+publication/Glue bindings, package/source/assemblies, native model availability
+and US routing, Mantle project, expiry and process guards. No denied developer
+IAM inspection, alternate profile or bootstrap was attempted.
+
+### Actual AWS operations and stopped checkpoint
+
+- Conditional ZIP upload occurred **once**, with explicit SHA256 and no SDK
+  retry. SHA **c136a3931e2af31d6453c54910ddc9e839ef03e69a6f2ddebb35b3eb7cfdc306**,
+  bytes **39298651**, actual S3 VersionId **GSY36sTbDpCNZGogULTe3cBL__bujiQK**.
+  The exact version/hash/size were read back. Historical ZIPs/versions are intact.
+- A local pre-dispatch callback initially mishandled ReadPool's wrapped expected
+  missing-stack response. CDK was not started. Preserved the failure, corrected
+  only exact missing-stack cause handling, passed **8** offline cases and fresh
+  empty inventories, then recorded explicit journal inspection/resolution. This
+  was not a repeated AWS deployment or an authorization denial.
+- The single real CDK deployment created **enterprise-analytics-stream-nova-lite**,
+  StackId suffix **89307e20-decb-11f1-81c6-0affd1492891**. CloudFormation reached
+  **CREATE_COMPLETE**; new Runtime **enterprise_analytics_stream_nova_lite-PYEiLA6Tud**
+  and DEFAULT are **READY v1**. Its actual new log group has seven-day retention.
+  Other nine stacks were **not** deployed.
+- Strict verification stopped because both inbound policies read back singleton
+  ARN values as scalars rather than lists. The principal/actions/resources/denies
+  are unchanged. The live verifier was not weakened or bypassed. CDK was still
+  running when the check failed; failure cleanup reaped only its owned process
+  group using SIGTERM. This does not prove a transport cause or CLI hang. The
+  inactive, reaped process journal still requires inspection before recovery.
+- Complete CloudTrail capture additionally found **logs:PutResourcePolicy**
+  denied for the **new Nova workload role**, on its own exact new log-group ARN.
+  Event **a2e86f89-a23e-37d3-883e-79823c5cc032**, **19:02:46Z**, request
+  **a3014671-40fc-4964-88e5-20c60c1f28af**; no identity-based Allow. Its full
+  errorMessage is retained; requestParameters/responseElements are null. The
+  successful parent CreateAgentRuntime used the reviewed CloudFormation role.
+  This is separate from the now-correct directory grant. Bounded session-index
+  lookup returned zero rows and is not an exhaustive permission assurance.
+- Read-only baseline inspection verified all remaining new Nova properties and
+  raw policies, explicitly distinguishing singleton representation equivalence
+  from final acceptance. The retained legacy Runtime/DEFAULT **READY v15** passed
+  complete verification at **19:11:25Z**. No legacy redeployment, restoration or
+  smoke was necessary; it was never modified.
+
+Raw report/preflight/upload proof is under
+`artifacts/bedrock-streaming/operations/20261112T185007Z/`; stopped-deployment,
+policy/CloudTrail/raw baseline/legacy proof is under
+`artifacts/bedrock-streaming/operations/20261112T190109Z/deployments/`.
+All model/Runtime invocations and Athena queries remain **0**. Same campaign
+**0/40**, no question ledger/claim/reservation created, no reset/reopen, reserve
+unapproved. Historical **203** files plus **10** Nova-session files are preserved.
+
+### Historical local correction and recovery preparation
+
+The CDK-only correction emits scalar ARN values for a single inbound caller,
+retaining multiple-caller lists and unchanged deny behavior. It also proposes
+one **logs:PutResourcePolicy** statement per workload role on only that model's
+log-group namespace, conditioned on **us-west-2**. AWS direct-deployment role
+documentation and the actual denial support that single action; no broad logging,
+Bedrock, S3, query-role or CloudFormation-role permissions were added.
+
+At that preparation checkpoint both changes were **local proposals, not deployed**.
+The later approval and execution status are recorded above. The frozen **76-file** agent
+source closure, ZIP, S3 version, configuration, original reviews/assemblies,
+goldens, data and all historical ledgers are unchanged. The [recovery preparation](../evaluations/bedrock-streaming/recovery-preparation.proposed.json)
+proves ten byte-reproduced templates differ only in the two policy representations
+and the one scoped logging statement; all other template properties are identical.
+Recovery review SHA:
+**10433404c65249308e326a5867d499cabe4fab24c43201a6639a29c769b946c4**.
+
+The [concrete recovery plan](bedrock-streaming-recovery-plan.md) proposes deleting
+only the unused/unaccepted newly created Nova stack, retaining its manually
+created log group/evidence and the untouched legacy v15, then fresh creation of
+all ten corrected targets using the already uploaded ZIP. The new logging grant
+is present before each fresh Runtime initializes. No description-only update,
+additional ZIP upload or counter reset is proposed. Source/config/data/expiry and
+the existing **20 acceptance + 18 user + 1 protected cleanup + 1 unapproved reserve**
+allocation remain fixed. The original deployment approval and directory approval
+persist; corrected template pins and the additional workload-role logging grant
+required separate recovery review before any more mutation. That approval is now
+recorded above; the original proposed review bytes remain unchanged.
+
+### Verification for this checkpoint
+
+- New authored regressions failed before the fixes: single-caller policy readback
+  and missing native/Mantle logging grant. After correction, focused infrastructure
+  and packaging tests passed **43** cases.
+- `poetry check --lock`: passed. `poetry run ruff check .`: passed.
+  `poetry run ruff format --check .`: **187** files formatted.
+  `poetry run mypy src tests`: passed, **148** files. Agent's additional mypy of
+  the two changed implementation/test files passed.
+- Initial sandboxed `poetry run pytest`: **1867 passed, 19 failed, 20 errors,
+  85 deselected in 85.97s**; UI tests were denied loopback socket binding. No code
+  was changed to suppress those checks. Rerun in the existing Conda environment
+  with loopback permission: **1915 passed, 85 deselected in 94.66s, zero skipped**.
+- Two independent offline syntheses of the final recovery assembly passed.
+  All **10** templates are byte-identical between outputs; an exact diff proof
+  validates only the two named policy shape changes and one scoped logging grant.
+  The earlier serialization-only synthesis is retained separately as preparation
+  history, not the final candidate.
+- Pinned supervisor tests passed **16** offline cases; per-target proof tests
+  passed one success, **13** drift and **2** not-ready/deadline rejections; these
+  create no AWS client or fake live binding. The baseline helper passed **26**
+  offline cases, preserving raw policy responses and rejecting broader principals,
+  wildcard actions and removed denies. The complete recovery operator passed
+  **17** offline flow cases in temporary fixtures: exact approval/code/metadata
+  gates, one delete/ten sequential creates, no automatic retry, preserved logs,
+  deletion timeout/interruption, malformed baseline and duplicate-claim rejection.
+  Actual workspace claims/guards were not touched by those tests. Operator helper
+  sources and tests are preserved under the ignored recovery artifacts with
+  committed checksum pins; stop if any required local file is missing/different.
+  Final metadata/hash checks passed for all six helpers, exact retained stopped
+  guard, uploaded-version record and unchanged original pins. Documentation checks
+  passed **9** Markdown files, **134** local links and **35** parsed-only shell
+  blocks; `git diff --check` passed. Independent read-only review found no
+  actionable scope, permission, pin or evidence defects. No new hosted CI is
+  claimed for this local checkpoint; earlier PR #12 CI covers only its own head.
+
+**Exact next task:** prepare a focused offline source correction and regressions
+for safe completion of an exact successful governed plan before another planner
+turn. Preserve genuine token overruns, partial plans and provider failures as
+errors; do not raise limits or bypass acceptance. A changed source requires a new
+candidate/package and reviewed execution proposal before any live retry. Preserve
+the closed campaign/claim, frozen current ZIP, deployment/failure evidence and
+legacy v15. No new budget, upload, deployment, invocation or permission change is
+authorized by this checkpoint. M1–M5 completion is unchanged.
+
+## Historical directory approval — recorded at 5b8c117
+
+The user separately approved the exact additional directory-tagging policy at
+**f68e1913a61151da031816d77c1adfc5fac63de8**. Recorded that instruction in
+[directory-tag-approval.json](../evaluations/bedrock-streaming/directory-tag-approval.json),
+binding the exact policy SHA-256
+**ba04feb1ce5c92ab55b94e09bfa522e641a0b2a2eedb10d97d313e42d996d39b**,
+CloudFormation execution role and inline name
+**enterprise-analytics-stream-directory-tag**. The original proposed review and
+policy bytes remain unchanged. Do not request this approval again.
+
+The branch was clean at f68e191 before this update; existing local work and
+historical evidence are preserved. This is a local approval/documentation update:
+**no AWS calls, IAM changes, uploads, deployments or billable invocations**.
+Administrator application and an allowed post-change simulation are still
+unverified. The existing developer profile does not gain administrator access
+from the user's approval; do not attempt self-grant or repeat denied IAM reads.
+
+**Exact next task:** in the existing administrator console, apply only the exact
+approved JSON as an additive inline policy on
+**cdk-hnb659fds-cfn-exec-role-453711491609-us-west-2**. The
+[guide](bedrock-streaming-administrator-steps.md#approved-directory-correction--administrator-application-pending)
+contains console steps and read-only commands for exact policy readback,
+preserved attachments and the unchanged directory simulation. Return those
+files before the operator's full fresh preflight and already approved deployment.
+Frozen source/ZIP/S3 pins, all managed policies, trust and historical ledgers
+remain unchanged; the new campaign is still **0/40**, reserve unavailable.
+No artifact, expiry, budget or new deployment scope was approved by this grant.
+
+Actual checks: the approval's exact policy checksum, target and reviewed commit
+validate; proposed policy/review bytes equal f68e191. The existing streaming
+`verify-offline` CLI passed all ten targets with zero AWS calls and no campaign
+ledger. Documentation checks passed **5** Markdown files, **72** local links and
+**13** parsed-only shell blocks; embedded Python/JSON syntax and
+`git diff --check` passed. The diff was reviewed. Application tests, lint/types,
+lockfile validation, synthesis and live checks were not rerun for this
+approval/documentation-only update. Previous application/live/hosted-CI evidence
+retains its own attribution and does not cover this later checkpoint.
+
+## Historical directory gap diagnosis — policy proposed at f68e191
+
+Inspected clean **feat/bedrock-streaming-activation** at local checkpoint
+**cc60c12**; preserved all existing work. Conda/Poetry still select
+`/opt/homebrew/anaconda3/envs/enterprise-analytics/bin/python`, Python **3.12.16**.
+The user supplied both administrator reports as evidence. No instructions in
+those JSON files were executed; this update made **no AWS calls**.
+
+The original report remains SHA-256
+**67333dff4ea0e92f43103b297c51df7b81d366ae4539c2a0d2b32ebb414e751f**.
+The supplement is SHA-256
+**f93373f83efe0e70c06ecf760776922b88c7d0c60ab44cfc60bb54ac8a14733e**.
+Both are preserved byte-for-byte under
+`artifacts/bedrock-streaming/operations/20261112T181945Z/`; source Downloads
+files are unchanged. Active M4 default **v5** exactly matches the committed
+policy (`ac2942537a6d917b899d3a156efd328953d6176f152b9db925b5e5a13c104419`).
+Both new managed-policy documents/attachments and preserved M3/M4 attachments
+remain verified by the original report.
+
+The supplemental simulation now establishes the exact expected CloudFormation
+execution role, action **bedrock-agentcore:TagResource**, exact shared default
+directory ARN, account **453711491609**, region **us-west-2** and requested
+Project **enterprise-analytics-stream**. It still returns **implicitDeny** with
+no matched statements. M4's directory Allow requires Project
+**enterprise-analytics-dev**; neither streaming managed policy grants directory
+tagging. The missing grant is now identified. The unrelated missing IAM service
+context fields are not remedied by fabricated values. This remains simulator
+evidence, not a new live deployment failure or a guarantee about future access.
+
+Prepared one [separate inline policy proposal](../infrastructure/cdk/streaming-directory-tag-policy.proposed.json),
+**408** compact characters, SHA-256
+**ba04feb1ce5c92ab55b94e09bfa522e641a0b2a2eedb10d97d313e42d996d39b**.
+It grants only directory TagResource on the exact shared resource, conditioned
+on the reviewed account, region and requested Project, and is proposed only for
+the existing CloudFormation execution role. A [separate review record](../evaluations/bedrock-streaming/directory-tag-review.proposed.json)
+binds both reports and the exact proposal. A separate inline policy preserves
+the approved managed documents and their size limits; administrator application
+must respect the role's total inline-policy quota. The directory is shared, so
+this is an explicit additional permission decision, not Runtime-only isolation.
+
+**No permission was applied or approved by this update.** The existing plan
+explicitly excluded a new directory grant. Its deployment approval persists,
+but this exact correction needs separate approval and administrator application.
+The [guide](bedrock-streaming-administrator-steps.md#proposed-directory-correction--separate-approval-required)
+contains concrete conditional console steps and required post-change evidence.
+No more supplemental reports are needed to identify this correction.
+
+The three model agreements retain the separate **18:04Z** AVAILABLE verification
+below; they were not queried again here. Frozen package/source/review/assemblies,
+canonical data, goldens, trust and historical ledgers remain unchanged. New usage
+is still **0/40**, no campaign claim or ledger, and the reserve is unavailable.
+There were no uploads, queries, deployments or billable invocations.
+
+**Exact next task:** review/approve the exact directory policy proposal. After
+approval, an administrator applies only that named inline policy to the reviewed
+CloudFormation execution role and provides exact policy readback plus an allowed
+simulation using the unchanged request. Then repeat the full fresh preflight and
+resume the already approved upload, sequential ten-target deployment, later
+query-role trust additions and twenty acceptance checks. Keep deployment stopped
+until those gates pass; no new artifact/budget or repeated general approval is
+requested. M1–M5 completion and historical CI/live evidence are unchanged.
+
+Actual applicable verification: `poetry check --lock` passed;
+`PYTHONPATH=. poetry run python /private/tmp/bedrock-streaming-final-proof.py`
+passed with AWS client creation blocked, **76** archive-matched source/assets,
+**203** historical files and **10** Nova-session files preserved. Documentation
+checks passed **5** Markdown files, **69** local links and **12** parsed-only
+shell blocks. Offline JSON/checksum/scope checks, embedded Python/JSON parsing,
+and Botocore's PutRolePolicy input-shape validation passed. `git diff --check`
+passed and the complete diff was independently reviewed; a historical section
+anchor was retained to preserve existing links. No application implementation,
+dependency or infrastructure template changed; default pytest, Ruff, formatting,
+mypy and synthesis were not rerun for these documentation/proposed-policy files.
+Their earlier full results remain historical, not validation of this new commit.
+
+## Historical model/report verification — November 12, 18:04Z
+
+Verified [PR #12](https://github.com/sureshkm-ai/enterprise-analytics-agent/pull/12)
+merged **8031c221fea24ea6b09a673c0460eb43a965f74f** into main at
+**a5ec8155923745716e11f3d70cd168543bf509f0**, November 12, 2026, 17:26:38Z.
+[PR CI 43268647131](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43268647131)
+passed for that feature commit. The local checkout remains on
+**feat/bedrock-streaming-activation** at 8031c22 before this documentation update;
+it was clean on inspection. No branch switch, pull or reset occurred. That CI does
+not cover this later documentation checkpoint.
+
+At **2026-11-12T18:04Z**, read-only STS using **analytics-dev** verified account
+**453711491609**, region **us-west-2**, and the expected existing PowerUser SSO
+principal. All three previously blocked models—**Claude Opus 5.5, GPT-6 Astra and
+GPT-6.1 Sol**—now report agreement **AVAILABLE**, authorization **AUTHORIZED**,
+entitlement **AVAILABLE**, and region **AVAILABLE**. The initial sandboxed read
+failed on DNS to the SSO endpoint; the authorized network-enabled read succeeded.
+This was not an expired-token result and no new login/profile was requested.
+
+The administrator report downloaded as `streaming-admin-evidence.json` was found
+locally and preserved byte-for-byte, SHA-256
+**67333dff4ea0e92f43103b297c51df7b81d366ae4539c2a0d2b32ebb414e751f**.
+Both split policies' active **v1** documents exactly match the committed files;
+their attachments to the expected CloudFormation execution role are confirmed.
+The report retains M3/M4 policy attachments, reports no role permissions boundary,
+and preserves developer/legacy Runtime principals in query-role trust.
+
+**Deployment remains stopped:** the report's `bedrock-agentcore:TagResource`
+simulation for
+`arn:aws:bedrock-agentcore:us-west-2:453711491609:workload-identity-directory/default`
+returned **implicitDeny**, with no matched statements. It also lists missing
+`iam:AWSServiceName` and `iam:PassedToService`; those concern other IAM actions and
+must not be fabricated as TagResource request context. The report omits the
+simulation input and current M4 policy contents, so the precise effective-policy
+cause is not independently established. This is a simulator result, not a new
+failed deployment or a live TagResource denial. The historical M4 grant's old
+Project condition and the reviewed omission of a new directory grant remain
+relevant evidence, not permission to broaden IAM automatically.
+
+Actual model reads, identity, and the original administrator report are retained
+under `artifacts/bedrock-streaming/operations/20261112T180433Z/`.
+Offline preservation and `verify-offline` passed: **76** packaged source/assets,
+**13** locked dependencies, **34** assembly files, **203** historical files and
+**10** Nova-session files remain pinned. The preservation script's initial
+invocation lacked the repository import path; rerunning with `PYTHONPATH=.` passed
+without changing source. New campaign remains **0/40**, with no ledger/claim;
+all old ledgers, frozen ZIPs, S3 version records, goldens and permissions remain
+unchanged. **Uploads 0; AWS mutations 0; Athena queries 0; Runtime/model calls 0.**
+
+The earlier full offline test/lint/type/lockfile results below retain their
+original attribution; application code and infrastructure templates did not
+change and those checks were not rerun for this documentation update. Actual
+applicable checks for this checkpoint:
+
+- `PYTHONPATH=. poetry run python /private/tmp/bedrock-streaming-final-proof.py`:
+  passed the frozen-source/archive/assembly/canonical and historical preservation
+  checks above, with AWS client creation blocked.
+- `poetry run python -m enterprise_analytics_agent.adapters.model_stream_cli
+  --review evaluations/bedrock-streaming/review.proposed.json verify-offline`:
+  passed all ten targets; zero AWS calls and no new campaign ledger.
+- `python /private/tmp/enterprise-analytics-doc-check.py`: passed **5** changed
+  Markdown files, **64** local links and **12** parsed-only shell blocks. Separate
+  AST parsing passed both embedded Python blocks; Botocore input-shape validation
+  passed the exact supplemental IAM simulation request offline.
+- `git diff --check`: passed; documentation diff reviewed. No application tests,
+  lint/type checks, synthesis or live acceptance were rerun or claimed here.
+
+**Exact next task:** obtain the supplemental read-only administrator report in
+[the guide](bedrock-streaming-administrator-steps.md#resolve-the-reported-directory-simulation),
+including current M4 default policy and the exact directory simulation request
+and response. Diagnose the result before proposing any additional permission;
+any correction needs its own evidence-backed review/approval. Once the directory
+gate passes, repeat the full fresh preflight and resume the already approved
+conditional upload, ten sequential deployments, later query-trust additions,
+twenty AWS checks and UI activation. Do not request the same execution approval
+again. The reserve remains unavailable; no live deployment readiness or new
+acceptance is claimed. M1–M5 remain complete.
+
+## Historical approved streaming preflight — November 11, 2026
 
 The user approved the unchanged [deployment/evaluation plan](bedrock-multimodel-streaming-plan.md)
 on November 11, 2026: **analytics-dev / 453711491609 / us-west-2**, review
@@ -2161,4 +3209,12 @@ Milestone 2 introduced no AWS credentials, calls, deployment, Athena adapter, or
 
 ## Exact next task
 
-The agreed development proof of concept for **Milestones 1–5 is complete**, merged and hosted-CI verified. The separately approved shared UI follow-on also passed Q18/all 18 paired outcomes on candidate READY v13. Its next task is the outcome PR/CI/user-review handoff recorded above; no ordinary live allowance remains. Other development still requires a separately defined scope. Preserve the recorded original READY v12 checkpoint, frozen assets/goldens and all closed ledgers/claims. **Recovery 38/38 and aggregate repair 40/40 are exhausted**; no rerun, additional demonstration, quota reset, AWS operation or next milestone is authorized by closeout. Production-readiness limitations above remain explicit.
+Use **http://127.0.0.1:8501/?mode=live** with Nova Lite, DeepSeek V3.2, Qwen3 235B
+or Mistral Large 3 in Local agent or AWS AgentCore mode. Refresh an old page after
+the server replacement. **18 ordinary questions** remain at the recorded checkpoint,
+expiring November 15, 2026, 5:59 p.m. CST; read the durable counter for later usage.
+No further operator demo, failed-model retry, reset, reserve use, permission change
+or deployment is implied. Preserve the protected cleanup and approved restoration
+procedure. Six unavailable models remain disabled; their exact reasons are in the
+model diagnostics. Keep PR #13 unmerged. M1–M5 remain complete for the agreed scope;
+partial four-model acceptance does not establish all-model or production readiness.

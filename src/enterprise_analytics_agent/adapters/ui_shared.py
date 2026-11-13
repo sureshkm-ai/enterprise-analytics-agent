@@ -78,6 +78,14 @@ class SharedQuestions:
         if self.purpose != "question":
             raise UiError("Protected smoke execution is operator-only.")
         summary = self.ledger.summary()
+        source_error = ""
+        try:
+            verify_local_release(self.root, self.review, self.canonical_dir)
+        except (UiError, OSError, ValueError, ImportError):
+            source_error = (
+                "The local source or data no longer matches this approved release. "
+                "Agent execution is unavailable."
+            )
         verified = summary["purposes"]
         assert isinstance(verified, dict)
         ready = bool(
@@ -86,12 +94,16 @@ class SharedQuestions:
             and not summary["incomplete"]
             and not summary["expired"]
             and not verified["rollback_smoke"]
+            and not source_error
         )
         return {
             "enabled": ready,
-            "error": "Shared verification/allowance is not ready; inspect its evidence."
-            if not ready
-            else "",
+            "error": source_error
+            or (
+                "Shared verification/allowance is not ready; inspect its evidence."
+                if not ready
+                else ""
+            ),
             "dataset": self.review.target.dataset_version,
             "reference_date": self.review.target.reference_date.isoformat(),
             "tenant": self.review.tenant_id,

@@ -1,17 +1,56 @@
 # Bedrock model selection and provider word streaming
 
+The exact [completion replacement](bedrock-streaming-completion-plan.md) was
+approved at **f591498** and uploaded once as VersionId
+**PQbNv3gkC1HwVYNNiAe95r1XuQDkfKvb**. All ten existing stacks and Runtime/DEFAULT
+passed strict **UPDATE_COMPLETE / READY v2** proofs. Nova Q18 and the all-five
+regional question passed exact independent requests/results and real provider
+streaming. Sonnet Q18 failed its first Converse call with
+**AccessDeniedException / model_error**, without semantic queries. Ordinary
+dispatch stopped after three acceptance attempts; no other model ran and no
+accepted UI binding exists. Mandatory original restoration passed: all ten
+original streaming code/configuration bindings verified **UPDATE_COMPLETE /
+Runtime and DEFAULT READY v3**. Protected legacy-v15 Q18 smoke passed
+**110.25 USD** at approximately **22:29:52Z**.
+
+All new choices remain disabled. Parent **3/40** stays closed; the child is
+closed/blocked **4/37** (ordinary 3 + cleanup 1), aggregate **7/40**, with no
+incomplete attempt. Its remaining ordinary quota is unusable; the reserve is
+unavailable. No retry, reopened campaign or broader IAM permission is implied. Preserve sealed preparation/review/
+readiness, original artifacts and all historical evidence below.
+
+The implementation commit **f591498** is pushed; [push CI 43316129337](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43316129337) and [PR CI 43316722939](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43316722939) passed for that commit. Those checks do not cover later outcome documentation.
+
+## Historical original scope and execution
+
 The user **approved execution of this development deployment and live evaluation**
 on November 11, 2026, after PR #11 merged at `01aabc1`. The scope is separate from
 completed Milestones 1–5 and every historical campaign. Approval is recorded in
 `artifacts/bedrock-streaming/approval.json` and remains valid for the unchanged plan.
-Fresh read-only preflight verified the retained v15/canonical checkpoint and routing,
-but deployment is waiting on administrator permission evidence and three model
-agreements. See [administrator steps](bedrock-streaming-administrator-steps.md) and
-the [actual preflight record](../evaluations/bedrock-streaming/activation-preflight-2026-11-11.json). The existing
-Nova candidate/retail Runtime and DEFAULT remain the retained **v15** checkpoint;
-the existing interactive allowance and its ledger are unchanged. A new model is
-listed in the UI catalog as a documented choice, not as an enabled or accepted
-backend.
+The directory grant is now applied and administrator readback/simulation passed.
+Fresh operator preflight passed, the reviewed ZIP uploaded once as
+**GSY36sTbDpCNZGogULTe3cBL__bujiQK**, and only the new streaming Nova stack was
+created: **CREATE_COMPLETE**, Runtime/DEFAULT **READY v1**. Verification stopped
+on AWS singleton policy normalization and a separate workload-role logging denial.
+The [recovery plan](bedrock-streaming-recovery-plan.md) prepares exact corrected
+templates plus a scoped `logs:PutResourcePolicy` grant and recreation of only the
+unused new Nova stack before all ten corrected creates. The user approved this
+revision at **7dad05a**; its [approval record](../evaluations/bedrock-streaming/recovery-approval.json)
+binds the exact review/execution hashes. Fresh preflight **20261112T200119Z**
+passed, the reviewed old stack was deleted, and all ten corrected stacks verified
+**CREATE_COMPLETE / Runtime and DEFAULT READY v1**, with exact
+artifact/configuration/policy proofs and seven-day retention at **20:20:07Z**. The directory grant remains verified.
+Administrator trust application/readback at **20:22:58Z** matches the exact reviewed
+addition and preserves both prior statements; release binding passed. Nova Q18
+passed with exact **110.25 USD** and provider streaming. Its all-five question
+produced every expected request/result, but a conservative conversation-input
+reservation caused `token_limit` before presentation, despite only **3,215**
+reported tokens. Acceptance stopped; no other model was invoked or enabled.
+Protected cleanup smoke passed on retained legacy **v15** around **20:26Z**.
+Campaign **3/40** is closed (two ordinary, one cleanup), reserve untouched. Frozen
+ZIP/source/version, historical reviews/assemblies and permissions are preserved.
+Prepare a focused offline complete-plan/reservation correction, new candidate and
+review before any live retry; do not treat unused quota as approval.
 
 ## Behavior and model scope
 
@@ -123,8 +162,8 @@ No AWS operation, upload or new question dispatch was performed.
 | ZIP bytes | `39298651` |
 | Deployment config file SHA-256 | `ab4019e79cf0e7b57978869873550ed6dfcc26b14c7f6f84cdf9a024675f2258` |
 | Additive policy file SHA-256 | `9be307f2bf73232c6146a7cfda8eb90e31d4952af2eb0de5ce8eb79e51a8723f` |
-| Real uploaded VersionId | **Not created**; remains null before separately approved upload |
-| Campaign | `bedrock-stream-models-v1-01`, proposed **0/40**, no ledger/claim created |
+| Real uploaded VersionId | **GSY36sTbDpCNZGogULTe3cBL__bujiQK**, verified after the one-time approved upload |
+| Campaign | `bedrock-stream-models-v1-01`, now closed **3/40**; failed acceptance and successful protected legacy-v15 cleanup retained |
 
 The five-planning-call cap also works for sequential-tool Gemma: after the fifth
 successful query, the wrapper may finish only if every exact required metric,
@@ -188,8 +227,10 @@ Mantle default project and applicable model access before deployment/evaluation.
 
 ## Offline preparation commands
 
-Use the existing activated Conda environment and confirm Python 3.12/Poetry before
-these commands. The package command writes a separate new ZIP and refuses to
+These are historical preparation commands. Frozen outputs now exist: do not
+rerun them into the reviewed directories or rebuild/upload the ZIP. The recovery
+plan uses separate output directories and pins. Use the existing activated Conda
+environment for any separately authorized preparation. The package command writes a separate new ZIP and refuses to
 overwrite an existing output when using the new entry point.
 
 ```bash
@@ -432,10 +473,20 @@ links each exact official model card. API/protocol and permission references use
   and [CDK global role/profile options](https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd.html).
 - [Conditional PutObject and explicit SHA-256 checksum options](https://docs.aws.amazon.com/cli/latest/reference/s3api/put-object.html).
 
-Offline checks establish implementation readiness only. Execution approval is now
-recorded; retain the frozen checksums and real-version binding procedure. Resolve
-the administrator policy/directory evidence and the Opus/GPT agreement statuses
-documented in the administrator guide, then repeat fresh preflight and continue
-the already approved ten-runtime scope. The controlled reserve remains unusable.
-No live acceptance, new permission, upload, deployment or production-readiness
-claim is recorded here.
+The original recovery and its failed three-call campaign above are historical.
+The approved completion operation deployed the replacement and passed both Nova
+gates, then stopped on Sonnet's first Converse denial. Original restoration and
+protected cleanup passed; the child is closed 4/37, aggregate 7/40. Keep new
+bindings disabled. The supplied Sonnet inline policy matches the reviewed
+permissions; administrator simulation allows both actions on all four concrete
+resources with no missing context. The user reports no permissions boundary.
+Read-only Organizations verification identifies the management account, whose
+roles are unaffected by SCPs. No missing grant or source-routing defect is
+established, and the IAM evidence review is complete. Next diagnose the original
+service error from retained evidence/support material: its full message, request
+ID, denied session/principal, resource and conditions remain unavailable. The
+bounded 444-event CloudTrail collection through 22:29:52Z had no AccessDenied
+event; unrelated log ResourceAlreadyExists/OperationAborted events are not an
+established cause. Do not repeat execution, retry questions, use
+remaining quota/reserve, create another campaign or add speculative IAM.
+Full multi-model acceptance and production readiness remain unverified.

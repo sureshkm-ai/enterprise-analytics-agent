@@ -1,0 +1,8 @@
+{
+  "schema_version": "ui-accepted-runtime-approval-v1",
+  "approved": true,
+  "scope": "aws-only-existing-interactive02-questions",
+  "review_sha256": "e6fdf1354c736f07b54807978af8af4e0612c85e6c091c5b162cbef25b2003a8",
+  "approved_at": "2026-11-13T00:13:24.123374Z",
+  "expires_at": "2026-11-13T23:59:00Z"
+}

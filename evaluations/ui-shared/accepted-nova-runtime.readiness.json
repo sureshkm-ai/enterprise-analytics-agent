@@ -1,0 +1,83 @@
+{
+  "schema_version": "ui-accepted-runtime-readiness-v1",
+  "status": "prepared-awaiting-separate-binding-approval",
+  "observed_at": "2026-11-12T23:54:52.538325+00:00",
+  "execution_approved": false,
+  "review_sha256": "e6fdf1354c736f07b54807978af8af4e0612c85e6c091c5b162cbef25b2003a8",
+  "operator_source_sha256": "98d1521be7e35c6a89a6d7e5ad537bcdb92851306a40a6725c2a8086988eebc9",
+  "profile": "analytics-dev",
+  "account": "453711491609",
+  "region": "us-west-2",
+  "preflight_path": "artifacts/ui-shared/accepted-nova-runtime/preflight-20261112T235400Z.json",
+  "preflight_sha256": "b4c782bd419092c7c36a5c1d7ef4a3edfd7042a40e2c33911f536b6a8165ca35",
+  "preflight_passed": true,
+  "read_only_aws": true,
+  "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_dev_agent-HlWywlG60h",
+  "runtime_version": "15",
+  "runtime_status": "READY",
+  "endpoint_version": "15",
+  "endpoint_status": "READY",
+  "runtime_stack_status": "UPDATE_COMPLETE",
+  "archive_sha256": "398124e89d2be1e9ce00f5b57c263fe2cdde0654527b27f949b9f3abb58029f1",
+  "artifact_version_id": "V5Q8e8e6w2tkkVghXn.BrFs1mqQU.Ncu",
+  "archive_source_sha256": "aefa4ffa38d1d52ad152e98e0293356221bc964be86e3022c12c6871545830be",
+  "canonical_manifest_sha256": "99e9115edc990decf5b15e5de1ad693772e3bd03ec6767b880ebbdd4135b8797",
+  "retention_days": 7,
+  "budget": {
+    "campaign_id": "ui-shared-retail-v1-02",
+    "used": 2,
+    "maximum": 20,
+    "remaining": 18,
+    "blocked": false,
+    "incomplete": false,
+    "failed": false,
+    "expired": false,
+    "regular_remaining": 17,
+    "verification_remaining": 0,
+    "rollback_remaining": 1,
+    "purposes": {
+      "question": 1,
+      "verification": 1,
+      "rollback_smoke": 0
+    },
+    "sdk_attempts": {
+      "local_converse_attempts": 0,
+      "agentcore_invocations": 2,
+      "failed_sdk_attempts": 0,
+      "incomplete_sdk_attempts": 0
+    },
+    "modes": {
+      "local_agent": 0,
+      "live": 2
+    }
+  },
+  "preserved_files": 352,
+  "new_billable_calls": 0,
+  "new_aws_mutations": 0,
+  "local_agent_enabled": false,
+  "provider_word_streaming": false,
+  "checks": {
+    "poetry_check_lock": "passed",
+    "pytest": {
+      "passed": 2141,
+      "deselected": 85,
+      "skipped": 0,
+      "seconds": "76.61"
+    },
+    "ruff_check": "passed",
+    "ruff_format_check": {
+      "passed": true,
+      "files": 201
+    },
+    "mypy": {
+      "passed": true,
+      "files": 159
+    }
+  },
+  "earlier_hosted_ci": {
+    "commit": "d3694df4d5758a024a87f75f968e511c4d7284fe",
+    "push": "https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43325497464",
+    "pull_request": "https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43325507337",
+    "covers_new_changes": false
+  }
+}

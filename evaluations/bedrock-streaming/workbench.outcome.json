@@ -1,0 +1,336 @@
+{
+  "schema_version": "bedrock-workbench-outcome-v1",
+  "status": "active-with-four-independently-accepted-models",
+  "all_catalog_models_accepted": false,
+  "observed_at": "2026-11-13T16:01:58.413779+00:00",
+  "review_sha256": "c17f1bb9a7c3a29620c42bcf1a0217298a2fd6b0d473b9fcce7608ca90d247b3",
+  "preparation_sha256": "195fb2033f92458ff6548e9e1aeb1b7e0a0dc0aa7c59de053e260ac7714a4d32",
+  "approved_preparation_commit": "27e1ae8f726819a732f7ca81400b39c4781b8bef",
+  "implementation_commit": "106b17309716d11f154c8954024f7a260c8fbf7a",
+  "profile": "analytics-dev",
+  "account": "453711491609",
+  "region": "us-west-2",
+  "candidate_sha256": "f2755c33d5bbbef44d834628b974c1c71b7313374c9e7835b4b7ce66238a2a6a",
+  "source_sha256": "8ee90d63f5af4fa62b8e82f9525a9b6eca6d6d58fd6693aa023031283fe2224e",
+  "artifact_version_id": "xnQiGsnGRkgFV3ktJ2DfhUbOClx9gVEn",
+  "actual_releases": {
+    "review_sha256": "c17f1bb9a7c3a29620c42bcf1a0217298a2fd6b0d473b9fcce7608ca90d247b3",
+    "artifact_version_id": "xnQiGsnGRkgFV3ktJ2DfhUbOClx9gVEn",
+    "models": [
+      {
+        "model_key": "nova-lite",
+        "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_nova_lite-ysWG3wGhNd",
+        "runtime_version": "4",
+        "configuration_sha256": "b03625d420f04ef3bbe5700101c486a52b5b3ac2979f720ed0c6548df7791516",
+        "template_sha256": "43211fefe205a3ba6d9ed3d1c56c0e9c8b6d3c85e9f02bc639a5fc1116d61527"
+      },
+      {
+        "model_key": "claude-sonnet-5-5",
+        "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_claude_sonnet_5_5-wIvJh83KS4",
+        "runtime_version": "4",
+        "configuration_sha256": "75bb88c9de1ad1ec7a3987c4ca252e0302e554b088d3c1ca83aecd23d27f0638",
+        "template_sha256": "c30db62bf3df1c0feab7c9f389a0c18f364614184bffb2e982b40ba8dcc51dcf"
+      },
+      {
+        "model_key": "claude-opus-5-5",
+        "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_claude_opus_5_5-pjA7LFDH7r",
+        "runtime_version": "4",
+        "configuration_sha256": "5edf23ee743e65bf9ff3c9db2c5982a311a7376cf4c40b782821814b2da2a103",
+        "template_sha256": "89a003119da11686c3291f73925f889a531752a8f61e0048b83066e9a7107c9e"
+      },
+      {
+        "model_key": "gpt-6-astra",
+        "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_gpt_6_astra-6XMFAj51lA",
+        "runtime_version": "4",
+        "configuration_sha256": "172cd5157183e2d68a005eddf2c43c43c63d1aa476879987b69c69ad9092f894",
+        "template_sha256": "cb56dd9e54291eeb5a694f2e2159525ee2fe1537bfb1c948b11dcf29316f84e6"
+      },
+      {
+        "model_key": "gpt-6-1-sol",
+        "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_gpt_6_1_sol-5M3ZcJGNh3",
+        "runtime_version": "4",
+        "configuration_sha256": "df981e8339b92f2ae22f47b128eb48dfa309c1a4de425753aaddef7fb686f5b4",
+        "template_sha256": "4bec353cad55872df1279aadd92acf33be530d5c88739d07b04b2925f9c799ab"
+      },
+      {
+        "model_key": "gemma-4-31b",
+        "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_gemma_4_31b-5KRJdk6NQb",
+        "runtime_version": "4",
+        "configuration_sha256": "f544271c130633d12a2fa552163e760db8dcd4288f75e31d38951a40189d6d96",
+        "template_sha256": "e90a817e40f5b69077ceaa84222f83b815a2a4bd451a124455d06af83208f2a7"
+      },
+      {
+        "model_key": "llama-4-maverick",
+        "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_llama_4_maverick-r9V93EA2v5",
+        "runtime_version": "4",
+        "configuration_sha256": "de65ed1066598eab3a99f2465c8bfab4ebb26a28d6b8441f2414578c6f3b0eba",
+        "template_sha256": "4c863184fce51ab2963b5dd2b87e266fe3885fcea3f9235ea7365afdd8618e59"
+      },
+      {
+        "model_key": "deepseek-v3-2",
+        "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_deepseek_v3_2-lya0FE86Zv",
+        "runtime_version": "4",
+        "configuration_sha256": "b16c8b6f420c7f28e761116b61e4ec96610c7a461a5f8a196bc52925a0935dc8",
+        "template_sha256": "c83fdc139369b259b8b8ee885f4faa65459a346b69fa7a2cc2a65c54631fd719"
+      },
+      {
+        "model_key": "qwen3-235b",
+        "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_qwen3_235b-xPOeZ29RRY",
+        "runtime_version": "4",
+        "configuration_sha256": "79f0e48b292eff5f32958349e58ab8ac776e6b4b9325707d77a7503c7f09ac81",
+        "template_sha256": "a997b037006cc982bf879789df79d5da17b0c2ebfbf6e7628800d4e0bacb995b"
+      },
+      {
+        "model_key": "mistral-large-3",
+        "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_mistral_large_3-fLMU4GAeKZ",
+        "runtime_version": "4",
+        "configuration_sha256": "643d484ddae838047e1ce87a85c7e2bcf57e93c69ccbfa5df94e9342de8e1a2a",
+        "template_sha256": "5902e8e054535ea7ced16a13fc586f312f5e94e80c6d7deee5dc27c51bae074d"
+      }
+    ]
+  },
+  "aws_operator_outcome": "partially_accepted",
+  "aws_cases": [
+    {
+      "model_key": "claude-opus-5-5",
+      "case_id": "Q18",
+      "judgment": "failed",
+      "presentation_status": "not_needed",
+      "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/claude-opus-5-5-0.json",
+      "sha256": "5c35ec4131df26f78d8b33bbfdc66dc51dd17c5cdaf9570df91f1c86afd67264"
+    },
+    {
+      "model_key": "claude-sonnet-5-5",
+      "case_id": "Q18",
+      "judgment": "failed",
+      "presentation_status": "not_needed",
+      "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/claude-sonnet-5-5-0.json",
+      "sha256": "627f821313d03c753d1ae70d9c8a358a159ad631036ba5ff4614d9fc9b864a3f"
+    },
+    {
+      "model_key": "deepseek-v3-2",
+      "case_id": "Q18",
+      "judgment": "passed",
+      "presentation_status": "streamed",
+      "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/deepseek-v3-2-0.json",
+      "sha256": "a7b82ad2b1c0d86c864c981f53ec6128b75778ff0fb98ac7a304291fcb243793"
+    },
+    {
+      "model_key": "deepseek-v3-2",
+      "case_id": "all-five-regionals",
+      "judgment": "passed",
+      "presentation_status": "streamed",
+      "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/deepseek-v3-2-1.json",
+      "sha256": "994b3e95de6661c32e49e21f9a22ac89ac219b5d6adec6cee6ccf2473c6522bd"
+    },
+    {
+      "model_key": "gemma-4-31b",
+      "case_id": "Q18",
+      "judgment": "failed",
+      "presentation_status": "not_needed",
+      "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/gemma-4-31b-0.json",
+      "sha256": "b89b789496fcd55a719826754407a3c11d828c26b5c96f88a6cd19b9c53c52ec"
+    },
+    {
+      "model_key": "gpt-6-1-sol",
+      "case_id": "Q18",
+      "judgment": "failed",
+      "presentation_status": "not_needed",
+      "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/gpt-6-1-sol-0.json",
+      "sha256": "14eb539fccf370516970d9926b936061aa05ef3359feb3736cfcc0e543388aac"
+    },
+    {
+      "model_key": "gpt-6-astra",
+      "case_id": "Q18",
+      "judgment": "failed",
+      "presentation_status": "not_needed",
+      "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/gpt-6-astra-0.json",
+      "sha256": "47f2508ef146e4f74685ee4ebbe3cd730c88403e55dc63d7c7c1159376620fcb"
+    },
+    {
+      "model_key": "llama-4-maverick",
+      "case_id": "Q18",
+      "judgment": "passed",
+      "presentation_status": "streamed",
+      "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/llama-4-maverick-0.json",
+      "sha256": "a607aa86b5aad91b8a3190561746d73340a20588d42f7e94b20701b6dfe70b5d"
+    },
+    {
+      "model_key": "llama-4-maverick",
+      "case_id": "all-five-regionals",
+      "judgment": "failed",
+      "presentation_status": "not_needed",
+      "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/llama-4-maverick-1.json",
+      "sha256": "6412cc9a13298a17fef01edfc7af359138fbc772f0ab76408a2d92a6d0e8e807"
+    },
+    {
+      "model_key": "mistral-large-3",
+      "case_id": "Q18",
+      "judgment": "passed",
+      "presentation_status": "streamed",
+      "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/mistral-large-3-0.json",
+      "sha256": "5e0cf43f54345390526ee6d034ab769fa09d8e80a725c52d87779af7108d69fa"
+    },
+    {
+      "model_key": "mistral-large-3",
+      "case_id": "all-five-regionals",
+      "judgment": "passed",
+      "presentation_status": "streamed",
+      "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/mistral-large-3-1.json",
+      "sha256": "03c3e5df59551142baffcf584f46df78bb80ccef9f32c6cd0125c01f79bfbe97"
+    },
+    {
+      "model_key": "nova-lite",
+      "case_id": "Q18",
+      "judgment": "passed",
+      "presentation_status": "streamed",
+      "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/nova-lite-0.json",
+      "sha256": "34bb9a8952a24e76bb3b487c685e215944bfff7c6b81b669c23e46d7f06b71e7"
+    },
+    {
+      "model_key": "nova-lite",
+      "case_id": "all-five-regionals",
+      "judgment": "passed",
+      "presentation_status": "streamed",
+      "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/nova-lite-1.json",
+      "sha256": "d019aa222f36b131b5274535e1d0ace064c7132370caa415f328a1716b7c0dff"
+    },
+    {
+      "model_key": "qwen3-235b",
+      "case_id": "Q18",
+      "judgment": "passed",
+      "presentation_status": "streamed",
+      "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/qwen3-235b-0.json",
+      "sha256": "776b75bb7d9417c4dd2dcd128ba1932ef633e16581053df70ad06e9101ca1af0"
+    },
+    {
+      "model_key": "qwen3-235b",
+      "case_id": "all-five-regionals",
+      "judgment": "passed",
+      "presentation_status": "streamed",
+      "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/qwen3-235b-1.json",
+      "sha256": "6877d1f37dbd30f7def70729024d66989a2703085177c2c59f89e867acd18acb"
+    }
+  ],
+  "aws_case_totals": {
+    "failed": 6,
+    "passed": 9
+  },
+  "accepted_models": [
+    "nova-lite",
+    "deepseek-v3-2",
+    "qwen3-235b",
+    "mistral-large-3"
+  ],
+  "unavailable_models": [
+    "claude-opus-5-5",
+    "claude-sonnet-5-5",
+    "gemma-4-31b",
+    "gpt-6-1-sol",
+    "gpt-6-astra",
+    "llama-4-maverick"
+  ],
+  "browser_checks": [
+    {
+      "model_key": "deepseek-v3-2",
+      "mode": "local_agent",
+      "passed": true,
+      "display_answer": "Net revenue: **110.25 USD** for **March 31, 2025**.",
+      "request_id": "3dfa8f04-3aca-4cdb-97a0-ce13bcf8fc51",
+      "judgment_path": "output/playwright/workbench-live-20261113/local-checks/deepseek-v3-2/judgment.json",
+      "judgment_sha256": "bd970499cd063a86f6207b5717551c3aa50bc7d2ceb9f60d915d96db320adc5a",
+      "capture_sha256": "f981df3a8a963860ff45b9ec3e0c1eccd1573c7adb7d1712d67530478127ffea"
+    },
+    {
+      "model_key": "mistral-large-3",
+      "mode": "local_agent",
+      "passed": true,
+      "display_answer": "Net revenue: **110.25 USD** for **March 31, 2025**.",
+      "request_id": "1dcd6231-f26a-44bb-850a-9933d2041a8d",
+      "judgment_path": "output/playwright/workbench-live-20261113/local-checks/mistral-large-3/judgment.json",
+      "judgment_sha256": "5aec6e2e1e0f81d6c22088514aea3ef30712d3fc03afbae7f97552c5f2832453",
+      "capture_sha256": "9f8dbb97a39b18fbee315d30b7b353aa3b13098644af4bc1ef59439f85a77b91"
+    },
+    {
+      "model_key": "nova-lite",
+      "mode": "local_agent",
+      "passed": true,
+      "display_answer": "Net revenue: **110.25 USD** for **March 31, 2025**.",
+      "request_id": "e2535993-6a7a-4d00-90d7-9a05ebebab83",
+      "judgment_path": "output/playwright/workbench-live-20261113/local-checks/nova-lite/judgment.json",
+      "judgment_sha256": "822441e24aad2b42be289e2669b9b5c8539188b524d4adf20768ef0013bc347f",
+      "capture_sha256": "937eab730df2d60fa87d8697d8cf048e12f7d3b0c6db375dbebb7101002103fb"
+    },
+    {
+      "model_key": "qwen3-235b",
+      "mode": "local_agent",
+      "passed": true,
+      "display_answer": "Net revenue: **110.25 USD** for **March 31, 2025**.",
+      "request_id": "d80d52e8-a06f-4aba-af1b-7f2e5f1afc21",
+      "judgment_path": "output/playwright/workbench-live-20261113/local-checks/qwen3-235b/judgment.json",
+      "judgment_sha256": "a940361a1dc3ec2a03229c0d92ee6223cc8c0e5e525a443b7a51858f2f2b3905",
+      "capture_sha256": "ed209634981291ce74c0d6e60d127cacede68740a2c491172b24d75ee04e01a8"
+    },
+    {
+      "model_key": "nova-lite",
+      "mode": "live",
+      "passed": true,
+      "display_answer": "Net revenue: **110.25 USD** for **March 31, 2025**.",
+      "request_id": "c00c70a2-9c39-4210-b311-3001fab6e4ac",
+      "judgment_path": "output/playwright/workbench-live-20261113/aws-checks/nova-lite/judgment.json",
+      "judgment_sha256": "527db765b117a9d6e56076a0261f14a8598914a002506383530eb7f5879e55ce",
+      "capture_sha256": "e3656adae4b23764565ac0851ff1c41eac5b6f022ea47d9276ac589301016446"
+    }
+  ],
+  "browser_passed": 5,
+  "budget": {
+    "used": 20,
+    "maximum": 40,
+    "ordinary_used": 20,
+    "regular_remaining": 18,
+    "protected_cleanup": 1,
+    "unapproved_reserve": 1,
+    "failed": true,
+    "incomplete": false,
+    "expired": false,
+    "blocked": false,
+    "blocked_models": [
+      "claude-opus-5-5",
+      "claude-sonnet-5-5",
+      "gemma-4-31b",
+      "gpt-6-1-sol",
+      "gpt-6-astra",
+      "llama-4-maverick"
+    ],
+    "failure_scope": "model"
+  },
+  "sdk_attempts": {
+    "InvokeAgentRuntime": 16,
+    "Converse": 7,
+    "ConverseStream": 4
+  },
+  "failed_sdk_receipts": 0,
+  "incomplete_sdk_receipts": 0,
+  "expires_at": "2026-11-15T23:59:00+00:00",
+  "cleanup_used": false,
+  "reserve_used": false,
+  "legacy_runtime_version": "15",
+  "restoration_required": false,
+  "restoration_reason": "Approved partial acceptance keeps the candidate deployed when usable models and Local/AWS browser gates pass.",
+  "final_read_only_proof_path": "artifacts/bedrock-streaming/workbench-fix/final-preflight-20261113T160000Z/summary.json",
+  "final_read_only_proof_sha256": "aeba6395c09292f8bc0b7b61c5687f11e661d67f9d2e2699d25d88289f5d402a",
+  "preserved_files": 555,
+  "current_ui": {
+    "url": "http://127.0.0.1:8501/?mode=live",
+    "pid": 54226,
+    "local_agent_enabled": true,
+    "aws_agentcore_enabled": true,
+    "provider_word_streaming": true,
+    "composer_clearing": true
+  },
+  "known_limitations": [
+    "Anthropic/OpenAI model availability is denied by AWS for this account; this is not evidence of a missing IAM grant.",
+    "Gemma failed iteration bounds; Llama failed the all-five complete-plan case.",
+    "No automatic retries, protected/reserve reuse, new permissions or production-readiness claim."
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "schema_version": "streaming-completion-readiness-v1",
+  "status": "offline-ready-read-only-preflight-passed-awaiting-exact-execution-approval",
+  "baseline_commit": "ceb01c5",
+  "review_sha256": "67f3f3aab2a086ad16633e6cdc2195edbe02543065a4b5934c7b1177345ea58c",
+  "preparation_sha256": "e9fc7e4711290b058f849b15bbfb4c0786ca083caf1819bfb1b92d8468597e79",
+  "candidate_zip_sha256": "8cfe8d9bd667c29c871342844898061f986107d94f309f1eef471f09582a4ae8",
+  "candidate_bytes": 39302720,
+  "candidate_uploaded": false,
+  "candidate_deployed": false,
+  "live_acceptance_complete": false,
+  "approval_created": false,
+  "continuation_claim_created": false,
+  "offline_checks": {
+    "poetry_check_lock": "passed",
+    "pytest": {
+      "passed": 2055,
+      "deselected": 85,
+      "skipped": 0,
+      "elapsed_seconds": 72.85
+    },
+    "ruff_check": "passed",
+    "ruff_format": {
+      "passed": true,
+      "files": 195
+    },
+    "mypy": {
+      "passed": true,
+      "files": 153
+    },
+    "synthesis": {
+      "templates": 10,
+      "assembly_files": 34,
+      "independent_outputs_byte_identical": true
+    },
+    "archive_reproduction": "byte-identical",
+    "regression_red_before_fix": {
+      "failed": 3,
+      "passed": 10
+    },
+    "complete_plan_regressions_passed": 22,
+    "operator_workflow_tests_passed": 26
+  },
+  "aws_read_only_preflight": {
+    "observed_at": "2026-11-12T21:49:36.711525+00:00",
+    "profile": "analytics-dev",
+    "account": "453711491609",
+    "region": "us-west-2",
+    "identity_verified": true,
+    "legacy_runtime_default_version": "15",
+    "streaming_runtime_default_versions": [
+      "1",
+      "1",
+      "1",
+      "1",
+      "1",
+      "1",
+      "1",
+      "1",
+      "1",
+      "1"
+    ],
+    "canonical_publication_verified": true,
+    "candidate_key_absent": true,
+    "iam_inspection_repeated": false,
+    "aws_mutations": 0,
+    "runtime_invocations": 0,
+    "model_calls": 0,
+    "athena_query_executions": 0,
+    "raw_evidence_path": "artifacts/bedrock-streaming/completion-fix/preflight-final-20261112T215000Z/preflight.json",
+    "raw_evidence_sha256": "599b336dfd2de425e3dc1df5d533e1a017d2bcf6264a7a94affb60f19800b401"
+  },
+  "preservation": {
+    "historical_files_verified": 352,
+    "parent_files": 16,
+    "parent_used": 3,
+    "parent_closed": true,
+    "child_used": 0,
+    "child_maximum": 37,
+    "aggregate_used": 3,
+    "aggregate_maximum": 40,
+    "reserve_approved": false,
+    "new_local_source_matches_legacy_v15": false,
+    "current_source_assets_match_candidate_zip": 76
+  },
+  "source_sha256": "cc4a0c06b1b8d9ea672d2fd048e56eea7ecdfb2216cf6570c8c7a7076ff98a35"
+}

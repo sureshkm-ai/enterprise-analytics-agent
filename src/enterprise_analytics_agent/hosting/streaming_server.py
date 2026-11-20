@@ -12,6 +12,7 @@ from typing import Any, cast
 from enterprise_analytics_agent.adapters.bedrock_agent import BedrockAnalyticsAgent
 from enterprise_analytics_agent.adapters.bedrock_mantle import BedrockMantleClient
 from enterprise_analytics_agent.adapters.bedrock_model_catalog import ModelSpec, model_catalog
+from enterprise_analytics_agent.adapters.bedrock_runtime_chat import BedrockRuntimeChatClient
 from enterprise_analytics_agent.adapters.bedrock_word_stream import ConverseStreamClient
 from enterprise_analytics_agent.adapters.streaming_agent import StreamingAnalyticsAgent
 from enterprise_analytics_agent.adapters.streaming_diagnostics import report_aws_failure
@@ -31,13 +32,19 @@ def build_streaming_agent(settings: RuntimeSettings) -> StreamingAnalyticsAgent:
     if model.transport == "mantle_chat":
         client = BedrockMantleClient(session=workload_session(settings))
         agent.client = client
+    elif model.transport == "runtime_chat":
+        agent.client = BedrockRuntimeChatClient(
+            model_key=model.key,
+            session=workload_session(settings),
+            timeout_seconds=settings.timeout_seconds,
+        )
     return StreamingAnalyticsAgent(
         agent,
         presentation_client=cast(ConverseStreamClient, agent.client),
         allow_temperature=model.temperature_supported,
-        planner_operation="ChatCompletions" if model.transport == "mantle_chat" else "Converse",
+        planner_operation="Converse" if model.transport == "converse" else "ChatCompletions",
         presentation_operation=(
-            "ChatCompletionsStream" if model.transport == "mantle_chat" else "ConverseStream"
+            "ConverseStream" if model.transport == "converse" else "ChatCompletionsStream"
         ),
         readable=True,
     )

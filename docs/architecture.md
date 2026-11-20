@@ -1,5 +1,14 @@
 # Architecture
 
+The [model expansion](workbench-model-expansion.md) adds the owner's working model
+versions as separate catalog identities and fresh release targets. Bedrock Runtime
+Chat Completions for Kimi K3/Nemotron normalizes sequential tool responses and SSE
+into the existing agent boundary using AWS SigV4; it never accepts arbitrary
+provider endpoints or browser credentials. Claude 4.6, Gemma 3, Qwen VL and retained
+DeepSeek use Converse. Both local and hosted execution share these adapters and the
+same semantic/presentation contracts. Historical runtime and acceptance sections
+below describe their respective earlier release, not current connectivity.
+
 ## Local testing UI
 
 The [AWS-only accepted Nova connection](ui-accepted-nova-live.md) is a separately

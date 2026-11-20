@@ -94,6 +94,7 @@ class StreamingReview(BaseModel):
     expires_at: datetime
     maximum_attempts: Annotated[int, Field(strict=True, ge=2, le=40)] = 40
     ordinary_limit: Annotated[int, Field(strict=True, ge=0, le=38)] = 38
+    recover_requests: bool = Field(default=False, exclude_if=lambda value: value is False)
     # Omission, rather than serialized null, preserves every existing v1 digest.
     parent: StreamingParent | None = Field(default=None, exclude_if=lambda value: value is None)
     artifact_sha256: Annotated[str, Field(pattern=r"^[a-f0-9]{64}$")]
@@ -108,6 +109,8 @@ class StreamingReview(BaseModel):
 
     @model_validator(mode="after")
     def immutable_scope(self) -> Self:
+        if self.recover_requests and self.schema_version != "bedrock-model-workbench-v1":
+            raise ValueError("Request recovery is available only in a fresh workbench review.")
         if self.schema_version == "bedrock-model-stream-v1":
             if self.parent is not None or (self.maximum_attempts, self.ordinary_limit) != (40, 38):
                 raise ValueError("The original streaming review keeps its exact 40/38 scope.")
@@ -200,7 +203,7 @@ class StreamingLedger:
         if recover_requests and review.schema_version != "bedrock-model-workbench-v1":
             raise UiError("Request recovery cannot reopen historical campaigns.")
         self.root, self.review = root.resolve(), review
-        self.recover_requests = recover_requests
+        self.recover_requests = recover_requests or review.recover_requests
         self.directory = self.root / "artifacts/bedrock-streaming" / review.campaign_id
         self.path = self.directory / "attempts.jsonl"
         self.claims = self.directory / "reservations"

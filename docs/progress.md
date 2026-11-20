@@ -1,6 +1,59 @@
 # Progress
 
-## Current task — diagnose later request failures and repair the client
+## Current task — seven owner-confirmed working model versions
+
+Implemented the requested Sonnet 4.6, Opus 4.6, Gemma 3 12B IT, Nemotron 3 Super
+120B A12B, Qwen3 VL 235B A22B and Kimi K3 bindings; DeepSeek V3.2 is retained
+once. The new ten-model selection also retains Nova Lite, Qwen3 235B A22B 2507
+and Mistral Large 3. Historical failed model versions are separate identities.
+See [the expansion runbook](workbench-model-expansion.md) and
+[the selection](../evaluations/bedrock-streaming/models.account-available.json).
+
+Local DuckDB and hosted Athena use the same governed agent and model routing.
+Kimi/Nemotron have a fixed AWS-signed Runtime Chat Completions adapter with
+reasoning explicitly disabled, sequential tools, bounded SSE parsing, private
+AWS failure diagnostics and no automatic invocation retries. Kimi's documented
+Converse reasoning-replay limitation is avoided. The new review explicitly opts
+into the previous accepted-model request-recovery policy; historical review
+serialization and ledger behavior remain unchanged.
+
+The offline preparation command verifies the complete package source and lock
+binding, synthesizes all ten proposed targets, and writes a fresh review plus
+additive permission/trust proposals. It refuses stale source, reused campaign
+IDs and expired proposals. It creates no approval, release record or ledger.
+The reviewed operator in the original checkout must create six new targets and
+update four retained targets; the historical completion controller cannot create
+this new scope. The November 15 allowance remains expired.
+
+Verification: **2,212 tests passed, 85 live tests deselected**, zero selected skips;
+Poetry lock validation, Ruff, formatting (217 files), mypy (169 source files),
+documentation syntax/link checks and diff checks passed. All three CI syntheses
+passed; the ten historical streaming template hashes are unchanged. Twenty-six
+new regressions cover exact identities, hosted routing, signed chat requests,
+reasoning suppression, stream termination/usage, errors/no retries, scoped CDK
+grants and historical review preservation. Three pre-existing time-dependent
+tests now use their historical fixture clock; production expiry is unchanged.
+
+The ARM64 candidate reproduced byte-for-byte at SHA-256
+`746faf9e7ac37f0c07ed9bd2012fc1fe456c28606f791f924e4f7af40b6e051e`
+(39,332,180 bytes). The generated offline review is
+`2d2c31f2899aa14438b7abf487df479cb3f76bc16d7949eb0b5529093add7090`
+under `artifacts/bedrock-streaming/account-models/proposal/`, using the local
+`candidate-final/agent.zip` path. The runbook's original-checkout build uses a
+fresh `candidate/` path and therefore creates its own path-bound review hash.
+All 80 existing evaluation/data/configuration/checkpoint files checked against
+the parent commit are unchanged. Existing frozen files, goldens, actual release
+records and historical ledgers were not edited. No AWS operation, upload,
+deployment, permission change or live invocation occurred in this checkpoint.
+
+Next: review this implementation in PR #13, then follow the expansion runbook in
+the original checkout to collect fresh deployment/permission/profile evidence,
+review the concrete additive changes and new allowance, bind actual uploaded
+versions, and perform independent acceptance before enabling the new choices.
+Hosted CI results must be tied to this expansion's exact pushed SHA on PR #13;
+the verified parent runs below do not cover these new changes.
+
+## Historical task — later request failures and client repair
 
 The owner's newer screenshot shows **24/40 attempts**, a Nova request stopping
 after **35.5 seconds**, and only Qwen enabled. This review started from GitHub
@@ -33,9 +86,12 @@ still match the approved review. Documentation verification passed 143 local
 links and 33 shell blocks. Targeted verification reproduced the simulated
 cold-start regression against the old timeout and passed the repaired setting.
 The exact operator binding passed; the read-only CLI correctly refused this
-checkout's missing operational ledger instead of reporting zero usage. Hosted CI
-for this repair must be checked against its pushed commit; the earlier 94bdb7c
-CI results cover only that historical checkpoint.
+checkout's missing operational ledger instead of reporting zero usage. This
+repair was pushed as `f71b98fac71d572ffdac62afde59cb45343d611f`; both
+[push CI 43473751770](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43473751770)
+and [PR CI 43473950926](https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43473950926)
+passed. Their successful jobs were rechecked for this session and cover that
+parent implementation only.
 No AWS calls, deployment, live question, ledger reset or automatic retry occurred.
 
 Next: use the [read-only diagnostic and restart commands](workbench-request-repair.md)

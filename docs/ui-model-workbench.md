@@ -1,5 +1,10 @@
 # Selectable models and readable streaming
 
+Current model expansion: [the seven owner-confirmed versions](workbench-model-expansion.md)
+are supported in a separate selection and offline release proposal. The November
+15 allowance has expired; the acceptance/launch history below is not authorization
+to activate the new models or restart a spent campaign.
+
 ## Later request failures and client repair
 
 The owner subsequently reported **24/40** attempts with only Qwen enabled.

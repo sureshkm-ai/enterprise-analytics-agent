@@ -34,7 +34,7 @@ class StreamingModelConfig(BaseModel):
     runtime_name: Annotated[str, Field(pattern=r"^[A-Za-z][A-Za-z0-9_]{0,47}$")]
     settings: RuntimeSettings
     model_resource_arns: tuple[str, ...] = ()
-    transport: Literal["converse", "mantle_chat"] = "converse"
+    transport: Literal["converse", "mantle_chat", "runtime_chat"] = "converse"
     mantle_project_arn: str = DEFAULT_PROJECT
 
     @field_validator("model_resource_arns")
@@ -82,7 +82,7 @@ class StreamingModelConfig(BaseModel):
             raise ValueError(
                 "Streaming runtimes must preserve the reviewed retail scope and bounds"
             )
-        if self.transport == "converse":
+        if self.transport != "mantle_chat":
             if not self.model_resource_arns:
                 raise ValueError("Native Bedrock models require exact inference resources")
             identity = settings.model_id
@@ -271,7 +271,7 @@ class StreamingRuntimeStack(Stack):
                 actions=["s3:GetBucketLocation"], resources=[f"arn:aws:s3:::{config.code_bucket}"]
             ),
         ]
-        if model.transport == "converse":
+        if model.transport != "mantle_chat":
             statements.append(
                 iam.PolicyStatement(
                     actions=["bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream"],

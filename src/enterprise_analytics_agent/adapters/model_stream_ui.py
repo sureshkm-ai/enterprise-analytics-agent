@@ -22,6 +22,7 @@ from enterprise_analytics_agent.adapters.bedrock_agent import (
 )
 from enterprise_analytics_agent.adapters.bedrock_mantle import BedrockMantleClient
 from enterprise_analytics_agent.adapters.bedrock_model_catalog import get_model
+from enterprise_analytics_agent.adapters.bedrock_runtime_chat import BedrockRuntimeChatClient
 from enterprise_analytics_agent.adapters.bedrock_word_stream import CanonicalWordGate
 from enterprise_analytics_agent.adapters.duckdb import DuckDBSemanticAdapter
 from enterprise_analytics_agent.adapters.operator_reads import ReadPool
@@ -781,11 +782,17 @@ class StreamingQuestions:
         record: Callable[[dict[str, object]], None],
     ) -> UiResult:
         model = get_model(self.target.model_key)
-        client = (
-            BedrockMantleClient(session=session)
-            if model.transport == "mantle_chat"
-            else session.client("bedrock-runtime", config=READ_CONFIG)
-        )
+        client: Any
+        if model.transport == "mantle_chat":
+            client = BedrockMantleClient(session=session)
+        elif model.transport == "runtime_chat":
+            client = BedrockRuntimeChatClient(
+                model_key=model.key,
+                session=session,
+                timeout_seconds=self.target.settings.timeout_seconds,
+            )
+        else:
+            client = session.client("bedrock-runtime", config=READ_CONFIG)
         settings = self.target.settings
         with DuckDBSemanticAdapter(self.canonical) as adapter:
             agent = BedrockAnalyticsAgent(
@@ -807,10 +814,10 @@ class StreamingQuestions:
                 presentation_client=client,
                 allow_temperature=model.temperature_supported,
                 planner_operation="ChatCompletions"
-                if model.transport == "mantle_chat"
+                if model.transport != "converse"
                 else "Converse",
                 presentation_operation="ChatCompletionsStream"
-                if model.transport == "mantle_chat"
+                if model.transport != "converse"
                 else "ConverseStream",
                 readable=True,
             ).run(

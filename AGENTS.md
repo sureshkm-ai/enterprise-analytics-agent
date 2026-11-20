@@ -1,6 +1,16 @@
 # Repository instructions
 
-Current follow-up: the owner's screenshot at **24/40** shows later failures after
+Current task: include the owner's seven working model versions. Consult and
+maintain `docs/workbench-model-expansion.md` and the separate
+`evaluations/bedrock-streaming/models.account-available.json` selection. New aliases
+must not inherit historical failed-model acceptance. Local and hosted paths share
+the same adapters; Kimi K3/Nemotron use AWS Runtime Chat Completions with reasoning
+off. The old workbench allowance expired November 15; preserve it and all frozen
+source/artifact/approval/ledger records. Prepare a new release and fresh reviewed
+scope before activation. Offline changes do not authorize deployment or live calls.
+The historical completion controller cannot create the six new target stacks.
+
+Historical client follow-up: the owner's screenshot at **24/40** shows later failures after
 the four-model acceptance checkpoint below. Consult `docs/workbench-request-repair.md`.
 The client repair changes only six enumerated operator/UI files and pins them in
 `evaluations/bedrock-streaming/workbench.operator-repair.json`; the original 80-file

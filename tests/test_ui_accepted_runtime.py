@@ -5,7 +5,7 @@ import io
 import json
 import sys
 import zipfile
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime, timedelta, tzinfo
 from pathlib import Path
 from typing import Any
 from uuid import uuid4
@@ -35,6 +35,12 @@ from enterprise_analytics_agent.ui.shared import (
 )
 
 NOW = datetime(2026, 11, 12, 23, 0, tzinfo=UTC)
+
+
+class HistoricalClock(datetime):
+    @classmethod
+    def now(cls, tz: tzinfo | None = None) -> "HistoricalClock":
+        return cls.fromtimestamp(NOW.timestamp(), tz)
 
 
 def sha(content: bytes) -> str:
@@ -71,6 +77,9 @@ def item(**changes: Any) -> AskRequest:
 @pytest.fixture
 def prepared(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> dict[str, Any]:
     """Fixed historic review/config, plus authored mocked archive-verification boundary."""
+    # Exercise the intended preflight boundary after this fixture's real expiry.
+    # Production expiry enforcement and frozen historical review hashes stay intact.
+    monkeypatch.setattr(adapter, "datetime", HistoricalClock)
     shared = SharedReview.model_validate(
         {
             "campaign_id": "ui-shared-retail-v1-02",

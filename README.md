@@ -1,5 +1,13 @@
 # Enterprise structured-data analytics agent
 
+**New model support:** Claude Sonnet 4.6, Claude Opus 4.6, Gemma 3 12B IT,
+NVIDIA Nemotron 3 Super 120B A12B, Qwen3 VL 235B A22B, Kimi K3 and DeepSeek V3.2.
+See [the model configuration and activation steps](docs/workbench-model-expansion.md).
+The previous live allowance expired November 15. The new release needs its own
+deployment, actual Runtime bindings and acceptance; pulling code alone does not
+activate models in AWS. The following workbench results and launch command are
+historical and do not reopen that allowance.
+
 **Analytics Workbench: later request failures have a client repair.** The owner
 reported 24/40 attempts and only Qwen enabled after the four-model acceptance
 checkpoint. Follow the [diagnostic and restart instructions](docs/workbench-request-repair.md)

@@ -1,12 +1,20 @@
 # Implementation plan
 
-Current follow-up: [repair later workbench request failures](workbench-request-repair.md).
+Current scope: [include the seven owner-confirmed working models](workbench-model-expansion.md).
+Add six distinct versions and retain DeepSeek once, preserving three other accepted
+choices. Acceptance requires correct model routing in both modes, governed results,
+provider-word streaming and fresh release-bound evidence. Offline preparation
+creates a new proposal; the November 15 allowance remains expired. Historical
+milestones and failed models are unchanged.
+
+Historical follow-up: [repair later workbench request failures](workbench-request-repair.md).
 The owner reports 24/40 attempts and additional disabled models; the 20/40 result
 below is historical acceptance. The client-only repair preserves the deployed
 agent, exact artifacts and original allowance. Original-checkout diagnosis and
 manual restart remain necessary; no live verification or deployment was performed.
 
-The [selectable-model/readable-streaming workbench](ui-model-workbench.md) is
+At the historical November 13 checkpoint, the
+[selectable-model/readable-streaming workbench](ui-model-workbench.md) was
 operational at **http://127.0.0.1:8501/?mode=live** with **partial model acceptance**:
 Nova Lite, DeepSeek V3.2, Qwen3 235B and Mistral Large 3 passed both independent AWS
 cases and are enabled in both agent modes. Fifteen AWS cases produced **9 passes,
@@ -14,7 +22,7 @@ cases and are enabled in both agent modes. Fifteen AWS cases produced **9 passes
 Six failed models are quarantined. This does not establish acceptance of all ten
 models or production readiness.
 
-The approved new campaign is **20/40 used**, leaving **18 ordinary questions**,
+That historical campaign recorded **20/40 used**, leaving **18 ordinary questions**,
 protected cleanup **1** and unavailable reserve **1**, expiring
 **2026-11-15T23:59Z**. Final read-only proof at **2026-11-13T15:59:41Z** verified all
 ten new f2755c33/xnQiGsnGRkgFV3ktJ2DfhUbOClx9gVEn bindings READY **v4**, retained

@@ -1,5 +1,10 @@
 # Analytics Workbench
 
+For the newly requested Claude 4.6, Gemma 3, Nemotron Super, Qwen VL, Kimi K3 and
+DeepSeek selection, follow [the model expansion](workbench-model-expansion.md).
+It requires a new shared release and actual deployment bindings. The earlier
+allowance expired November 15; the launch and usage observations below are historical.
+
 For the later 24/40 workbench request failures, use the
 [client repair diagnostic and restart commands](workbench-request-repair.md).
 The earlier four-model acceptance below remains historical; current availability

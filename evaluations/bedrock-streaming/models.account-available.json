@@ -1,0 +1,13 @@
+{
+  "schema_version": "bedrock-workbench-model-selection-v1",
+  "requested_models": [
+    "claude-sonnet-4-6",
+    "claude-opus-4-6",
+    "gemma-3-12b",
+    "nemotron-3-super",
+    "qwen3-vl-235b",
+    "kimi-k3",
+    "deepseek-v3-2"
+  ],
+  "retained_models": ["nova-lite", "qwen3-235b", "mistral-large-3"]
+}

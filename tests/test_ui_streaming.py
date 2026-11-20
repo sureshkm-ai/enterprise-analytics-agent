@@ -163,6 +163,19 @@ def frame(response: HTTPResponse) -> dict[str, Any]:
     return value
 
 
+def test_explicit_model_bindings_do_not_inherit_unconfigured_default_errors(
+    model_app: tuple[Workbench, FakeBackend, FakeBackend],
+) -> None:
+    app, nova, other = model_app
+    options = app.state()["model_options"]
+    assert isinstance(options, list)
+    for option in options:
+        for config in option["modes"].values():
+            assert config["enabled"]
+            assert not config.get("error")
+    assert nova.calls == other.calls == []
+
+
 def test_configured_models_are_server_owned_and_route_without_leaking_selection(
     model_app: tuple[Workbench, FakeBackend, FakeBackend],
 ) -> None:

@@ -1,0 +1,106 @@
+{
+  "schema_version": "ui-accepted-runtime-activation-v1",
+  "status": "active-aws-only-browser-controls-verified",
+  "observed_at": "2026-11-13T00:17:37.854542+00:00",
+  "review_sha256": "e6fdf1354c736f07b54807978af8af4e0612c85e6c091c5b162cbef25b2003a8",
+  "operator_source_sha256": "98d1521be7e35c6a89a6d7e5ad537bcdb92851306a40a6725c2a8086988eebc9",
+  "approval_path": "evaluations/ui-shared/accepted-nova-runtime.approval.json",
+  "approval_sha256": "b5ad4cf3b9547a36afc5661066cf900da70dbec0a7f414e762a74f6342ea93cf",
+  "url": "http://127.0.0.1:8501/?mode=live",
+  "profile": "analytics-dev",
+  "account": "453711491609",
+  "region": "us-west-2",
+  "preflight_path": "artifacts/ui-shared/accepted-nova-runtime/preflight-20261113T001330Z.json",
+  "preflight_sha256": "29193e2bb69f59e5093ac76f713011d15f2bee80ee7bcdb40e18aa4ebe737eb0",
+  "preflight_observed_at": "2026-11-13T00:13:44.691402+00:00",
+  "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_dev_agent-HlWywlG60h",
+  "runtime_version": "15",
+  "runtime_status": "READY",
+  "endpoint_version": "15",
+  "endpoint_status": "READY",
+  "stack_status": "UPDATE_COMPLETE",
+  "archive_sha256": "398124e89d2be1e9ce00f5b57c263fe2cdde0654527b27f949b9f3abb58029f1",
+  "artifact_version_id": "V5Q8e8e6w2tkkVghXn.BrFs1mqQU.Ncu",
+  "dataset_version": "retail-v1",
+  "canonical_manifest_sha256": "99e9115edc990decf5b15e5de1ad693772e3bd03ec6767b880ebbdd4135b8797",
+  "budget_before": {
+    "campaign_id": "ui-shared-retail-v1-02",
+    "used": 2,
+    "maximum": 20,
+    "remaining": 18,
+    "blocked": false,
+    "incomplete": false,
+    "failed": false,
+    "expired": false,
+    "regular_remaining": 17,
+    "verification_remaining": 0,
+    "rollback_remaining": 1,
+    "purposes": {
+      "question": 1,
+      "verification": 1,
+      "rollback_smoke": 0
+    },
+    "sdk_attempts": {
+      "local_converse_attempts": 0,
+      "agentcore_invocations": 2,
+      "failed_sdk_attempts": 0,
+      "incomplete_sdk_attempts": 0
+    },
+    "modes": {
+      "local_agent": 0,
+      "live": 2
+    }
+  },
+  "budget_after": {
+    "campaign_id": "ui-shared-retail-v1-02",
+    "used": 2,
+    "maximum": 20,
+    "remaining": 18,
+    "blocked": false,
+    "incomplete": false,
+    "failed": false,
+    "expired": false,
+    "regular_remaining": 17,
+    "verification_remaining": 0,
+    "rollback_remaining": 1,
+    "purposes": {
+      "question": 1,
+      "verification": 1,
+      "rollback_smoke": 0
+    },
+    "sdk_attempts": {
+      "local_converse_attempts": 0,
+      "agentcore_invocations": 2,
+      "failed_sdk_attempts": 0,
+      "incomplete_sdk_attempts": 0
+    },
+    "modes": {
+      "local_agent": 0,
+      "live": 2
+    }
+  },
+  "new_question_attempts": 0,
+  "new_runtime_invocations": 0,
+  "new_model_invocations": 0,
+  "new_athena_queries": 0,
+  "aws_mutations": 0,
+  "local_agent_enabled": false,
+  "provider_word_streaming": false,
+  "browser_checks": {
+    "actual_browser": true,
+    "nova_selected": true,
+    "other_models_disabled": true,
+    "aws_mode_selected": true,
+    "correct_dataset_reference_and_runtime": true,
+    "ask_aws_enabled_with_unsent_question": true,
+    "test_draft_cleared_without_submission": true,
+    "console_javascript_errors": 0,
+    "unrelated_favicon_404": true
+  },
+  "screenshots": [
+    "output/playwright/ui-readiness-20261112/accepted-nova-live.png",
+    "output/playwright/ui-readiness-20261112/accepted-nova-models.png"
+  ],
+  "preserved_historical_files": 352,
+  "remaining_work": "Other model acceptance and provider-word streaming are incomplete. Failed streaming campaign stays closed/restored; no replay or new grant is authorized by this activation."
+}

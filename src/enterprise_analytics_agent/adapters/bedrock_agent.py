@@ -3,7 +3,8 @@
 import json
 import re
 import time
-from collections.abc import Callable
+from collections import Counter
+from collections.abc import Callable, Sequence
 from dataclasses import asdict, is_dataclass
 from datetime import date
 from typing import Annotated, Literal, Protocol, cast
@@ -106,6 +107,60 @@ def _render(results: list[QueryMetricResponseV2]) -> str:
     return "\n".join(lines)
 
 
+def _remaining_numeric_queries(
+    scope: QuestionScope,
+    calls: Sequence[ToolCallRecord],
+    results: Sequence[QueryMetricResponseV2],
+) -> tuple[QueryMetricRequestV2, ...] | None:
+    """Return only unexecuted governed queries, or reject any invalid partial evidence."""
+    if scope.clarification or scope.metadata or not scope.metric_ids or not scope.periods:
+        return None
+    expected = tuple(
+        QueryMetricRequestV2(
+            metric_id=metric,
+            time_range=period,
+            group_by=scope.group_by,
+            dimension_filters=scope.filters,
+        )
+        for metric in scope.metric_ids
+        for period in scope.periods
+    )
+    if not calls or any(call.status != "success" for call in calls):
+        return None
+    query_calls = [call for call in calls if call.name == "query_metric"]
+    if len(results) != len(query_calls):
+        return None
+    try:
+        parsed = [QueryMetricRequestV2.model_validate(call.arguments) for call in query_calls]
+        for query in parsed:
+            scope.validate_query(query)
+    except ValueError:
+        return None
+    # Scope validation above already proves the grouping and filter value sets.
+    # Their order is semantically irrelevant, as in QuestionScope.validate_query;
+    # do not turn a supported reordered request into a failed/duplicate plan.
+    required = Counter((query.metric_id, query.time_range) for query in expected)
+    completed = Counter((query.metric_id, query.time_range) for query in parsed)
+    if completed - required:
+        return None
+    if Counter(
+        (query.metric_id, query.time_range, frozenset(query.group_by)) for query in parsed
+    ) != Counter(
+        (result.metric_id, result.time_range, frozenset(result.group_by)) for result in results
+    ):
+        return None
+    return tuple(query for query in expected if completed[(query.metric_id, query.time_range)] == 0)
+
+
+def _complete_numeric_plan(
+    scope: QuestionScope,
+    calls: Sequence[ToolCallRecord],
+    results: Sequence[QueryMetricResponseV2],
+) -> bool:
+    """An answer requires every exact query and its successful validated result."""
+    return _remaining_numeric_queries(scope, calls, results) == ()
+
+
 def _render_metadata(responses: list[ToolResponse]) -> str:
     lines = []
     for result in responses:
@@ -136,12 +191,14 @@ class BedrockAnalyticsAgent:
         adapter: SemanticAdapter,
         dataset_version: str,
         clock: Callable[[], float] = time.monotonic,
+        complete_on_planning_limit: bool = False,
     ) -> None:
         self.config = config
         self.client = client
         self.adapter = adapter
         self.dataset_version = dataset_version
         self.clock = clock
+        self.complete_on_planning_limit = complete_on_planning_limit
 
     def run(self, request: AgentRequest, *, context: AuthorizationContext) -> AgentResponse:
         if (
@@ -315,6 +372,33 @@ class BedrockAnalyticsAgent:
                 }
             }
 
+        def complete_resolved_plan() -> AgentResponse | None:
+            """Execute actual missing work through the existing server-resolved tool path."""
+            pending = _remaining_numeric_queries(scope, records, results)
+            if pending is None:
+                return None
+            if len(records) + len(pending) > self.config.max_tool_calls:
+                raise _LoopFailure("tool_limit")
+            for parsed in pending:
+                number = len(records) + 1
+                identifier = f"resolved-plan-{number}"
+                while identifier in seen_ids:
+                    number += 1
+                    identifier = f"resolved-plan-{number}"
+                seen_ids.add(identifier)
+                # These are real server-resolved operations, never invented model turns.
+                execute_call("query_metric", identifier, parsed.model_dump(mode="json"))
+                if last_tool_error:
+                    return finish(
+                        "error",
+                        "The governed request could not be completed: " + last_tool_error,
+                        last_tool_error,
+                    )
+            check_time()
+            if not _complete_numeric_plan(scope, records, results):
+                raise _LoopFailure("incomplete_tool_results")
+            return finish("answer", _render(results))
+
         try:
             for _ in range(self.config.max_iterations):
                 check_time()
@@ -332,6 +416,14 @@ class BedrockAnalyticsAgent:
                 )
                 remaining = self.config.max_total_tokens - input_tokens - output_tokens - reserve
                 if remaining <= 0:
+                    # Streaming reserves a separate presentation call. A byte-bound
+                    # reservation need not discard validated work or prevent real
+                    # server-resolved remaining queries. This is before dispatch, never recovery
+                    # from provider truncation, invalid usage or a real token overrun.
+                    if self.complete_on_planning_limit:
+                        completed_response = complete_resolved_plan()
+                        if completed_response is not None:
+                            return completed_response
                     raise _LoopFailure("token_limit")
                 payload["inferenceConfig"] = {
                     "maxTokens": min(self.config.max_output_tokens, remaining),
@@ -462,6 +554,10 @@ class BedrockAnalyticsAgent:
                     )
                 else:
                     raise _LoopFailure("token_limit" if stop == "max_tokens" else "model_stopped")
+            if self.complete_on_planning_limit:
+                completed_response = complete_resolved_plan()
+                if completed_response is not None:
+                    return completed_response
             raise _LoopFailure("iteration_limit")
         except _LoopFailure as exc:
             return finish("error", "The analytics request stopped safely: " + exc.code, exc.code)

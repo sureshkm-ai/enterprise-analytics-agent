@@ -40,10 +40,39 @@ def main() -> int:
     parser.add_argument(
         "--streaming-approval", type=Path, help="Explicit approval record for that scope"
     )
+    parser.add_argument(
+        "--streaming-operator-repair",
+        type=Path,
+        help="Exact client-only repair binding; preserves the deployed archive and existing budget",
+    )
+    parser.add_argument(
+        "--model-testing",
+        action="store_true",
+        help="Test selectable models within a fresh workbench review; does not claim acceptance",
+    )
+    parser.add_argument(
+        "--accepted-runtime-review", type=Path, help="Separately reviewed AWS-only Nova binding"
+    )
+    parser.add_argument(
+        "--accepted-runtime-approval", type=Path, help="Explicit approval of that AWS-only binding"
+    )
     args = parser.parse_args()
     if not 1 <= args.port <= 65535:
         parser.error("port must be between 1 and 65535")
     streaming = any((args.streaming_review, args.streaming_releases, args.streaming_approval))
+    if args.streaming_operator_repair and not streaming:
+        parser.error("--streaming-operator-repair requires the existing streaming configuration")
+    accepted_runtime = any((args.accepted_runtime_review, args.accepted_runtime_approval))
+    if args.model_testing and not streaming:
+        parser.error("--model-testing requires the streaming review, releases and approval")
+    if accepted_runtime and (
+        streaming or args.live_review or args.shared_review or args.release_record
+    ):
+        parser.error("accepted-runtime and other live release reviews cannot be combined")
+    if accepted_runtime and not all(
+        (args.accepted_runtime_review, args.accepted_runtime_approval, args.allow_live)
+    ):
+        parser.error("accepted-runtime mode requires its exact review, approval and --allow-live")
     if streaming and (args.live_review or args.shared_review or args.release_record):
         parser.error("streaming and historical release reviews cannot be combined")
     if streaming and not all(
@@ -59,7 +88,12 @@ def main() -> int:
         parser.error(
             "shared mode requires --allow-live, --shared-review and --release-record after approval"
         )
-    if not shared and not streaming and args.allow_live != (args.live_review is not None):
+    if (
+        not shared
+        and not streaming
+        and not accepted_runtime
+        and args.allow_live != (args.live_review is not None)
+    ):
         parser.error("--allow-live and --live-review must be supplied together after approval")
     live: LiveBackend | None = None
     local_agent: LiveBackend | None = None
@@ -69,7 +103,23 @@ def main() -> int:
             root = Path(__file__).resolve().parents[3]
             if Path.cwd().resolve() != root:
                 raise UiError("Start live UI from the original repository root.")
-            if streaming:
+            if accepted_runtime:
+                from enterprise_analytics_agent.adapters.ui_accepted_runtime import (
+                    AcceptedRuntimeQuestions,
+                )
+                from enterprise_analytics_agent.ui.accepted_runtime import (
+                    AcceptedRuntimeApproval,
+                    AcceptedRuntimeReview,
+                )
+
+                accepted_review = AcceptedRuntimeReview.model_validate_json(
+                    args.accepted_runtime_review.read_bytes()
+                )
+                accepted_approval = AcceptedRuntimeApproval.model_validate_json(
+                    args.accepted_runtime_approval.read_bytes()
+                )
+                live = AcceptedRuntimeQuestions(root, accepted_review, accepted_approval)
+            elif streaming:
                 import json
 
                 from enterprise_analytics_agent.adapters.bedrock_model_catalog import get_model
@@ -78,6 +128,7 @@ def main() -> int:
                     StreamingReleases,
                     StreamingReview,
                 )
+                from enterprise_analytics_agent.ui.workbench_repair import OperatorRepair
 
                 stream_review = StreamingReview.model_validate_json(
                     args.streaming_review.read_bytes()
@@ -86,6 +137,11 @@ def main() -> int:
                     args.streaming_releases.read_bytes()
                 )
                 approval = json.loads(args.streaming_approval.read_bytes())
+                operator_repair = (
+                    OperatorRepair.model_validate_json(args.streaming_operator_repair.read_bytes())
+                    if args.streaming_operator_repair
+                    else None
+                )
                 choices = []
                 for target in stream_review.targets:
                     backend = StreamingQuestions(
@@ -95,6 +151,8 @@ def main() -> int:
                         approval,
                         target.model_key,
                         args.canonical_dir,
+                        model_testing=args.model_testing,
+                        operator_repair=operator_repair,
                     )
                     model = get_model(target.model_key)
                     choices.append(

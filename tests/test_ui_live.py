@@ -26,6 +26,21 @@ RUNTIME = (
 )
 
 
+def test_public_target_metadata_comes_from_configured_review_without_sdk(tmp_path: Path) -> None:
+    reviewed = review()
+    backend = ui_live.LiveQuestions(tmp_path, reviewed)
+    backend.ledger = UiLedger(tmp_path, reviewed, now=lambda: NOW)
+    state = backend.public_state("live")
+    assert state["enabled"] is True
+    assert state["dataset"] == "parity-v1"
+    assert state["reference_date"] == "2025-02-01"
+    assert state["runtime_version"] == "12"
+    assert "configured target" in str(state["description"])
+    assert not backend.ledger.path.exists()
+    with pytest.raises(UiError, match="only AWS"):
+        backend.public_state("local_agent")
+
+
 def endpoint_response(version: str = "12") -> dict[str, object]:
     """Validate the authored fixture against the installed SDK's real response shape."""
     value: dict[str, object] = {

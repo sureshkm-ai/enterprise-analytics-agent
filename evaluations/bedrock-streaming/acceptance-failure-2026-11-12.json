@@ -1,0 +1,94 @@
+{
+  "schema_version": "bedrock-streaming-acceptance-failure-v1",
+  "recorded_at": "2026-11-12T20:29:23.075208+00:00",
+  "status": "stopped-after-two-acceptance-questions-protected-cleanup-passed",
+  "review_sha256": "10433404c65249308e326a5867d499cabe4fab24c43201a6639a29c769b946c4",
+  "campaign": "bedrock-stream-models-v1-01",
+  "deployments_verified": 10,
+  "runtime_default_versions": "1",
+  "query_trust_administrator_readback_matches": true,
+  "acceptance": {
+    "expected": 20,
+    "attempted": 2,
+    "passed": 1,
+    "failed": 1,
+    "not_run": 18,
+    "q18": {
+      "status": "passed",
+      "value": "110.25",
+      "currency": "USD",
+      "start": "2025-03-31",
+      "end": "2025-04-01",
+      "presentation": "streamed"
+    },
+    "all_five_regionals": {
+      "status": "failed",
+      "error_code": "token_limit",
+      "all_five_requests_match": true,
+      "all_five_results_match": true,
+      "provider_input_tokens": 2759,
+      "provider_output_tokens": 456,
+      "provider_model_calls": 2,
+      "presentation": "not_needed"
+    }
+  },
+  "diagnosis": {
+    "confirmed_branch": "planning pre-dispatch input-byte reservation before unnecessary third planner turn",
+    "planning_token_cap": 10000,
+    "combined_token_cap": 12000,
+    "reported_tokens_used": 3215,
+    "reconstructed_third_request_reserve_bytes": 8369,
+    "minimal_assistant_request_lower_bound_bytes": 7514,
+    "planning_tokens_remaining": 6785,
+    "raw_private_model_transcript_retained": false,
+    "reconstructed_sizes_are_offline_not_observed_live_payload": true,
+    "not_provider_usage_exhaustion": true,
+    "new_iam_permission_needed_for_this_failure": false,
+    "app_code_changed": false
+  },
+  "cleanup": {
+    "protected_attempts": 1,
+    "status": "passed",
+    "retained_runtime_default_version": "15",
+    "value": "110.25",
+    "currency": "USD",
+    "legacy_deployment_changed": false
+  },
+  "budget": {
+    "used": 3,
+    "maximum": 40,
+    "ordinary_used": 2,
+    "regular_remaining": 36,
+    "protected_cleanup": 0,
+    "unapproved_reserve": 1,
+    "failed": true,
+    "incomplete": false,
+    "expired": false,
+    "blocked": true
+  },
+  "automatic_billable_retries": 0,
+  "new_models_enabled": false,
+  "historical_ledgers_unchanged": true,
+  "frozen_zip_unchanged": true,
+  "evidence_sha256": {
+    "artifacts/bedrock-streaming/acceptance-recovery/nova-lite-0.json": "a0f63041224f2a876f3812bf4acaab7b1b785e32a5d6b58a3e1b47305a04a3d0",
+    "artifacts/bedrock-streaming/acceptance-recovery/nova-lite-1.json": "65628e8c7ee444c35e653a2bd3bbacec3de32f7f6c0f54834b7105a56ca62799",
+    "artifacts/bedrock-streaming/cleanup-recovery.json": "55e732cbf6aa5966b09f8b310ade57ada59291197cdaab68a7c91efcbee46f4e",
+    "artifacts/bedrock-streaming/releases.recovery.actual.json": "d4396c0c7e13df619c9f15dea8b28a2bb82537948df0fd20aa8b1c266aca64e7",
+    "artifacts/bedrock-streaming/bedrock-stream-models-v1-01/attempts.jsonl": "80eff47e8827dbe30bbe8c6841690f3948ed6bcf0d25805a28df378d566e108b",
+    "artifacts/bedrock-streaming/bedrock-stream-models-v1-01/acceptance-claim.json": "f84e86c603e12eef932bdce31360be9446d42778c97de16393504546df10bca3",
+    "artifacts/bedrock-streaming/operations/20261112T200119Z/query-trust-after.validation.json": "c3b43d19bcd1a5dda72bab3cd3a7d42f1b9d5b50ae152f3c737b2bbdf6827714"
+  },
+  "next_task": "Correct complete-plan termination offline; preserve hard token/deadline limits and all frozen assets. A new code/package review and separately bound allowance are required before another live attempt.",
+  "offline_prototype": {
+    "status": "9 focused tests passed; temporary in-memory prototype, not a production fix or live acceptance",
+    "evidence_directory": "artifacts/bedrock-streaming/token-budget-diagnosis",
+    "verification_sha256": "09d8b600c8be8f23cc91133f24f39a97041564528b3ec0447530aeb29e29fce7",
+    "preserved_file_sha256": {
+      "artifacts/bedrock-streaming/token-budget-diagnosis/repro_streaming_all_five_token_guard.py": "f6abbce5c60c10c79a16ac41afa41d52de98f2bb833d2a3659aa26ef08022e79",
+      "artifacts/bedrock-streaming/token-budget-diagnosis/test_streaming_budget_early_completion_prototype.py": "09ec1b824a181c9c3ea4c0c2eeb5d38d844d5a7f40dbd0c3a6ec03ec7ccd3b49",
+      "artifacts/bedrock-streaming/token-budget-diagnosis/pytest.ini": "8250d20f42b419af40706490ead78aabab9feba93eab09a3f626e3de5256e1f4",
+      "artifacts/bedrock-streaming/token-budget-diagnosis/streaming-recovery-postflight-proof.py": "5a59ced0575d14c78a61a84a8bad497828fe3cac8ff6e2e2196aedde03b365a3"
+    }
+  }
+}

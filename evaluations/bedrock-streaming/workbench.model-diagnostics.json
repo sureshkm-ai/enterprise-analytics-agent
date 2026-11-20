@@ -1,0 +1,675 @@
+{
+  "schema_version": "bedrock-workbench-model-diagnostics-v1",
+  "observed_at": "2026-11-13T16:02:17.791554+00:00",
+  "campaign_id": "bedrock-stream-workbench-v1-01",
+  "review_sha256": "c17f1bb9a7c3a29620c42bcf1a0217298a2fd6b0d473b9fcce7608ca90d247b3",
+  "profile": "analytics-dev",
+  "account": "453711491609",
+  "region": "us-west-2",
+  "runtime_version": "4",
+  "release_evidence": {
+    "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/releases.actual.json",
+    "sha256": "8dec262dda225ad67073f4cf5d28dae6774efc7dc9569b56c6273405e08bc0b3"
+  },
+  "aws_authored_acceptance": {
+    "attempted": 15,
+    "passed": 9,
+    "failed": 6,
+    "fully_accepted_models": [
+      "nova-lite",
+      "deepseek-v3-2",
+      "qwen3-235b",
+      "mistral-large-3"
+    ],
+    "unavailable_model_count": 6,
+    "interpretation": "Nine case passes include Llama Q18; only the four models passing both authored cases are accepted. Missing usage on the four failed provider calls is unreported, not evidence of zero consumed tokens.",
+    "evidence": {
+      "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/summary.json",
+      "sha256": "181910cbe104af4fb390dfc3a2f6f6225e423f7ee434d40cb7c39ccfbf344183"
+    }
+  },
+  "models": [
+    {
+      "model_key": "nova-lite",
+      "model_id": "us.amazon.nova-lite-v1:0",
+      "availability": "accepted",
+      "authored_cases": [
+        {
+          "case": "Q18",
+          "request_id": "725f177b-7584-4f31-9d46-f1ec9a502747",
+          "judgment": "passed",
+          "presentation_status": "streamed",
+          "error_code": null,
+          "model_calls": 2,
+          "reported_input_tokens": 1195,
+          "reported_output_tokens": 137,
+          "usage_complete": true,
+          "operations": [
+            "Converse",
+            "ConverseStream"
+          ],
+          "successful_metric_queries": 1,
+          "invalid_tool_arguments": 0,
+          "returned_metric_results": 1,
+          "evidence": {
+            "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/nova-lite-0.json",
+            "sha256": "34bb9a8952a24e76bb3b487c685e215944bfff7c6b81b669c23e46d7f06b71e7"
+          }
+        },
+        {
+          "case": "all-five-regionals",
+          "request_id": "5cdb66a4-937f-4a00-adc6-92f9e2e6e2a0",
+          "judgment": "passed",
+          "presentation_status": "streamed",
+          "error_code": null,
+          "model_calls": 3,
+          "reported_input_tokens": 3109,
+          "reported_output_tokens": 769,
+          "usage_complete": true,
+          "operations": [
+            "Converse",
+            "Converse",
+            "ConverseStream"
+          ],
+          "successful_metric_queries": 5,
+          "invalid_tool_arguments": 0,
+          "returned_metric_results": 5,
+          "evidence": {
+            "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/nova-lite-1.json",
+            "sha256": "d019aa222f36b131b5274535e1d0ace064c7132370caa415f328a1716b7c0dff"
+          }
+        }
+      ],
+      "reason": "Both authored AWS cases passed complete independent query/result judgments and validated provider-word streaming."
+    },
+    {
+      "model_key": "claude-sonnet-5-5",
+      "model_id": "us.anthropic.claude-sonnet-5-5",
+      "availability": "unavailable",
+      "authored_cases": [
+        {
+          "case": "Q18",
+          "request_id": "fe676d26-ee2e-4466-8f11-56d580be3a58",
+          "judgment": "failed",
+          "presentation_status": "not_needed",
+          "error_code": "model_error",
+          "model_calls": 1,
+          "reported_input_tokens": 0,
+          "reported_output_tokens": 0,
+          "usage_complete": false,
+          "operations": [
+            "Converse"
+          ],
+          "successful_metric_queries": 0,
+          "invalid_tool_arguments": 0,
+          "returned_metric_results": 0,
+          "evidence": {
+            "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/claude-sonnet-5-5-0.json",
+            "sha256": "627f821313d03c753d1ae70d9c8a358a159ad631036ba5ff4614d9fc9b864a3f"
+          }
+        }
+      ],
+      "reason": "Bedrock explicitly reported that the selected model is not available for this account; no missing IAM permission was identified.",
+      "service_error": {
+        "operation": "Converse",
+        "number": 1,
+        "code": "AccessDeniedException",
+        "message": "anthropic.claude-sonnet-5-5 is not available for this account. You can explore other available models on Amazon Bedrock. For additional access options, contact AWS Sales at https://aws.amazon.com/contact-us/sales-support/",
+        "request_id": "29172425-e06e-4e4c-9d0b-ebc9726d615b",
+        "http_status": 403,
+        "runtime_request_id": "6455eda0-d2ce-4fb4-ba1e-b7dcc2be7d68"
+      },
+      "reviewed_execution_role": "arn:aws:iam::453711491609:role/enterprise-analytics-stream-claude-sonnet-5-5",
+      "reviewed_iam_model_statements": [
+        {
+          "Action": [
+            "bedrock:InvokeModel",
+            "bedrock:InvokeModelWithResponseStream"
+          ],
+          "Effect": "Allow",
+          "Resource": [
+            "arn:aws:bedrock:us-west-2:453711491609:inference-profile/us.anthropic.claude-sonnet-5-5",
+            "arn:aws:bedrock:us-west-2::foundation-model/anthropic.claude-sonnet-5-5",
+            "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-sonnet-5-5",
+            "arn:aws:bedrock:us-east-2::foundation-model/anthropic.claude-sonnet-5-5"
+          ]
+        }
+      ],
+      "service_error_evidence": {
+        "path": "artifacts/bedrock-streaming/workbench-fix/private-model-errors/claude-sonnet-5-5.json",
+        "sha256": "c0c55a4c2cb5f7eea122abe4b73975ab997422c3242f8639598d49663f3d9d5d"
+      }
+    },
+    {
+      "model_key": "claude-opus-5-5",
+      "model_id": "us.anthropic.claude-opus-5-5",
+      "availability": "unavailable",
+      "authored_cases": [
+        {
+          "case": "Q18",
+          "request_id": "eeae27d9-ce02-47cf-a2b2-20cbfe685b39",
+          "judgment": "failed",
+          "presentation_status": "not_needed",
+          "error_code": "model_error",
+          "model_calls": 1,
+          "reported_input_tokens": 0,
+          "reported_output_tokens": 0,
+          "usage_complete": false,
+          "operations": [
+            "Converse"
+          ],
+          "successful_metric_queries": 0,
+          "invalid_tool_arguments": 0,
+          "returned_metric_results": 0,
+          "evidence": {
+            "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/claude-opus-5-5-0.json",
+            "sha256": "5c35ec4131df26f78d8b33bbfdc66dc51dd17c5cdaf9570df91f1c86afd67264"
+          }
+        }
+      ],
+      "reason": "Bedrock explicitly reported that the selected model is not available for this account; no missing IAM permission was identified.",
+      "service_error": {
+        "operation": "Converse",
+        "number": 1,
+        "code": "AccessDeniedException",
+        "message": "anthropic.claude-opus-5-5 is not available for this account. You can explore other available models on Amazon Bedrock. For additional access options, contact AWS Sales at https://aws.amazon.com/contact-us/sales-support/",
+        "request_id": "341920c1-9c41-41b4-9392-730ccd683a4b",
+        "http_status": 403,
+        "runtime_request_id": "46d28108-3ae0-42af-892c-ceb43a118ad2"
+      },
+      "reviewed_execution_role": "arn:aws:iam::453711491609:role/enterprise-analytics-stream-claude-opus-5-5",
+      "reviewed_iam_model_statements": [
+        {
+          "Action": [
+            "bedrock:InvokeModel",
+            "bedrock:InvokeModelWithResponseStream"
+          ],
+          "Effect": "Allow",
+          "Resource": [
+            "arn:aws:bedrock:us-west-2:453711491609:inference-profile/us.anthropic.claude-opus-5-5",
+            "arn:aws:bedrock:us-west-2::foundation-model/anthropic.claude-opus-5-5",
+            "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-opus-5-5",
+            "arn:aws:bedrock:us-east-2::foundation-model/anthropic.claude-opus-5-5"
+          ]
+        }
+      ],
+      "service_error_evidence": {
+        "path": "artifacts/bedrock-streaming/workbench-fix/private-model-errors/claude-opus-5-5.json",
+        "sha256": "2ab9abaf5e938c58e21f27e62ff28df7c520a2bb741f4ba6758b797e8b956b93"
+      }
+    },
+    {
+      "model_key": "gpt-6-astra",
+      "model_id": "us.openai.gpt-6-astra",
+      "availability": "unavailable",
+      "authored_cases": [
+        {
+          "case": "Q18",
+          "request_id": "b2f9239d-e3a1-4c5a-879f-46dd77b18397",
+          "judgment": "failed",
+          "presentation_status": "not_needed",
+          "error_code": "model_error",
+          "model_calls": 1,
+          "reported_input_tokens": 0,
+          "reported_output_tokens": 0,
+          "usage_complete": false,
+          "operations": [
+            "Converse"
+          ],
+          "successful_metric_queries": 0,
+          "invalid_tool_arguments": 0,
+          "returned_metric_results": 0,
+          "evidence": {
+            "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/gpt-6-astra-0.json",
+            "sha256": "47f2508ef146e4f74685ee4ebbe3cd730c88403e55dc63d7c7c1159376620fcb"
+          }
+        }
+      ],
+      "reason": "Bedrock explicitly reported that the selected model is not available for this account; no missing IAM permission was identified.",
+      "service_error": {
+        "operation": "Converse",
+        "number": 1,
+        "code": "AccessDeniedException",
+        "message": "openai.gpt-6-astra is not available for this account. You can explore other available models on Amazon Bedrock. For additional access options, contact AWS Sales at https://aws.amazon.com/contact-us/sales-support/",
+        "request_id": "eafe648e-18ce-4551-8e06-7cbb122f7ee6",
+        "http_status": 403,
+        "runtime_request_id": "642c9404-252c-4659-8f12-4a61d15a9acd"
+      },
+      "reviewed_execution_role": "arn:aws:iam::453711491609:role/enterprise-analytics-stream-gpt-6-astra",
+      "reviewed_iam_model_statements": [
+        {
+          "Action": [
+            "bedrock:InvokeModel",
+            "bedrock:InvokeModelWithResponseStream"
+          ],
+          "Effect": "Allow",
+          "Resource": [
+            "arn:aws:bedrock:us-west-2:453711491609:inference-profile/us.openai.gpt-6-astra",
+            "arn:aws:bedrock:us-west-2::foundation-model/openai.gpt-6-astra",
+            "arn:aws:bedrock:us-east-1::foundation-model/openai.gpt-6-astra",
+            "arn:aws:bedrock:us-east-2::foundation-model/openai.gpt-6-astra"
+          ]
+        }
+      ],
+      "service_error_evidence": {
+        "path": "artifacts/bedrock-streaming/workbench-fix/private-model-errors/gpt-6-astra.json",
+        "sha256": "c6fe9640a9b8961726a5383456aebf32ec6528cc7be4ca9dcfb02b2e2b136b30"
+      }
+    },
+    {
+      "model_key": "gpt-6-1-sol",
+      "model_id": "us.openai.gpt-6.1-sol",
+      "availability": "unavailable",
+      "authored_cases": [
+        {
+          "case": "Q18",
+          "request_id": "c03c1087-3484-4f47-9336-b0fe8969afab",
+          "judgment": "failed",
+          "presentation_status": "not_needed",
+          "error_code": "model_error",
+          "model_calls": 1,
+          "reported_input_tokens": 0,
+          "reported_output_tokens": 0,
+          "usage_complete": false,
+          "operations": [
+            "Converse"
+          ],
+          "successful_metric_queries": 0,
+          "invalid_tool_arguments": 0,
+          "returned_metric_results": 0,
+          "evidence": {
+            "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/gpt-6-1-sol-0.json",
+            "sha256": "14eb539fccf370516970d9926b936061aa05ef3359feb3736cfcc0e543388aac"
+          }
+        }
+      ],
+      "reason": "Bedrock explicitly reported that the selected model is not available for this account; no missing IAM permission was identified.",
+      "service_error": {
+        "operation": "Converse",
+        "number": 1,
+        "code": "AccessDeniedException",
+        "message": "openai.gpt-6.1-sol is not available for this account. You can explore other available models on Amazon Bedrock. For additional access options, contact AWS Sales at https://aws.amazon.com/contact-us/sales-support/",
+        "request_id": "c17166f5-8b29-4a9e-8a26-e189b6cbedba",
+        "http_status": 403,
+        "runtime_request_id": "46675c05-34cb-4c22-b309-ad2d015045ee"
+      },
+      "reviewed_execution_role": "arn:aws:iam::453711491609:role/enterprise-analytics-stream-gpt-6-1-sol",
+      "reviewed_iam_model_statements": [
+        {
+          "Action": [
+            "bedrock:InvokeModel",
+            "bedrock:InvokeModelWithResponseStream"
+          ],
+          "Effect": "Allow",
+          "Resource": [
+            "arn:aws:bedrock:us-west-2:453711491609:inference-profile/us.openai.gpt-6.1-sol",
+            "arn:aws:bedrock:us-west-2::foundation-model/openai.gpt-6.1-sol",
+            "arn:aws:bedrock:us-east-1::foundation-model/openai.gpt-6.1-sol",
+            "arn:aws:bedrock:us-east-2::foundation-model/openai.gpt-6.1-sol"
+          ]
+        }
+      ],
+      "service_error_evidence": {
+        "path": "artifacts/bedrock-streaming/workbench-fix/private-model-errors/gpt-6-1-sol.json",
+        "sha256": "6c4b6bdef5173ef1692d3af212578d870847af8cf12860339e65f7ad1c987b6b"
+      }
+    },
+    {
+      "model_key": "gemma-4-31b",
+      "model_id": "google.gemma-4-31b",
+      "availability": "unavailable",
+      "authored_cases": [
+        {
+          "case": "Q18",
+          "request_id": "22bda6ab-5769-45a1-8151-3631557f38e5",
+          "judgment": "failed",
+          "presentation_status": "not_needed",
+          "error_code": "iteration_limit",
+          "model_calls": 5,
+          "reported_input_tokens": 4005,
+          "reported_output_tokens": 270,
+          "usage_complete": true,
+          "operations": [
+            "ChatCompletions",
+            "ChatCompletions",
+            "ChatCompletions",
+            "ChatCompletions",
+            "ChatCompletions"
+          ],
+          "successful_metric_queries": 0,
+          "invalid_tool_arguments": 5,
+          "returned_metric_results": 0,
+          "evidence": {
+            "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/gemma-4-31b-0.json",
+            "sha256": "b89b789496fcd55a719826754407a3c11d828c26b5c96f88a6cd19b9c53c52ec"
+          }
+        }
+      ],
+      "reason": "Q18 ended at the five-planning-call iteration limit: all five Bedrock Mantle ChatCompletions calls returned query_metric with metric_id \":\" and invalid_tool_arguments. No successful metric query or result was returned; no presentation stream ran.",
+      "invalid_query_arguments": {
+        "metric_id": ":",
+        "count": 5
+      }
+    },
+    {
+      "model_key": "llama-4-maverick",
+      "model_id": "us.meta.llama4-maverick-17b-instruct-v1:0",
+      "availability": "unavailable",
+      "authored_cases": [
+        {
+          "case": "Q18",
+          "request_id": "f761d450-85ed-42c8-9692-23549375635d",
+          "judgment": "passed",
+          "presentation_status": "streamed",
+          "error_code": null,
+          "model_calls": 4,
+          "reported_input_tokens": 3848,
+          "reported_output_tokens": 216,
+          "usage_complete": true,
+          "operations": [
+            "Converse",
+            "Converse",
+            "Converse",
+            "ConverseStream"
+          ],
+          "successful_metric_queries": 1,
+          "invalid_tool_arguments": 0,
+          "returned_metric_results": 1,
+          "evidence": {
+            "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/llama-4-maverick-0.json",
+            "sha256": "a607aa86b5aad91b8a3190561746d73340a20588d42f7e94b20701b6dfe70b5d"
+          }
+        },
+        {
+          "case": "all-five-regionals",
+          "request_id": "cf5dffcb-eb94-4790-8f6b-e0d6d2c95d0f",
+          "judgment": "failed",
+          "presentation_status": "not_needed",
+          "error_code": "token_limit",
+          "model_calls": 4,
+          "reported_input_tokens": 4986,
+          "reported_output_tokens": 396,
+          "usage_complete": true,
+          "operations": [
+            "Converse",
+            "Converse",
+            "Converse",
+            "Converse"
+          ],
+          "successful_metric_queries": 0,
+          "invalid_tool_arguments": 4,
+          "returned_metric_results": 0,
+          "evidence": {
+            "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/llama-4-maverick-1.json",
+            "sha256": "6412cc9a13298a17fef01edfc7af359138fbc772f0ab76408a2d92a6d0e8e807"
+          }
+        }
+      ],
+      "reason": "Q18 passed, but the all-five-regional case returned token_limit after four reported Converse calls. Each query_metric request had empty arguments and failed invalid_tool_arguments; zero all-five queries succeeded and no metric result or presentation stream was returned. This is not a claim that reported token usage reached the combined 12,000-token cap.",
+      "invalid_all_five_query_arguments": {
+        "arguments": {},
+        "count": 4
+      }
+    },
+    {
+      "model_key": "deepseek-v3-2",
+      "model_id": "deepseek.v3.2",
+      "availability": "accepted",
+      "authored_cases": [
+        {
+          "case": "Q18",
+          "request_id": "d1638419-ed5c-46eb-8d38-839b0bd962f0",
+          "judgment": "passed",
+          "presentation_status": "streamed",
+          "error_code": null,
+          "model_calls": 3,
+          "reported_input_tokens": 2375,
+          "reported_output_tokens": 191,
+          "usage_complete": true,
+          "operations": [
+            "Converse",
+            "Converse",
+            "ConverseStream"
+          ],
+          "successful_metric_queries": 1,
+          "invalid_tool_arguments": 0,
+          "returned_metric_results": 1,
+          "evidence": {
+            "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/deepseek-v3-2-0.json",
+            "sha256": "a7b82ad2b1c0d86c864c981f53ec6128b75778ff0fb98ac7a304291fcb243793"
+          }
+        },
+        {
+          "case": "all-five-regionals",
+          "request_id": "8fda44bc-cf60-491c-9a51-df324b317302",
+          "judgment": "passed",
+          "presentation_status": "streamed",
+          "error_code": null,
+          "model_calls": 4,
+          "reported_input_tokens": 4339,
+          "reported_output_tokens": 666,
+          "usage_complete": true,
+          "operations": [
+            "Converse",
+            "Converse",
+            "Converse",
+            "ConverseStream"
+          ],
+          "successful_metric_queries": 5,
+          "invalid_tool_arguments": 0,
+          "returned_metric_results": 5,
+          "evidence": {
+            "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/deepseek-v3-2-1.json",
+            "sha256": "994b3e95de6661c32e49e21f9a22ac89ac219b5d6adec6cee6ccf2473c6522bd"
+          }
+        }
+      ],
+      "reason": "Both authored AWS cases passed complete independent query/result judgments and validated provider-word streaming."
+    },
+    {
+      "model_key": "qwen3-235b",
+      "model_id": "qwen.qwen3-235b-a22b-2507-v1:0",
+      "availability": "accepted",
+      "authored_cases": [
+        {
+          "case": "Q18",
+          "request_id": "d07253f8-7f45-4a2b-8d7e-3f368bdb5ad1",
+          "judgment": "passed",
+          "presentation_status": "streamed",
+          "error_code": null,
+          "model_calls": 3,
+          "reported_input_tokens": 2063,
+          "reported_output_tokens": 129,
+          "usage_complete": true,
+          "operations": [
+            "Converse",
+            "Converse",
+            "ConverseStream"
+          ],
+          "successful_metric_queries": 1,
+          "invalid_tool_arguments": 0,
+          "returned_metric_results": 1,
+          "evidence": {
+            "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/qwen3-235b-0.json",
+            "sha256": "776b75bb7d9417c4dd2dcd128ba1932ef633e16581053df70ad06e9101ca1af0"
+          }
+        },
+        {
+          "case": "all-five-regionals",
+          "request_id": "0fc2feab-b5f6-46b8-9f6b-108681a06a61",
+          "judgment": "passed",
+          "presentation_status": "streamed",
+          "error_code": null,
+          "model_calls": 3,
+          "reported_input_tokens": 3244,
+          "reported_output_tokens": 907,
+          "usage_complete": true,
+          "operations": [
+            "Converse",
+            "Converse",
+            "ConverseStream"
+          ],
+          "successful_metric_queries": 5,
+          "invalid_tool_arguments": 0,
+          "returned_metric_results": 5,
+          "evidence": {
+            "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/qwen3-235b-1.json",
+            "sha256": "6877d1f37dbd30f7def70729024d66989a2703085177c2c59f89e867acd18acb"
+          }
+        }
+      ],
+      "reason": "Both authored AWS cases passed complete independent query/result judgments and validated provider-word streaming."
+    },
+    {
+      "model_key": "mistral-large-3",
+      "model_id": "mistral.mistral-large-3-675b-instruct",
+      "availability": "accepted",
+      "authored_cases": [
+        {
+          "case": "Q18",
+          "request_id": "a397c9cc-0da7-485c-be41-1ca3b7f05a8a",
+          "judgment": "passed",
+          "presentation_status": "streamed",
+          "error_code": null,
+          "model_calls": 3,
+          "reported_input_tokens": 1905,
+          "reported_output_tokens": 112,
+          "usage_complete": true,
+          "operations": [
+            "Converse",
+            "Converse",
+            "ConverseStream"
+          ],
+          "successful_metric_queries": 1,
+          "invalid_tool_arguments": 0,
+          "returned_metric_results": 1,
+          "evidence": {
+            "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/mistral-large-3-0.json",
+            "sha256": "5e0cf43f54345390526ee6d034ab769fa09d8e80a725c52d87779af7108d69fa"
+          }
+        },
+        {
+          "case": "all-five-regionals",
+          "request_id": "6e4c2425-8cd2-41f3-871e-d54639b5565a",
+          "judgment": "passed",
+          "presentation_status": "streamed",
+          "error_code": null,
+          "model_calls": 3,
+          "reported_input_tokens": 3237,
+          "reported_output_tokens": 819,
+          "usage_complete": true,
+          "operations": [
+            "Converse",
+            "Converse",
+            "ConverseStream"
+          ],
+          "successful_metric_queries": 5,
+          "invalid_tool_arguments": 0,
+          "returned_metric_results": 5,
+          "evidence": {
+            "path": "artifacts/bedrock-streaming/workbench-fix/operations-approved-01/acceptance/mistral-large-3-1.json",
+            "sha256": "03c3e5df59551142baffcf584f46df78bb80ccef9f32c6cd0125c01f79bfbe97"
+          }
+        }
+      ],
+      "reason": "Both authored AWS cases passed complete independent query/result judgments and validated provider-word streaming."
+    }
+  ],
+  "browser_acceptance": [
+    {
+      "mode": "local_agent",
+      "passed": true,
+      "case_count": 4,
+      "cases": [
+        {
+          "model_key": "nova-lite",
+          "passed": true,
+          "question": "Q18",
+          "request_id": "e2535993-6a7a-4d00-90d7-9a05ebebab83",
+          "before_used": 15,
+          "after_used": 16,
+          "all_browser_checks_passed": true,
+          "evidence": {
+            "path": "output/playwright/workbench-live-20261113/local-checks/nova-lite/judgment.json",
+            "sha256": "822441e24aad2b42be289e2669b9b5c8539188b524d4adf20768ef0013bc347f"
+          }
+        },
+        {
+          "model_key": "deepseek-v3-2",
+          "passed": true,
+          "question": "Q18",
+          "request_id": "3dfa8f04-3aca-4cdb-97a0-ce13bcf8fc51",
+          "before_used": 16,
+          "after_used": 17,
+          "all_browser_checks_passed": true,
+          "evidence": {
+            "path": "output/playwright/workbench-live-20261113/local-checks/deepseek-v3-2/judgment.json",
+            "sha256": "bd970499cd063a86f6207b5717551c3aa50bc7d2ceb9f60d915d96db320adc5a"
+          }
+        },
+        {
+          "model_key": "qwen3-235b",
+          "passed": true,
+          "question": "Q18",
+          "request_id": "d80d52e8-a06f-4aba-af1b-7f2e5f1afc21",
+          "before_used": 17,
+          "after_used": 18,
+          "all_browser_checks_passed": true,
+          "evidence": {
+            "path": "output/playwright/workbench-live-20261113/local-checks/qwen3-235b/judgment.json",
+            "sha256": "a940361a1dc3ec2a03229c0d92ee6223cc8c0e5e525a443b7a51858f2f2b3905"
+          }
+        },
+        {
+          "model_key": "mistral-large-3",
+          "passed": true,
+          "question": "Q18",
+          "request_id": "1dcd6231-f26a-44bb-850a-9933d2041a8d",
+          "before_used": 18,
+          "after_used": 19,
+          "all_browser_checks_passed": true,
+          "evidence": {
+            "path": "output/playwright/workbench-live-20261113/local-checks/mistral-large-3/judgment.json",
+            "sha256": "5aec6e2e1e0f81d6c22088514aea3ef30712d3fc03afbae7f97552c5f2832453"
+          }
+        }
+      ],
+      "evidence": {
+        "path": "output/playwright/workbench-live-20261113/local-checks/summary.json",
+        "sha256": "54b78bf6915f3955ac1ebdeef7e16426402bab784a3f6bd04ce932f32bbdabb3"
+      }
+    },
+    {
+      "mode": "live",
+      "passed": true,
+      "case_count": 1,
+      "cases": [
+        {
+          "model_key": "nova-lite",
+          "passed": true,
+          "question": "Q18",
+          "request_id": "c00c70a2-9c39-4210-b311-3001fab6e4ac",
+          "before_used": 19,
+          "after_used": 20,
+          "all_browser_checks_passed": true,
+          "evidence": {
+            "path": "output/playwright/workbench-live-20261113/aws-checks/nova-lite/judgment.json",
+            "sha256": "527db765b117a9d6e56076a0261f14a8598914a002506383530eb7f5879e55ce"
+          }
+        }
+      ],
+      "evidence": {
+        "path": "output/playwright/workbench-live-20261113/aws-checks/summary.json",
+        "sha256": "4ad8765ffc18ff68c23639cad0683e34ef508f81e70a8953d9b6496a78516b60"
+      }
+    }
+  ],
+  "service_denial_interpretation": {
+    "proven": "Four full SDK messages state account model unavailability and direct additional access questions to AWS Sales.",
+    "not_proven": "These messages do not name a denied principal, IAM action, resource ARN, policy condition, or missing IAM grant. Exact Runtime configuration identifies the reviewed workload role, not an independently observed denied-principal tuple.",
+    "reviewed_policy_coverage": "The reviewed fixed-model policies allow bedrock:InvokeModel and bedrock:InvokeModelWithResponseStream on the configured inference profile and three regional foundation-model ARNs without conditions. No IAM inspection or permission change was performed for this diagnosis.",
+    "follow_up": "Resolve account/provider availability outside this completed attempt; do not retry, add duplicate grants or reopen any ledger implicitly."
+  },
+  "no_automatic_sdk_retry": true,
+  "preservation": "This report references retained evidence only; no artifact, golden, historical ledger, claim, permission or dataset was modified."
+}

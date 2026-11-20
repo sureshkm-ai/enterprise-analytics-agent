@@ -73,6 +73,7 @@ class Runner:
         on_verified: Callable[[AgentResponse], None],
         on_word: Callable[[str], None],
         record: Callable[[dict[str, object]], None],
+        diagnostic: Callable[[dict[str, object]], None] = lambda event: None,
     ) -> StreamingOutcome:
         self.seen.append((request, context))
         value = response()

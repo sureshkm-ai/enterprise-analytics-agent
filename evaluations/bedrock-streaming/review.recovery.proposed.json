@@ -1,0 +1,328 @@
+{
+  "schema_version": "bedrock-model-stream-v1",
+  "campaign_id": "bedrock-stream-models-v1-01",
+  "profile": "analytics-dev",
+  "account": "453711491609",
+  "region": "us-west-2",
+  "expires_at": "2026-11-15T23:59:00Z",
+  "maximum_attempts": 40,
+  "ordinary_limit": 38,
+  "artifact_sha256": "c136a3931e2af31d6453c54910ddc9e839ef03e69a6f2ddebb35b3eb7cfdc306",
+  "artifact_bytes": 39298651,
+  "artifact_path": "artifacts/bedrock-streaming/candidate/agent.zip",
+  "artifact_key": "releases/c136a3931e2af31d6453c54910ddc9e839ef03e69a6f2ddebb35b3eb7cfdc306/agent.zip",
+  "source_sha256": "c2311efc915339f0e7b7d7d86da660d037fb84be700332e45006299b3b70b687",
+  "canonical_manifest_sha256": "99e9115edc990decf5b15e5de1ad693772e3bd03ec6767b880ebbdd4135b8797",
+  "targets": [
+    {
+      "model_key": "nova-lite",
+      "runtime_name": "enterprise_analytics_stream_nova_lite",
+      "settings": {
+        "account": "453711491609",
+        "region": "us-west-2",
+        "model_id": "us.amazon.nova-lite-v1:0",
+        "query_role_arn": "arn:aws:iam::453711491609:role/enterprise-analytics-dev-query-executor",
+        "database": "enterprise_analytics_dev",
+        "workgroup": "enterprise-analytics-dev",
+        "source_bucket": "enterprise-analytics-dev-453711491609-us-west-2-data",
+        "results_bucket": "enterprise-analytics-dev-453711491609-us-west-2-results",
+        "dataset_version": "retail-v1",
+        "table_prefix": "ea",
+        "reference_date": "2025-04-01",
+        "principal_id": "analytics-streaming-runtime",
+        "tenant_id": "retail_demo",
+        "allowed_regions": [
+          "North",
+          "South"
+        ],
+        "max_iterations": 5,
+        "max_tool_calls": 16,
+        "max_output_tokens": 1024,
+        "max_total_tokens": 12000,
+        "timeout_seconds": 90.0,
+        "query_timeout_seconds": 60.0,
+        "max_payload_bytes": 16384
+      },
+      "template_sha256": "9ae565b9401cb29829c3a8bc73697ca447b1a05c2b2da3ee7b45f4009851298c"
+    },
+    {
+      "model_key": "claude-sonnet-5-5",
+      "runtime_name": "enterprise_analytics_stream_claude_sonnet_5_5",
+      "settings": {
+        "account": "453711491609",
+        "region": "us-west-2",
+        "model_id": "us.anthropic.claude-sonnet-5-5",
+        "query_role_arn": "arn:aws:iam::453711491609:role/enterprise-analytics-dev-query-executor",
+        "database": "enterprise_analytics_dev",
+        "workgroup": "enterprise-analytics-dev",
+        "source_bucket": "enterprise-analytics-dev-453711491609-us-west-2-data",
+        "results_bucket": "enterprise-analytics-dev-453711491609-us-west-2-results",
+        "dataset_version": "retail-v1",
+        "table_prefix": "ea",
+        "reference_date": "2025-04-01",
+        "principal_id": "analytics-streaming-runtime",
+        "tenant_id": "retail_demo",
+        "allowed_regions": [
+          "North",
+          "South"
+        ],
+        "max_iterations": 5,
+        "max_tool_calls": 16,
+        "max_output_tokens": 1024,
+        "max_total_tokens": 12000,
+        "timeout_seconds": 90.0,
+        "query_timeout_seconds": 60.0,
+        "max_payload_bytes": 16384
+      },
+      "template_sha256": "cf6da894dcc9644af3739fb562c428873003843138c3eadfb2e8d88db0ab1adc"
+    },
+    {
+      "model_key": "claude-opus-5-5",
+      "runtime_name": "enterprise_analytics_stream_claude_opus_5_5",
+      "settings": {
+        "account": "453711491609",
+        "region": "us-west-2",
+        "model_id": "us.anthropic.claude-opus-5-5",
+        "query_role_arn": "arn:aws:iam::453711491609:role/enterprise-analytics-dev-query-executor",
+        "database": "enterprise_analytics_dev",
+        "workgroup": "enterprise-analytics-dev",
+        "source_bucket": "enterprise-analytics-dev-453711491609-us-west-2-data",
+        "results_bucket": "enterprise-analytics-dev-453711491609-us-west-2-results",
+        "dataset_version": "retail-v1",
+        "table_prefix": "ea",
+        "reference_date": "2025-04-01",
+        "principal_id": "analytics-streaming-runtime",
+        "tenant_id": "retail_demo",
+        "allowed_regions": [
+          "North",
+          "South"
+        ],
+        "max_iterations": 5,
+        "max_tool_calls": 16,
+        "max_output_tokens": 1024,
+        "max_total_tokens": 12000,
+        "timeout_seconds": 90.0,
+        "query_timeout_seconds": 60.0,
+        "max_payload_bytes": 16384
+      },
+      "template_sha256": "f691070f63157042d6bc4f55d781bf95a1ac96397e96ec7181e747de4f6618bf"
+    },
+    {
+      "model_key": "gpt-6-astra",
+      "runtime_name": "enterprise_analytics_stream_gpt_6_astra",
+      "settings": {
+        "account": "453711491609",
+        "region": "us-west-2",
+        "model_id": "us.openai.gpt-6-astra",
+        "query_role_arn": "arn:aws:iam::453711491609:role/enterprise-analytics-dev-query-executor",
+        "database": "enterprise_analytics_dev",
+        "workgroup": "enterprise-analytics-dev",
+        "source_bucket": "enterprise-analytics-dev-453711491609-us-west-2-data",
+        "results_bucket": "enterprise-analytics-dev-453711491609-us-west-2-results",
+        "dataset_version": "retail-v1",
+        "table_prefix": "ea",
+        "reference_date": "2025-04-01",
+        "principal_id": "analytics-streaming-runtime",
+        "tenant_id": "retail_demo",
+        "allowed_regions": [
+          "North",
+          "South"
+        ],
+        "max_iterations": 5,
+        "max_tool_calls": 16,
+        "max_output_tokens": 1024,
+        "max_total_tokens": 12000,
+        "timeout_seconds": 90.0,
+        "query_timeout_seconds": 60.0,
+        "max_payload_bytes": 16384
+      },
+      "template_sha256": "304997fbefb51388cf9e5cbf2591a32f44cbb8c0611d31c85579dd8a07a798f0"
+    },
+    {
+      "model_key": "gpt-6-1-sol",
+      "runtime_name": "enterprise_analytics_stream_gpt_6_1_sol",
+      "settings": {
+        "account": "453711491609",
+        "region": "us-west-2",
+        "model_id": "us.openai.gpt-6.1-sol",
+        "query_role_arn": "arn:aws:iam::453711491609:role/enterprise-analytics-dev-query-executor",
+        "database": "enterprise_analytics_dev",
+        "workgroup": "enterprise-analytics-dev",
+        "source_bucket": "enterprise-analytics-dev-453711491609-us-west-2-data",
+        "results_bucket": "enterprise-analytics-dev-453711491609-us-west-2-results",
+        "dataset_version": "retail-v1",
+        "table_prefix": "ea",
+        "reference_date": "2025-04-01",
+        "principal_id": "analytics-streaming-runtime",
+        "tenant_id": "retail_demo",
+        "allowed_regions": [
+          "North",
+          "South"
+        ],
+        "max_iterations": 5,
+        "max_tool_calls": 16,
+        "max_output_tokens": 1024,
+        "max_total_tokens": 12000,
+        "timeout_seconds": 90.0,
+        "query_timeout_seconds": 60.0,
+        "max_payload_bytes": 16384
+      },
+      "template_sha256": "a808374a46ee9a042f53d0e714f7bba6c0d2041c86f6af5fc6a5645abd9905d3"
+    },
+    {
+      "model_key": "gemma-4-31b",
+      "runtime_name": "enterprise_analytics_stream_gemma_4_31b",
+      "settings": {
+        "account": "453711491609",
+        "region": "us-west-2",
+        "model_id": "google.gemma-4-31b",
+        "query_role_arn": "arn:aws:iam::453711491609:role/enterprise-analytics-dev-query-executor",
+        "database": "enterprise_analytics_dev",
+        "workgroup": "enterprise-analytics-dev",
+        "source_bucket": "enterprise-analytics-dev-453711491609-us-west-2-data",
+        "results_bucket": "enterprise-analytics-dev-453711491609-us-west-2-results",
+        "dataset_version": "retail-v1",
+        "table_prefix": "ea",
+        "reference_date": "2025-04-01",
+        "principal_id": "analytics-streaming-runtime",
+        "tenant_id": "retail_demo",
+        "allowed_regions": [
+          "North",
+          "South"
+        ],
+        "max_iterations": 5,
+        "max_tool_calls": 16,
+        "max_output_tokens": 1024,
+        "max_total_tokens": 12000,
+        "timeout_seconds": 90.0,
+        "query_timeout_seconds": 60.0,
+        "max_payload_bytes": 16384
+      },
+      "template_sha256": "966a8bf1cec6518a1e905c49b07f9c5042f3076868927ac2cc444886013d8658"
+    },
+    {
+      "model_key": "llama-4-maverick",
+      "runtime_name": "enterprise_analytics_stream_llama_4_maverick",
+      "settings": {
+        "account": "453711491609",
+        "region": "us-west-2",
+        "model_id": "us.meta.llama4-maverick-17b-instruct-v1:0",
+        "query_role_arn": "arn:aws:iam::453711491609:role/enterprise-analytics-dev-query-executor",
+        "database": "enterprise_analytics_dev",
+        "workgroup": "enterprise-analytics-dev",
+        "source_bucket": "enterprise-analytics-dev-453711491609-us-west-2-data",
+        "results_bucket": "enterprise-analytics-dev-453711491609-us-west-2-results",
+        "dataset_version": "retail-v1",
+        "table_prefix": "ea",
+        "reference_date": "2025-04-01",
+        "principal_id": "analytics-streaming-runtime",
+        "tenant_id": "retail_demo",
+        "allowed_regions": [
+          "North",
+          "South"
+        ],
+        "max_iterations": 5,
+        "max_tool_calls": 16,
+        "max_output_tokens": 1024,
+        "max_total_tokens": 12000,
+        "timeout_seconds": 90.0,
+        "query_timeout_seconds": 60.0,
+        "max_payload_bytes": 16384
+      },
+      "template_sha256": "bc2d5f4e1eac0351c07893b16068406289eece838ca6e054e7539f6579c357e3"
+    },
+    {
+      "model_key": "deepseek-v3-2",
+      "runtime_name": "enterprise_analytics_stream_deepseek_v3_2",
+      "settings": {
+        "account": "453711491609",
+        "region": "us-west-2",
+        "model_id": "deepseek.v3.2",
+        "query_role_arn": "arn:aws:iam::453711491609:role/enterprise-analytics-dev-query-executor",
+        "database": "enterprise_analytics_dev",
+        "workgroup": "enterprise-analytics-dev",
+        "source_bucket": "enterprise-analytics-dev-453711491609-us-west-2-data",
+        "results_bucket": "enterprise-analytics-dev-453711491609-us-west-2-results",
+        "dataset_version": "retail-v1",
+        "table_prefix": "ea",
+        "reference_date": "2025-04-01",
+        "principal_id": "analytics-streaming-runtime",
+        "tenant_id": "retail_demo",
+        "allowed_regions": [
+          "North",
+          "South"
+        ],
+        "max_iterations": 5,
+        "max_tool_calls": 16,
+        "max_output_tokens": 1024,
+        "max_total_tokens": 12000,
+        "timeout_seconds": 90.0,
+        "query_timeout_seconds": 60.0,
+        "max_payload_bytes": 16384
+      },
+      "template_sha256": "e168b4f0876cdc1207d6baaed792bdffa583cea81172b6c251d6c31055f3bcd4"
+    },
+    {
+      "model_key": "qwen3-235b",
+      "runtime_name": "enterprise_analytics_stream_qwen3_235b",
+      "settings": {
+        "account": "453711491609",
+        "region": "us-west-2",
+        "model_id": "qwen.qwen3-235b-a22b-2507-v1:0",
+        "query_role_arn": "arn:aws:iam::453711491609:role/enterprise-analytics-dev-query-executor",
+        "database": "enterprise_analytics_dev",
+        "workgroup": "enterprise-analytics-dev",
+        "source_bucket": "enterprise-analytics-dev-453711491609-us-west-2-data",
+        "results_bucket": "enterprise-analytics-dev-453711491609-us-west-2-results",
+        "dataset_version": "retail-v1",
+        "table_prefix": "ea",
+        "reference_date": "2025-04-01",
+        "principal_id": "analytics-streaming-runtime",
+        "tenant_id": "retail_demo",
+        "allowed_regions": [
+          "North",
+          "South"
+        ],
+        "max_iterations": 5,
+        "max_tool_calls": 16,
+        "max_output_tokens": 1024,
+        "max_total_tokens": 12000,
+        "timeout_seconds": 90.0,
+        "query_timeout_seconds": 60.0,
+        "max_payload_bytes": 16384
+      },
+      "template_sha256": "5064c9889a5e2611fae081263fe014344191e412d4b5fd8827e66f9186de67d4"
+    },
+    {
+      "model_key": "mistral-large-3",
+      "runtime_name": "enterprise_analytics_stream_mistral_large_3",
+      "settings": {
+        "account": "453711491609",
+        "region": "us-west-2",
+        "model_id": "mistral.mistral-large-3-675b-instruct",
+        "query_role_arn": "arn:aws:iam::453711491609:role/enterprise-analytics-dev-query-executor",
+        "database": "enterprise_analytics_dev",
+        "workgroup": "enterprise-analytics-dev",
+        "source_bucket": "enterprise-analytics-dev-453711491609-us-west-2-data",
+        "results_bucket": "enterprise-analytics-dev-453711491609-us-west-2-results",
+        "dataset_version": "retail-v1",
+        "table_prefix": "ea",
+        "reference_date": "2025-04-01",
+        "principal_id": "analytics-streaming-runtime",
+        "tenant_id": "retail_demo",
+        "allowed_regions": [
+          "North",
+          "South"
+        ],
+        "max_iterations": 5,
+        "max_tool_calls": 16,
+        "max_output_tokens": 1024,
+        "max_total_tokens": 12000,
+        "timeout_seconds": 90.0,
+        "query_timeout_seconds": 60.0,
+        "max_payload_bytes": 16384
+      },
+      "template_sha256": "80402709ab13c673ee68a9077d4379622bf4317ecb90fc43cc76f223b9fe8d47"
+    }
+  ]
+}

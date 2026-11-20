@@ -12,8 +12,10 @@ from typing import Any, cast
 from enterprise_analytics_agent.adapters.bedrock_agent import BedrockAnalyticsAgent
 from enterprise_analytics_agent.adapters.bedrock_mantle import BedrockMantleClient
 from enterprise_analytics_agent.adapters.bedrock_model_catalog import ModelSpec, model_catalog
+from enterprise_analytics_agent.adapters.bedrock_runtime_chat import BedrockRuntimeChatClient
 from enterprise_analytics_agent.adapters.bedrock_word_stream import ConverseStreamClient
 from enterprise_analytics_agent.adapters.streaming_agent import StreamingAnalyticsAgent
+from enterprise_analytics_agent.adapters.streaming_diagnostics import report_aws_failure
 from enterprise_analytics_agent.agent.contracts import AgentDiagnostics, AgentRequest, AgentResponse
 from enterprise_analytics_agent.hosting.application import build_agent
 from enterprise_analytics_agent.hosting.config import RuntimeSettings, load_settings
@@ -30,14 +32,21 @@ def build_streaming_agent(settings: RuntimeSettings) -> StreamingAnalyticsAgent:
     if model.transport == "mantle_chat":
         client = BedrockMantleClient(session=workload_session(settings))
         agent.client = client
+    elif model.transport == "runtime_chat":
+        agent.client = BedrockRuntimeChatClient(
+            model_key=model.key,
+            session=workload_session(settings),
+            timeout_seconds=settings.timeout_seconds,
+        )
     return StreamingAnalyticsAgent(
         agent,
         presentation_client=cast(ConverseStreamClient, agent.client),
         allow_temperature=model.temperature_supported,
-        planner_operation="ChatCompletions" if model.transport == "mantle_chat" else "Converse",
+        planner_operation="Converse" if model.transport == "converse" else "ChatCompletions",
         presentation_operation=(
-            "ChatCompletionsStream" if model.transport == "mantle_chat" else "ConverseStream"
+            "ConverseStream" if model.transport == "converse" else "ChatCompletionsStream"
         ),
+        readable=True,
     )
 
 
@@ -74,13 +83,41 @@ class StreamingApplication:
                 )
             )
 
+        def diagnostic(event: dict[str, object]) -> None:
+            # This sink is separate from call_events and every public SSE/response
+            # field. The adapter supplies only allowlisted, redacted AWS fields.
+            self.log(
+                json.dumps(
+                    {
+                        "event": "streaming_aws_error",
+                        "request_id": identifier,
+                        "model_id": self.settings.model_id,
+                        **event,
+                    }
+                )
+            )
+
         try:
-            runner = self.factory(self.settings)
+            try:
+                runner = self.factory(self.settings)
+            except BaseException as exc:
+                # Setup reads/credential assumption are not model attempts. Keep
+                # their AWS failure private without fabricating call reservations.
+                report_aws_failure(exc, operation=None, number=0, diagnostic=diagnostic)
+                raise
             outcome = runner.run(
                 request,
                 context=self.settings.authorization_context(),
                 on_verified=lambda value: emit(
-                    {"type": "verified", "response": value.model_dump(mode="json")}
+                    {
+                        "type": "verified",
+                        "response": value.model_dump(mode="json"),
+                        **(
+                            {"display_answer": runner.presentation_text(value)}
+                            if isinstance(runner, StreamingAnalyticsAgent) and runner.readable
+                            else {}
+                        ),
+                    }
                 ),
                 on_word=lambda text: emit(
                     {
@@ -91,6 +128,7 @@ class StreamingApplication:
                     }
                 ),
                 record=record,
+                diagnostic=diagnostic,
             )
             result: dict[str, object] = {
                 "type": "result",
@@ -98,6 +136,11 @@ class StreamingApplication:
                 "presentation_status": outcome.presentation,
                 "presentation_reason": outcome.reason,
                 "model_calls": list(outcome.calls),
+                **(
+                    {"display_answer": outcome.display_answer}
+                    if outcome.display_answer is not None
+                    else {}
+                ),
             }
         except BaseException as exc:
             try:

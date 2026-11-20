@@ -17,6 +17,7 @@ from uuid import UUID
 from pydantic import ValidationError
 
 from enterprise_analytics_agent.agent.contracts import AgentResponse
+from enterprise_analytics_agent.agent.presentation import readable_answer
 from enterprise_analytics_agent.catalog import METRICS
 from enterprise_analytics_agent.retail_evaluation.reporting import EvaluationReport
 from enterprise_analytics_agent.ui.local import (
@@ -89,7 +90,11 @@ def _validated_result(value: object) -> UiResult:
     # introduced through model_copy/model_construct. Publish only a deep recheck.
     if isinstance(value, UiResult):
         value = value.model_dump(mode="python", warnings=False)
-    return UiResult.model_validate(value)
+    result = UiResult.model_validate(value)
+    expected = readable_answer(result.response)
+    if result.display_answer is not None and result.display_answer != expected:
+        raise UiError("The readable answer differs from verified semantic results.")
+    return result.model_copy(update={"display_answer": expected})
 
 
 def read_replay(value: object) -> dict[str, object]:
@@ -109,6 +114,7 @@ def read_replay(value: object) -> dict[str, object]:
                     "result": UiResult(
                         mode="replay",
                         response=response,
+                        display_answer=readable_answer(response),
                         unreported_diagnostics=unreported_diagnostics(response),
                     ).model_dump(mode="json"),
                 }
@@ -129,6 +135,7 @@ def read_replay(value: object) -> dict[str, object]:
                 "result": UiResult(
                     mode="replay",
                     response=case.response,
+                    display_answer=readable_answer(case.response),
                     elapsed_ms=case.client_latency_ms,
                     unreported_diagnostics=unreported_diagnostics(case.response),
                 ).model_dump(mode="json")
@@ -183,14 +190,34 @@ class Workbench:
     def _backend_state(
         self, backend: LiveBackend | None, mode: str, defaults: dict[str, object]
     ) -> dict[str, object]:
-        value = {**defaults, "enabled": backend is not None, "billable": True}
+        label = "AWS AgentCore" if mode == "live" else "Local Bedrock"
+        value: dict[str, object] = {
+            **defaults,
+            "configured": backend is not None,
+            "enabled": backend is not None,
+            "billable": True,
+        }
+        if backend is None:
+            return {
+                **value,
+                "dataset": None,
+                "reference_date": None,
+                "tenant": None,
+                "regions": [],
+                "runtime_version": None,
+                "description": f"{label} · not configured",
+                "error": f"No {label} model is connected to this workbench.",
+            }
         if backend is not None:
+            # Per-model defaults may originate from the unconfigured legacy slot.
+            # Its error is not evidence about this explicitly bound backend.
+            value.pop("error", None)
             try:
                 public_state = getattr(backend, "public_state", None)
                 if callable(public_state):
                     value.update(public_state(mode))
                 value["budget"] = backend.ledger.summary()
-            except (UiError, OSError):
+            except (UiError, OSError, ValueError):
                 value.update(enabled=False, error="The shared/live ledger needs inspection.")
         return value
 
@@ -199,6 +226,7 @@ class Workbench:
             "token": self.token,
             "samples": SAMPLES,
             "local": {
+                "configured": True,
                 "enabled": True,
                 "billable": False,
                 "dataset": LOCAL_DATASET,
@@ -212,11 +240,11 @@ class Workbench:
                 self.local_agent,
                 "local_agent",
                 {
-                    "dataset": "retail-v1",
-                    "reference_date": "2025-04-01",
-                    "tenant": "retail_demo",
-                    "regions": ["North", "South"],
-                    "description": "Local agent · canonical DuckDB data + Amazon Bedrock",
+                    "dataset": None,
+                    "reference_date": None,
+                    "tenant": None,
+                    "regions": [],
+                    "description": "Local agent · configured Bedrock target",
                     "cost_notice": "Billable Bedrock: up to 6 calls/question. Approval required.",
                 },
             ),
@@ -224,12 +252,12 @@ class Workbench:
                 self.live,
                 "live",
                 {
-                    "dataset": "parity-v1",
-                    "reference_date": "2025-02-01",
-                    "tenant": "t1",
-                    "regions": ["North", "South"],
-                    "runtime_version": "12",
-                    "description": "AWS AgentCore · original parity deployment · reviewed v12",
+                    "dataset": None,
+                    "reference_date": None,
+                    "tenant": None,
+                    "regions": [],
+                    "runtime_version": None,
+                    "description": "AWS AgentCore · configured target",
                     "cost_notice": "Billable AWS agent. One Runtime call; no retries.",
                 },
             ),

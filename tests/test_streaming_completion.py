@@ -121,16 +121,13 @@ def test_unchanged_legacy_loop_still_requires_a_final_turn_after_five_tool_round
     assert len(planner.calls) == 5
 
 
-@pytest.mark.parametrize("last", ["duplicate", "metadata", "missing-source", "invalid-filter"])
+@pytest.mark.parametrize("last", ["duplicate", "missing-source", "invalid-filter"])
 def test_incomplete_or_failed_five_round_plan_never_becomes_an_answer(
     metrics_dir: Path, context: AuthorizationContext, last: str
 ) -> None:
     turns = [turn(metric, index) for index, metric in enumerate(METRICS, 1)]
     if last == "duplicate":
         turns[-1] = turn("gross_sales", 5)
-    elif last == "metadata":
-        call = cast(dict[str, Any], turns[-1])["output"]["message"]["content"][0]["toolUse"]
-        call["name"], call["input"] = "describe_metric", {"metric_id": "return_rate"}
     elif last == "missing-source":
         (metrics_dir / "returns.parquet").unlink()
     else:
@@ -146,6 +143,34 @@ def test_incomplete_or_failed_five_round_plan_never_becomes_an_answer(
     assert outcome.response.status == "error"
     assert outcome.response.error_code == "iteration_limit"
     assert len(planner.calls) == 5 and presenter.calls == [] and words == []
+
+
+def test_successful_metadata_fifth_round_executes_missing_metric_before_answering(
+    metrics_dir: Path, context: AuthorizationContext
+) -> None:
+    turns = [turn(metric, index) for index, metric in enumerate(METRICS, 1)]
+    call = cast(dict[str, Any], turns[-1])["output"]["message"]["content"][0]["toolUse"]
+    call["name"], call["input"] = "describe_metric", {"metric_id": "return_rate"}
+    planner, presenter = Planner(*turns), Presenter(events(ANSWER))
+    words: list[str] = []
+    with DuckDBSemanticAdapter(metrics_dir) as adapter:
+        outcome = runner(adapter, planner, presenter).run(
+            AgentRequest(question=QUESTION), context=context, on_word=words.append
+        )
+    assert outcome.response.status == "answer" and outcome.response.error_code is None
+    assert outcome.presentation == "streamed" and outcome.response.answer == ANSWER == "".join(
+        words
+    )
+    assert [item.metric_id for item in outcome.response.results] == list(METRICS)
+    assert [item.rows[0].value for item in outcome.response.results] == list(VALUES)
+    assert len(planner.calls) == 5 and len(presenter.calls) == 1
+    query_calls = [
+        call for call in outcome.response.diagnostics.tool_calls if call.name == "query_metric"
+    ]
+    assert len(query_calls) == 5
+    assert query_calls[-1].tool_use_id.startswith("resolved-plan-")
+    assert query_calls[-1].arguments["metric_id"] == "return_rate"
+    assert query_calls[-1].status == "success"
 
 
 def test_duplicate_results_do_not_satisfy_complete_five_metric_identity_set(
@@ -201,7 +226,10 @@ def test_complete_values_cannot_override_inconsistent_query_diagnostics(
         outcome = runner(adapter, planner, presenter).run(
             AgentRequest(question=QUESTION), context=context, on_word=lambda word: None
         )
-    assert outcome.response.status == "error" and outcome.response.error_code == "iteration_limit"
+    assert (
+        outcome.response.status == "error"
+        and outcome.response.error_code == "invalid_tool_response"
+    )
     assert len(outcome.response.results) == 5 and presenter.calls == []
 
 

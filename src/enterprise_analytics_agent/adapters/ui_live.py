@@ -65,6 +65,22 @@ class LiveQuestions:
         self.root, self.review = root.resolve(), review
         self.ledger = UiLedger(self.root, review)
 
+    def public_state(self, mode: str) -> dict[str, object]:
+        if mode != "live":
+            raise UiError("This approved target supports only AWS AgentCore execution.")
+        state = self.ledger.summary()
+        target = self.review.target
+        return {
+            "enabled": not state["blocked"],
+            "dataset": target.dataset_version,
+            "reference_date": target.reference_date.isoformat(),
+            "runtime_version": self.review.runtime_version,
+            "tenant": "t1",
+            "regions": ["North", "South"],
+            "description": f"AWS AgentCore · configured target v{self.review.runtime_version}",
+            "error": "This live allowance is unavailable." if state["blocked"] else "",
+        }
+
     def ask(self, request: AskRequest) -> UiResult:
         if Path.cwd().resolve() != self.root:
             raise UiError("Live UI must run from the original repository root.")

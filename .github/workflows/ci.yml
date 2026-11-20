@@ -60,3 +60,21 @@ jobs:
           poetry run python -m infrastructure.cdk.agentcore_app
           --config infrastructure/cdk/agentcore.config.example.json
           --phase foundation --outdir artifacts/cdk.agentcore-foundation.out
+
+      - name: Verify proposed streaming replacement templates without AWS credentials
+        run: |
+          poetry run python -m infrastructure.cdk.streaming_app \
+            --config infrastructure/cdk/streaming.completion-fix.proposed.json \
+            --outdir artifacts/cdk.streaming-completion.out --allow-unbound-artifact
+          poetry run python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          review = json.loads(Path("evaluations/bedrock-streaming/review.completion-fix.proposed.json").read_text())
+          for target in review["targets"]:
+              path = Path("artifacts/cdk.streaming-completion.out") / f"enterprise-analytics-stream-{target['model_key']}.template.json"
+              template = json.loads(path.read_text())
+              actual = hashlib.sha256(json.dumps(template, sort_keys=True).encode()).hexdigest()
+              assert actual == target["template_sha256"], target["model_key"]
+          PY

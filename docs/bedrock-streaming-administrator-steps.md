@@ -6,6 +6,19 @@ continue to use only `analytics-dev`; no additional local profile is needed.
 Use an existing administrator AWS console session in account **453711491609**.
 Do not use the developer SSO role to grant itself IAM permissions.
 
+**November 12 follow-up:** both policy attachments and exact active documents
+are verified from the supplied report. All three previously blocked model
+agreements are now independently verified AVAILABLE. Do not repeat those steps.
+The exact directory correction is now applied: the supplied
+`streaming-directory-verification.json`, SHA-256
+`2c1b01a6e182da96dd4a155ebb5e3fb8318978c94cf01473eb86b4f616b063f6`,
+confirms exact policy readback, preserved attachments and an **allowed** simulation
+with no missing context. Do not repeat directory-policy creation or evidence
+collection. The [recovery proposal](bedrock-streaming-recovery-plan.md) addresses
+the later workload logging denial/template verification issue. It proposes no
+additional CloudFormation-role console grant. Query-role trust remains a later
+administrator step after all ten roles exist; currently only streaming Nova exists.
+
 ## Attach the reviewed permissions as two managed policies
 
 The approved aggregate JSON has **8,147** characters excluding formatting;
@@ -123,6 +136,157 @@ If the result is `implicitDeny`, `explicitDeny`, or has missing context, return 
 report before changing more permissions. No blanket AgentCore/IAM grant or manual
 directory retagging is part of these instructions.
 
+<a id="resolve-the-reported-directory-simulation"></a>
+
+## Directory simulation evidence — received and diagnosed
+
+The downloaded `streaming-admin-evidence.json` matches SHA-256
+`67333dff4ea0e92f43103b297c51df7b81d366ae4539c2a0d2b32ebb414e751f`.
+Its directory TagResource result is **implicitDeny**, with no matched statements.
+The original combined report did not include its simulation request/context or
+the active M4 policy document. The downloaded supplement now supplies both;
+SHA-256 `f93373f83efe0e70c06ecf760776922b88c7d0c60ab44cfc60bb54ac8a14733e`.
+Its exact request uses the reviewed execution role, directory, region/account and
+`Project=enterprise-analytics-stream`; the result remains implicitDeny. Active M4
+default **v5** exactly matches the committed policy, whose directory Allow
+requires `Project=enterprise-analytics-dev`. Both streaming policies omit a
+directory TagResource grant. This establishes the narrow gap. No further report
+is needed to identify it; preserve the following collection procedure as history.
+
+In the same existing **administrator CloudShell**, run the block below. It uses
+read-only STS/IAM operations and a fresh local directory. It does not change IAM,
+create profiles, tag resources, or invoke a model. An implicitDeny is collected
+as evidence, not treated as permission to retry deployment.
+
+```sh
+(
+  set -euo pipefail
+  STREAM_SUPPLEMENT_DIR=$(mktemp -d "$PWD/streaming-iam-supplement.XXXXXX")
+  cd "$STREAM_SUPPLEMENT_DIR"
+  aws sts get-caller-identity --region us-west-2 --no-cli-pager > administrator-identity.json
+  python3 -c 'import json; account=json.load(open("administrator-identity.json"))["Account"]; account == "453711491609" or exit("Wrong AWS account")'
+
+  STREAM_M4_POLICY_ARN=arn:aws:iam::453711491609:policy/enterprise-analytics-dev-agentcore-cdk-execution
+  aws iam get-policy --policy-arn "$STREAM_M4_POLICY_ARN" \
+    --region us-west-2 --no-cli-pager > m4-policy-metadata.json
+  STREAM_M4_VERSION=$(python3 -c 'import json; print(json.load(open("m4-policy-metadata.json"))["Policy"]["DefaultVersionId"])')
+  aws iam get-policy-version --policy-arn "$STREAM_M4_POLICY_ARN" \
+    --version-id "$STREAM_M4_VERSION" --region us-west-2 --no-cli-pager \
+    > m4-policy-active.json
+
+  cat > directory-simulation-request.json <<'JSON'
+{
+  "PolicySourceArn": "arn:aws:iam::453711491609:role/cdk-hnb659fds-cfn-exec-role-453711491609-us-west-2",
+  "ActionNames": ["bedrock-agentcore:TagResource"],
+  "ResourceArns": ["arn:aws:bedrock-agentcore:us-west-2:453711491609:workload-identity-directory/default"],
+  "ContextEntries": [
+    {"ContextKeyName":"aws:RequestedRegion","ContextKeyValues":["us-west-2"],"ContextKeyType":"string"},
+    {"ContextKeyName":"aws:PrincipalAccount","ContextKeyValues":["453711491609"],"ContextKeyType":"string"},
+    {"ContextKeyName":"aws:RequestTag/Project","ContextKeyValues":["enterprise-analytics-stream"],"ContextKeyType":"string"}
+  ]
+}
+JSON
+  aws iam simulate-principal-policy \
+    --cli-input-json file://directory-simulation-request.json \
+    --region us-west-2 --no-cli-pager > directory-simulation-response.json
+
+  python3 - <<'PY'
+import json
+from pathlib import Path
+
+names = [
+    "administrator-identity.json", "m4-policy-metadata.json", "m4-policy-active.json",
+    "directory-simulation-request.json", "directory-simulation-response.json",
+]
+content = json.dumps({name: json.loads(Path(name).read_text()) for name in names}, indent=2) + "\n"
+report = Path("streaming-admin-supplement.json")
+with report.open("x") as stream:
+    stream.write(content)
+print(report.resolve())
+PY
+)
+```
+
+Use **CloudShell → Actions → Download file** with the printed absolute path and
+return `streaming-admin-supplement.json`. If Download file is absent in the
+toolbar panel, open full-page CloudShell. Preserve any denial or missing-context
+fields. In particular, do not invent `iam:AWSServiceName` or `iam:PassedToService`
+values for TagResource merely to remove the simulator's missing-context output.
+No additional permission is approved by collecting this report. A specific
+correction, if established, requires review before application.
+
+<a id="proposed-directory-correction--separate-approval-required"></a>
+
+<a id="approved-directory-correction--administrator-application-pending"></a>
+
+## Approved directory correction — administrator application verified
+
+The smallest proposed delta is [this separate policy](../infrastructure/cdk/streaming-directory-tag-policy.proposed.json),
+SHA-256 **ba04feb1ce5c92ab55b94e09bfa522e641a0b2a2eedb10d97d313e42d996d39b**.
+It grants only `bedrock-agentcore:TagResource` on the exact account/region default
+workload-identity directory, conditioned on the reviewed requested Project,
+account and region. The directory is shared; this is not a new Runtime-only
+resource. The [review record](../evaluations/bedrock-streaming/directory-tag-review.proposed.json)
+binds the reports, exact target role, policy checksum and verification gates.
+
+The original deployment plan deliberately excluded this grant. The user has now
+**separately approved this exact correction**, recorded in the
+[approval record](../evaluations/bedrock-streaming/directory-tag-approval.json).
+The proposed review JSON and policy bytes remain unchanged as historical review
+evidence. Administrator application and the allowed post-change simulation are
+now verified by the supplied readback file. The following application/readback
+steps are preserved as history and must not be repeated. Keep both managed parts,
+M3/M4 policies, trust, package/templates, data and all budgets unchanged.
+
+**Completed procedure—do not repeat.** The administrator used the exact additive
+inline policy procedure below; it is retained for the audit history:
+
+1. Open **IAM → Roles → cdk-hnb659fds-cfn-exec-role-453711491609-us-west-2**.
+2. Choose **Permissions → Add permissions → Create inline policy → JSON**.
+3. Paste the complete proposed JSON, review it, and use the name
+   **enterprise-analytics-stream-directory-tag**. If that name already exists,
+   compare its contents first; do not overwrite an unexplained policy.
+4. Preserve all existing policies and trust. Record the actual inline policy
+   using administrator `get-role-policy` evidence and rerun the exact reviewed
+   directory simulation request. Require **allowed** and review the complete
+   result; a simulation is not proof of deployment success.
+5. Return the exact inline-policy JSON and simulation evidence. The operator
+   repeats full fresh preflight before the already approved upload/deployment.
+
+After saving the inline policy, collect its readback and attachment list in a
+fresh CloudShell evidence directory:
+
+```sh
+STREAM_POST_CHANGE_DIR=$(mktemp -d "$PWD/streaming-directory-post-change.XXXXXX")
+aws iam get-role-policy --region us-west-2 --no-cli-pager \
+  --role-name cdk-hnb659fds-cfn-exec-role-453711491609-us-west-2 \
+  --policy-name enterprise-analytics-stream-directory-tag \
+  > "$STREAM_POST_CHANGE_DIR/directory-inline-policy.json"
+aws iam list-attached-role-policies --region us-west-2 --no-cli-pager \
+  --role-name cdk-hnb659fds-cfn-exec-role-453711491609-us-west-2 \
+  > "$STREAM_POST_CHANGE_DIR/attached-policies.json"
+echo "$STREAM_POST_CHANGE_DIR"
+```
+
+Then rerun the unchanged read-only supplement collection block above; it records
+the exact directory simulation request/response in `streaming-admin-supplement.json`.
+Download that new supplement plus the two files in the printed post-change
+directory. Return the full files, including any denial or missing context; do
+not add unrelated IAM context values or retry deployment to test permissions.
+The existing administrator account/region checks still apply. These verification
+commands do not modify AWS and create no local profile.
+
+Do not append this grant to the 5,891-character managed policy or replace the old
+M4 Project condition. A separate inline policy preserves those approved documents
+and avoids their managed-policy size constraints; IAM's total inline-policy quota
+still applies. Cleanup, if subsequently approved, removes only this named inline
+policy after confirming it is no longer needed; it does not untag/delete the
+shared directory or alter M3/M4 permissions.
+
+Official references: [AgentCore resource/action/condition support](https://docs.aws.amazon.com/service-authorization/latest/reference/list_bedrock-agentcore.html),
+[IAM simulation and additional-policy behavior](https://docs.aws.amazon.com/cli/latest/reference/iam/simulate-principal-policy.html),
+and [IAM policy editing](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_manage-edit.html).
+
 ## Query-role trust is a later administrator step
 
 The [ten exact additions](../infrastructure/cdk/streaming-query-trust-additions.proposed.json)
@@ -135,7 +299,7 @@ IAM cannot trust nonexistent role principals. Merge only those statements and
 preserve the developer SSO and existing runtime principals. The operator will
 record before/after proof when that step is reached.
 
-## Model agreements also need resolution before acceptance
+## Model agreement history — resolved November 12
 
 The read-only check at `2026-11-12T04:04Z` found authorization, entitlement and region
 availability for all nine native model targets, matching US profile routing, and
@@ -146,12 +310,14 @@ an active Mantle default project. Three targets additionally returned
 - `openai.gpt-6-astra`
 - `openai.gpt-6.1-sol`
 
-Those three are not access-ready yet. Public offer metadata was read without
-subscribing. Resolve the exact model agreement/provider prerequisites and confirm
-`AVAILABLE` before acceptance. Do not submit playground prompts to test access:
+At that initial checkpoint they were not access-ready; public offer metadata was
+read without subscribing. After the user completed the agreements, read-only
+checks at **2026-11-12T18:04Z** verified **AVAILABLE** for all three, with
+authorization, entitlement and region gates passing. No further agreement action
+is needed from this handoff. Do not submit playground prompts to test access:
 those would be extra billable attempts outside the prescribed twenty-question
-sequence. No agreement creation, provider form submission or model invocation has
-been performed by the operator.
+sequence. The operator performed no agreement creation, provider form submission
+or model invocation; agreement completion was user-executed.
 
 AWS documents the agreement status separately from authorization/entitlement:
 [model-access prerequisites and status meanings](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html),

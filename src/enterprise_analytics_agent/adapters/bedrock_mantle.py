@@ -15,6 +15,7 @@ from typing import Any, Protocol, cast
 
 from botocore.auth import SigV4Auth
 from botocore.awsrequest import AWSPreparedRequest, AWSRequest
+from botocore.exceptions import ClientError
 from botocore.httpsession import URLLib3Session
 
 MODEL_ID = "google.gemma-4-31b"
@@ -206,10 +207,12 @@ def _messages(messages: object) -> list[dict[str, object]]:
     return output
 
 
-def _request(kwargs: Mapping[str, object], *, stream: bool) -> dict[str, object]:
+def _request(
+    kwargs: Mapping[str, object], *, stream: bool, model_id: str = MODEL_ID
+) -> dict[str, object]:
     if not set(kwargs) <= {"modelId", "messages", "system", "toolConfig", "inferenceConfig"}:
         raise MantleError("unsupported_request")
-    if kwargs.get("modelId") != MODEL_ID:
+    if kwargs.get("modelId") != model_id:
         raise MantleError("unconfigured_model")
     messages: list[dict[str, object]] = []
     system = kwargs.get("system")
@@ -222,7 +225,7 @@ def _request(kwargs: Mapping[str, object], *, stream: bool) -> dict[str, object]
             parts.append(_text(block["text"]))
         messages.append({"role": "system", "content": "\n".join(parts)})
     messages.extend(_messages(kwargs.get("messages")))
-    result: dict[str, object] = {"model": MODEL_ID, "messages": messages, "stream": stream}
+    result: dict[str, object] = {"model": model_id, "messages": messages, "stream": stream}
     config = _object(kwargs.get("inferenceConfig", {}))
     if not set(config) <= {"maxTokens", "temperature", "topP", "stopSequences"}:
         raise MantleError("unsupported_request")
@@ -294,9 +297,9 @@ def _choice(value: object) -> dict[str, Any]:
     return choice
 
 
-def _reply(value: object) -> dict[str, object]:
+def _reply(value: object, *, model_ids: tuple[str, ...] = (MODEL_ID,)) -> dict[str, object]:
     reply = _object(value)
-    if "error" in reply or reply.get("model", MODEL_ID) != MODEL_ID:
+    if "error" in reply or reply.get("model", model_ids[0]) not in model_ids:
         raise MantleError("malformed_response")
     choice = _choice(reply.get("choices"))
     message = _object(choice.get("message"))
@@ -345,6 +348,19 @@ def _reply(value: object) -> dict[str, object]:
 class BedrockMantleClient:
     """Converse-shaped Gemma bridge; injected credentials are refreshed per request."""
 
+    # Fixed by the adapter, never accepted from a browser/request payload.
+    model_id = MODEL_ID
+    response_model_ids: tuple[str, ...] = (MODEL_ID,)
+    endpoint = ENDPOINT
+    signing_service = "bedrock-mantle"
+    read_timeout_seconds = 30.0
+
+    def _request_payload(self, kwargs: Mapping[str, object], *, stream: bool) -> dict[str, object]:
+        return _request(kwargs, stream=stream, model_id=self.model_id)
+
+    def _http_error(self, response: Any, deadline: float) -> Exception:
+        return MantleError("http_error", status=response.status_code)
+
     def __init__(
         self,
         *,
@@ -377,7 +393,7 @@ class BedrockMantleClient:
             self._deadline(deadline)
             request = AWSRequest(
                 method="POST",
-                url=ENDPOINT,
+                url=self.endpoint,
                 data=body,
                 headers={
                     "Content-Type": "application/json",
@@ -386,17 +402,20 @@ class BedrockMantleClient:
                 },
                 stream_output=True,
             )
-            SigV4Auth(frozen, "bedrock-mantle", REGION).add_auth(request)
+            SigV4Auth(frozen, self.signing_service, REGION).add_auth(request)
             if transport is None:
                 # botocore's single-send transport uses urllib3 Retry(False), so
                 # neither SDK retries nor HTTP redirect replay can add a dispatch.
                 transport = URLLib3Session(
                     # botocore accepts a (connect, read) tuple; its stub is narrower.
-                    timeout=(min(5, self.timeout_seconds), min(30, self.timeout_seconds))  # type: ignore[arg-type]
+                    timeout=(
+                        min(5, self.timeout_seconds),
+                        min(self.read_timeout_seconds, self.timeout_seconds),
+                    )  # type: ignore[arg-type]
                 )
             self._deadline(deadline)
             response = transport.send(request.prepare())
-        except MantleError:
+        except (MantleError, ClientError):
             if owned and transport is not None:
                 _close(None, transport)
             raise
@@ -411,7 +430,7 @@ class BedrockMantleClient:
         try:
             self._deadline(deadline)
             if response.status_code != 200:
-                raise MantleError("http_error", status=response.status_code)
+                raise self._http_error(response, deadline)
             headers = {str(key).lower(): str(value) for key, value in response.headers.items()}
             expected = "text/event-stream" if payload["stream"] else "application/json"
             if headers.get("content-type", "").split(";", 1)[0].strip().lower() != expected:
@@ -421,7 +440,7 @@ class BedrockMantleClient:
             length = headers.get("content-length")
             if length is not None and (not length.isdigit() or int(length) > MAX_BYTES):
                 raise MantleError("response_too_large")
-        except MantleError:
+        except (MantleError, ClientError):
             _close(response, transport if owned else None)
             raise
         except Exception:
@@ -451,7 +470,7 @@ class BedrockMantleClient:
             yield content
 
     def converse(self, **kwargs: object) -> dict[str, object]:
-        payload = _request(kwargs, stream=False)
+        payload = self._request_payload(kwargs, stream=False)
         deadline = self.clock() + self.timeout_seconds
         response, owned = self._send(payload, deadline)
         try:
@@ -460,7 +479,7 @@ class BedrockMantleClient:
                 value = json.loads(content)
             except (ValueError, UnicodeError):
                 raise MantleError("malformed_response") from None
-            return _reply(value)
+            return _reply(value, model_ids=self.response_model_ids)
         finally:
             _close(response, owned)
 
@@ -501,7 +520,7 @@ class BedrockMantleClient:
             raise MantleError("truncated_stream")
 
     def converse_stream(self, **kwargs: object) -> dict[str, object]:
-        payload = _request(kwargs, stream=True)
+        payload = self._request_payload(kwargs, stream=True)
         deadline = self.clock() + self.timeout_seconds
         response, owned = self._send(payload, deadline)
         closed = False
@@ -529,7 +548,10 @@ class BedrockMantleClient:
                         chunk = _object(json.loads(data))
                     except ValueError:
                         raise MantleError("malformed_stream") from None
-                    if "error" in chunk or chunk.get("model", MODEL_ID) != MODEL_ID:
+                    if (
+                        "error" in chunk
+                        or chunk.get("model", self.model_id) not in self.response_model_ids
+                    ):
                         raise MantleError("provider_stream_error")
                     if chunk.get("usage") is not None:
                         current = _usage(chunk["usage"])

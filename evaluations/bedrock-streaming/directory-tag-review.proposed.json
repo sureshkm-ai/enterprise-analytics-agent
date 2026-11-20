@@ -1,0 +1,36 @@
+{
+  "schema_version": "bedrock-streaming-directory-tag-review-v1",
+  "status": "proposed-not-approved-or-applied",
+  "deployment_review_sha256": "cf222d7e870e0d033a5b65d4f74876a581b83f237f651c0eaa6033745b86c76d",
+  "policy_path": "infrastructure/cdk/streaming-directory-tag-policy.proposed.json",
+  "policy_sha256": "ba04feb1ce5c92ab55b94e09bfa522e641a0b2a2eedb10d97d313e42d996d39b",
+  "proposed_attachment": {
+    "kind": "inline-role-policy",
+    "role_arn": "arn:aws:iam::453711491609:role/cdk-hnb659fds-cfn-exec-role-453711491609-us-west-2",
+    "policy_name": "enterprise-analytics-stream-directory-tag"
+  },
+  "administrator_evidence": {
+    "original_report_sha256": "67333dff4ea0e92f43103b297c51df7b81d366ae4539c2a0d2b32ebb414e751f",
+    "supplement_sha256": "f93373f83efe0e70c06ecf760776922b88c7d0c60ab44cfc60bb54ac8a14733e",
+    "preserved_directory": "artifacts/bedrock-streaming/operations/20261112T181945Z",
+    "m4_active_default_version": "v5",
+    "m4_matches_committed": true,
+    "m4_committed_sha256": "ac2942537a6d917b899d3a156efd328953d6176f152b9db925b5e5a13c104419",
+    "existing_directory_project_condition": "enterprise-analytics-dev",
+    "requested_project": "enterprise-analytics-stream",
+    "simulation_decision": "implicitDeny",
+    "matched_statements": 0,
+    "exact_request_verified": true
+  },
+  "requires_separate_approval": true,
+  "requires_administrator_application": true,
+  "post_change_evidence_required": [
+    "Exact inline policy content/name and target role",
+    "Allowed directory simulation with the unchanged reviewed request/context",
+    "Existing M3/M4 and both streaming managed-policy attachments preserved",
+    "Fresh complete deployment preflight before any upload or resource creation"
+  ],
+  "aws_mutations": 0,
+  "invocations": 0,
+  "changes_deployment_artifact_or_budget": false
+}

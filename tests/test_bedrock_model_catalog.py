@@ -21,7 +21,7 @@ def test_catalog_is_offline_immutable_metadata_not_access_approval(
 
     monkeypatch.setattr(boto3, "Session", forbidden)
     assert model_catalog() is BEDROCK_MODELS
-    assert len({item.key for item in model_catalog()}) == len(model_catalog()) == 11
+    assert len({item.key for item in model_catalog()}) == len(model_catalog()) == 17
     assert {item.provider for item in model_catalog()} >= {
         "Anthropic",
         "OpenAI",

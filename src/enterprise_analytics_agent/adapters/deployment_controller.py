@@ -12,6 +12,7 @@ import hashlib
 import json
 import math
 import os
+import re
 import signal
 import subprocess
 import time
@@ -26,6 +27,10 @@ from enterprise_analytics_agent.retail_evaluation.deployment import TEMPLATE_NAM
 from enterprise_analytics_agent.retail_evaluation.operator_errors import error_record
 
 STACK_NAME = "enterprise-analytics-dev-agent-runtime"
+_STREAMING_STACK = re.compile(r"enterprise-analytics-stream-[a-z][a-z0-9-]{0,63}")
+_EXECUTION_ROLE = (
+    "arn:aws:iam::453711491609:role/cdk-hnb659fds-cfn-exec-role-453711491609-us-west-2"
+)
 _SUCCESS = {"CREATE_COMPLETE", "UPDATE_COMPLETE"}
 _UPDATABLE = _SUCCESS | {"UPDATE_ROLLBACK_COMPLETE"}
 
@@ -77,6 +82,9 @@ class DeploymentController:
         cloudformation: Any,
         *,
         lock_path: Path,
+        stack_name: str = STACK_NAME,
+        template_name: str = TEMPLATE_NAME,
+        expected_execution_role: str | None = None,
         limits: DeploymentLimits | None = None,
         process_factory: Callable[..., Any] = subprocess.Popen,
         signal_group: Callable[[int, int], None] = os.killpg,
@@ -86,6 +94,23 @@ class DeploymentController:
         monotonic: Callable[[], float] = time.monotonic,
         sleep: Callable[[float], None] = time.sleep,
     ) -> None:
+        streaming = _STREAMING_STACK.fullmatch(stack_name) is not None
+        if stack_name != STACK_NAME and not streaming:
+            raise ValueError("deployment stack is outside the reviewed Runtime scope")
+        if (
+            not template_name
+            or template_name in {".", ".."}
+            or Path(template_name).name != template_name
+            or "\\" in template_name
+        ):
+            raise ValueError("deployment template must be a basename")
+        if streaming and template_name != f"{stack_name}.template.json":
+            raise ValueError("streaming template must match the reviewed stack name")
+        if streaming and expected_execution_role != _EXECUTION_ROLE:
+            raise ValueError("streaming updates require the reviewed CloudFormation execution role")
+        self.stack_name = stack_name
+        self.template_name = template_name
+        self.expected_execution_role = expected_execution_role
         self.directory = directory
         self.cloudformation = cloudformation
         self.read_client = read_client
@@ -148,13 +173,18 @@ class DeploymentController:
 
     def _stack(self, deadline: float | None = None) -> dict[str, Any]:
         self._check_deadline(deadline)
-        stacks = self._reader(deadline).describe_stacks(StackName=STACK_NAME)["Stacks"]
-        if len(stacks) != 1 or stacks[0].get("StackName") != STACK_NAME:
+        stacks = self._reader(deadline).describe_stacks(StackName=self.stack_name)["Stacks"]
+        if len(stacks) != 1 or stacks[0].get("StackName") != self.stack_name:
             raise DeploymentError("unexpected CloudFormation stack identity")
         stack = dict(stacks[0])
-        prefix = f"arn:aws:cloudformation:us-west-2:453711491609:stack/{STACK_NAME}/"
+        prefix = f"arn:aws:cloudformation:us-west-2:453711491609:stack/{self.stack_name}/"
         if not str(stack.get("StackId", "")).startswith(prefix):
             raise DeploymentError("CloudFormation stack is outside the reviewed account/region")
+        if (
+            self.expected_execution_role is not None
+            and stack.get("RoleARN") != self.expected_execution_role
+        ):
+            raise DeploymentError("CloudFormation execution role differs from the reviewed role")
         return stack
 
     def _stable(self) -> dict[str, Any]:
@@ -175,7 +205,7 @@ class DeploymentController:
     def _template(self, deadline: float | None) -> dict[str, Any]:
         self._check_deadline(deadline)
         response = self._reader(deadline).get_template(
-            StackName=STACK_NAME, TemplateStage="Original"
+            StackName=self.stack_name, TemplateStage="Original"
         )
         body = response["TemplateBody"]
         result: dict[str, Any] = json.loads(body) if isinstance(body, str) else dict(body)
@@ -276,7 +306,7 @@ class DeploymentController:
     ) -> T:
         if self.poisoned:
             raise DeploymentError("owned process cleanup failed; stop before another deployment")
-        raw = (Path(assembly) / TEMPLATE_NAME).read_bytes()
+        raw = (Path(assembly) / self.template_name).read_bytes()
         actual_sha256 = hashlib.sha256(raw).hexdigest()
         if template_sha256 is not None and actual_sha256 != template_sha256:
             raise DeploymentError("deployment template differs from its reviewed SHA-256")
@@ -310,6 +340,9 @@ class DeploymentController:
             "schema_version": "runtime-deployment-controller-v1",
             "started_at": datetime.now(UTC).isoformat(),
             "name": name,
+            "stack_name": self.stack_name,
+            "template_name": self.template_name,
+            "expected_execution_role": self.expected_execution_role,
             "template_sha256": template_sha256,
             "template_canonical_sha256": canonical_hash(template),
             "parameters": parameters,
@@ -363,7 +396,7 @@ class DeploymentController:
                         "deploy",
                         "--app",
                         assembly,
-                        STACK_NAME,
+                        self.stack_name,
                         "--parameters",
                         "ArtifactVersionId=" + artifact_version,
                         "--profile",

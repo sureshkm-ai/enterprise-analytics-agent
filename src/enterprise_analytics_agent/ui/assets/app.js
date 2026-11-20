@@ -7,6 +7,51 @@ const element = (tag, className, text) => {
   if (text !== undefined) node.textContent = String(text);
   return node;
 };
+// Small, safe Markdown vocabulary: no HTML, URLs, scripts or numeric conversion.
+function inlineText(parent, text) {
+  let plain = "";
+  const flush = () => { if (plain) parent.append(element("span", "", plain)); plain = ""; };
+  for (let i = 0; i < text.length;) {
+    if (text[i] === "\\" && i + 1 < text.length) { plain += text[i + 1]; i += 2; continue; }
+    const marker = text.startsWith("**", i) ? "**" : text[i] === "`" ? "`" : null;
+    const end = marker ? text.indexOf(marker, i + marker.length) : -1;
+    if (marker && end > i + marker.length) {
+      flush(); parent.append(element(marker === "**" ? "strong" : "code", "", text.slice(i + marker.length, end)));
+      i = end + marker.length;
+    } else { plain += text[i]; i += 1; }
+  }
+  flush();
+}
+function readableContent(text) {
+  const content = element("div", "readable-answer");
+  const lines = String(text || "").split(/\r?\n/);
+  const cells = line => line.trim().replace(/^\|/, "").replace(/\|$/, "").split(/(?<!\\)\|/).map(cell => cell.trim());
+  for (let i = 0; i < lines.length;) {
+    if (!lines[i].trim()) { i += 1; continue; }
+    const heading = lines[i].match(/^#{1,3}\s+(.+)$/);
+    if (heading) { const node = element("h3"); inlineText(node, heading[1]); content.append(node); i += 1; continue; }
+    if (lines[i].startsWith("|") && /^\|?\s*:?-{3,}/.test(lines[i + 1] || "")) {
+      const scroll = element("div", "table-scroll"); const table = element("table");
+      const head = element("thead"); const row = element("tr");
+      cells(lines[i]).forEach(value => { const cell = element("th"); cell.setAttribute("scope", "col"); inlineText(cell, value); row.append(cell); });
+      head.append(row); table.append(head); i += 2;
+      const body = element("tbody");
+      while (i < lines.length && lines[i].startsWith("|")) {
+        const row = element("tr");
+        cells(lines[i]).forEach(value => { const cell = element("td"); inlineText(cell, value); row.append(cell); });
+        body.append(row); i += 1;
+      }
+      table.append(body); scroll.append(table); content.append(scroll); continue;
+    }
+    if (/^[-*] /.test(lines[i])) {
+      const node = element("ul");
+      while (i < lines.length && /^[-*] /.test(lines[i])) { const item = element("li"); inlineText(item, lines[i].slice(2)); node.append(item); i += 1; }
+      content.append(node); continue;
+    }
+    const paragraph = element("p"); inlineText(paragraph, lines[i]); content.append(paragraph); i += 1;
+  }
+  return content;
+}
 let state = null;
 let mode = "local";
 let busy = false;
@@ -44,7 +89,7 @@ function activeConfig() {
 function modelPicker() {
   const picker = $("model-choice");
   const options = mode === "local" ? [] : availableModels();
-  if (mode !== "local" && !options.some(option => option.key === modelKey)) modelKey = options[0]?.key || null;
+  if (mode !== "local" && !options.some(option => option.key === modelKey)) modelKey = options.find(option => option.modes[mode].enabled && !option.modes[mode].budget?.blocked)?.key || options[0]?.key || null;
   picker.replaceChildren();
   if (!options.length) {
     const option = element("option", "", mode === "local" ? "No model · deterministic planner" : "No reviewed model configured");
@@ -52,7 +97,9 @@ function modelPicker() {
     picker.append(option);
   } else {
     options.forEach(item => {
-      const option = element("option", "", item.label);
+      const config = item.modes[mode];
+      const status = config.availability_label ? ` · ${config.availability_label}` : config.enabled && !config.budget?.blocked ? (config.acceptance_status === "testing" ? " · Testing" : "") : " · Unavailable";
+      const option = element("option", "", item.label + status);
       option.value = item.key;
       picker.append(option);
     });
@@ -61,7 +108,7 @@ function modelPicker() {
   if (mode !== "local") {
     const pending = (state?.proposed_models || []).filter(item => !options.some(active => active.key === item.key));
     if (pending.length) {
-      const group = element("optgroup"); group.label = "Catalog candidates · deployment approval required";
+      const group = element("optgroup"); group.label = "Catalog models · not enabled in this workspace";
       pending.forEach(item => {
         const option = element("option", "", `${item.provider} · ${item.label}`);
         option.value = item.key; option.disabled = true; option.title = item.note;
@@ -76,19 +123,42 @@ function modelPicker() {
     : options.length > 1
       ? "Choose a server-configured model. Each choice keeps its reviewed release and allowance."
       : options.length === 1
-        ? "One reviewed model is configured. Additional models require approved server targets."
-        : "Enable a reviewed server target to choose a model. The browser cannot supply a model ID.";
+        ? "One server-configured model is bound. Availability and allowance are shown below."
+        : "No agent model is configured in this workspace. The offline playground does not use Bedrock.";
   $("model-identifier").textContent = selectedModel()?.model_id || "";
+  if (activeConfig()?.acceptance_status === "testing") $("model-help").textContent = "Model testing · uses the approved allowance. This model has not passed full acceptance. A failed model is isolated; other models remain available.";
+}
+function modeAvailability(value) {
+  if (value === "local") return "DuckDB · no model calls";
+  if (!state) return "Checking availability…";
+  const configs = (state.model_options || []).map(option => option.modes?.[value]).filter(Boolean);
+  if (!configs.length) return "Not configured";
+  if (configs.every(config => config.budget?.blocked)) return "Allowance blocked";
+  if (!configs.some(config => config.enabled && !config.budget?.blocked)) return "Unavailable";
+  return `${configs.filter(config => config.enabled && !config.budget?.blocked).length} model(s) · billable`;
 }
 function ready() {
   const config = activeConfig();
   const blocked = mode !== "local" && (!config?.enabled || config.budget?.blocked);
   $("ask-button").disabled = busy || !state || blocked || !$("question").value.trim();
   $("question").disabled = busy;
-  ["local", "local_agent", "live"].forEach(value => { $(`mode-${value}`).disabled = busy; });
+  ["local", "local_agent", "live"].forEach(value => {
+    $(`mode-${value}`).disabled = busy;
+    $(`mode-${value}-status`).textContent = modeAvailability(value);
+  });
   $("model-choice").disabled = busy || mode === "local" || !availableModels().length;
   $("ask-button").textContent = busy ? "Running…" : mode === "live" ? "Ask AWS" : mode === "local_agent" ? "Ask Bedrock" : "Run offline question";
-  $("execution-state").textContent = busy ? progressMessage || "Submitting your question…" : "Ready for a question";
+  let status;
+  if (busy) status = progressMessage || "Submitting your question…";
+  else if (!state) status = "Loading workspace availability…";
+  else if (mode !== "local" && config?.budget?.blocked) status = `${modeNames[mode]} blocked · allowance unavailable`;
+  else if (mode !== "local" && config?.error) status = `${modeNames[mode]} unavailable · inspect the message above`;
+  else if (mode !== "local" && !config?.enabled) status = selectedModel() || config?.configured
+    ? `${modeNames[mode]} unavailable · target is disabled`
+    : `${modeNames[mode]} is not configured`;
+  else if ($("ask-button").disabled) status = `${modeNames[mode]} · enter a question`;
+  else status = mode === "local" ? "Offline question ready · no model calls" : `${modeNames[mode]} question ready · billable`;
+  $("execution-state").textContent = status;
 }
 function selectMode(next) {
   if (busy || !state) return;
@@ -104,16 +174,38 @@ function selectMode(next) {
   ready();
 }
 function updateContext() {
-  const config = activeConfig();
-  $("dataset").textContent = config.dataset;
-  $("reference-date").textContent = config.reference_date;
+  const config = activeConfig() || {};
+  const configured = mode === "local" || config.configured === true || (config.configured !== false && Boolean(selectedModel()));
+  $("dataset").textContent = configured ? config.dataset || "Not reported" : "Not configured";
+  $("reference-date").textContent = configured ? config.reference_date || "Not reported" : "—";
+  $("target-details").textContent = mode === "local"
+    ? "Deterministic local planner · no Bedrock model or deployed target"
+    : !configured
+      ? "No agent target is bound to this workspace. Switching modes does not enable AWS execution."
+      : `${selectedModel()?.model_id || config.model_id || "Model not reported"}${config.runtime_version ? ` · Bound Runtime version: v${config.runtime_version}` : ""}`;
   $("usage-label").textContent = mode === "local" ? "MODEL CALLS" : "SHARED QUESTION ALLOWANCE";
   $("usage").textContent = usage(config);
-  $("source-description").textContent = config.description;
-  $("composer-hint").textContent = mode === "local" ? "Offline sample data · no model or AWS calls" : mode === "local_agent" ? "Local DuckDB + BILLABLE Bedrock · no automatic retries" : "BILLABLE AgentCore + Bedrock + Athena · no automatic retries";
-  $("cost-notice").textContent = config.cost_notice;
-  $("cost-notice").classList.toggle("billable", mode !== "local");
-  $("live-notice").hidden = mode === "local" || config.enabled;
+  $("source-description").textContent = configured ? config.description || modeNames[mode] : `${modeNames[mode]} · not configured in this workspace`;
+  const available = Boolean(config.enabled && !config.budget?.blocked);
+  $("composer-hint").textContent = mode === "local" ? "Offline sample data · no model or AWS calls" : !configured ? "No agent connection · submissions disabled" : !available ? "Configured target unavailable · submissions disabled" : mode === "local_agent" ? "Local DuckDB + BILLABLE Bedrock · no automatic retries" : "BILLABLE AgentCore + Bedrock + Athena · no automatic retries";
+  $("cost-notice").textContent = mode !== "local" && !available
+    ? "No live question can be submitted. No model or Runtime call will be made."
+    : config.cost_notice || (mode === "local" ? "No model or AWS calls." : "Billable model execution · no automatic retries.");
+  $("cost-notice").classList.toggle("billable", mode !== "local" && available);
+  $("live-notice").hidden = mode === "local" || (available && !config.notice);
+  if (!configured) {
+    $("live-notice-title").textContent = `${modeNames[mode]} is not connected to this workbench`;
+    $("live-notice-body").textContent = "This page has no live model connection. Open the workbench with its accepted Runtime configuration; changing tabs does not connect it.";
+  } else if (available && config.notice) {
+    $("live-notice-title").textContent = "Model ready · previous request failed";
+    $("live-notice-body").textContent = config.notice;
+  } else if (config.budget?.blocked) {
+    $("live-notice-title").textContent = `${modeNames[mode]} question allowance is unavailable`;
+    $("live-notice-body").textContent = config.error || "This configured target cannot submit questions because its existing allowance is exhausted, expired or needs inspection. Inspect its recorded status before another submission.";
+  } else {
+    $("live-notice-title").textContent = `${modeNames[mode]} is paused`;
+    $("live-notice-body").textContent = config.error || "This configured target has been disabled. Its existing configuration and question history are preserved; inspect the recorded status before another submission.";
+  }
   if (mode !== "local" && config.error) message(config.error);
   else if (mode !== "local" && config.budget?.blocked) message("This shared allowance is exhausted, expired or needs inspection. See docs/ui-shared-code-live.md.");
   else message("");
@@ -129,7 +221,9 @@ function beginProgress(question, selectedMode) {
   $("answer").hidden = false;
   const shell = element("div", "answer-shell streaming-answer");
   const header = element("div", "answer-heading");
-  header.append(element("span", `badge ${selectedMode}`, modeNames[selectedMode]), element("span", "stream-label", "LIVE PROGRESS"));
+  const streamKind = element("span", "stream-label", "LIVE PROGRESS"); streamKind.id = "stream-kind";
+  header.append(element("span", `badge ${selectedMode}`, modeNames[selectedMode]), streamKind);
+  if (selectedModel()) header.append(element("span", "small", selectedModel().label));
   shell.append(header, element("h2", "answer-title", question));
   shell.append(element("p", "answer-description", "Progress updates arrive while your question runs. Exact answers appear after validation."));
   const status = element("div", "stream-status");
@@ -142,7 +236,7 @@ function beginProgress(question, selectedMode) {
   elapsed.id = "stream-elapsed";
   const timeline = element("ol", "stream-timeline");
   timeline.id = "stream-timeline";
-  const words = element("p", "answer-description streamed-answer");
+  const words = element("div", "answer-description streamed-answer");
   words.id = "stream-answer";
   words.hidden = true;
   words.setAttribute("aria-live", "polite");
@@ -189,7 +283,10 @@ async function streamedQuestion(data) {
     if (terminal) throw new Error("The server sent output after the final response.");
     const event = JSON.parse(line);
     if (!event || typeof event !== "object") throw new Error("The server sent an invalid progress record. No automatic retry was sent.");
-    if (event.type === "status") showProgress(event);
+    if (event.type === "status") {
+      if (!streamedText) showProgress(event);
+      else if (Number.isFinite(event.elapsed_ms)) $("stream-elapsed").textContent = `${(event.elapsed_ms / 1000).toFixed(1)} s`;
+    }
     else if (event.type === "answer_delta") {
       if (event.source !== "bedrock" || event.validated !== true || typeof event.text !== "string" || streamedText.length + event.text.length > 262144) {
         throw new Error("The validated word stream was invalid. No automatic retry was sent.");
@@ -197,11 +294,12 @@ async function streamedQuestion(data) {
       streamedText += event.text;
       const words = $("stream-answer");
       words.hidden = false;
-      words.append(document.createTextNode(event.text));
+      words.replaceChildren(readableContent(streamedText));
+      $("stream-kind").textContent = "STREAMING VERIFIED ANSWER";
       $("stream-status").textContent = "Receiving Bedrock words checked against the verified answer…";
     }
     else if (event.type === "result" && event.result?.response) {
-      if (streamedText && !event.result.response.answer.startsWith(streamedText)) {
+      if (streamedText && !event.result.response.answer.startsWith(streamedText) && !event.result.display_answer?.startsWith(streamedText)) {
         throw new Error("The streamed text differs from the verified answer. Inspect the run before another request.");
       }
       result = event.result;
@@ -284,6 +382,8 @@ function renderResult(container, result, question, caseStatus = null) {
   const heading = element("div", "answer-heading");
   const names = {local:"OFFLINE · DUCKDB", local_agent:"LOCAL BEDROCK · DUCKDB", live:"AWS · AGENTCORE", replay:"SAVED · REPLAY"};
   heading.append(element("span", `badge ${result.mode}`, names[result.mode]));
+  const answerModel = (state.model_options || []).find(option => option.model_id === response.diagnostics.model_id);
+  if (answerModel) heading.append(element("span", "small", answerModel.label));
   if (response.status !== "answer") heading.append(element("span", `badge ${response.status}`, response.status.toUpperCase()));
   if (caseStatus) heading.append(element("span", "small", `Recorded verdict: ${caseStatus}`));
   if (result.presentation_status === "streamed") heading.append(element("span", "badge", "VERIFIED BEDROCK STREAM"));
@@ -294,7 +394,7 @@ function renderResult(container, result, question, caseStatus = null) {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   });
   heading.append(download);
-  shell.append(heading, element("h2", "answer-title", question), element("p", "answer-description", response.answer));
+  shell.append(heading, element("h2", "answer-title", question), readableContent(result.display_answer || response.answer));
   if (result.presentation_status === "fallback") shell.append(element("p", "small", "The model stream was unavailable or did not match. Showing the verified answer without another model call."));
   const tabs = element("div", "result-tabs"); const content = element("div", "result-body");
   const buttons = [];
@@ -316,13 +416,16 @@ function renderResult(container, result, question, caseStatus = null) {
     } else content.append(element("pre", "", JSON.stringify(response, null, 2)));
   }
   ["Results", "Execution", "JSON"].forEach(tab => { const button = element("button", "result-tab", tab); button.addEventListener("click", () => select(tab)); buttons.push(button); tabs.append(button); });
-  shell.append(tabs, content); container.append(shell); select("Results");
+  const details = element("details", "answer-details");
+  details.append(element("summary", "", "Inspect data and execution details"), tabs, content);
+  shell.append(details); container.append(shell); select("Results");
 }
 function addHistory(question, result) {
   history.unshift({question, result}); history.splice(8);
   $("history").replaceChildren();
   history.forEach(item => {
-    const button = element("button", "", `${modeNames[item.result.mode]} · ${item.question}`);
+    const model = (state.model_options || []).find(option => option.model_id === item.result.response.diagnostics.model_id);
+    const button = element("button", "", `${model?.label || modeNames[item.result.mode]} · ${item.question}`);
     button.addEventListener("click", () => { if (busy) return; $("welcome").hidden = true; $("answer").hidden = false; renderResult($("answer"), item.result, item.question); });
     $("history").append(button);
   });
@@ -334,6 +437,7 @@ async function ask(event) {
   $("question").value = "";
   busy = true; progressMessage = ""; message(""); ready();
   beginProgress(question, selectedMode);
+  let requestError = "";
   try {
     const request = {question, mode:selectedMode, request_id:crypto.randomUUID()};
     if (selectedMode !== "local" && selectedKey) request.model_key = selectedKey;
@@ -341,6 +445,7 @@ async function ask(event) {
     renderResult($("answer"), result, question); addHistory(question, result);
   } catch (error) {
     const text = error instanceof TypeError ? "Connection interrupted. A billable question may still be running; inspect the UI ledger before another live request. No automatic retry was sent." : error instanceof SyntaxError ? "The response stream was invalid. Inspect the UI ledger before another billable request. No automatic retry was sent." : error.message;
+    requestError = text;
     message(text);
     const status = $("stream-status");
     if (status) { status.classList.add("failed"); status.textContent = "Question stopped. Inspect the message above before another submission."; }
@@ -354,13 +459,14 @@ async function ask(event) {
       state.local_agent = refreshed.local_agent;
       state.model_options = refreshed.model_options || [];
       modelPicker();
-      $("usage").textContent = usage(activeConfig());
+      updateContext();
     } catch (_) {
       if (state.live) state.live.enabled = false;
       if (state.local_agent) state.local_agent.enabled = false;
       (state.model_options || []).forEach(option => Object.values(option.modes).forEach(config => { config.enabled = false; }));
     }
     ready();
+    if (requestError) message(requestError);
   }
 }
 function metricCard(metric) {
@@ -403,6 +509,10 @@ function buildGuide() {
     row.append(element("span", "step-number", index + 1), body); $("code-map").append(row);
   });
 }
+function initialMode() {
+  const requested = new URLSearchParams(location.search).get("mode");
+  return ["local", "local_agent", "live"].includes(requested) ? requested : "local";
+}
 async function start() {
   try {
     const response = await fetch("/api/state"); if (!response.ok) throw new Error("Cannot connect to the local application."); state = await response.json();
@@ -415,7 +525,7 @@ async function start() {
     });
     state.metrics.forEach(metric => $("catalog").append(metricCard(metric)));
     if (state.replay) loadReplay(state.replay);
-    buildGuide(); selectMode("local");
+    buildGuide(); selectMode(initialMode());
   } catch (error) { message(error.message); }
 }
 document.querySelectorAll("[data-view]").forEach(button => button.addEventListener("click", () => showView(button.dataset.view)));

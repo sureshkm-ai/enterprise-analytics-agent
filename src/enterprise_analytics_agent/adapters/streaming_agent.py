@@ -15,6 +15,7 @@ from enterprise_analytics_agent.adapters.bedrock_agent import (
     BedrockAgentConfig,
     BedrockAnalyticsAgent,
     ConverseClient,
+    _complete_numeric_plan,
     _render,
 )
 from enterprise_analytics_agent.adapters.bedrock_word_stream import (
@@ -22,10 +23,11 @@ from enterprise_analytics_agent.adapters.bedrock_word_stream import (
     ProfiledConverseClient,
     consume_presentation,
 )
+from enterprise_analytics_agent.adapters.streaming_diagnostics import report_aws_failure
 from enterprise_analytics_agent.agent.contracts import AgentDiagnostics, AgentRequest, AgentResponse
+from enterprise_analytics_agent.agent.presentation import readable_answer
 from enterprise_analytics_agent.agent.questions import question_scope
 from enterprise_analytics_agent.contracts import AuthorizationContext
-from enterprise_analytics_agent.contracts_v2 import QueryMetricRequestV2
 
 
 class StreamingLimitError(RuntimeError):
@@ -104,8 +106,15 @@ class CallTrace:
 
 
 class _CountedPlanner:
-    def __init__(self, client: ConverseClient, trace: CallTrace, operation: str) -> None:
+    def __init__(
+        self,
+        client: ConverseClient,
+        trace: CallTrace,
+        operation: str,
+        diagnostic: Callable[[dict[str, object]], None] = lambda event: None,
+    ) -> None:
         self.client, self.trace, self.operation = client, trace, operation
+        self.diagnostic = diagnostic
 
     def converse(self, **kwargs: object) -> dict[str, object]:
         number = self.trace.begin(self.operation)
@@ -124,6 +133,9 @@ class _CountedPlanner:
             ):
                 raise StreamingLimitError("The model returned an invalid usage record.")
         except BaseException as exc:
+            report_aws_failure(
+                exc, operation=self.operation, number=number, diagnostic=self.diagnostic
+            )
             self.trace.finish(number, input_tokens=0, output_tokens=0, error=type(exc).__name__)
             raise
         self.trace.finish(number, input_tokens=incoming, output_tokens=outgoing)
@@ -137,6 +149,7 @@ class StreamingOutcome:
     reason: str | None
     words: int
     calls: tuple[dict[str, object], ...]
+    display_answer: str | None = None
 
 
 class StreamingAnalyticsAgent:
@@ -152,6 +165,7 @@ class StreamingAnalyticsAgent:
         presentation_operation: str = "ConverseStream",
         limits: StreamingLimits | None = None,
         clock: Callable[[], float] = time.monotonic,
+        readable: bool = False,
     ) -> None:
         self.agent, self.presentation_client = agent, presentation_client
         self.allow_temperature = allow_temperature
@@ -160,6 +174,10 @@ class StreamingAnalyticsAgent:
             presentation_operation,
         )
         self.limits, self.clock = limits or StreamingLimits(), clock
+        self.readable = readable
+
+    def presentation_text(self, response: AgentResponse) -> str:
+        return readable_answer(response) if self.readable else response.answer
 
     def run(
         self,
@@ -169,6 +187,7 @@ class StreamingAnalyticsAgent:
         on_word: Callable[[str], None],
         record: Callable[[dict[str, object]], None] = lambda event: None,
         on_verified: Callable[[AgentResponse], None] | None = None,
+        diagnostic: Callable[[dict[str, object]], None] = lambda event: None,
     ) -> StreamingOutcome:
         started = self.clock()
         trace = CallTrace(
@@ -186,10 +205,11 @@ class StreamingAnalyticsAgent:
         client = ProfiledConverseClient(self.agent.client, allow_temperature=self.allow_temperature)
         planner = BedrockAnalyticsAgent(
             config,
-            client=_CountedPlanner(client, trace, self.planner_operation),
+            client=_CountedPlanner(client, trace, self.planner_operation, diagnostic),
             adapter=self.agent.adapter,
             dataset_version=self.agent.dataset_version,
             clock=self.clock,
+            complete_on_planning_limit=True,
         )
         response = planner.run(request, context=context)
         response = AgentResponse.model_validate(response.model_dump(mode="python", warnings=False))
@@ -203,6 +223,23 @@ class StreamingAnalyticsAgent:
             and self.clock() < trace.deadline
         ):
             response = self._complete_plan(request, response)
+        if (
+            response.status == "answer"
+            and response.results
+            and not _complete_numeric_plan(
+                question_scope(request.question, config.reference_date),
+                response.diagnostics.tool_calls,
+                response.results,
+            )
+        ):
+            response = AgentResponse.model_validate(
+                {
+                    **response.model_dump(mode="python"),
+                    "status": "error",
+                    "error_code": "invalid_tool_response",
+                    "answer": "The semantic evidence does not match the complete governed request.",
+                }
+            )
         if (
             response.status == "answer"
             and response.results
@@ -220,6 +257,7 @@ class StreamingAnalyticsAgent:
 
         presentation: Literal["streamed", "fallback", "not_needed"] = "not_needed"
         reason = None
+        display_answer = self.presentation_text(response)
         if response.status == "answer" and response.answer:
             payload: dict[str, object] = {
                 "modelId": config.model_id,
@@ -233,7 +271,7 @@ class StreamingAnalyticsAgent:
                         )
                     }
                 ],
-                "messages": [{"role": "user", "content": [{"text": response.answer}]}],
+                "messages": [{"role": "user", "content": [{"text": display_answer}]}],
             }
             reserved_input = len(json.dumps(payload, ensure_ascii=False).encode()) + 256
             remaining = self.limits.total_tokens - trace.input_tokens - trace.output_tokens
@@ -250,12 +288,18 @@ class StreamingAnalyticsAgent:
                     streamed = consume_presentation(
                         self.presentation_client,
                         payload,
-                        response.answer,
+                        display_answer,
                         publish,
                         clock=self.clock,
                         deadline=trace.deadline,
                     )
                 except BaseException as exc:
+                    report_aws_failure(
+                        exc,
+                        operation=self.presentation_operation,
+                        number=number,
+                        diagnostic=diagnostic,
+                    )
                     trace.finish(number, input_tokens=0, output_tokens=0, error=type(exc).__name__)
                     if not isinstance(exc, Exception):
                         raise
@@ -267,7 +311,7 @@ class StreamingAnalyticsAgent:
                         output_tokens=streamed.output_tokens,
                     )
                     presentation = "streamed"
-        diagnostic = AgentDiagnostics.model_validate(
+        aggregated_diagnostics = AgentDiagnostics.model_validate(
             {
                 **response.diagnostics.model_dump(mode="python"),
                 "model_calls": len(trace.calls),
@@ -285,47 +329,23 @@ class StreamingAnalyticsAgent:
         # The canonical answer/results stay authoritative even when a stream fails.
         # No failed stream is retried, replaced by another model, or faked in the UI.
         final = AgentResponse.model_validate(
-            {**response.model_dump(mode="python"), "diagnostics": diagnostic.model_dump()}
+            {
+                **response.model_dump(mode="python"),
+                "diagnostics": aggregated_diagnostics.model_dump(),
+            }
         )
-        return StreamingOutcome(final, presentation, reason, words, tuple(trace.calls))
+        return StreamingOutcome(
+            final,
+            presentation,
+            reason,
+            words,
+            tuple(trace.calls),
+            display_answer if self.readable else None,
+        )
 
     def _complete_plan(self, request: AgentRequest, response: AgentResponse) -> AgentResponse:
         scope = question_scope(request.question, self.agent.config.reference_date)
-        if scope.clarification or scope.metadata or not scope.metric_ids or not scope.periods:
-            return response
-        expected = tuple(
-            QueryMetricRequestV2(
-                metric_id=metric,
-                time_range=period,
-                group_by=scope.group_by,
-                dimension_filters=scope.filters,
-            )
-            for metric in scope.metric_ids
-            for period in scope.periods
-        )
-        calls = response.diagnostics.tool_calls
-        if not calls or any(call.status != "success" for call in calls):
-            return response
-        query_calls = [call for call in calls if call.name == "query_metric"]
-        if len(query_calls) != len(expected) or len(response.results) != len(expected):
-            return response
-        try:
-            parsed = [QueryMetricRequestV2.model_validate(call.arguments) for call in query_calls]
-            for query in parsed:
-                scope.validate_query(query)
-        except ValueError:
-            return response
-        if {json.dumps(query.model_dump(mode="json"), sort_keys=True) for query in parsed} != {
-            json.dumps(query.model_dump(mode="json"), sort_keys=True) for query in expected
-        }:
-            return response
-        expected_results = {
-            (query.metric_id, query.time_range, query.group_by) for query in expected
-        }
-        actual_results = {
-            (result.metric_id, result.time_range, result.group_by) for result in response.results
-        }
-        if expected_results != actual_results:
+        if not _complete_numeric_plan(scope, response.diagnostics.tool_calls, response.results):
             return response
         return AgentResponse.model_validate(
             {

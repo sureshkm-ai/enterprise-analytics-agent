@@ -1,0 +1,157 @@
+{
+  "schema_version": "streaming-user-supplied-policy-evidence-v1",
+  "source": "User-pasted administrator-console inline policy after verified restoration on 2026-11-12",
+  "role_arn": "arn:aws:iam::453711491609:role/enterprise-analytics-stream-claude-sonnet-5-5",
+  "policy_name": "RuntimePermissionsA5C20CF1",
+  "user_reports_only_policy_on_role": true,
+  "attachment_independently_inspected": false,
+  "permissions_boundary_evidence_supplied": true,
+  "effective_access_simulation_supplied": false,
+  "policy_document": {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Action": "sts:AssumeRole",
+        "Resource": "arn:aws:iam::453711491609:role/enterprise-analytics-dev-query-executor",
+        "Effect": "Allow"
+      },
+      {
+        "Action": [
+          "s3:GetObject",
+          "s3:GetObjectVersion"
+        ],
+        "Resource": "arn:aws:s3:::enterprise-analytics-dev-453711491609-us-west-2-agent-code/releases/c136a3931e2af31d6453c54910ddc9e839ef03e69a6f2ddebb35b3eb7cfdc306/agent.zip",
+        "Effect": "Allow"
+      },
+      {
+        "Action": "s3:GetBucketLocation",
+        "Resource": "arn:aws:s3:::enterprise-analytics-dev-453711491609-us-west-2-agent-code",
+        "Effect": "Allow"
+      },
+      {
+        "Action": [
+          "bedrock:InvokeModel",
+          "bedrock:InvokeModelWithResponseStream"
+        ],
+        "Resource": [
+          "arn:aws:bedrock:us-west-2:453711491609:inference-profile/us.anthropic.claude-sonnet-5-5",
+          "arn:aws:bedrock:us-west-2::foundation-model/anthropic.claude-sonnet-5-5",
+          "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-sonnet-5-5",
+          "arn:aws:bedrock:us-east-2::foundation-model/anthropic.claude-sonnet-5-5"
+        ],
+        "Effect": "Allow"
+      },
+      {
+        "Action": [
+          "logs:CreateLogGroup",
+          "logs:DescribeLogStreams"
+        ],
+        "Resource": "arn:aws:logs:us-west-2:453711491609:log-group:/aws/bedrock-agentcore/runtimes/enterprise_analytics_stream_claude_sonnet_5_5-*",
+        "Effect": "Allow"
+      },
+      {
+        "Action": [
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ],
+        "Resource": "arn:aws:logs:us-west-2:453711491609:log-group:/aws/bedrock-agentcore/runtimes/enterprise_analytics_stream_claude_sonnet_5_5-*:log-stream:*",
+        "Effect": "Allow"
+      },
+      {
+        "Condition": {
+          "StringEquals": {
+            "aws:RequestedRegion": "us-west-2"
+          }
+        },
+        "Action": "logs:PutResourcePolicy",
+        "Resource": "arn:aws:logs:us-west-2:453711491609:log-group:/aws/bedrock-agentcore/runtimes/enterprise_analytics_stream_claude_sonnet_5_5-*",
+        "Effect": "Allow"
+      },
+      {
+        "Condition": {
+          "StringEquals": {
+            "aws:RequestedRegion": "us-west-2"
+          }
+        },
+        "Action": "logs:DescribeLogGroups",
+        "Resource": "*",
+        "Effect": "Allow"
+      }
+    ]
+  },
+  "comparison": {
+    "restored_template": "artifacts/bedrock-streaming/cdk.recovery.proposed.out/enterprise-analytics-stream-claude-sonnet-5-5.template.json",
+    "restored_template_resource": "RuntimePermissionsA5C20CF1",
+    "matches_restored_template_policy_document": true,
+    "required_model_actions_resources_covered": true,
+    "candidate_model_statement_unchanged": true,
+    "specific_missing_allow_established": false,
+    "interpretation": "The supplied sole inline policy matches the restored reviewed template and allows both invocation actions on the exact profile and three regional model ARNs. Its old c136 code key is correct after restoration. The user separately reports the permissions boundary is Not set. Actual organization/session/effective-context evaluation and the full denied SDK response remain unavailable. Do not add duplicate grants.",
+    "canonical_policy_document_sha256": "58b35f27d3780422a175c5ae488311740d1cee8c26760e64fb190e0cc9c88844"
+  },
+  "offline_credential_audit": {
+    "frozen_candidate_sha256": "8cfe8d9bd667c29c871342844898061f986107d94f309f1eef471f09582a4ae8",
+    "source_members_match_frozen_zip": {
+      "src/enterprise_analytics_agent/hosting/application.py": "25646369e22b233977c27507beb1061453bfe7ec45d51b2dba2e2020707577a5",
+      "src/enterprise_analytics_agent/hosting/workload.py": "bcb48b2240a676eccfcf3aead1db062da8a933e3bd1c65bb08bb4605beeb2b9f",
+      "src/enterprise_analytics_agent/hosting/streaming_server.py": "47baa6bf54b10f7927468e78a017baa1142b7fec6649e2161a49769fb559bf9b",
+      "src/enterprise_analytics_agent/hosting/config.py": "ededabd7ea9e14470a55861c035559ace599e1e8647d32538067b9aa8a65aa47",
+      "src/enterprise_analytics_agent/adapters/streaming_agent.py": "d3502d5a9692b8ec90546a2b12d2005651a90ab12200c7d51aaad354d335dffa",
+      "src/enterprise_analytics_agent/adapters/bedrock_word_stream.py": "8b9215c6a0b749e5bf494c74c92ba52537ee0b77b42133fe4fd2581a37783462",
+      "src/enterprise_analytics_agent/adapters/bedrock_model_catalog.py": "a773decf72ec1dd667c547b25568754c1d7449decd8551099862969e09b13936"
+    },
+    "entrypoint_matches_streaming_server": true,
+    "source_findings": [
+      "Bedrock uses workload.client(\"bedrock-runtime\") from a region-only workload session.",
+      "Assumed query-role credentials have a separate session and permit only Athena/S3 proxies; no global/default credential mutation was found.",
+      "Native Sonnet retains Converse transport and the configured model ID us.anthropic.claude-sonnet-5-5 in us-west-2.",
+      "No concrete source credential/region/model routing defect was found."
+    ],
+    "limitation": "Static source/archive evidence does not establish the actual AWS session principal or full service denial for the failed invocation. No SDK session, AWS operation, billable retry or source/artifact mutation was used for this audit."
+  },
+  "retained_startup_sts_evidence": {
+    "record": "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/aws-failure-evidence.json",
+    "sha256": "434ce51052b54826bd0fc52a6524d15e6c4ae9450153eb18326b45059177147f",
+    "events": [
+      {
+        "event_time": "2026-11-12T22:19:28Z",
+        "event_name": "AssumeRole",
+        "event_id": "24ed8bd1-6386-4849-b7b2-ad65bc80f299",
+        "request_id": "1c0af37c-c9c4-44e2-a940-e29b640e9097",
+        "caller_arn": "arn:aws:sts::453711491609:assumed-role/enterprise-analytics-stream-claude-sonnet-5-5/BedrockAgentCore-15afcfbe-a826-4903-9d79-66149e4e9ece",
+        "invoked_by": null,
+        "requested_role_arn": "arn:aws:iam::453711491609:role/enterprise-analytics-dev-query-executor",
+        "assumed_role_arn": "arn:aws:sts::453711491609:assumed-role/enterprise-analytics-dev-query-executor/analytics-agentcore-query",
+        "error_code": null
+      },
+      {
+        "event_time": "2026-11-12T22:19:28Z",
+        "event_name": "GetCallerIdentity",
+        "event_id": "5f99b959-5d28-4d13-ad7f-de9f93f3a930",
+        "request_id": "6286b3f6-5380-4114-8772-51d84ced268c",
+        "caller_arn": "arn:aws:sts::453711491609:assumed-role/enterprise-analytics-stream-claude-sonnet-5-5/BedrockAgentCore-15afcfbe-a826-4903-9d79-66149e4e9ece",
+        "invoked_by": null,
+        "requested_role_arn": null,
+        "assumed_role_arn": null,
+        "error_code": null
+      },
+      {
+        "event_time": "2026-11-12T22:19:25Z",
+        "event_name": "AssumeRole",
+        "event_id": "ad2b652b-0430-3b88-bc9d-390ec7980fb5",
+        "request_id": "c6385f85-7b6b-4ba5-92e7-2f774f132827",
+        "caller_arn": null,
+        "invoked_by": "bedrock-agentcore.amazonaws.com",
+        "requested_role_arn": "arn:aws:iam::453711491609:role/enterprise-analytics-stream-claude-sonnet-5-5",
+        "assumed_role_arn": "arn:aws:sts::453711491609:assumed-role/enterprise-analytics-stream-claude-sonnet-5-5/BedrockAgentCore-15afcfbe-a826-4903-9d79-66149e4e9ece",
+        "error_code": null
+      }
+    ],
+    "interpretation": "Time-correlated startup events show AgentCore assumed the configured Sonnet role, GetCallerIdentity ran under that session, and query-role AssumeRole succeeded. They do not contain the denied Bedrock SDK event and do not prove its exact session/resource/conditions. They do not support changing query-role trust or granting Bedrock to the query role."
+  },
+  "permissions_boundary": {
+    "source": "Subsequent user readback from IAM role Permissions tab",
+    "status": "not_set",
+    "independently_inspected": false
+  }
+}

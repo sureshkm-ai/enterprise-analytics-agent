@@ -29,7 +29,7 @@ class ModelSpec(BaseModel):
     label: Annotated[str, Field(min_length=1, max_length=100)]
     provider: Annotated[str, Field(min_length=1, max_length=100)]
     model_id: ModelIdentifier
-    transport: Literal["converse", "mantle_chat"]
+    transport: Literal["converse", "mantle_chat", "runtime_chat"]
     temperature_supported: bool
     reference_url: Annotated[
         str,
@@ -72,7 +72,7 @@ def _spec(
     card: str,
     *,
     temperature_supported: bool = True,
-    transport: Literal["converse", "mantle_chat"] = "converse",
+    transport: Literal["converse", "mantle_chat", "runtime_chat"] = "converse",
     tool_streaming: bool = True,
     note: str = "",
 ) -> ModelSpec:
@@ -201,6 +201,65 @@ BEDROCK_MODELS: tuple[ModelSpec, ...] = (
         "openai.gpt-oss-120b-1:0",
         "model-card-openai-gpt-oss-120b",
         note="Open-source baseline, distinct from the frontier GPT model choices.",
+    ),
+    _spec(
+        "claude-sonnet-4-6",
+        "Claude Sonnet 4.6",
+        "Anthropic",
+        "us.anthropic.claude-sonnet-4-6",
+        "anthropic.claude-sonnet-4-6",
+        "model-card-anthropic-claude-sonnet-4-6",
+        note="US cross-Region inference; thinking stays off for bounded analytics requests.",
+    ),
+    _spec(
+        "claude-opus-4-6",
+        "Claude Opus 4.6",
+        "Anthropic",
+        "us.anthropic.claude-opus-4-6-v1",
+        "anthropic.claude-opus-4-6-v1",
+        "model-card-anthropic-claude-opus-4-6",
+        note="US cross-Region inference; thinking stays off for bounded analytics requests.",
+    ),
+    _spec(
+        "gemma-3-12b",
+        "Gemma 3 12B IT",
+        "Google",
+        "google.gemma-3-12b-it",
+        "google.gemma-3-12b-it",
+        "model-card-google-gemma-3-12b-it",
+        note="Bedrock Runtime Converse, distinct from the historical Gemma 4 Mantle target.",
+    ),
+    _spec(
+        "nemotron-3-super",
+        "NVIDIA Nemotron 3 Super 120B A12B",
+        "NVIDIA",
+        "nvidia.nemotron-super-3-120b",
+        "nvidia.nemotron-super-3-120b",
+        "model-card-nvidia-nemotron-super-3-120b",
+        transport="runtime_chat",
+        note="Bedrock Runtime Chat Completions; reasoning_effort=none; sequential tools.",
+    ),
+    _spec(
+        "qwen3-vl-235b",
+        "Qwen3 VL 235B A22B",
+        "Qwen",
+        "qwen.qwen3-vl-235b-a22b",
+        "qwen.qwen3-vl-235b-a22b",
+        "model-card-qwen-qwen3-vl-235b-a22b",
+        note="Text questions only; distinct from Qwen3 235B A22B 2507 and its Mantle ID.",
+    ),
+    _spec(
+        "kimi-k3",
+        "Kimi K3",
+        "Moonshot AI",
+        "us.moonshotai.kimi-k3",
+        "moonshotai.kimi-k3",
+        "model-card-moonshot-ai-kimi-k3",
+        transport="runtime_chat",
+        note=(
+            "US Bedrock Runtime Chat Completions avoids the documented Converse reasoning "
+            "replay limitation; reasoning_effort=none; sequential tools."
+        ),
     ),
 )
 

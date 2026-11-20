@@ -542,6 +542,45 @@ def test_public_status_constructs_no_sessions_or_attempts(
     assert not (tmp_path / "artifacts").exists()
 
 
+@pytest.mark.parametrize("mode", ["local_agent", "live"])
+def test_status_disables_accepted_target_after_local_source_changes(
+    tmp_path: Path,
+    review: StreamingReview,
+    monkeypatch: pytest.MonkeyPatch,
+    mode: str,
+) -> None:
+    monkeypatch.setattr(transport, "verify_local_inputs", lambda *args: None)
+    approval = {
+        "review_sha256": review.sha256,
+        "approved": True,
+        "maximum_attempts": 40,
+        "expires_at": review.expires_at.isoformat(),
+    }
+    questions = transport.StreamingQuestions(
+        tmp_path, review, releases(review), approval, "nova-lite", tmp_path / "canonical"
+    )
+    questions.ledger.directory.mkdir(parents=True)
+    (questions.ledger.directory / "accepted.json").write_text(
+        json.dumps(
+            {
+                "review_sha256": review.sha256,
+                "passed": True,
+                "questions": 20,
+                "models": [target.model_key for target in review.targets],
+            }
+        )
+    )
+    assert questions.public_state(mode)["enabled"] is True
+
+    def changed(*args: object) -> None:
+        raise UiError("source changed")
+
+    monkeypatch.setattr(transport, "verify_local_inputs", changed)
+    state = questions.public_state(mode)
+    assert state["enabled"] is False and "source" in str(state["error"])
+    assert not questions.ledger.path.exists()
+
+
 def test_changed_local_inputs_are_rechecked_before_creating_any_aws_session(
     tmp_path: Path, review: StreamingReview, monkeypatch: pytest.MonkeyPatch
 ) -> None:

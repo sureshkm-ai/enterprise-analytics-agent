@@ -1,0 +1,1486 @@
+{
+  "schema_version": "streaming-completion-outcome-v1",
+  "recorded_at": "2026-11-12T22:32:07.509810+00:00",
+  "implementation_commit": "f59149828b772b3dc3d09036147b6de84fb3c322",
+  "profile": "analytics-dev",
+  "account": "453711491609",
+  "region": "us-west-2",
+  "review_sha256": "67f3f3aab2a086ad16633e6cdc2195edbe02543065a4b5934c7b1177345ea58c",
+  "preparation_sha256": "e9fc7e4711290b058f849b15bbfb4c0786ca083caf1819bfb1b92d8468597e79",
+  "approval_record": "evaluations/bedrock-streaming/completion-fix-approval.json",
+  "operation_directory": "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z",
+  "command_exit_code": 1,
+  "status": "failed-restored",
+  "candidate_version": {
+    "artifact_sha256": "8cfe8d9bd667c29c871342844898061f986107d94f309f1eef471f09582a4ae8",
+    "key": "releases/8cfe8d9bd667c29c871342844898061f986107d94f309f1eef471f09582a4ae8/agent.zip",
+    "version_id": "PQbNv3gkC1HwVYNNiAe95r1XuQDkfKvb"
+  },
+  "deployment_proofs": [
+    {
+      "record": "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/update-claude-opus-5-5.verified.json",
+      "sha256": "b37ddf33b44e928b1e5467c18f7c990b38d5c4a97a412363ac281846279363a7",
+      "observed_at": "2026-11-12T22:11:47.994445+00:00",
+      "release": {
+        "model_key": "claude-opus-5-5",
+        "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_claude_opus_5_5-pjA7LFDH7r",
+        "runtime_version": "2",
+        "configuration_sha256": "5edf23ee743e65bf9ff3c9db2c5982a311a7376cf4c40b782821814b2da2a103",
+        "template_sha256": "0a0a94efbb89195fcf2805991e655e0f76d157434271e6fa80ece363972fb29d"
+      },
+      "stack_id": "arn:aws:cloudformation:us-west-2:453711491609:stack/enterprise-analytics-stream-claude-opus-5-5/edaae8f0-ded4-11f1-9c42-02b7fbee76d1",
+      "stack_status": "UPDATE_COMPLETE",
+      "runtime_status": "READY",
+      "runtime_version": "2",
+      "endpoint_status": "READY",
+      "endpoint_version": "2",
+      "artifact_version_id": "PQbNv3gkC1HwVYNNiAe95r1XuQDkfKvb"
+    },
+    {
+      "record": "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/update-claude-sonnet-5-5.verified.json",
+      "sha256": "a489cec88b7b0f36f0734b40475cd21e47e17d5714f4e091509e572bd5173663",
+      "observed_at": "2026-11-12T22:10:47.646112+00:00",
+      "release": {
+        "model_key": "claude-sonnet-5-5",
+        "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_claude_sonnet_5_5-wIvJh83KS4",
+        "runtime_version": "2",
+        "configuration_sha256": "75bb88c9de1ad1ec7a3987c4ca252e0302e554b088d3c1ca83aecd23d27f0638",
+        "template_sha256": "112016b2327af633287b9aad0e54574dca3f0877316ae879c205f78723fd8476"
+      },
+      "stack_id": "arn:aws:cloudformation:us-west-2:453711491609:stack/enterprise-analytics-stream-claude-sonnet-5-5/bc9c9f10-ded4-11f1-bf49-0affc2358c3b",
+      "stack_status": "UPDATE_COMPLETE",
+      "runtime_status": "READY",
+      "runtime_version": "2",
+      "endpoint_status": "READY",
+      "endpoint_version": "2",
+      "artifact_version_id": "PQbNv3gkC1HwVYNNiAe95r1XuQDkfKvb"
+    },
+    {
+      "record": "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/update-deepseek-v3-2.verified.json",
+      "sha256": "2a3d100eec224c3c4cff113936bb27f1b36ce2cac0fa7d78aa4cd1ddafbbaf42",
+      "observed_at": "2026-11-12T22:16:54.580355+00:00",
+      "release": {
+        "model_key": "deepseek-v3-2",
+        "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_deepseek_v3_2-lya0FE86Zv",
+        "runtime_version": "2",
+        "configuration_sha256": "b16c8b6f420c7f28e761116b61e4ec96610c7a461a5f8a196bc52925a0935dc8",
+        "template_sha256": "b319af1921762e198f0ddd0cbef174807997156d617c16a277339f796a83e6ae"
+      },
+      "stack_id": "arn:aws:cloudformation:us-west-2:453711491609:stack/enterprise-analytics-stream-deepseek-v3-2/e3af8fd0-ded5-11f1-8f0c-02b52acd1095",
+      "stack_status": "UPDATE_COMPLETE",
+      "runtime_status": "READY",
+      "runtime_version": "2",
+      "endpoint_status": "READY",
+      "endpoint_version": "2",
+      "artifact_version_id": "PQbNv3gkC1HwVYNNiAe95r1XuQDkfKvb"
+    },
+    {
+      "record": "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/update-gemma-4-31b.verified.json",
+      "sha256": "9853cf521b84496773ab26fac720fc1be8b6571f958ea1dda0fbfb95589c2a9d",
+      "observed_at": "2026-11-12T22:14:49.942586+00:00",
+      "release": {
+        "model_key": "gemma-4-31b",
+        "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_gemma_4_31b-5KRJdk6NQb",
+        "runtime_version": "2",
+        "configuration_sha256": "f544271c130633d12a2fa552163e760db8dcd4288f75e31d38951a40189d6d96",
+        "template_sha256": "969d5ced048e4709d9926e6536ed13edfe4c629051de6d7ff8a61f621a6df268"
+      },
+      "stack_id": "arn:aws:cloudformation:us-west-2:453711491609:stack/enterprise-analytics-stream-gemma-4-31b/81380ad0-ded5-11f1-adad-0a3dfe942293",
+      "stack_status": "UPDATE_COMPLETE",
+      "runtime_status": "READY",
+      "runtime_version": "2",
+      "endpoint_status": "READY",
+      "endpoint_version": "2",
+      "artifact_version_id": "PQbNv3gkC1HwVYNNiAe95r1XuQDkfKvb"
+    },
+    {
+      "record": "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/update-gpt-6-1-sol.verified.json",
+      "sha256": "a32c54ca33e54bb8fa805dd34340cd809a656cf8cb54daf123999d3f63847130",
+      "observed_at": "2026-11-12T22:13:55.575268+00:00",
+      "release": {
+        "model_key": "gpt-6-1-sol",
+        "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_gpt_6_1_sol-5M3ZcJGNh3",
+        "runtime_version": "2",
+        "configuration_sha256": "df981e8339b92f2ae22f47b128eb48dfa309c1a4de425753aaddef7fb686f5b4",
+        "template_sha256": "baa721e8de2d8674cdddaed2edd81b1a8d787e0079ae9275424090c96b3bb548"
+      },
+      "stack_id": "arn:aws:cloudformation:us-west-2:453711491609:stack/enterprise-analytics-stream-gpt-6-1-sol/4fd92ff0-ded5-11f1-8ee1-02d574ccb33f",
+      "stack_status": "UPDATE_COMPLETE",
+      "runtime_status": "READY",
+      "runtime_version": "2",
+      "endpoint_status": "READY",
+      "endpoint_version": "2",
+      "artifact_version_id": "PQbNv3gkC1HwVYNNiAe95r1XuQDkfKvb"
+    },
+    {
+      "record": "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/update-gpt-6-astra.verified.json",
+      "sha256": "ce627f768044f739faf7a1f7af8663bc33b030a62f904bcb2961ca8b59b7759a",
+      "observed_at": "2026-11-12T22:12:48.312655+00:00",
+      "release": {
+        "model_key": "gpt-6-astra",
+        "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_gpt_6_astra-6XMFAj51lA",
+        "runtime_version": "2",
+        "configuration_sha256": "172cd5157183e2d68a005eddf2c43c43c63d1aa476879987b69c69ad9092f894",
+        "template_sha256": "f03ceaf75e0e2e0ffdd78ffe1ab548395e0d707c71445b6d0a4c9b05a74e45a0"
+      },
+      "stack_id": "arn:aws:cloudformation:us-west-2:453711491609:stack/enterprise-analytics-stream-gpt-6-astra/1ec9fbb0-ded5-11f1-b011-0626e97e0a1b",
+      "stack_status": "UPDATE_COMPLETE",
+      "runtime_status": "READY",
+      "runtime_version": "2",
+      "endpoint_status": "READY",
+      "endpoint_version": "2",
+      "artifact_version_id": "PQbNv3gkC1HwVYNNiAe95r1XuQDkfKvb"
+    },
+    {
+      "record": "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/update-llama-4-maverick.verified.json",
+      "sha256": "bcab921811ae99afcd546fed37d340e769e457c07261758a9828acbc08ec74e7",
+      "observed_at": "2026-11-12T22:15:47.246790+00:00",
+      "release": {
+        "model_key": "llama-4-maverick",
+        "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_llama_4_maverick-r9V93EA2v5",
+        "runtime_version": "2",
+        "configuration_sha256": "de65ed1066598eab3a99f2465c8bfab4ebb26a28d6b8441f2414578c6f3b0eba",
+        "template_sha256": "fed4b760f445a446bf0a6c17613d905d94a45851e4b581ffcbffe510aa6359cb"
+      },
+      "stack_id": "arn:aws:cloudformation:us-west-2:453711491609:stack/enterprise-analytics-stream-llama-4-maverick/b28a89a0-ded5-11f1-9400-0affc45c4d45",
+      "stack_status": "UPDATE_COMPLETE",
+      "runtime_status": "READY",
+      "runtime_version": "2",
+      "endpoint_status": "READY",
+      "endpoint_version": "2",
+      "artifact_version_id": "PQbNv3gkC1HwVYNNiAe95r1XuQDkfKvb"
+    },
+    {
+      "record": "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/update-mistral-large-3.verified.json",
+      "sha256": "edf3eca2b04b304a2b501f2fdcb6dfa6d2b0aa205cfc311f7c8a45c92e29ef0b",
+      "observed_at": "2026-11-12T22:18:49.165312+00:00",
+      "release": {
+        "model_key": "mistral-large-3",
+        "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_mistral_large_3-fLMU4GAeKZ",
+        "runtime_version": "2",
+        "configuration_sha256": "643d484ddae838047e1ce87a85c7e2bcf57e93c69ccbfa5df94e9342de8e1a2a",
+        "template_sha256": "521f18434af937bb5807cb31b2c14a8313cedbd6d158658b686a743e01793465"
+      },
+      "stack_id": "arn:aws:cloudformation:us-west-2:453711491609:stack/enterprise-analytics-stream-mistral-large-3/45f97520-ded6-11f1-ada7-0686589fd99d",
+      "stack_status": "UPDATE_COMPLETE",
+      "runtime_status": "READY",
+      "runtime_version": "2",
+      "endpoint_status": "READY",
+      "endpoint_version": "2",
+      "artifact_version_id": "PQbNv3gkC1HwVYNNiAe95r1XuQDkfKvb"
+    },
+    {
+      "record": "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/update-nova-lite.verified.json",
+      "sha256": "16081c5655e17d33d3231d62a082b3b02b677e5bc7b5c866ba0c576db995fc7f",
+      "observed_at": "2026-11-12T22:09:47.424199+00:00",
+      "release": {
+        "model_key": "nova-lite",
+        "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_nova_lite-ysWG3wGhNd",
+        "runtime_version": "2",
+        "configuration_sha256": "b03625d420f04ef3bbe5700101c486a52b5b3ac2979f720ed0c6548df7791516",
+        "template_sha256": "779fd3f9c62a54023bb356e076732af391a7cc1470a25fd71df8f518f864e9a3"
+      },
+      "stack_id": "arn:aws:cloudformation:us-west-2:453711491609:stack/enterprise-analytics-stream-nova-lite/8b487290-ded4-11f1-b2cf-0ae4036e3efb",
+      "stack_status": "UPDATE_COMPLETE",
+      "runtime_status": "READY",
+      "runtime_version": "2",
+      "endpoint_status": "READY",
+      "endpoint_version": "2",
+      "artifact_version_id": "PQbNv3gkC1HwVYNNiAe95r1XuQDkfKvb"
+    },
+    {
+      "record": "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/update-qwen3-235b.verified.json",
+      "sha256": "e59a6ce2ecaf155732ac74f7bbe30092e2d3373a3fe1a5a5721fd46b7698ce71",
+      "observed_at": "2026-11-12T22:17:48.636849+00:00",
+      "release": {
+        "model_key": "qwen3-235b",
+        "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_qwen3_235b-xPOeZ29RRY",
+        "runtime_version": "2",
+        "configuration_sha256": "79f0e48b292eff5f32958349e58ab8ac776e6b4b9325707d77a7503c7f09ac81",
+        "template_sha256": "618c59b63868f86a0fe6717d22a46440348451598eb9403b473d5c9c444201f9"
+      },
+      "stack_id": "arn:aws:cloudformation:us-west-2:453711491609:stack/enterprise-analytics-stream-qwen3-235b/14dbc1f0-ded6-11f1-a3b9-06ae8ffd08cb",
+      "stack_status": "UPDATE_COMPLETE",
+      "runtime_status": "READY",
+      "runtime_version": "2",
+      "endpoint_status": "READY",
+      "endpoint_version": "2",
+      "artifact_version_id": "PQbNv3gkC1HwVYNNiAe95r1XuQDkfKvb"
+    }
+  ],
+  "acceptance": {
+    "planned_questions": 20,
+    "attempted": 3,
+    "passed": 2,
+    "failed": 1,
+    "not_run": 17,
+    "full_acceptance_passed": false,
+    "accepted_ui_binding": false,
+    "cases": [
+      {
+        "record": "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/acceptance/claude-sonnet-5-5-0.json",
+        "sha256": "ccb7237cf3ede35e1527ab273948d8a3874dc671a756b6fec6b55e7af4317be1",
+        "model_key": "claude-sonnet-5-5",
+        "case": "Q18",
+        "request_id": "731ff772-876e-4c33-a8fe-83fd87108b55",
+        "status": "failed",
+        "reasons": [
+          "expected a numeric answer, not clarification or error",
+          "complete successful query plan differs from expected metrics/dates/groups/filters",
+          "complete metric results/values/precision/units/versions differ from goldens"
+        ],
+        "presentation_status": "not_needed",
+        "expected_queries": [
+          {
+            "api_version": "v2",
+            "metric_id": "net_revenue",
+            "time_range": {
+              "api_version": "v2",
+              "start": "2025-03-31",
+              "end": "2025-04-01"
+            },
+            "group_by": [],
+            "dimension_filters": {}
+          }
+        ],
+        "observed_queries": [],
+        "expected_results": [
+          {
+            "api_version": "v2",
+            "metric_id": "net_revenue",
+            "definition_version": "1.0.0",
+            "time_range": {
+              "api_version": "v2",
+              "start": "2025-03-31",
+              "end": "2025-04-01"
+            },
+            "group_by": [],
+            "unit": "currency",
+            "currency": "USD",
+            "rows": [
+              {
+                "api_version": "v2",
+                "dimensions": {},
+                "value": "110.25"
+              }
+            ]
+          }
+        ],
+        "results": [],
+        "error_code": "model_error",
+        "diagnostics": {
+          "client_latency_ms": 3459,
+          "server_latency_ms": 95,
+          "model_calls": 1,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "athena": []
+        },
+        "model_call_metadata": [
+          {
+            "streaming_model_calls": [
+              {
+                "event": "failed",
+                "operation": "Converse",
+                "number": 1,
+                "status": "failed",
+                "input_tokens": 0,
+                "output_tokens": 0,
+                "usage_complete": false,
+                "error_type": "AccessDeniedException"
+              }
+            ]
+          }
+        ],
+        "unreported_diagnostics": [
+          "input_tokens",
+          "output_tokens"
+        ]
+      },
+      {
+        "record": "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/acceptance/nova-lite-0.json",
+        "sha256": "1ad2882f4c292e8035e6eb7ece79be1b0e23870437a72083f63a4ece931511d1",
+        "model_key": "nova-lite",
+        "case": "Q18",
+        "request_id": "0010bc75-dbe2-44ad-8fa5-2b518c9ebeed",
+        "status": "passed",
+        "reasons": [],
+        "presentation_status": "streamed",
+        "expected_queries": [
+          {
+            "api_version": "v2",
+            "metric_id": "net_revenue",
+            "time_range": {
+              "api_version": "v2",
+              "start": "2025-03-31",
+              "end": "2025-04-01"
+            },
+            "group_by": [],
+            "dimension_filters": {}
+          }
+        ],
+        "observed_queries": [
+          {
+            "api_version": "v2",
+            "metric_id": "net_revenue",
+            "time_range": {
+              "api_version": "v2",
+              "start": "2025-03-31",
+              "end": "2025-04-01"
+            },
+            "group_by": [],
+            "dimension_filters": {}
+          }
+        ],
+        "expected_results": [
+          {
+            "api_version": "v2",
+            "metric_id": "net_revenue",
+            "definition_version": "1.0.0",
+            "time_range": {
+              "api_version": "v2",
+              "start": "2025-03-31",
+              "end": "2025-04-01"
+            },
+            "group_by": [],
+            "unit": "currency",
+            "currency": "USD",
+            "rows": [
+              {
+                "api_version": "v2",
+                "dimensions": {},
+                "value": "110.25"
+              }
+            ]
+          }
+        ],
+        "results": [
+          {
+            "api_version": "v2",
+            "metric_id": "net_revenue",
+            "definition_version": "1.0.0",
+            "time_range": {
+              "api_version": "v2",
+              "start": "2025-03-31",
+              "end": "2025-04-01"
+            },
+            "group_by": [],
+            "unit": "currency",
+            "currency": "USD",
+            "rows": [
+              {
+                "api_version": "v2",
+                "dimensions": {},
+                "value": "110.25"
+              }
+            ]
+          }
+        ],
+        "error_code": null,
+        "diagnostics": {
+          "client_latency_ms": 6228,
+          "server_latency_ms": 2766,
+          "model_calls": 2,
+          "input_tokens": 1215,
+          "output_tokens": 157,
+          "athena": [
+            {
+              "query_id": "261ba6af-9ca6-4fc8-93bf-5571f60c180c",
+              "operation": "query_metric",
+              "metric_id": "net_revenue",
+              "metric_version": "1.0.0",
+              "dataset_version": "retail-v1",
+              "state": "SUCCEEDED",
+              "scanned_bytes": 5015,
+              "engine_time_ms": 848,
+              "queue_time_ms": 102,
+              "total_time_ms": 1028,
+              "cancellation_attempts": 0,
+              "cancellation_outcome": null
+            }
+          ]
+        },
+        "model_call_metadata": [
+          {
+            "streaming_model_calls": [
+              {
+                "event": "returned",
+                "operation": "Converse",
+                "number": 1,
+                "status": "returned",
+                "input_tokens": 1131,
+                "output_tokens": 110,
+                "usage_complete": true
+              },
+              {
+                "event": "returned",
+                "operation": "ConverseStream",
+                "number": 2,
+                "status": "returned",
+                "input_tokens": 84,
+                "output_tokens": 47,
+                "usage_complete": true
+              }
+            ]
+          }
+        ],
+        "unreported_diagnostics": []
+      },
+      {
+        "record": "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/acceptance/nova-lite-1.json",
+        "sha256": "22ee5046d65f75b9583b94e30a5f7bc573a32003e308bce312557be8c07fa005",
+        "model_key": "nova-lite",
+        "case": "all-five-regionals",
+        "request_id": "ddc715e0-d467-4ac4-8f2a-258f158828db",
+        "status": "passed",
+        "reasons": [],
+        "presentation_status": "streamed",
+        "expected_queries": [
+          {
+            "api_version": "v2",
+            "metric_id": "gross_sales",
+            "time_range": {
+              "api_version": "v2",
+              "start": "2025-01-01",
+              "end": "2025-02-01"
+            },
+            "group_by": [
+              "region"
+            ],
+            "dimension_filters": {}
+          },
+          {
+            "api_version": "v2",
+            "metric_id": "net_revenue",
+            "time_range": {
+              "api_version": "v2",
+              "start": "2025-01-01",
+              "end": "2025-02-01"
+            },
+            "group_by": [
+              "region"
+            ],
+            "dimension_filters": {}
+          },
+          {
+            "api_version": "v2",
+            "metric_id": "order_count",
+            "time_range": {
+              "api_version": "v2",
+              "start": "2025-01-01",
+              "end": "2025-02-01"
+            },
+            "group_by": [
+              "region"
+            ],
+            "dimension_filters": {}
+          },
+          {
+            "api_version": "v2",
+            "metric_id": "average_order_value",
+            "time_range": {
+              "api_version": "v2",
+              "start": "2025-01-01",
+              "end": "2025-02-01"
+            },
+            "group_by": [
+              "region"
+            ],
+            "dimension_filters": {}
+          },
+          {
+            "api_version": "v2",
+            "metric_id": "return_rate",
+            "time_range": {
+              "api_version": "v2",
+              "start": "2025-01-01",
+              "end": "2025-02-01"
+            },
+            "group_by": [
+              "region"
+            ],
+            "dimension_filters": {}
+          }
+        ],
+        "observed_queries": [
+          {
+            "api_version": "v2",
+            "metric_id": "gross_sales",
+            "time_range": {
+              "api_version": "v2",
+              "start": "2025-01-01",
+              "end": "2025-02-01"
+            },
+            "group_by": [
+              "region"
+            ],
+            "dimension_filters": {}
+          },
+          {
+            "api_version": "v2",
+            "metric_id": "net_revenue",
+            "time_range": {
+              "api_version": "v2",
+              "start": "2025-01-01",
+              "end": "2025-02-01"
+            },
+            "group_by": [
+              "region"
+            ],
+            "dimension_filters": {}
+          },
+          {
+            "api_version": "v2",
+            "metric_id": "order_count",
+            "time_range": {
+              "api_version": "v2",
+              "start": "2025-01-01",
+              "end": "2025-02-01"
+            },
+            "group_by": [
+              "region"
+            ],
+            "dimension_filters": {}
+          },
+          {
+            "api_version": "v2",
+            "metric_id": "average_order_value",
+            "time_range": {
+              "api_version": "v2",
+              "start": "2025-01-01",
+              "end": "2025-02-01"
+            },
+            "group_by": [
+              "region"
+            ],
+            "dimension_filters": {}
+          },
+          {
+            "api_version": "v2",
+            "metric_id": "return_rate",
+            "time_range": {
+              "api_version": "v2",
+              "start": "2025-01-01",
+              "end": "2025-02-01"
+            },
+            "group_by": [
+              "region"
+            ],
+            "dimension_filters": {}
+          }
+        ],
+        "expected_results": [
+          {
+            "api_version": "v2",
+            "metric_id": "gross_sales",
+            "definition_version": "1.0.0",
+            "time_range": {
+              "api_version": "v2",
+              "start": "2025-01-01",
+              "end": "2025-02-01"
+            },
+            "group_by": [
+              "region"
+            ],
+            "unit": "currency",
+            "currency": "USD",
+            "rows": [
+              {
+                "api_version": "v2",
+                "dimensions": {
+                  "region": "North"
+                },
+                "value": "195.50"
+              },
+              {
+                "api_version": "v2",
+                "dimensions": {
+                  "region": "South"
+                },
+                "value": "359.75"
+              }
+            ]
+          },
+          {
+            "api_version": "v2",
+            "metric_id": "net_revenue",
+            "definition_version": "1.0.0",
+            "time_range": {
+              "api_version": "v2",
+              "start": "2025-01-01",
+              "end": "2025-02-01"
+            },
+            "group_by": [
+              "region"
+            ],
+            "unit": "currency",
+            "currency": "USD",
+            "rows": [
+              {
+                "api_version": "v2",
+                "dimensions": {
+                  "region": "North"
+                },
+                "value": "172.17"
+              },
+              {
+                "api_version": "v2",
+                "dimensions": {
+                  "region": "South"
+                },
+                "value": "313.44"
+              }
+            ]
+          },
+          {
+            "api_version": "v2",
+            "metric_id": "order_count",
+            "definition_version": "1.0.0",
+            "time_range": {
+              "api_version": "v2",
+              "start": "2025-01-01",
+              "end": "2025-02-01"
+            },
+            "group_by": [
+              "region"
+            ],
+            "unit": "count",
+            "currency": null,
+            "rows": [
+              {
+                "api_version": "v2",
+                "dimensions": {
+                  "region": "North"
+                },
+                "value": 5
+              },
+              {
+                "api_version": "v2",
+                "dimensions": {
+                  "region": "South"
+                },
+                "value": 3
+              }
+            ]
+          },
+          {
+            "api_version": "v2",
+            "metric_id": "average_order_value",
+            "definition_version": "1.0.0",
+            "time_range": {
+              "api_version": "v2",
+              "start": "2025-01-01",
+              "end": "2025-02-01"
+            },
+            "group_by": [
+              "region"
+            ],
+            "unit": "currency",
+            "currency": "USD",
+            "rows": [
+              {
+                "api_version": "v2",
+                "dimensions": {
+                  "region": "North"
+                },
+                "value": "34.43"
+              },
+              {
+                "api_version": "v2",
+                "dimensions": {
+                  "region": "South"
+                },
+                "value": "104.48"
+              }
+            ]
+          },
+          {
+            "api_version": "v2",
+            "metric_id": "return_rate",
+            "definition_version": "1.0.0",
+            "time_range": {
+              "api_version": "v2",
+              "start": "2025-01-01",
+              "end": "2025-02-01"
+            },
+            "group_by": [
+              "region"
+            ],
+            "unit": "ratio",
+            "currency": null,
+            "rows": [
+              {
+                "api_version": "v2",
+                "dimensions": {
+                  "region": "North"
+                },
+                "value": "0.200000"
+              },
+              {
+                "api_version": "v2",
+                "dimensions": {
+                  "region": "South"
+                },
+                "value": "0.333333"
+              }
+            ]
+          }
+        ],
+        "results": [
+          {
+            "api_version": "v2",
+            "metric_id": "gross_sales",
+            "definition_version": "1.0.0",
+            "time_range": {
+              "api_version": "v2",
+              "start": "2025-01-01",
+              "end": "2025-02-01"
+            },
+            "group_by": [
+              "region"
+            ],
+            "unit": "currency",
+            "currency": "USD",
+            "rows": [
+              {
+                "api_version": "v2",
+                "dimensions": {
+                  "region": "North"
+                },
+                "value": "195.50"
+              },
+              {
+                "api_version": "v2",
+                "dimensions": {
+                  "region": "South"
+                },
+                "value": "359.75"
+              }
+            ]
+          },
+          {
+            "api_version": "v2",
+            "metric_id": "net_revenue",
+            "definition_version": "1.0.0",
+            "time_range": {
+              "api_version": "v2",
+              "start": "2025-01-01",
+              "end": "2025-02-01"
+            },
+            "group_by": [
+              "region"
+            ],
+            "unit": "currency",
+            "currency": "USD",
+            "rows": [
+              {
+                "api_version": "v2",
+                "dimensions": {
+                  "region": "North"
+                },
+                "value": "172.17"
+              },
+              {
+                "api_version": "v2",
+                "dimensions": {
+                  "region": "South"
+                },
+                "value": "313.44"
+              }
+            ]
+          },
+          {
+            "api_version": "v2",
+            "metric_id": "order_count",
+            "definition_version": "1.0.0",
+            "time_range": {
+              "api_version": "v2",
+              "start": "2025-01-01",
+              "end": "2025-02-01"
+            },
+            "group_by": [
+              "region"
+            ],
+            "unit": "count",
+            "currency": null,
+            "rows": [
+              {
+                "api_version": "v2",
+                "dimensions": {
+                  "region": "North"
+                },
+                "value": 5
+              },
+              {
+                "api_version": "v2",
+                "dimensions": {
+                  "region": "South"
+                },
+                "value": 3
+              }
+            ]
+          },
+          {
+            "api_version": "v2",
+            "metric_id": "average_order_value",
+            "definition_version": "1.0.0",
+            "time_range": {
+              "api_version": "v2",
+              "start": "2025-01-01",
+              "end": "2025-02-01"
+            },
+            "group_by": [
+              "region"
+            ],
+            "unit": "currency",
+            "currency": "USD",
+            "rows": [
+              {
+                "api_version": "v2",
+                "dimensions": {
+                  "region": "North"
+                },
+                "value": "34.43"
+              },
+              {
+                "api_version": "v2",
+                "dimensions": {
+                  "region": "South"
+                },
+                "value": "104.48"
+              }
+            ]
+          },
+          {
+            "api_version": "v2",
+            "metric_id": "return_rate",
+            "definition_version": "1.0.0",
+            "time_range": {
+              "api_version": "v2",
+              "start": "2025-01-01",
+              "end": "2025-02-01"
+            },
+            "group_by": [
+              "region"
+            ],
+            "unit": "ratio",
+            "currency": null,
+            "rows": [
+              {
+                "api_version": "v2",
+                "dimensions": {
+                  "region": "North"
+                },
+                "value": "0.200000"
+              },
+              {
+                "api_version": "v2",
+                "dimensions": {
+                  "region": "South"
+                },
+                "value": "0.333333"
+              }
+            ]
+          }
+        ],
+        "error_code": null,
+        "diagnostics": {
+          "client_latency_ms": 14754,
+          "server_latency_ms": 11911,
+          "model_calls": 3,
+          "input_tokens": 3101,
+          "output_tokens": 761,
+          "athena": [
+            {
+              "query_id": "1a659284-3c36-40e5-b87c-bf97324304d1",
+              "operation": "query_metric",
+              "metric_id": "gross_sales",
+              "metric_version": "1.0.0",
+              "dataset_version": "retail-v1",
+              "state": "SUCCEEDED",
+              "scanned_bytes": 4998,
+              "engine_time_ms": 817,
+              "queue_time_ms": 101,
+              "total_time_ms": 988,
+              "cancellation_attempts": 0,
+              "cancellation_outcome": null
+            },
+            {
+              "query_id": "6ec5a951-9031-4247-a6d5-1899ca4ca67a",
+              "operation": "query_metric",
+              "metric_id": "net_revenue",
+              "metric_version": "1.0.0",
+              "dataset_version": "retail-v1",
+              "state": "SUCCEEDED",
+              "scanned_bytes": 6325,
+              "engine_time_ms": 1109,
+              "queue_time_ms": 89,
+              "total_time_ms": 1260,
+              "cancellation_attempts": 0,
+              "cancellation_outcome": null
+            },
+            {
+              "query_id": "056a8050-853f-484b-8cb6-f1f2239ef675",
+              "operation": "query_metric",
+              "metric_id": "order_count",
+              "metric_version": "1.0.0",
+              "dataset_version": "retail-v1",
+              "state": "SUCCEEDED",
+              "scanned_bytes": 4998,
+              "engine_time_ms": 890,
+              "queue_time_ms": 97,
+              "total_time_ms": 1073,
+              "cancellation_attempts": 0,
+              "cancellation_outcome": null
+            },
+            {
+              "query_id": "f2581134-4797-4814-b7de-4ba7e5813498",
+              "operation": "query_metric",
+              "metric_id": "average_order_value",
+              "metric_version": "1.0.0",
+              "dataset_version": "retail-v1",
+              "state": "SUCCEEDED",
+              "scanned_bytes": 6325,
+              "engine_time_ms": 804,
+              "queue_time_ms": 100,
+              "total_time_ms": 998,
+              "cancellation_attempts": 0,
+              "cancellation_outcome": null
+            },
+            {
+              "query_id": "066b8936-176f-4a31-927c-49bc0c445e16",
+              "operation": "query_metric",
+              "metric_id": "return_rate",
+              "metric_version": "1.0.0",
+              "dataset_version": "retail-v1",
+              "state": "SUCCEEDED",
+              "scanned_bytes": 8534,
+              "engine_time_ms": 1023,
+              "queue_time_ms": 97,
+              "total_time_ms": 1215,
+              "cancellation_attempts": 0,
+              "cancellation_outcome": null
+            }
+          ]
+        },
+        "model_call_metadata": [
+          {
+            "streaming_model_calls": [
+              {
+                "event": "returned",
+                "operation": "Converse",
+                "number": 1,
+                "status": "returned",
+                "input_tokens": 1176,
+                "output_tokens": 78,
+                "usage_complete": true
+              },
+              {
+                "event": "returned",
+                "operation": "Converse",
+                "number": 2,
+                "status": "returned",
+                "input_tokens": 1583,
+                "output_tokens": 378,
+                "usage_complete": true
+              },
+              {
+                "event": "returned",
+                "operation": "ConverseStream",
+                "number": 3,
+                "status": "returned",
+                "input_tokens": 342,
+                "output_tokens": 305,
+                "usage_complete": true
+              }
+            ]
+          }
+        ],
+        "unreported_diagnostics": []
+      }
+    ]
+  },
+  "restoration_proofs": [
+    {
+      "record": "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/restore-claude-opus-5-5.verified.json",
+      "sha256": "050b3f93629afe6fff7cfa8554d314804755a142bc2adbb0ab39830651d8cdda",
+      "observed_at": "2026-11-12T22:27:42.987300+00:00",
+      "release": {
+        "model_key": "claude-opus-5-5",
+        "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_claude_opus_5_5-pjA7LFDH7r",
+        "runtime_version": "3",
+        "configuration_sha256": "5edf23ee743e65bf9ff3c9db2c5982a311a7376cf4c40b782821814b2da2a103",
+        "template_sha256": "f691070f63157042d6bc4f55d781bf95a1ac96397e96ec7181e747de4f6618bf"
+      },
+      "stack_id": "arn:aws:cloudformation:us-west-2:453711491609:stack/enterprise-analytics-stream-claude-opus-5-5/edaae8f0-ded4-11f1-9c42-02b7fbee76d1",
+      "stack_status": "UPDATE_COMPLETE",
+      "runtime_status": "READY",
+      "runtime_version": "3",
+      "endpoint_status": "READY",
+      "endpoint_version": "3",
+      "artifact_version_id": "GSY36sTbDpCNZGogULTe3cBL__bujiQK"
+    },
+    {
+      "record": "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/restore-claude-sonnet-5-5.verified.json",
+      "sha256": "9f1042ffed96afad756fb06e1b277787f7775b6b961535305192cee3f8145c80",
+      "observed_at": "2026-11-12T22:28:43.094683+00:00",
+      "release": {
+        "model_key": "claude-sonnet-5-5",
+        "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_claude_sonnet_5_5-wIvJh83KS4",
+        "runtime_version": "3",
+        "configuration_sha256": "75bb88c9de1ad1ec7a3987c4ca252e0302e554b088d3c1ca83aecd23d27f0638",
+        "template_sha256": "cf6da894dcc9644af3739fb562c428873003843138c3eadfb2e8d88db0ab1adc"
+      },
+      "stack_id": "arn:aws:cloudformation:us-west-2:453711491609:stack/enterprise-analytics-stream-claude-sonnet-5-5/bc9c9f10-ded4-11f1-bf49-0affc2358c3b",
+      "stack_status": "UPDATE_COMPLETE",
+      "runtime_status": "READY",
+      "runtime_version": "3",
+      "endpoint_status": "READY",
+      "endpoint_version": "3",
+      "artifact_version_id": "GSY36sTbDpCNZGogULTe3cBL__bujiQK"
+    },
+    {
+      "record": "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/restore-deepseek-v3-2.verified.json",
+      "sha256": "dd80d1321483efee41a035fa8ebf6cea750d053319f9df827dd805cdc4a9ee51",
+      "observed_at": "2026-11-12T22:22:43.320628+00:00",
+      "release": {
+        "model_key": "deepseek-v3-2",
+        "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_deepseek_v3_2-lya0FE86Zv",
+        "runtime_version": "3",
+        "configuration_sha256": "b16c8b6f420c7f28e761116b61e4ec96610c7a461a5f8a196bc52925a0935dc8",
+        "template_sha256": "e168b4f0876cdc1207d6baaed792bdffa583cea81172b6c251d6c31055f3bcd4"
+      },
+      "stack_id": "arn:aws:cloudformation:us-west-2:453711491609:stack/enterprise-analytics-stream-deepseek-v3-2/e3af8fd0-ded5-11f1-8f0c-02b52acd1095",
+      "stack_status": "UPDATE_COMPLETE",
+      "runtime_status": "READY",
+      "runtime_version": "3",
+      "endpoint_status": "READY",
+      "endpoint_version": "3",
+      "artifact_version_id": "GSY36sTbDpCNZGogULTe3cBL__bujiQK"
+    },
+    {
+      "record": "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/restore-gemma-4-31b.verified.json",
+      "sha256": "ea5026e3173faba28be4e4f180110a801cad2288213788f6e124b9d6057e7693",
+      "observed_at": "2026-11-12T22:24:43.176353+00:00",
+      "release": {
+        "model_key": "gemma-4-31b",
+        "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_gemma_4_31b-5KRJdk6NQb",
+        "runtime_version": "3",
+        "configuration_sha256": "f544271c130633d12a2fa552163e760db8dcd4288f75e31d38951a40189d6d96",
+        "template_sha256": "966a8bf1cec6518a1e905c49b07f9c5042f3076868927ac2cc444886013d8658"
+      },
+      "stack_id": "arn:aws:cloudformation:us-west-2:453711491609:stack/enterprise-analytics-stream-gemma-4-31b/81380ad0-ded5-11f1-adad-0a3dfe942293",
+      "stack_status": "UPDATE_COMPLETE",
+      "runtime_status": "READY",
+      "runtime_version": "3",
+      "endpoint_status": "READY",
+      "endpoint_version": "3",
+      "artifact_version_id": "GSY36sTbDpCNZGogULTe3cBL__bujiQK"
+    },
+    {
+      "record": "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/restore-gpt-6-1-sol.verified.json",
+      "sha256": "3206a629e93c3511aef479c47b680f11712a3423a669713988da0e5784ddf631",
+      "observed_at": "2026-11-12T22:25:43.051738+00:00",
+      "release": {
+        "model_key": "gpt-6-1-sol",
+        "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_gpt_6_1_sol-5M3ZcJGNh3",
+        "runtime_version": "3",
+        "configuration_sha256": "df981e8339b92f2ae22f47b128eb48dfa309c1a4de425753aaddef7fb686f5b4",
+        "template_sha256": "a808374a46ee9a042f53d0e714f7bba6c0d2041c86f6af5fc6a5645abd9905d3"
+      },
+      "stack_id": "arn:aws:cloudformation:us-west-2:453711491609:stack/enterprise-analytics-stream-gpt-6-1-sol/4fd92ff0-ded5-11f1-8ee1-02d574ccb33f",
+      "stack_status": "UPDATE_COMPLETE",
+      "runtime_status": "READY",
+      "runtime_version": "3",
+      "endpoint_status": "READY",
+      "endpoint_version": "3",
+      "artifact_version_id": "GSY36sTbDpCNZGogULTe3cBL__bujiQK"
+    },
+    {
+      "record": "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/restore-gpt-6-astra.verified.json",
+      "sha256": "78b2fd81586a32b31b0177a702b17682d0238b9f4c483b8de7b2bd4a8528f588",
+      "observed_at": "2026-11-12T22:26:42.845809+00:00",
+      "release": {
+        "model_key": "gpt-6-astra",
+        "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_gpt_6_astra-6XMFAj51lA",
+        "runtime_version": "3",
+        "configuration_sha256": "172cd5157183e2d68a005eddf2c43c43c63d1aa476879987b69c69ad9092f894",
+        "template_sha256": "304997fbefb51388cf9e5cbf2591a32f44cbb8c0611d31c85579dd8a07a798f0"
+      },
+      "stack_id": "arn:aws:cloudformation:us-west-2:453711491609:stack/enterprise-analytics-stream-gpt-6-astra/1ec9fbb0-ded5-11f1-b011-0626e97e0a1b",
+      "stack_status": "UPDATE_COMPLETE",
+      "runtime_status": "READY",
+      "runtime_version": "3",
+      "endpoint_status": "READY",
+      "endpoint_version": "3",
+      "artifact_version_id": "GSY36sTbDpCNZGogULTe3cBL__bujiQK"
+    },
+    {
+      "record": "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/restore-llama-4-maverick.verified.json",
+      "sha256": "26e74baf321d0241f1fe971ddb8d1023f41717357be432e014e873086fa61bf5",
+      "observed_at": "2026-11-12T22:23:43.224324+00:00",
+      "release": {
+        "model_key": "llama-4-maverick",
+        "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_llama_4_maverick-r9V93EA2v5",
+        "runtime_version": "3",
+        "configuration_sha256": "de65ed1066598eab3a99f2465c8bfab4ebb26a28d6b8441f2414578c6f3b0eba",
+        "template_sha256": "bc2d5f4e1eac0351c07893b16068406289eece838ca6e054e7539f6579c357e3"
+      },
+      "stack_id": "arn:aws:cloudformation:us-west-2:453711491609:stack/enterprise-analytics-stream-llama-4-maverick/b28a89a0-ded5-11f1-9400-0affc45c4d45",
+      "stack_status": "UPDATE_COMPLETE",
+      "runtime_status": "READY",
+      "runtime_version": "3",
+      "endpoint_status": "READY",
+      "endpoint_version": "3",
+      "artifact_version_id": "GSY36sTbDpCNZGogULTe3cBL__bujiQK"
+    },
+    {
+      "record": "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/restore-mistral-large-3.verified.json",
+      "sha256": "82cb2ce7a9da24d1c3f112a926cdd87e5ccb51d5187f3fd71d60531055261f09",
+      "observed_at": "2026-11-12T22:20:42.189285+00:00",
+      "release": {
+        "model_key": "mistral-large-3",
+        "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_mistral_large_3-fLMU4GAeKZ",
+        "runtime_version": "3",
+        "configuration_sha256": "643d484ddae838047e1ce87a85c7e2bcf57e93c69ccbfa5df94e9342de8e1a2a",
+        "template_sha256": "80402709ab13c673ee68a9077d4379622bf4317ecb90fc43cc76f223b9fe8d47"
+      },
+      "stack_id": "arn:aws:cloudformation:us-west-2:453711491609:stack/enterprise-analytics-stream-mistral-large-3/45f97520-ded6-11f1-ada7-0686589fd99d",
+      "stack_status": "UPDATE_COMPLETE",
+      "runtime_status": "READY",
+      "runtime_version": "3",
+      "endpoint_status": "READY",
+      "endpoint_version": "3",
+      "artifact_version_id": "GSY36sTbDpCNZGogULTe3cBL__bujiQK"
+    },
+    {
+      "record": "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/restore-nova-lite.verified.json",
+      "sha256": "3f3880739dd1e21f755c3525cd3f8172599539e2e29caf9f090faee155948442",
+      "observed_at": "2026-11-12T22:29:43.442347+00:00",
+      "release": {
+        "model_key": "nova-lite",
+        "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_nova_lite-ysWG3wGhNd",
+        "runtime_version": "3",
+        "configuration_sha256": "b03625d420f04ef3bbe5700101c486a52b5b3ac2979f720ed0c6548df7791516",
+        "template_sha256": "9ae565b9401cb29829c3a8bc73697ca447b1a05c2b2da3ee7b45f4009851298c"
+      },
+      "stack_id": "arn:aws:cloudformation:us-west-2:453711491609:stack/enterprise-analytics-stream-nova-lite/8b487290-ded4-11f1-b2cf-0ae4036e3efb",
+      "stack_status": "UPDATE_COMPLETE",
+      "runtime_status": "READY",
+      "runtime_version": "3",
+      "endpoint_status": "READY",
+      "endpoint_version": "3",
+      "artifact_version_id": "GSY36sTbDpCNZGogULTe3cBL__bujiQK"
+    },
+    {
+      "record": "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/restore-qwen3-235b.verified.json",
+      "sha256": "c698581cf571c967532daa323268f439d53e643b504360ddd51fbee3d6d62b2c",
+      "observed_at": "2026-11-12T22:21:38.569820+00:00",
+      "release": {
+        "model_key": "qwen3-235b",
+        "runtime_arn": "arn:aws:bedrock-agentcore:us-west-2:453711491609:runtime/enterprise_analytics_stream_qwen3_235b-xPOeZ29RRY",
+        "runtime_version": "3",
+        "configuration_sha256": "79f0e48b292eff5f32958349e58ab8ac776e6b4b9325707d77a7503c7f09ac81",
+        "template_sha256": "5064c9889a5e2611fae081263fe014344191e412d4b5fd8827e66f9186de67d4"
+      },
+      "stack_id": "arn:aws:cloudformation:us-west-2:453711491609:stack/enterprise-analytics-stream-qwen3-235b/14dbc1f0-ded6-11f1-a3b9-06ae8ffd08cb",
+      "stack_status": "UPDATE_COMPLETE",
+      "runtime_status": "READY",
+      "runtime_version": "3",
+      "endpoint_status": "READY",
+      "endpoint_version": "3",
+      "artifact_version_id": "GSY36sTbDpCNZGogULTe3cBL__bujiQK"
+    }
+  ],
+  "protected_cleanup": {
+    "record": "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/cleanup.json",
+    "sha256": "4fb8c42fbb5a7952bd30fddec2df5113669450051a5c05c6cb114e166945c4e8",
+    "legacy_runtime_version": "15",
+    "status": "passed",
+    "expected_queries": [
+      {
+        "api_version": "v2",
+        "metric_id": "net_revenue",
+        "time_range": {
+          "api_version": "v2",
+          "start": "2025-03-31",
+          "end": "2025-04-01"
+        },
+        "group_by": [],
+        "dimension_filters": {}
+      }
+    ],
+    "observed_queries": [
+      {
+        "api_version": "v2",
+        "metric_id": "net_revenue",
+        "time_range": {
+          "api_version": "v2",
+          "start": "2025-03-31",
+          "end": "2025-04-01"
+        },
+        "group_by": [],
+        "dimension_filters": {}
+      }
+    ],
+    "results": [
+      {
+        "api_version": "v2",
+        "metric_id": "net_revenue",
+        "definition_version": "1.0.0",
+        "time_range": {
+          "api_version": "v2",
+          "start": "2025-03-31",
+          "end": "2025-04-01"
+        },
+        "group_by": [],
+        "unit": "currency",
+        "currency": "USD",
+        "rows": [
+          {
+            "api_version": "v2",
+            "dimensions": {},
+            "value": "110.25"
+          }
+        ]
+      }
+    ],
+    "diagnostics": {
+      "server_latency_ms": 2222,
+      "model_calls": 1,
+      "input_tokens": 1131,
+      "output_tokens": 110,
+      "athena": [
+        {
+          "query_id": "623eb9a1-8d1e-4992-8be6-b5deab705827",
+          "operation": "query_metric",
+          "metric_id": "net_revenue",
+          "metric_version": "1.0.0",
+          "dataset_version": "retail-v1",
+          "state": "SUCCEEDED",
+          "scanned_bytes": 5015,
+          "engine_time_ms": 943,
+          "queue_time_ms": 91,
+          "total_time_ms": 1108,
+          "cancellation_attempts": 0,
+          "cancellation_outcome": null
+        }
+      ]
+    }
+  },
+  "budget": {
+    "used": 4,
+    "maximum": 37,
+    "ordinary_used": 3,
+    "regular_remaining": 32,
+    "protected_cleanup": 0,
+    "unapproved_reserve": 1,
+    "failed": true,
+    "incomplete": false,
+    "expired": false,
+    "blocked": true,
+    "prior_used": 3,
+    "aggregate_used": 7,
+    "aggregate_maximum": 40,
+    "continuation_claimed": true
+  },
+  "runtime_sdk_attempts": 4,
+  "automatic_billable_retries": 0,
+  "unavailable_reserve_used": false,
+  "preservation": {
+    "verified_at": "2026-11-12T22:32:07.491939+00:00",
+    "files": 352,
+    "all_unchanged": true,
+    "inventory_record": "artifacts/bedrock-streaming/completion-fix/preservation.before.json",
+    "inventory_sha256": "8354a0c072b42ab19cd92521b49eb07b1d9242f525e1e304dc75aa3c9cc6499e"
+  },
+  "denial_diagnosis": {
+    "observed_error": "AccessDeniedException",
+    "operation": "Converse",
+    "record": "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/denial-diagnosis/sonnet-observability-gap.json",
+    "configured_runtime_role": "arn:aws:iam::453711491609:role/enterprise-analytics-stream-claude-sonnet-5-5",
+    "full_denial_message_available": false,
+    "actual_denied_session_principal": null,
+    "actual_denied_resource": null,
+    "actual_denied_conditions": null,
+    "specific_missing_permission_established": false,
+    "control_plane_record": "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/denial-diagnosis/model-control-plane.readonly.json",
+    "interpretation": "Developer control-plane availability and routing match. This is not workload-role effective-access proof. Full application ClientError.response was not retained and bounded CloudTrail reads did not find the underlying invocation denial. Do not infer a grant from quota or broaden IAM."
+  },
+  "hosted_ci": {
+    "covered_commit": "f59149828b772b3dc3d09036147b6de84fb3c322",
+    "push": "https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43316129337",
+    "pull_request": "https://github.com/sureshkm-ai/enterprise-analytics-agent/actions/runs/43316722939",
+    "both_conclusion": "success",
+    "later_outcome_documentation_covered": false
+  },
+  "raw_evidence_sha256": {
+    "artifacts/bedrock-streaming/bedrock-stream-completion-v1-01/acceptance-claim.json": "1edf5b9ed28383f7c1e9d67d338001e84083466cd606ab1c4e80573101017bad",
+    "artifacts/bedrock-streaming/bedrock-stream-completion-v1-01/attempts.jsonl": "ef505905e00dcf33e98dcbd13833d58aafacbd2a78776aae04b34d38a1740998",
+    "artifacts/bedrock-streaming/bedrock-stream-completion-v1-01/cleanup-reads.jsonl": "2ca291bfa3c2abc69dfd672e08508b9da42e994d14eba28b00b3a28bc07f4796",
+    "artifacts/bedrock-streaming/bedrock-stream-completion-v1-01/operator-reads.jsonl": "5e4e8b6ae768fc15f92f78f97346a364fcf8b894b63f970be870dfd0a7c1ff0e",
+    "artifacts/bedrock-streaming/bedrock-stream-completion-v1-01/preflight-0010bc75-dbe2-44ad-8fa5-2b518c9ebeed.json": "7f9861aefa320cffab4f1743b69aa44877e027eb7e16017beef9d274c434bde2",
+    "artifacts/bedrock-streaming/bedrock-stream-completion-v1-01/preflight-731ff772-876e-4c33-a8fe-83fd87108b55.json": "8e4798a8519d229378fb1ded8895cd0708441ba6d00609d877a1eeb9b456cfde",
+    "artifacts/bedrock-streaming/bedrock-stream-completion-v1-01/preflight-ddc715e0-d467-4ac4-8f2a-258f158828db.json": "10094fa1e3cf391949c76a2c5874653a4ac973265e9587b3cb737b9f73798de5",
+    "artifacts/bedrock-streaming/bedrock-stream-completion-v1-01/question.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "artifacts/bedrock-streaming/bedrock-stream-completion-v1-01/reservations/0010bc75-dbe2-44ad-8fa5-2b518c9ebeed.json": "9a79b5ce7b4ff1b6831a84a97fc4561764e2746b2d77227f1f2008fb584a927f",
+    "artifacts/bedrock-streaming/bedrock-stream-completion-v1-01/reservations/731ff772-876e-4c33-a8fe-83fd87108b55.json": "a255a668ac80ef476251feecc2752b672fdbc73f88c69c5864c0759f9d4b6390",
+    "artifacts/bedrock-streaming/bedrock-stream-completion-v1-01/reservations/a2af5c52-6131-4437-aaf9-37e58110249d.json": "2825f43d27e06baee96e6d6428008bf90abfa42155aa7a6fde89501cdf761178",
+    "artifacts/bedrock-streaming/bedrock-stream-completion-v1-01/reservations/ddc715e0-d467-4ac4-8f2a-258f158828db.json": "2ec07c246d78c2e41070b7b58e998d5a336626bc43348d25fcbf183570a75e29",
+    "artifacts/bedrock-streaming/bedrock-stream-completion-v1-01/result-0010bc75-dbe2-44ad-8fa5-2b518c9ebeed.json": "0cc9d4b93ed79d255b0eebdc80bca8c8dd30b1736bd6aa509ea7e92b6bcfe560",
+    "artifacts/bedrock-streaming/bedrock-stream-completion-v1-01/result-731ff772-876e-4c33-a8fe-83fd87108b55.json": "49a2d8d2b8822ebcb1ee3d183697460f9d812d7380c84f398821b46ad8071938",
+    "artifacts/bedrock-streaming/bedrock-stream-completion-v1-01/result-ddc715e0-d467-4ac4-8f2a-258f158828db.json": "92347815722c846b3181258250ba953c004f7f35d52eca8682a8cc18f241988e",
+    "artifacts/bedrock-streaming/bedrock-stream-completion-v1-01/sdk-reservations/0010bc75-dbe2-44ad-8fa5-2b518c9ebeed-1.json": "d7ec6c28ec2cc31a29d3b4f7b6fd3b2403534b52c29d7ad7b2d8960ee9fbe08b",
+    "artifacts/bedrock-streaming/bedrock-stream-completion-v1-01/sdk-reservations/731ff772-876e-4c33-a8fe-83fd87108b55-1.json": "993b820527e36ce8d858e57dd64de67b6fe3d3e7865b0c7a4668f856639106b0",
+    "artifacts/bedrock-streaming/bedrock-stream-completion-v1-01/sdk-reservations/a2af5c52-6131-4437-aaf9-37e58110249d-1.json": "294ff09b01581cfa2c986ec53e513552acfd17c812a39b5096b7b6858816b350",
+    "artifacts/bedrock-streaming/bedrock-stream-completion-v1-01/sdk-reservations/ddc715e0-d467-4ac4-8f2a-258f158828db-1.json": "24fdc48256be1d18bed3cd6eab49d28205466eaf99f4f2f0c18e9503433569ad",
+    "artifacts/bedrock-streaming/completion-claims/bedrock-stream-completion-v1-01.json": "8fd8f8d5965461ebd1296fa32af4ab955cacdb5dfc462b4f50239a4bf88df632",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/acceptance/claude-sonnet-5-5-0.json": "ccb7237cf3ede35e1527ab273948d8a3874dc671a756b6fec6b55e7af4317be1",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/acceptance/nova-lite-0.json": "1ad2882f4c292e8035e6eb7ece79be1b0e23870437a72083f63a4ece931511d1",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/acceptance/nova-lite-1.json": "22ee5046d65f75b9583b94e30a5f7bc573a32003e308bce312557be8c07fa005",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/aws-failure-evidence.json": "434ce51052b54826bd0fc52a6524d15e6c4ae9450153eb18326b45059177147f",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/candidate-version.json": "9340fd521cdbf5c87063e7f177755b7c6f943137a08288dff0af8aa48fdd4c2f",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/cleanup.json": "4fb8c42fbb5a7952bd30fddec2df5113669450051a5c05c6cb114e166945c4e8",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/cleanup.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/cleanup.stdout.log": "e7325ea91cc03bc288f938fd31d86ad5b8e589bdb0938748e679feac8db560b6",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/denial-diagnosis/cloudtrail-bedrock-runtime.amazonaws.com.json": "02f9c8190fefed4ef5bbd44d733de0498535031c3c1e71a5440fe8615b8eec23",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/denial-diagnosis/cloudtrail-bedrock.amazonaws.com.json": "b9c97ccfedc6752391c1aeaec6383ec7f9dcc904e158a182bd5b8725b5c2b117",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/denial-diagnosis/cloudtrail-bedrock.final-bounded.json": "a64499dd862e7591b7ba0743f722ea5329f68a1b83fb1948aad00e789a7730eb",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/denial-diagnosis/cloudtrail-bedrock.late.json": "3027791278ff5452fd5793536f74667a2468cb9c2e1c2c27da13a3fb46f38830",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/denial-diagnosis/identity.json": "0b7fd51cd8a23d052fa6c896e0de98888c70466e04f460d26e7a9360f9824bf4",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/denial-diagnosis/model-control-plane.readonly.json": "82296106716b8c26277eefc01e860ce1fea879f36d7df7febd2d20ba93b8b981",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/denial-diagnosis/sonnet-cloudwatch.json": "d6ff2830db1b4f2a7fbf4c1000f561fde6e72d5be9189b8f14cc100a6be15cea",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/denial-diagnosis/sonnet-observability-gap.json": "de987bad68bf0383bba8d225df29b0956e467e6a3945f64e87093b1ce026e35a",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-claude-opus-5-5.controller.json": "6ad55c9a87022788d5327f7afb046076009e14bb4295eeefe104619487daee90",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-claude-opus-5-5.outputs.json": "e63901156df63d521b3698aaa62d2ca4ffb1d0adb7b29ca57d795da0ca94dc80",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-claude-opus-5-5.stderr.log": "a3c787ee463c9b8a1d60ef584620ada9eda1cb81b26fc44d42855db610ac05f8",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-claude-opus-5-5.stdout.log": "25eb997fe12a6e7ad09d7c2636da503c7e868b8dd16a3a08e04573eb251e5dd8",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-claude-sonnet-5-5.controller.json": "c0f6fed2225e4d4e9a65481cc014280ebb74b0a64e654fb3194ebde4f172920f",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-claude-sonnet-5-5.outputs.json": "c16913a4ef01448b243b6ca0a4e94f06833b76e154ec9dd88ada82cecb59d63f",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-claude-sonnet-5-5.stderr.log": "1dbf6f27eaf6de3c8179b0ef4a0446a19ed50419fa3daaa00df06cbd4454e2c1",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-claude-sonnet-5-5.stdout.log": "2e47a8e553664ef3aa91ed5cff20d7cd741af1f6daa870387a9999364ab65164",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-deepseek-v3-2.controller.json": "a8e405ff8e5d8c039e41bb92106bb5a2e723802858fac6a9e196259940709ea1",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-deepseek-v3-2.outputs.json": "3715538fc341883702b6fb23585443b05c3a79c871b15d8b2851c71222e3db5b",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-deepseek-v3-2.stderr.log": "ff2949f26d29abb4fb3a3a64e49d4288aa9813e3bf4ca20a252acbe9e9027455",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-deepseek-v3-2.stdout.log": "678bdf16f95ebe18423d72c9fce768a37b25b12ac114ba9bf7917dfd6ef4e456",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-gemma-4-31b.controller.json": "9a8d203ce10c34abd92bbd49c17753aace3aa02b756a105b02373fcd3c7b06b0",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-gemma-4-31b.outputs.json": "7f9d0aa3b4d9ecd33fc285f9e2a42d67ecbcdcce3859cfae9c709919deaa34fc",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-gemma-4-31b.stderr.log": "61b5e27a0cf0a322ff93441d5968ff4bf8d41d380549ba00a92bbfebd5582441",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-gemma-4-31b.stdout.log": "9d56c2fe913a2c20dc7648e62c1fa923131818b8b676976ec9f6e0f2f635bb76",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-gpt-6-1-sol.controller.json": "517329d9ec26d7c3d369fdc932a6bddad271f9e2c0eff4970d55a8df288c0c4b",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-gpt-6-1-sol.outputs.json": "258e1458bd9b9e3caca2f24c879f03d493f1a6ad209468fc7a2102128b1ee8f4",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-gpt-6-1-sol.stderr.log": "4695968e2fb321522eee7c83807e62405f7afcd8cecb2f83bddb4b77fec20955",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-gpt-6-1-sol.stdout.log": "894d167f3cf7269447be78a444b4f64da720d587c5aa0e0ad68411e2522025bf",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-gpt-6-astra.controller.json": "5b279ed6f1838c75118006a86a45b6986180c2be4d3dfc7fa55f84e73751c45d",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-gpt-6-astra.outputs.json": "9d8ba8a320bd85240124278b68a9825115a41507a1c9a451b33cca70b68b6dfb",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-gpt-6-astra.stderr.log": "7ebb47c7d860c09b151ec131c795a97fa6aeb59db955f60fda5f9dd49943cafa",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-gpt-6-astra.stdout.log": "4738364afd653789f5d6ae779d135ee865cc017697b1bc8eaa354ec3ef375382",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-llama-4-maverick.controller.json": "b0543c45afbb64746f226a710be61ec618a3a36c8eee79154826efa374b5369a",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-llama-4-maverick.outputs.json": "e753b42fc23f34507e32de696b5271ee029efc86d4cc0345f4a7924b64a6a029",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-llama-4-maverick.stderr.log": "90347d90be947dd7fc83df6ef7442ea539503add82ab3f03fdc4231b7e2d10f2",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-llama-4-maverick.stdout.log": "46a522af4a9702f0810eed9d204d83848a291856a52eb74bbb9e87962be86c3c",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-mistral-large-3.controller.json": "3c5581c23c56e8142778783dbf2f04bc9ea29040c6eed8ea44d0f64147cdde42",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-mistral-large-3.outputs.json": "ae201c4174779723e10193e58c63ca6ef941ae8c4b90be3596041b4e4b3b87d0",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-mistral-large-3.stderr.log": "90e41e7bf5373f12d8092edc9877719898c261fa98fb05822eb0f45bb5259b38",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-mistral-large-3.stdout.log": "ead5577de79534b79c6b114e8a5381dc5810622546ef635d9164219512678e38",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-nova-lite.controller.json": "6939eaef220047495ccdc74dce36bbf798266f70af3bd91896b4f6da4d7a5400",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-nova-lite.outputs.json": "57ca8303de172bc93ec404ae826cf3d7f599df13b679a2956b12206665563efc",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-nova-lite.stderr.log": "4a46fb30c2c6a58f6b8fc9a78fa120a6393970590e1dba1b3def879ce6b308b3",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-nova-lite.stdout.log": "540ba8ea161418d9fd4a01d6ca58a6be385e5ef2aa8b42d01b266e3ff5335a12",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-qwen3-235b.controller.json": "e0540c0e8696436d057ece1df425571b79cd31779c211b560943deb7f369c02f",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-qwen3-235b.outputs.json": "a866b5a6256147ac04eb433e03f6ddefb741bf9d226980659e1254bef76b59bc",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-qwen3-235b.stderr.log": "d0d94592754b93ca091b4deb1f7cc5c850450ae58a8ad47d4c18c1678f4ab01e",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/restore-qwen3-235b.stdout.log": "4fa68af92295f11261ea546079972fa4fadcd905966abc5a8ae5f4597843ffb6",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-claude-opus-5-5.controller.json": "c4a0ac04eb7da88a9d2741d7ffbff9ca9e9123ececb0df15997e13a36b07f14f",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-claude-opus-5-5.outputs.json": "348559e6bca56a07a4f291ee4d6854ea0cce4d037625d49a767e621b708ea3ba",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-claude-opus-5-5.stderr.log": "e953da03450ce001db2486c215dea8d1a294d9d0d694a1d30f42c2cf117dccbf",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-claude-opus-5-5.stdout.log": "25eb997fe12a6e7ad09d7c2636da503c7e868b8dd16a3a08e04573eb251e5dd8",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-claude-sonnet-5-5.controller.json": "2b553e4784758bc4146d0eecec3e89b95fb9dbd4be92692289b2132277c847aa",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-claude-sonnet-5-5.outputs.json": "a7a18779f1c4916d34cae3e4dcbad44540686eb09939da553d31a4a8cf916275",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-claude-sonnet-5-5.stderr.log": "6a2d5ed2d97db61c8dc5ddd8b42872076ee906ab66959eaa4824ae8041cefa09",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-claude-sonnet-5-5.stdout.log": "2e47a8e553664ef3aa91ed5cff20d7cd741af1f6daa870387a9999364ab65164",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-deepseek-v3-2.controller.json": "0a9ebe86255f779dbf261ac32fe8aace372c9ce5ed79698735adf25fc83cae45",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-deepseek-v3-2.outputs.json": "d5e60b1ecafe52fb532b8b1a6630ed4c754203689e5b030ac66fdbd164605adc",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-deepseek-v3-2.stderr.log": "c3f56532f7e818d956721e35a1e5d3397961338d9d6a6ab1a958e61c78cffc7d",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-deepseek-v3-2.stdout.log": "678bdf16f95ebe18423d72c9fce768a37b25b12ac114ba9bf7917dfd6ef4e456",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-gemma-4-31b.controller.json": "ab974b558069d98377a751bef316dc9703faf0c606e9b6222103e27a72c4ac4e",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-gemma-4-31b.outputs.json": "47c180e5b65ecb5f681255e5dc55441a87f95dfbeaad83142a26d9bc7a95dc4f",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-gemma-4-31b.stderr.log": "939005434cc12d40a43685de2cbce8eae029e437a5045a780aeef95126de8f72",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-gemma-4-31b.stdout.log": "9d56c2fe913a2c20dc7648e62c1fa923131818b8b676976ec9f6e0f2f635bb76",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-gpt-6-1-sol.controller.json": "c5d9b4c29c21e28dc69a91004c79be9f627b7c47a3f499fe1ffb1afffde29a0b",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-gpt-6-1-sol.outputs.json": "827393ac1c66d437eb8148079535601abaa2ac5ac289cf9aae6d76a92ed67fa5",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-gpt-6-1-sol.stderr.log": "ad3943c8d5eff31b0c8a49aee342aaebd17c43c9846ac0c7341e47dd912e598e",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-gpt-6-1-sol.stdout.log": "894d167f3cf7269447be78a444b4f64da720d587c5aa0e0ad68411e2522025bf",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-gpt-6-astra.controller.json": "1759b5af53165b5d286303ef9f8a175005a8a391d19f5c5745b7e0b32bdea5df",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-gpt-6-astra.outputs.json": "18d03120f000f8a5277ccdbb0366dbfb342518d60815d8942226c4282a334e94",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-gpt-6-astra.stderr.log": "a77b1cc990af642d6061dfa3e936c34ed36e212012bbe0b99cb51deb277ca3b6",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-gpt-6-astra.stdout.log": "4738364afd653789f5d6ae779d135ee865cc017697b1bc8eaa354ec3ef375382",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-llama-4-maverick.controller.json": "908f9412b4f0adbfeb2dfa6d4f4a474da08605e4aabbce9190dd44218b0ac71b",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-llama-4-maverick.outputs.json": "fffbe3a60c766e55078eb7c0a453880a54ba357c4cb70ea0821d729023ba0249",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-llama-4-maverick.stderr.log": "2febd95d851ec5f4d348c0a9ab229b0efdb6d01e3592fefdc9ad130882769a0d",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-llama-4-maverick.stdout.log": "46a522af4a9702f0810eed9d204d83848a291856a52eb74bbb9e87962be86c3c",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-mistral-large-3.controller.json": "4070cbf6c715d6160c8c932a270d566ed17beb9b8f9687776895954592baa583",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-mistral-large-3.outputs.json": "a4a451bf459fc954ba15e7e5d12bb7b0cbe82d0efd65e9e6e9769f811dbb08be",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-mistral-large-3.stderr.log": "bac013f63bd1727ff85b9b6a90fea0e104b374ea4572aaa938d78dae6336d34f",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-mistral-large-3.stdout.log": "ead5577de79534b79c6b114e8a5381dc5810622546ef635d9164219512678e38",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-nova-lite.controller.json": "3cf611d30e9b64824760a127514739bbd3fd798abf774c038348a943ee8c6ef1",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-nova-lite.outputs.json": "c482afd075b26300e707dd4de8927a789a95b5e043e429ebc1067edb6135153c",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-nova-lite.stderr.log": "f5d05dba945a3fb145343cf122312a5f33bb820e03bce4c7c3f9d45d0249b446",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-nova-lite.stdout.log": "540ba8ea161418d9fd4a01d6ca58a6be385e5ef2aa8b42d01b266e3ff5335a12",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-qwen3-235b.controller.json": "08c88340307e5703260bb39412dca3a2d2c4d8503c76e20009f16dac115af213",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-qwen3-235b.outputs.json": "9810e5f0c8eb16007067abb7a90517747380e112e35cf5ad166e3788f86a533c",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-qwen3-235b.stderr.log": "a1ffe70b57d38a270f70d847269447bdfb5649f64f1f2ab314dbd22c496d07e3",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/deployments/update-qwen3-235b.stdout.log": "4fa68af92295f11261ea546079972fa4fadcd905966abc5a8ae5f4597843ffb6",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/evaluation.stderr.log": "fea6709a911bb7b87e7ade35515c0d22205afa704c100128c8581b21e4e565fd",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/evaluation.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/operator-reads.jsonl": "25e95548fe3c14a5cbfe88c4ec2a8057abc63177c8d4ee2091cca302637739c1",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/outcome.json": "c46259ea72b46ed6ffea1dcbab3b3927b338b86f8599a19bf7f1b3f7eeb9de91",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/preflight.json": "481de9b30c6d3e4720fca685de9a9d3cde249ca201417b6fb412720ecbdf3fea",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/primary-error.json": "4e6081bc4e24334a202cc84223186a918307b56634463b0e5280ed97f3db6f0b",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/releases.actual.json": "5fe3dc7bafbd3e8e9c025fcbff60cd07faee4e62814c4c6cdede193355b208e3",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/restore-claude-opus-5-5.original-code.json": "945b9da51bf23caaaf79889ffc61dca60a3523e7d1288f34200ce32a86ca799d",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/restore-claude-opus-5-5.verified.json": "050b3f93629afe6fff7cfa8554d314804755a142bc2adbb0ab39830651d8cdda",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/restore-claude-sonnet-5-5.original-code.json": "945b9da51bf23caaaf79889ffc61dca60a3523e7d1288f34200ce32a86ca799d",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/restore-claude-sonnet-5-5.verified.json": "9f1042ffed96afad756fb06e1b277787f7775b6b961535305192cee3f8145c80",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/restore-deepseek-v3-2.original-code.json": "945b9da51bf23caaaf79889ffc61dca60a3523e7d1288f34200ce32a86ca799d",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/restore-deepseek-v3-2.verified.json": "dd80d1321483efee41a035fa8ebf6cea750d053319f9df827dd805cdc4a9ee51",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/restore-gemma-4-31b.original-code.json": "945b9da51bf23caaaf79889ffc61dca60a3523e7d1288f34200ce32a86ca799d",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/restore-gemma-4-31b.verified.json": "ea5026e3173faba28be4e4f180110a801cad2288213788f6e124b9d6057e7693",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/restore-gpt-6-1-sol.original-code.json": "945b9da51bf23caaaf79889ffc61dca60a3523e7d1288f34200ce32a86ca799d",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/restore-gpt-6-1-sol.verified.json": "3206a629e93c3511aef479c47b680f11712a3423a669713988da0e5784ddf631",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/restore-gpt-6-astra.original-code.json": "945b9da51bf23caaaf79889ffc61dca60a3523e7d1288f34200ce32a86ca799d",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/restore-gpt-6-astra.verified.json": "78b2fd81586a32b31b0177a702b17682d0238b9f4c483b8de7b2bd4a8528f588",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/restore-llama-4-maverick.original-code.json": "945b9da51bf23caaaf79889ffc61dca60a3523e7d1288f34200ce32a86ca799d",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/restore-llama-4-maverick.verified.json": "26e74baf321d0241f1fe971ddb8d1023f41717357be432e014e873086fa61bf5",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/restore-mistral-large-3.original-code.json": "945b9da51bf23caaaf79889ffc61dca60a3523e7d1288f34200ce32a86ca799d",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/restore-mistral-large-3.verified.json": "82cb2ce7a9da24d1c3f112a926cdd87e5ccb51d5187f3fd71d60531055261f09",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/restore-nova-lite.original-code.json": "945b9da51bf23caaaf79889ffc61dca60a3523e7d1288f34200ce32a86ca799d",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/restore-nova-lite.verified.json": "3f3880739dd1e21f755c3525cd3f8172599539e2e29caf9f090faee155948442",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/restore-qwen3-235b.original-code.json": "945b9da51bf23caaaf79889ffc61dca60a3523e7d1288f34200ce32a86ca799d",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/restore-qwen3-235b.verified.json": "c698581cf571c967532daa323268f439d53e643b504360ddd51fbee3d6d62b2c",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/update-claude-opus-5-5.intent.json": "8b65a6c0781e2e699646c8fcfb4709e64b70a4fe73b6d7de7068672645330fee",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/update-claude-opus-5-5.verified.json": "b37ddf33b44e928b1e5467c18f7c990b38d5c4a97a412363ac281846279363a7",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/update-claude-sonnet-5-5.intent.json": "502cd190cbfb73d23af5d4325133339bda4e90a254edf7d2be97fe8812ee6cf5",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/update-claude-sonnet-5-5.verified.json": "a489cec88b7b0f36f0734b40475cd21e47e17d5714f4e091509e572bd5173663",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/update-deepseek-v3-2.intent.json": "40766c36960f7410dd2ffec2251711400674ff4c55d35365642ff82145863f05",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/update-deepseek-v3-2.verified.json": "2a3d100eec224c3c4cff113936bb27f1b36ce2cac0fa7d78aa4cd1ddafbbaf42",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/update-gemma-4-31b.intent.json": "e906d88fed38e07c049d7b6a5a2321d49c64e13572ea8e91dee88eb75f4fc805",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/update-gemma-4-31b.verified.json": "9853cf521b84496773ab26fac720fc1be8b6571f958ea1dda0fbfb95589c2a9d",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/update-gpt-6-1-sol.intent.json": "ac65bfe9e343ad81d8e2b2c1c2a7957ed23fa96dc230e325fb9ef1accc1d956b",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/update-gpt-6-1-sol.verified.json": "a32c54ca33e54bb8fa805dd34340cd809a656cf8cb54daf123999d3f63847130",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/update-gpt-6-astra.intent.json": "4e7a7b00e1730d25ef5a205857d6d9b9a0979bca13969035fd49ee3c9b2dbf49",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/update-gpt-6-astra.verified.json": "ce627f768044f739faf7a1f7af8663bc33b030a62f904bcb2961ca8b59b7759a",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/update-llama-4-maverick.intent.json": "ceb3ead460e18255c470e4ac8666b70fd21925932ee9e443b71c2f36fd12e72a",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/update-llama-4-maverick.verified.json": "bcab921811ae99afcd546fed37d340e769e457c07261758a9828acbc08ec74e7",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/update-mistral-large-3.intent.json": "88095fbb21618500de1a7a6c5d02cffb6a79a6be4577cb92165905fdfa7838ce",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/update-mistral-large-3.verified.json": "edf3eca2b04b304a2b501f2fdcb6dfa6d2b0aa205cfc311f7c8a45c92e29ef0b",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/update-nova-lite.intent.json": "94dab7c557e244b481dda3d6a599b27cefda9dd0370540830355de981a844c3e",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/update-nova-lite.verified.json": "16081c5655e17d33d3231d62a082b3b02b677e5bc7b5c866ba0c576db995fc7f",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/update-qwen3-235b.intent.json": "b9e69231ddc6cf27f8828dafd80cbaa75b25359154e0154cc7cabd8d9c8ebb52",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/update-qwen3-235b.verified.json": "e59a6ce2ecaf155732ac74f7bbe30092e2d3373a3fe1a5a5721fd46b7698ce71",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/upload-intent.json": "9d2631488fc5cd65277f76fdda5a9a5532ceb424d85420fb9bdbef880c4f9edc",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/upload-response.json": "bafdc6bafc0f3551029df60ebd68dbb43f6f659f44d714409d84f34a98beb77e",
+    "artifacts/bedrock-streaming/completion-fix/operations-20261112T220820Z/upload-verification.json": "8113f46ef5efac5b1304fb09048f96515eb74568eaf9f63b94f0a7db74ed6b21",
+    "artifacts/bedrock-streaming/completion-restorations/bedrock-stream-completion-v1-01.json": "61ed8ea2f094425b7d2f60f3cea373cf8481bef6507cdc04e6cf35d640ac9ce2"
+  }
+}

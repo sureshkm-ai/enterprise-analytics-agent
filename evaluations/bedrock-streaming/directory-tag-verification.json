@@ -1,0 +1,20 @@
+{
+  "schema_version": "bedrock-streaming-directory-verification-v1",
+  "evidence_source": "administrator AWS console report supplied by user; inspected as data",
+  "report_filename": "streaming-directory-verification.json",
+  "report_sha256": "2c1b01a6e182da96dd4a155ebb5e3fb8318978c94cf01473eb86b4f616b063f6",
+  "report_observed_at": "2026-11-12T18:47:05Z",
+  "policy_path": "infrastructure/cdk/streaming-directory-tag-policy.proposed.json",
+  "policy_sha256": "ba04feb1ce5c92ab55b94e09bfa522e641a0b2a2eedb10d97d313e42d996d39b",
+  "role_arn": "arn:aws:iam::453711491609:role/cdk-hnb659fds-cfn-exec-role-453711491609-us-west-2",
+  "inline_policy_name": "enterprise-analytics-stream-directory-tag",
+  "administrator_application_verified": true,
+  "exact_approved_policy_readback": true,
+  "all_four_managed_attachments_preserved": true,
+  "exact_simulation_request_verified": true,
+  "simulation_result": "allowed",
+  "missing_context_values": [],
+  "matched_statement": "enterprise-analytics-stream-directory-tag",
+  "establishes_unrestricted_deployment_success": false,
+  "developer_iam_inspection_repeated": false
+}
